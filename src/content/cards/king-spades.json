@@ -1,0 +1,13 @@
+{
+  "id": "king-spades",
+  "suit": "spades",
+  "value": "K",
+  "category": { "en": "Famous People", "ru": "Знаменитости" },
+  "title": { "en": "The Secret History of the Mongols", "ru": "Таемная гісторыя манголаў" },
+  "description": {
+    "en": "Swarms of locusts numbering in the billions of insects form 'flying clouds', covering and devastating vast areas.",
+    "ru": "Згрaі саранчы, што налічваюць мільярды насякомых, утвараюць «лятучыя хмары», накрываючы і спусташаючы вялізарныя плошчы."
+  },
+  "image": "/cards/merchant.png",
+  "featured": true
+}

@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Hero from '../../components/Hero.astro';
+import QuoteStrip from '../../components/QuoteStrip.astro';
+import Gallery from '../../components/Gallery.astro';
+import Games from '../../components/Games.astro';
+import Artist from '../../components/Artist.astro';
+import Acquire from '../../components/Acquire.astro';
+import Footer from '../../components/Footer.astro';
+
+const lang = 'en';
+---
+
+<Layout
+  lang={lang}
+  title="Magister Cards — Collectible Art Deck"
+  description="A collectible art deck where mythology, alchemy, and real historical figures unite in a single alternative universe. 54 unique illustrated cards."
+>
+  <Nav lang={lang} />
+  <Hero lang={lang} />
+  <QuoteStrip lang={lang} />
+  <Gallery lang={lang} />
+  <Games lang={lang} />
+  <Artist lang={lang} />
+  <Acquire lang={lang} />
+  <Footer lang={lang} />
+</Layout>

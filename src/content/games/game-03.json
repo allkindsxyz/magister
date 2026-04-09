@@ -1,0 +1,11 @@
+{
+  "id": "game-03",
+  "number": "III",
+  "title": { "en": "The Oracle's Method", "ru": "Метад аракула" },
+  "description": {
+    "en": "A solo practice. Lay out the figures in silence. Study their burdens. Ask your question. The cards do not answer — but something shifts.",
+    "ru": "Сольная практыка. Разлажы фігуры ў цішыні. Вывучы іх цяжар. Задай сваё пытанне. Карты не адказваюць — але нешта мяняецца."
+  },
+  "players": "1",
+  "duration": { "en": "As long as needed", "ru": "Столькі, колькі патрэбна" }
+}

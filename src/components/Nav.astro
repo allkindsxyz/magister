@@ -1,0 +1,292 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations, getLocalizedPath, getAlternateLang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const altLang = getAlternateLang(lang);
+const currentPath = Astro.url.pathname.replace(`/${lang}`, '') || '/';
+const altPath = getLocalizedPath(currentPath, altLang);
+---
+
+<nav id="main-nav">
+  <a href={getLocalizedPath('/', lang)} class="nav-logo">Magister</a>
+
+  <ul class="nav-links">
+    <li><a href="#gallery">{t('nav.cards')}</a></li>
+    <li><a href="#games">{t('nav.games')}</a></li>
+    <li><a href="#artist">{t('nav.artist')}</a></li>
+  </ul>
+
+  <div class="nav-right">
+    <div class="nav-lang-switcher">
+      <a
+        href={getLocalizedPath('/', 'en')}
+        class={`nav-lang-item ${lang === 'en' ? 'active' : ''}`}
+        aria-current={lang === 'en' ? 'true' : undefined}
+      >EN</a>
+      <span class="nav-lang-sep">|</span>
+      <a
+        href={getLocalizedPath('/', 'ru')}
+        class={`nav-lang-item ${lang === 'ru' ? 'active' : ''}`}
+        aria-current={lang === 'ru' ? 'true' : undefined}
+      >RU</a>
+    </div>
+    <a href="#acquire" class="nav-buy">{t('nav.acquire')}</a>
+  </div>
+
+  <button class="nav-burger" id="nav-burger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <ul>
+    <li><a href="#gallery" class="mobile-link">{t('nav.cards')}</a></li>
+    <li><a href="#games" class="mobile-link">{t('nav.games')}</a></li>
+    <li><a href="#artist" class="mobile-link">{t('nav.artist')}</a></li>
+    <li><a href="#acquire" class="mobile-link mobile-link--cta">{t('nav.acquire')}</a></li>
+    <li>
+      <div class="mobile-lang-row">
+        <a href={getLocalizedPath('/', 'en')} class={`mobile-link mobile-link--lang ${lang === 'en' ? 'active' : ''}`}>EN</a>
+        <span class="mobile-lang-sep">|</span>
+        <a href={getLocalizedPath('/', 'ru')} class={`mobile-link mobile-link--lang ${lang === 'ru' ? 'active' : ''}`}>RU</a>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<style>
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  padding: 1.5rem 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background .5s, padding .4s;
+}
+
+nav.scrolled {
+  background: rgba(12,7,1,.95);
+  padding: 1rem 3.5rem;
+  border-bottom: 1px solid rgba(200,151,58,.12);
+  backdrop-filter: blur(8px);
+}
+
+.nav-logo {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: .95rem;
+  letter-spacing: .35em;
+  color: var(--gold);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'Cinzel', serif;
+  font-size: .68rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-decoration: none;
+  transition: color .25s;
+}
+
+.nav-links a:hover {
+  color: var(--gold2);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.nav-lang-switcher {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.nav-lang-sep {
+  font-family: 'Cinzel', serif;
+  font-size: .55rem;
+  color: rgba(200,151,58,.2);
+}
+
+.nav-lang-item {
+  font-family: 'Cinzel', serif;
+  font-size: .62rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  text-decoration: none;
+  transition: color .25s;
+  padding-bottom: 1px;
+}
+
+.nav-lang-item:hover {
+  color: var(--dim);
+}
+
+.nav-lang-item.active {
+  color: var(--gold);
+  border-bottom: 1px solid rgba(200,151,58,.5);
+}
+
+.nav-buy {
+  font-family: 'Cinzel', serif;
+  font-size: .68rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  padding: .65rem 1.8rem;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  text-decoration: none;
+  transition: background .25s, color .25s;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+}
+
+.nav-buy:hover {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+.nav-burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav-burger span {
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--gold);
+  transition: transform .3s, opacity .3s;
+}
+
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 190;
+  background: rgba(12,7,1,.97);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+}
+
+.mobile-menu.open {
+  display: flex;
+}
+
+.mobile-menu ul {
+  list-style: none;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.mobile-link {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-decoration: none;
+  transition: color .25s;
+}
+
+.mobile-link:hover,
+.mobile-link:focus {
+  color: var(--gold);
+}
+
+.mobile-link--cta {
+  color: var(--gold);
+  border: 1px solid rgba(200,151,58,.4);
+  padding: .8rem 2rem;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+}
+
+.mobile-lang-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .8rem;
+}
+
+.mobile-lang-sep {
+  color: rgba(200,151,58,.2);
+  font-family: 'Cinzel', serif;
+  font-size: .7rem;
+}
+
+.mobile-link--lang {
+  font-size: .72rem;
+  color: var(--dimmer);
+  letter-spacing: .2em;
+}
+
+.mobile-link--lang.active {
+  color: var(--gold);
+}
+
+@media (max-width: 960px) {
+  nav {
+    padding: 1.2rem 1.8rem;
+  }
+
+  nav.scrolled {
+    padding: .9rem 1.8rem;
+  }
+
+  .nav-links,
+  .nav-right {
+    display: none;
+  }
+
+  .nav-burger {
+    display: flex;
+  }
+}
+</style>
+
+<script>
+  const burger = document.getElementById('nav-burger');
+  const menu = document.getElementById('mobile-menu');
+
+  if (burger && menu) {
+    burger.addEventListener('click', () => {
+      menu.classList.toggle('open');
+    });
+
+    menu.querySelectorAll('.mobile-link').forEach((link) => {
+      link.addEventListener('click', () => {
+        menu.classList.remove('open');
+      });
+    });
+  }
+</script>

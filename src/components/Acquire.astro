@@ -1,0 +1,269 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const shopUrl = import.meta.env.EXTERNAL_SHOP_URL || '#';
+const price = import.meta.env.DECK_PRICE || '38';
+const currency = import.meta.env.DECK_CURRENCY || '€';
+---
+
+<section class="acquire parch-noise" id="acquire">
+  <div class="acquire-inner reveal">
+    <div class="ornament">
+      <span class="ornament-symbol">✦</span>
+    </div>
+
+    <p class="acquire-label section-label" style="color: rgba(122,30,0,.55)">{t('acquire.label')}</p>
+    <h2 class="acquire-title">{t('acquire.title')}</h2>
+    <p class="acquire-sub">{t('acquire.subtitle')}</p>
+
+    <div class="box-contents">
+      <div class="box-item">
+        <div class="box-icon">❖</div>
+        <div class="box-label">{t('acquire.item_cards')}</div>
+      </div>
+      <div class="box-item">
+        <div class="box-icon">⊞</div>
+        <div class="box-label">{t('acquire.item_games')}</div>
+      </div>
+      <div class="box-item">
+        <div class="box-icon">◈</div>
+        <div class="box-label">{t('acquire.item_box')}</div>
+      </div>
+      <div class="box-item">
+        <div class="box-icon">✦</div>
+        <div class="box-label">{t('acquire.item_letter')}</div>
+      </div>
+    </div>
+
+    <div class="price-row">
+      <span class="price-currency">{currency}</span>
+      <span class="price-main">{price}</span>
+    </div>
+    <p class="price-note">{t('acquire.price_note')}</p>
+
+    <div class="seal-wrap">
+      <div class="seal-btn-wrap">
+        <div class="seal-ring"></div>
+        <div class="seal-ring2"></div>
+        <a href={shopUrl} class="seal-btn" target="_blank" rel="noopener">
+          <span class="seal-symbol">✦</span>
+          <span class="seal-btn-main">{t('acquire.cta')}</span>
+          <span class="seal-btn-sub">{t('acquire.cta_sub')}</span>
+        </a>
+      </div>
+    </div>
+
+    <p class="acquire-fine">{t('acquire.fine_print')}</p>
+  </div>
+</section>
+
+<style>
+.acquire {
+  background-color: var(--parch);
+  background-image:
+    radial-gradient(ellipse at 10% 20%, rgba(122,30,0,.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(122,30,0,.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 60% 50%, rgba(122,30,0,.05) 0%, transparent 55%),
+    radial-gradient(ellipse at 30% 90%, rgba(12,7,1,.06) 0%, transparent 40%);
+  position: relative;
+  overflow: hidden;
+  padding: var(--section-pad-v) 4rem;
+}
+
+.acquire-inner {
+  max-width: 780px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.acquire-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  color: var(--ink);
+  margin-bottom: 1rem;
+  line-height: 1.15;
+}
+
+.acquire-sub {
+  font-style: italic;
+  color: rgba(12,7,1,.5);
+  font-size: 1rem;
+  margin-bottom: 3rem;
+}
+
+.box-contents {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin: 3rem 0;
+  flex-wrap: wrap;
+}
+
+.box-item {
+  text-align: center;
+}
+
+.box-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(122,30,0,.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto .7rem;
+  font-size: 1.1rem;
+  color: rgba(122,30,0,.6);
+}
+
+.box-label {
+  font-family: 'Cinzel', serif;
+  font-size: .58rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(12,7,1,.45);
+  line-height: 1.4;
+}
+
+.price-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.price-main {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 5.5rem;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.price-currency {
+  font-family: 'Cinzel', serif;
+  font-size: 1.8rem;
+  color: rgba(12,7,1,.4);
+  align-self: flex-start;
+  margin-top: .8rem;
+}
+
+.price-note {
+  font-size: .85rem;
+  font-style: italic;
+  color: rgba(12,7,1,.38);
+  margin-bottom: 2.5rem;
+}
+
+.seal-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0 2rem;
+}
+
+.seal-btn-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.seal-ring {
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  border: 1px solid rgba(122,30,0,.2);
+  animation: sealPulse 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.seal-ring2 {
+  position: absolute;
+  inset: -32px;
+  border-radius: 50%;
+  border: 1px solid rgba(122,30,0,.1);
+  animation: sealPulse 3s ease-in-out infinite .8s;
+  pointer-events: none;
+}
+
+.seal-btn {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: var(--rust);
+  border: 3px solid rgba(255,255,255,.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .3s, box-shadow .3s, background .3s;
+  box-shadow: 0 8px 40px rgba(122,30,0,.35), inset 0 1px 0 rgba(255,255,255,.1);
+}
+
+.seal-btn:hover {
+  transform: scale(1.06);
+  box-shadow: 0 16px 60px rgba(122,30,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
+  background: #9a2500;
+}
+
+.seal-btn-main {
+  font-family: 'Cinzel', serif;
+  font-size: .68rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--parch);
+  font-weight: 600;
+}
+
+.seal-btn-sub {
+  font-family: 'Cinzel', serif;
+  font-size: .5rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(237,222,176,.55);
+  margin-top: .3rem;
+}
+
+.seal-symbol {
+  font-size: 1.4rem;
+  color: rgba(237,222,176,.7);
+  margin-bottom: .3rem;
+}
+
+.acquire-fine {
+  font-size: .82rem;
+  font-style: italic;
+  color: rgba(12,7,1,.32);
+  margin-top: 2.5rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 960px) {
+  .acquire {
+    padding: 6rem 2rem;
+  }
+
+  .price-main {
+    font-size: 4rem;
+  }
+
+  .seal-btn {
+    width: 140px;
+    height: 140px;
+  }
+
+  .box-contents {
+    gap: 1.5rem;
+  }
+}
+</style>

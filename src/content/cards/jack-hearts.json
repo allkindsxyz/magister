@@ -1,0 +1,13 @@
+{
+  "id": "jack-hearts",
+  "suit": "hearts",
+  "value": "J",
+  "category": { "en": "Greek Myths", "ru": "Грэцкія Міфы" },
+  "title": { "en": "Apollo and Daphne", "ru": "Апалон і Дафна" },
+  "description": {
+    "en": "Visualisation of the myth about unhappy love between Apollo and Daphne, who was forced to turn into laurel tree to get rid of him.",
+    "ru": "Эпізод нерадуючы кахання Дафны у лаўровае дрэва, каб пазбегнуць пераследу Апалона."
+  },
+  "image": "/cards/lady.png",
+  "featured": false
+}

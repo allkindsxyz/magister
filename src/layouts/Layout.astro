@@ -1,0 +1,75 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang: 'en' | 'ru';
+  canonicalURL?: string;
+}
+
+const {
+  title = 'Magister Cards — Art Collectible Deck',
+  description = 'A collectible art deck where mythology, alchemy, and real historical figures unite in a single alternative universe.',
+  lang,
+  canonicalURL = Astro.url.href,
+} = Astro.props;
+
+const ogImage = '/og-image.jpg';
+---
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalURL} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:url" content={canonicalURL} />
+  <meta property="og:type" content="website" />
+
+  <!-- Alternate languages -->
+  <link rel="alternate" hreflang="en" href={Astro.url.href.replace(`/${lang}/`, '/en/')} />
+  <link rel="alternate" hreflang="ru" href={Astro.url.href.replace(`/${lang}/`, '/ru/')} />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Fonts preload -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+</head>
+<body>
+  <slot />
+
+  <script>
+    // Scroll reveal observer
+    const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('up');
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+    revealEls.forEach((el) => obs.observe(el));
+
+    // Nav scroll effect
+    const nav = document.getElementById('main-nav');
+    if (nav) {
+      window.addEventListener('scroll', () => {
+        nav.classList.toggle('scrolled', window.scrollY > 60);
+      }, { passive: true });
+    }
+  </script>
+</body>
+</html>

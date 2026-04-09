@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Hero from '../../components/Hero.astro';
+import QuoteStrip from '../../components/QuoteStrip.astro';
+import Gallery from '../../components/Gallery.astro';
+import Games from '../../components/Games.astro';
+import Artist from '../../components/Artist.astro';
+import Acquire from '../../components/Acquire.astro';
+import Footer from '../../components/Footer.astro';
+
+const lang = 'ru';
+---
+
+<Layout
+  lang={lang}
+  title="Magister Cards — Коллекционная арт-колода"
+  description="Коллекционная художественная колода, где мифология, алхимия и реальные исторические персонажи объединены в единую альтернативную вселенную. 54 уникальные карты."
+>
+  <Nav lang={lang} />
+  <Hero lang={lang} />
+  <QuoteStrip lang={lang} />
+  <Gallery lang={lang} />
+  <Games lang={lang} />
+  <Artist lang={lang} />
+  <Acquire lang={lang} />
+  <Footer lang={lang} />
+</Layout>

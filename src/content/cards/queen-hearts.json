@@ -1,0 +1,13 @@
+{
+  "id": "queen-hearts",
+  "suit": "hearts",
+  "value": "Q",
+  "category": { "en": "Famous People", "ru": "Знаменитості" },
+  "title": { "en": "Ann and Scarab", "ru": "Ганна і скарабей" },
+  "description": {
+    "en": "Dedicated to Anna Pavlova, one of the most talented ballerinas of the 20th century.",
+    "ru": "Карціна прысвечана Ганне Паўлавай — адной з найвялізарных балярын ХХ стагоддзя. Скарабей у якасці сімбала сонца і вяртання."
+  },
+  "image": "/cards/pilgrims.png",
+  "featured": true
+}

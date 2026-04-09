@@ -1,0 +1,11 @@
+{
+  "id": "game-02",
+  "number": "II",
+  "title": { "en": "The Market of Wonders", "ru": "Кірмаш цудаў" },
+  "description": {
+    "en": "Trade and bluff with the figures of the deck. Each figure has a price; each price is a negotiation; each negotiation is a small lie told politely.",
+    "ru": "Гандлюй і блефуй з фігурамі калоды. У кожнай фігуры ёсць цана; кожная цана — перамовы; кожныя перамовы — гэта маленькая хлусня, выказаная ветліва."
+  },
+  "players": "3 – 6",
+  "duration": { "en": "30 – 60 min", "ru": "30 – 60 мін" }
+}

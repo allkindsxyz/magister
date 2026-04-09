@@ -1,0 +1,710 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const allCards = await getCollection('cards');
+const cards = [
+  ...allCards.filter(c => c.data.featured),
+  ...allCards.filter(c => !c.data.featured),
+];
+
+const suitSymbols: Record<string, string> = {
+  spades: '♠',
+  hearts: '♥',
+  diamonds: '♦',
+  clubs: '♣',
+};
+---
+
+<section class="gallery" id="gallery">
+  <div class="gallery-header reveal">
+    <div>
+      <p class="section-label">{t('gallery.label')}</p>
+      <h2 class="gallery-title">{t('gallery.title')}</h2>
+    </div>
+    <div class="gallery-controls">
+      <p class="gallery-hint">{t('gallery.hint')}</p>
+      <div class="gallery-nav">
+        <button class="gallery-btn gallery-btn--prev" id="gallery-prev" aria-label="Previous cards">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="gallery-progress" id="gallery-progress">
+          <div class="gallery-progress-fill" id="gallery-progress-fill"></div>
+        </div>
+        <button class="gallery-btn gallery-btn--next" id="gallery-next" aria-label="Next cards">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carousel track -->
+  <div class="carousel-outer">
+    <div class="carousel-track" id="gallery-track">
+      {cards.map((card) => (
+        <div
+          class="carousel-card"
+          data-card={JSON.stringify({
+            id: card.data.id,
+            title: card.data.title[lang],
+            description: card.data.description[lang],
+            suit: card.data.suit,
+            value: card.data.value,
+            category: card.data.category[lang],
+            image: card.data.image,
+            suitSymbol: suitSymbols[card.data.suit],
+          })}
+          tabindex="0"
+          role="button"
+          aria-label={card.data.title[lang]}
+        >
+          <div class="carousel-card__inner">
+            <img
+              src={card.data.image}
+              alt={card.data.title[lang]}
+              class="carousel-card__img"
+              loading="lazy"
+              draggable="false"
+            />
+            <!-- Hover overlay -->
+            <div class="carousel-card__overlay">
+              <div class="carousel-card__overlay-inner">
+                <span class="carousel-card__suit">
+                  {suitSymbols[card.data.suit]}{card.data.value}
+                </span>
+                <span class="carousel-card__name">{card.data.title[lang]}</span>
+                <span class="carousel-card__cat">{card.data.category[lang]}</span>
+                <span class="carousel-card__btn">{t('gallery.open_btn')}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Edge fade masks -->
+    <div class="carousel-fade carousel-fade--left" aria-hidden="true"></div>
+    <div class="carousel-fade carousel-fade--right" aria-hidden="true"></div>
+  </div>
+
+  <!-- Drag hint -->
+  <p class="carousel-drag-hint" aria-hidden="true">← drag →</p>
+</section>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <div class="lb-inner">
+    <div class="lb-img-wrap">
+      <div class="lb-card">
+        <img id="lb-img" src="" alt="" />
+      </div>
+      <button class="lb-close" id="lb-close" aria-label={t('gallery.close')}>✕</button>
+    </div>
+    <div class="lb-text">
+      <div class="lb-suit-val" id="lb-suit-val"></div>
+      <h2 class="lb-title" id="lb-title"></h2>
+      <div class="lb-divider"></div>
+      <p class="lb-body" id="lb-body"></p>
+      <p class="lb-meta" id="lb-meta"></p>
+    </div>
+  </div>
+</div>
+
+<style>
+/* ── SECTION ──────────────────────────────── */
+.gallery {
+  padding: 8rem 0 6rem;
+  background: var(--dark2);
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-header {
+  padding: 0 6rem;
+  margin-bottom: 3.5rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.gallery-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  color: var(--parch);
+  line-height: 1.1;
+}
+
+.gallery-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+.gallery-hint {
+  font-size: .82rem;
+  font-style: italic;
+  color: var(--dimmer);
+  text-align: right;
+}
+
+.gallery-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.gallery-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(200,151,58,.25);
+  background: rgba(200,151,58,.05);
+  color: var(--dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color .25s, background .25s, color .25s;
+  flex-shrink: 0;
+}
+
+.gallery-btn:hover {
+  border-color: var(--gold);
+  background: rgba(200,151,58,.12);
+  color: var(--gold);
+}
+
+.gallery-btn:disabled {
+  opacity: .3;
+  cursor: default;
+}
+
+.gallery-progress {
+  width: 120px;
+  height: 2px;
+  background: rgba(200,151,58,.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.gallery-progress-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 2px;
+  transition: width .4s ease;
+  width: 0%;
+}
+
+/* ── CAROUSEL ─────────────────────────────── */
+.carousel-outer {
+  position: relative;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 1.5rem;
+  padding: 2rem 6rem 3rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  cursor: grab;
+  /* Hide scrollbar */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.carousel-track.is-dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+/* Edge fade */
+.carousel-fade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.carousel-fade--left {
+  left: 0;
+  background: linear-gradient(to right, var(--dark2), transparent);
+}
+
+.carousel-fade--right {
+  right: 0;
+  background: linear-gradient(to left, var(--dark2), transparent);
+}
+
+/* ── CARD ─────────────────────────────────── */
+.carousel-card {
+  flex: 0 0 auto;
+  width: clamp(180px, 22vw, 280px);
+  scroll-snap-align: start;
+  outline: none;
+}
+
+.carousel-card__inner {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,.5),
+    0 0 0 1px rgba(200,151,58,.15);
+  transition: box-shadow .4s, transform .4s cubic-bezier(.23,1,.32,1);
+  transform: translateY(0);
+}
+
+.carousel-card:hover .carousel-card__inner,
+.carousel-card:focus .carousel-card__inner {
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.7),
+    0 0 0 1px rgba(200,151,58,.4);
+  transform: translateY(-8px);
+}
+
+.carousel-card__img {
+  width: 100%;
+  display: block;
+  /* Show full card — no crop */
+  object-fit: contain;
+  background: var(--parch);
+  transition: filter .4s;
+  filter: contrast(1.04) sepia(8%);
+}
+
+.carousel-card:hover .carousel-card__img,
+.carousel-card:focus .carousel-card__img {
+  filter: contrast(1.08) sepia(3%);
+}
+
+/* Info overlay — slides up on hover */
+.carousel-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(12,7,1,.95) 0%,
+    rgba(12,7,1,.5) 45%,
+    transparent 75%
+  );
+  display: flex;
+  align-items: flex-end;
+  opacity: 0;
+  transition: opacity .35s;
+  pointer-events: none;
+}
+
+.carousel-card:hover .carousel-card__overlay,
+.carousel-card:focus .carousel-card__overlay {
+  opacity: 1;
+}
+
+.carousel-card__overlay-inner {
+  padding: 1.5rem 1.2rem 1.4rem;
+  transform: translateY(6px);
+  transition: transform .35s;
+  width: 100%;
+}
+
+.carousel-card:hover .carousel-card__overlay-inner,
+.carousel-card:focus .carousel-card__overlay-inner {
+  transform: translateY(0);
+}
+
+.carousel-card__suit {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.2rem;
+  color: rgba(200,151,58,.6);
+  display: block;
+  line-height: 1;
+  margin-bottom: .35rem;
+}
+
+.carousel-card__name {
+  font-family: 'Cinzel', serif;
+  font-size: .7rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--parch);
+  display: block;
+  margin-bottom: .25rem;
+  line-height: 1.3;
+}
+
+.carousel-card__cat {
+  font-size: .72rem;
+  font-style: italic;
+  color: var(--dim);
+  display: block;
+  margin-bottom: .5rem;
+}
+
+.carousel-card__btn {
+  font-family: 'Cinzel', serif;
+  font-size: .58rem;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border-bottom: 1px solid rgba(200,151,58,.4);
+  padding-bottom: 1px;
+  display: inline-block;
+}
+
+.carousel-drag-hint {
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: .52rem;
+  letter-spacing: .4em;
+  text-transform: uppercase;
+  color: rgba(200,151,58,.2);
+  margin-top: .5rem;
+  padding-bottom: .5rem;
+  transition: opacity .3s;
+}
+
+/* Hide drag hint after first drag */
+.carousel-drag-hint.hidden {
+  opacity: 0;
+}
+
+/* ── LIGHTBOX ─────────────────────────────── */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(8,4,0,.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s;
+  padding: 2rem;
+}
+
+.lightbox.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.lb-inner {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4rem;
+  max-width: 1000px;
+  width: 100%;
+  align-items: center;
+  transform: scale(.96);
+  transition: transform .4s;
+}
+
+.lightbox.open .lb-inner {
+  transform: scale(1);
+}
+
+.lb-img-wrap {
+  position: relative;
+}
+
+.lb-card {
+  width: clamp(200px, 25vw, 320px);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow:
+    0 40px 100px rgba(0,0,0,.9),
+    0 0 0 1px rgba(200,151,58,.35);
+  background: var(--parch);
+}
+
+.lb-card img {
+  width: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+.lb-close {
+  position: absolute;
+  top: -1.2rem;
+  right: -1.2rem;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid rgba(200,151,58,.25);
+  background: rgba(20,10,2,.95);
+  color: var(--dim);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color .2s, border-color .2s, transform .2s;
+  line-height: 1;
+}
+
+.lb-close:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+  transform: scale(1.1);
+}
+
+.lb-suit-val {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 4rem;
+  color: rgba(200,151,58,.1);
+  line-height: 1;
+  margin-bottom: -.6rem;
+}
+
+.lb-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.5rem, 2.8vw, 2.4rem);
+  color: var(--parch);
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.lb-divider {
+  width: 60px;
+  height: 1px;
+  background: rgba(200,151,58,.35);
+  margin-bottom: 1.8rem;
+}
+
+.lb-body {
+  font-size: .97rem;
+  font-style: italic;
+  color: var(--warm);
+  line-height: 1.85;
+  max-width: 420px;
+  margin-bottom: 1.5rem;
+}
+
+.lb-meta {
+  font-family: 'Cinzel', serif;
+  font-size: .58rem;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+}
+
+/* ── RESPONSIVE ──────────────────────────── */
+@media (max-width: 960px) {
+  .gallery-header {
+    padding: 0 2rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+  }
+
+  .gallery-controls {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .gallery-hint {
+    text-align: left;
+  }
+
+  .carousel-track {
+    padding: 1.5rem 2rem 2.5rem;
+    gap: 1rem;
+  }
+
+  .carousel-fade {
+    width: 40px;
+  }
+
+  .lb-inner {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .lb-card {
+    width: 55vw;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 580px) {
+  .carousel-card {
+    width: clamp(150px, 55vw, 220px);
+  }
+}
+</style>
+
+<script>
+  interface CardData {
+    id: string;
+    title: string;
+    description: string;
+    suit: string;
+    value: string;
+    category: string;
+    image: string;
+    suitSymbol: string;
+  }
+
+  // ── Lightbox ────────────────────────────────────────────
+  const lightbox = document.getElementById('lightbox')!;
+  const lbImg = document.getElementById('lb-img') as HTMLImageElement;
+  const lbSuitVal = document.getElementById('lb-suit-val')!;
+  const lbTitle = document.getElementById('lb-title')!;
+  const lbBody = document.getElementById('lb-body')!;
+  const lbMeta = document.getElementById('lb-meta')!;
+  const lbClose = document.getElementById('lb-close')!;
+
+  function openLightbox(data: CardData) {
+    lbImg.src = data.image;
+    lbImg.alt = data.title;
+    lbSuitVal.textContent = `${data.suitSymbol} ${data.value}`;
+    lbTitle.textContent = data.title;
+    lbBody.textContent = data.description;
+    lbMeta.textContent = `${data.category} · ${data.suit} · ${data.value}`;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    lbClose.focus();
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  lbClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+  });
+
+  // ── Cards click ─────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>('.carousel-card').forEach((item) => {
+    const raw = item.dataset.card;
+    if (!raw) return;
+    const data: CardData = JSON.parse(raw);
+
+    item.addEventListener('click', () => openLightbox(data));
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openLightbox(data);
+      }
+    });
+  });
+
+  // ── Carousel ─────────────────────────────────────────────
+  const track = document.getElementById('gallery-track') as HTMLElement;
+  const prevBtn = document.getElementById('gallery-prev') as HTMLButtonElement;
+  const nextBtn = document.getElementById('gallery-next') as HTMLButtonElement;
+  const progressFill = document.getElementById('gallery-progress-fill') as HTMLElement;
+  const dragHint = document.querySelector('.carousel-drag-hint') as HTMLElement;
+
+  function getCardWidth(): number {
+    const card = track.querySelector<HTMLElement>('.carousel-card');
+    if (!card) return 280;
+    return card.offsetWidth + 24; // card + gap
+  }
+
+  function getVisibleCount(): number {
+    const trackWidth = track.parentElement?.offsetWidth || window.innerWidth;
+    return Math.floor(trackWidth / getCardWidth());
+  }
+
+  function updateProgress() {
+    const maxScroll = track.scrollWidth - track.clientWidth;
+    if (maxScroll <= 0) {
+      progressFill.style.width = '100%';
+      return;
+    }
+    const ratio = track.scrollLeft / maxScroll;
+    progressFill.style.width = `${ratio * 100}%`;
+
+    prevBtn.disabled = track.scrollLeft <= 0;
+    nextBtn.disabled = track.scrollLeft >= maxScroll - 2;
+  }
+
+  prevBtn?.addEventListener('click', () => {
+    track.scrollBy({ left: -getCardWidth() * getVisibleCount(), behavior: 'smooth' });
+  });
+
+  nextBtn?.addEventListener('click', () => {
+    track.scrollBy({ left: getCardWidth() * getVisibleCount(), behavior: 'smooth' });
+  });
+
+  track.addEventListener('scroll', updateProgress, { passive: true });
+
+  // Init progress
+  updateProgress();
+
+  // ── Drag to scroll ──────────────────────────────────────
+  let isDragging = false;
+  let dragStartX = 0;
+  let scrollStartLeft = 0;
+  let hasDragged = false;
+
+  track.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    dragStartX = e.clientX;
+    scrollStartLeft = track.scrollLeft;
+    track.classList.add('is-dragging');
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStartX;
+    if (Math.abs(dx) > 5) hasDragged = true;
+    track.scrollLeft = scrollStartLeft - dx;
+  });
+
+  document.addEventListener('mouseup', () => {
+    if (isDragging) {
+      isDragging = false;
+      track.classList.remove('is-dragging');
+      // Prevent click if user dragged
+      if (hasDragged) {
+        const stopClick = (e: MouseEvent) => {
+          e.stopImmediatePropagation();
+          document.removeEventListener('click', stopClick, { capture: true });
+        };
+        document.addEventListener('click', stopClick, { capture: true });
+      }
+      hasDragged = false;
+    }
+  });
+
+  // Hide drag hint on first interaction
+  track.addEventListener('scroll', () => {
+    if (!dragHint.classList.contains('hidden')) {
+      dragHint.classList.add('hidden');
+    }
+  }, { once: true, passive: true });
+</script>

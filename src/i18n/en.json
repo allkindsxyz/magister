@@ -1,0 +1,80 @@
+{
+  "nav": {
+    "cards": "The Cards",
+    "games": "Games",
+    "artist": "The Artist",
+    "acquire": "Acquire the Deck"
+  },
+  "hero": {
+    "eyebrow": "54 cards · mythology · alchemy · history",
+    "title": "Magister",
+    "subtitle": "Cards",
+    "body": "A collectible art deck born from the author's world of Vasil Pochitsky, where mythology, alchemy, and real historical figures unite in a single alternative universe.",
+    "cta_primary": "Acquire the Deck",
+    "cta_secondary": "Explore the Cards"
+  },
+  "quote": {
+    "text": "These are not cards you simply play with. They are artifacts — each one carries a world within it, waiting to be understood.",
+    "attribution": "From the artist's notebook"
+  },
+  "gallery": {
+    "label": "The Collection",
+    "title": "Figures of the Deck",
+    "hint": "Hover to reveal. Click to enter.",
+    "open_btn": "Open figure →",
+    "close": "Close",
+    "suit_label": "Suit",
+    "value_label": "Value",
+    "category_label": "Category"
+  },
+  "games": {
+    "label": "Play & Ritual",
+    "title": "Games of the Deck",
+    "players_label": "Players",
+    "duration_label": "Duration"
+  },
+  "artist": {
+    "eyebrow": "The Hand Behind the Cards",
+    "name": "Vasil Pochitsky",
+    "quote": "I wanted to create a world that could exist in parallel with our own — where myth and history blend into something truer than either.",
+    "process_label": "Process & Origin",
+    "process_title": "Ink, concept, and alternative history",
+    "process_body_1": "Each card is a carefully researched window into a parallel universe where mythology, alchemy, and history coexist. The deck is both an art object and a playable game.",
+    "process_body_2": "The illustrations draw on deep research into historical figures, mythological archetypes, and alchemical symbolism — woven together into a coherent alternative world.",
+    "stat_year": "Year begun",
+    "stat_cards": "Cards in the deck",
+    "stat_worlds": "Thematic worlds"
+  },
+  "acquire": {
+    "label": "The Complete Deck",
+    "title": "Acquire your edition",
+    "subtitle": "Each deck is a numbered collectible art object.",
+    "contents_label": "What's in the deck",
+    "item_cards": "54 Art Cards",
+    "item_games": "Game Rules",
+    "item_box": "Collector's Box",
+    "item_letter": "Artist's Note",
+    "price_note": "Worldwide shipping available",
+    "cta": "Order Now",
+    "cta_sub": "Secure Payment",
+    "fine_print": "Cards are packed with care and shipped worldwide. Each deck is individually numbered."
+  },
+  "footer": {
+    "tagline": "An art deck for those who prefer their worlds layered, their history alternative, and their cards carrying meaning.",
+    "links": {
+      "about": "About",
+      "contact": "Contact",
+      "instagram": "Instagram",
+      "press": "Press"
+    },
+    "copy": "© 2024 Magister Cards · All illustrations by Vasil Pochitsky"
+  },
+  "suits": {
+    "spades": "Spades",
+    "hearts": "Hearts",
+    "diamonds": "Diamonds",
+    "clubs": "Clubs"
+  },
+  "scroll_hint": "Descend",
+  "lang_switch": "RU"
+}

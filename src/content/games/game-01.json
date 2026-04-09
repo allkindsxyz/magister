@@ -1,0 +1,11 @@
+{
+  "id": "game-01",
+  "number": "I",
+  "title": { "en": "The Procession", "ru": "Шэсце" },
+  "description": {
+    "en": "A trick-taking game for two to five players. The figures are ranked not by number but by the weight of what they carry. The rules are simple. The logic is not.",
+    "ru": "Карткавая гульня ў \"ўзяткі\" для двух-пяці гульцоў. Фігуры ранжуюцца не па ліку, а па вазе таго, што яны нясуць. Правілы простыя. Логіка — не."
+  },
+  "players": "2 – 5",
+  "duration": { "en": "40 – 90 min", "ru": "40 – 90 мін" }
+}

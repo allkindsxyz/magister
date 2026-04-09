@@ -1,0 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Cinzel:wght@400;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --ink:        #0c0701;
+  --parch:      #eddeb0;
+  --parch-dark: #d4bf88;
+  --gold:       #c8973a;
+  --gold2:      #e5b84e;
+  --rust:       #7a1e00;
+  --dark:       #130a02;
+  --dark2:      #1e0f04;
+  --dark3:      #2a1608;
+  --warm:       #f2e6c8;
+  --dim:        #b08c55;   /* raised from #9a7a48 for WCAG AA on dark */
+  --dimmer:     #6e5030;   /* raised from #5a3e20 */
+
+  /* Spacing */
+  --section-pad-v: 9rem;
+  --section-pad-h: 6rem;
+  --section-pad-h-sm: 2rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--dark);
+  color: var(--warm);
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 18px;
+  line-height: 1.8;
+  overflow-x: hidden;
+}
+
+/* ── TEXTURE UTILITIES ──────────────────────────────── */
+.tex::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' seed='5'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.045 0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23f)'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hatch {
+  background-image:
+    repeating-linear-gradient(45deg,  rgba(200,151,58,.028) 0, rgba(200,151,58,.028) 1px, transparent 0, transparent 9px),
+    repeating-linear-gradient(-45deg, rgba(200,151,58,.028) 0, rgba(200,151,58,.028) 1px, transparent 0, transparent 9px);
+}
+
+.parch-noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' seed='8'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.4 0 0 0 0 0.25 0 0 0 0 0.1 0 0 0 0.06 0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── TYPOGRAPHY ─────────────────────────────────────── */
+.font-display {
+  font-family: 'Cinzel Decorative', serif;
+}
+
+.font-nav {
+  font-family: 'Cinzel', serif;
+}
+
+.font-body {
+  font-family: 'IM Fell English', Georgia, serif;
+}
+
+/* ── BUTTONS ────────────────────────────────────────── */
+.btn {
+  font-family: 'Cinzel', serif;
+  font-size: .7rem;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  transition: transform .25s, box-shadow .25s, background .25s, color .25s;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+}
+
+.btn-gold {
+  padding: 1.1rem 2.8rem;
+  background: var(--gold);
+  color: var(--ink);
+  font-weight: 700;
+  clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+}
+
+.btn-gold:hover {
+  background: var(--gold2);
+  box-shadow: 0 12px 40px rgba(200,151,58,.3);
+}
+
+.btn-outline {
+  padding: 1.1rem 2.8rem;
+  background: transparent;
+  color: var(--dim);
+  border: 1px solid rgba(200,151,58,.28);
+  clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+}
+
+.btn-outline:hover {
+  color: var(--gold2);
+  border-color: var(--gold2);
+}
+
+/* ── SCROLL REVEAL ──────────────────────────────────── */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity .9s ease, transform .9s ease;
+}
+
+.reveal.up {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity .9s ease, transform .9s ease;
+}
+
+.reveal-left.up {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity .9s ease, transform .9s ease;
+}
+
+.reveal-right.up {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── CARD ANIMATIONS ────────────────────────────────── */
+@keyframes cardFloat {
+  0%, 100% { transform: rotate(var(--card-rotate, 4deg)) translateY(0); }
+  50%       { transform: rotate(var(--card-rotate, 4deg)) translateY(-16px); }
+}
+
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeScale {
+  from { opacity: 0; transform: scale(.92) rotate(var(--card-rotate, 4deg)); }
+  to   { opacity: 1; transform: scale(1) rotate(var(--card-rotate, 4deg)); }
+}
+
+@keyframes sealPulse {
+  0%, 100% { opacity: .5; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.04); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: .4; }
+  50%      { opacity: 1; }
+}
+
+/* ── SECTION LABEL ──────────────────────────────────── */
+.section-label {
+  font-family: 'Cinzel', serif;
+  font-size: .62rem;
+  letter-spacing: .5em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+/* ── ORNAMENT DIVIDER ───────────────────────────────── */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  justify-content: center;
+}
+
+.ornament::before,
+.ornament::after {
+  content: '';
+  flex: 1;
+  max-width: 140px;
+  height: 1px;
+  background: rgba(122,30,0,.25);
+}
+
+.ornament-symbol {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1rem;
+  color: rgba(122,30,0,.4);
+}
+
+/* ── CARD ITEM (shared) ─────────────────────────────── */
+.card-img {
+  filter: contrast(1.06) sepia(10%);
+  display: block;
+  width: 100%;
+}

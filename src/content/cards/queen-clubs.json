@@ -1,0 +1,13 @@
+{
+  "id": "queen-clubs",
+  "suit": "clubs",
+  "value": "Q",
+  "category": { "en": "Knights Templars", "ru": "Рыцары-тамплієры" },
+  "title": { "en": "Templar's Hunt", "ru": "Паляванне Тамплієра" },
+  "description": {
+    "en": "Dedicated to Jacques de Molay, the last Grand Master of the Knights Templar, the symbolism of whom was inherited by the Freemasons as the 'widow's son'.",
+    "ru": "Прысвечана Жаку дэ Молэ, апошняму Вялікаму магістру Ордэна Тамплієраў, сімвалізм якога быў засвоены масонамі ў вобразе «сына ўдавы»."
+  },
+  "image": "/cards/lady.png",
+  "featured": true
+}

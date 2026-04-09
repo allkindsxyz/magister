@@ -1,0 +1,13 @@
+{
+  "id": "ten-hearts",
+  "suit": "hearts",
+  "value": "10",
+  "category": { "en": "Famous People", "ru": "Знаменитості" },
+  "title": { "en": "The Wasp's Flight", "ru": "Палёт асы" },
+  "description": {
+    "en": "Napoleon Bonaparte took the wasp as his emblem.",
+    "ru": "Напалеон Банапарт выкарыстоўваў сімбал восы у якасці эмблемы."
+  },
+  "image": "/cards/bearer.png",
+  "featured": false
+}

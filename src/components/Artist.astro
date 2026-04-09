@@ -1,0 +1,176 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="artist" id="artist">
+  <div class="artist-parch parch-noise reveal-left">
+    <div class="artist-parch-inner">
+      <p class="artist-eyebrow">{t('artist.eyebrow')}</p>
+      <h2 class="artist-name">{t('artist.name')}</h2>
+      <blockquote class="artist-quote">
+        "{t('artist.quote')}"
+      </blockquote>
+      <div class="artist-signature" aria-hidden="true">V. Pochitsky</div>
+    </div>
+  </div>
+
+  <div class="artist-dark reveal-right">
+    <p class="artist-dark-label section-label">{t('artist.process_label')}</p>
+    <h3 class="artist-dark-title">{t('artist.process_title')}</h3>
+    <p class="artist-dark-body">{t('artist.process_body_1')}</p>
+    <p class="artist-dark-body">{t('artist.process_body_2')}</p>
+    <div class="artist-details">
+      <div class="artist-detail">
+        <span class="artist-detail-num">2020</span>
+        <span class="artist-detail-label">{t('artist.stat_year')}</span>
+      </div>
+      <div class="artist-detail">
+        <span class="artist-detail-num">54</span>
+        <span class="artist-detail-label">{t('artist.stat_cards')}</span>
+      </div>
+      <div class="artist-detail">
+        <span class="artist-detail-num">5+</span>
+        <span class="artist-detail-label">{t('artist.stat_worlds')}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.artist {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 70vh;
+  position: relative;
+}
+
+.artist-parch {
+  background-color: var(--parch);
+  background-image:
+    radial-gradient(ellipse at 20% 70%, rgba(122,30,0,.09) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(122,30,0,.06) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 50%, rgba(122,30,0,.04) 0%, transparent 60%);
+  padding: 7rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.artist-parch-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.artist-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: .58rem;
+  letter-spacing: .5em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 1.5rem;
+  opacity: .7;
+}
+
+.artist-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 2rem;
+}
+
+.artist-quote {
+  font-size: 1.05rem;
+  font-style: italic;
+  color: rgba(12,7,1,.65);
+  line-height: 1.8;
+  border-left: 2px solid rgba(122,30,0,.3);
+  padding-left: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.artist-signature {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.8rem;
+  color: rgba(122,30,0,.45);
+  transform: rotate(-3deg);
+  display: inline-block;
+  margin-top: .5rem;
+}
+
+.artist-dark {
+  background: var(--dark3);
+  padding: 7rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.artist-dark-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+  color: var(--parch);
+  margin-bottom: 1.5rem;
+  line-height: 1.3;
+}
+
+.artist-dark-body {
+  color: var(--dim);
+  font-style: italic;
+  font-size: .97rem;
+  line-height: 1.85;
+  margin-bottom: 1.2rem;
+}
+
+.artist-details {
+  display: flex;
+  gap: 2.5rem;
+  margin-top: 2.5rem;
+  flex-wrap: wrap;
+}
+
+.artist-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.artist-detail-num {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2rem;
+  color: var(--gold);
+  line-height: 1;
+}
+
+.artist-detail-label {
+  font-family: 'Cinzel', serif;
+  font-size: .55rem;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  margin-top: .3rem;
+}
+
+@media (max-width: 960px) {
+  .artist {
+    grid-template-columns: 1fr;
+  }
+
+  .artist-parch {
+    padding: 5rem 2.5rem;
+  }
+
+  .artist-dark {
+    padding: 5rem 2.5rem;
+  }
+}
+</style>
