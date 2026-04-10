@@ -10,10 +10,14 @@
     "build": "astro build",
     "start": "node ./dist/server/entry.mjs",
     "preview": "astro preview",
+    "optimize:images": "node scripts/optimize-public-images.mjs",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/node": "^10.0.4",
     "astro": "^6.1.5"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
   }
 }
