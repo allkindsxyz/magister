@@ -26,6 +26,10 @@ const slides = [
         <header class="acquire-head">
           <p class="acquire-label section-label">{t('acquire.label')}</p>
           <h2 class="acquire-title" id="acquire-heading">{t('acquire.title')}</h2>
+          <p class="edition-badge" aria-label={t('acquire.edition_badge')}>
+            <span class="edition-badge__dot" aria-hidden="true">◆</span>
+            {t('acquire.edition_badge')}
+          </p>
           <p class="acquire-sub">{t('acquire.subtitle')}</p>
         </header>
 
@@ -171,6 +175,28 @@ const slides = [
   line-height: 1.12;
   letter-spacing: 0.02em;
   text-wrap: balance;
+}
+
+.edition-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  font-family: 'Cinzel', serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold, #b8860b);
+  background: rgba(184, 134, 11, 0.08);
+  border: 1px solid rgba(184, 134, 11, 0.28);
+  border-radius: 2px;
+  padding: 0.3em 0.75em 0.28em;
+  margin: 0 0 1rem;
+  line-height: 1;
+}
+
+.edition-badge__dot {
+  font-size: 0.5em;
+  color: var(--gold, #b8860b);
 }
 
 .acquire-sub {

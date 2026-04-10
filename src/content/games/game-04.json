@@ -4,8 +4,8 @@
   "title": { "en": "The Duel", "ru": "Дуэль" },
   "description": {
     "en": "The classic duel. Fast, tense, played in silence. Know when your figure can be matched. Know when to walk away. Walking away is sometimes the only move.",
-    "ru": "Класічная дуэль. Хуткая, напружаная, праходзіць у цішыні. Ведай, калі тваю фігуру можна перабіць. Ведай, калі адступіць. Часам адступіць — гэта адзіны ход."
+    "ru": "Классическая дуэль. Быстрая, напряжённая, в тишине. Знай, когда твою фигуру можно перебить. Знай, когда отступить. Отступить — иногда единственный ход."
   },
   "players": "2",
-  "duration": { "en": "15 – 30 min", "ru": "15 – 30 мін" }
+  "duration": { "en": "15 – 30 min", "ru": "15–30 мин" }
 }

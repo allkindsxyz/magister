@@ -3,12 +3,12 @@
     "worlds": "Four Worlds",
     "cards": "The Cards",
     "games": "Games",
-    "artist": "Authors",
+    "artist": "The Makers",
     "acquire": "Acquire the Deck"
   },
   "hero": {
     "deck_next": "Show next card",
-    "eyebrow": "54 cards · mythology · alchemy · history",
+    "eyebrow": "54 cards · four worlds · one alternative universe",
     "title": "Magister",
     "subtitle": "Cards",
     "body": "A collectible art card deck that opens a gateway into an alternative mythology where alchemy, history, and modernity intertwine. Each card is a fragment of a world, revealing new meanings through play and interpretation.",
@@ -16,11 +16,11 @@
     "cta_secondary": "Explore the Cards"
   },
   "quote": {
-    "text": "These are not cards you simply play with. They are artifacts — each one carries a world within it, waiting to be understood.",
+    "text": "These are not playing cards. They are artifacts — each one carries a world. Some worlds take time.",
     "attribution": "From the authors' notes"
   },
   "worlds_section": {
-    "label": "The Deck’s Mythology",
+    "label": "The Deck's Mythology",
     "title": "Four worlds in fifty-four faces",
     "lead": "Magister is a full 54-card art deck. Suits are not decorative trim — each one is a realm with its own laws, cast, and symbolism. Ranks and houses are woven into the painting itself: you read the card by looking, not by corner indices.",
     "footnote": "Every illustration is a small narrative — portrait, emblem, and historical echo at once. Text on the site expands the frame; the cardboard remains the primary grimoire."
@@ -45,8 +45,8 @@
   },
   "gallery": {
     "label": "The Collection",
-    "title": "Figures of the Deck",
-    "hint": "Hover to reveal. Click to enter.",
+    "title": "The Fifty-Four",
+    "hint": "Click any card to open",
     "open_btn": "Open figure →",
     "close": "Close",
     "suit_label": "Suit",
@@ -62,10 +62,10 @@
   },
   "artist": {
     "eyebrow": "Authors",
-    "title": "A creative union",
-    "lead": "Magister Cards is the work of Magister — Alexander Zhilchik — and Dr.Klein, Vasil Pochitsky’s artistic pseudonym.",
+    "title": "Two obsessions, one deck",
+    "lead": "Magister Cards is the work of Magister — Alexander Zhilchik — and Dr.Klein, Vasil Pochitsky's artistic pseudonym.",
     "magister_heading": "Magister · Alexander Zhilchik",
-    "magister_bio": "Creator of the characters and the deck’s mythos: businessman, philosopher, philanthropist — and, in his own way, a mystical figure.",
+    "magister_bio": "Creator of the characters and the deck's mythos: businessman, philosopher, philanthropist — and, in his own way, a mystical figure.",
     "drklein_heading": "Dr.Klein · Vasil Pochitsky",
     "drklein_bio": "Painter and illustrator. Dr.Klein is how Pochitsky signs this body of work — the hand behind all fifty-four images.",
     "drklein_link": "Arthive profile",
@@ -79,33 +79,34 @@
   "acquire": {
     "label": "The Complete Deck",
     "title": "Acquire your edition",
-    "subtitle": "Numbered edition: main deck, reference deck, and grimoire — housed in a suede-wrapped collector’s box.",
-    "contents_label": "What’s in the set",
+    "subtitle": "A numbered collector's set: the art deck, the decoder, the grimoire — sealed in suede.",
+    "edition_badge": "Limited edition · 500 copies",
+    "contents_label": "What's in the set",
     "item_main_deck": "54 art cards — the playable Magister deck",
     "item_reference_deck": "Companion deck — decodings & short card descriptions",
     "item_grimoire": "Grimoire — worlds & full card lore",
-    "item_box": "Suede-wrapped collector’s box",
+    "item_box": "Suede-wrapped collector's box",
     "shipping_highlight": "Free shipping — United States & EU",
     "shipping_sub": "Other regions: rates shown at checkout.",
-    "price_note": "VAT included where applicable · numbered edition",
-    "cta": "Buy now",
+    "price_note": "VAT included · limited to 500 numbered copies",
+    "cta": "Order edition",
     "cta_sub": "Secure checkout",
-    "fine_print": "Carefully packed. Each set is individually numbered.",
+    "fine_print": "Carefully packed. Each set is hand-numbered.",
     "packaging_alt": "Magister Cards collector box in black suede with gold foil lettering and ornate seal.",
-    "packaging_alt_open": "Open collector’s box: two Magister decks in velvet lining with gold foil and gemstone clasp.",
+    "packaging_alt_open": "Open collector's box: two Magister decks in velvet lining with gold foil and gemstone clasp.",
     "carousel_hint": "Click photo for next",
     "carousel_dots_label": "Edition photos",
     "carousel_slide": "Photo"
   },
   "footer": {
-    "tagline": "An art deck for those who prefer their worlds layered, their history alternative, and their cards carrying meaning.",
+    "tagline": "For those who collect worlds, not cards.",
     "links": {
       "about": "About",
       "contact": "Contact",
       "instagram": "Instagram",
       "press": "Press"
     },
-    "copy": "© 2024 Magister Cards · Concept: Alexander Zhilchik (Magister) · Illustration: Vasil Pochitsky (Dr.Klein)"
+    "copy": "© 2026 Magister Cards · Concept: Alexander Zhilchik (Magister) · Illustration: Vasil Pochitsky (Dr.Klein)"
   },
   "suits": {
     "spades": "Spades",
