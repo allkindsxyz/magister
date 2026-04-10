@@ -6,6 +6,7 @@
     "acquire": "Купить колоду"
   },
   "hero": {
+    "deck_next": "Следующая карта",
     "eyebrow": "54 карты · мифология · алхимия · история",
     "title": "Magister",
     "subtitle": "Cards",

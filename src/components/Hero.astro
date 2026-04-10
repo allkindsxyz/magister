@@ -10,12 +10,12 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-// Get all cards to populate the hero deck
 const allCards = await getCollection('cards');
 const deckCards = [
   ...allCards.filter(c => c.data.featured),
   ...allCards.filter(c => !c.data.featured),
 ].slice(0, 6);
+const nBack = Math.max(0, deckCards.length - 1);
 ---
 
 <section class="hero hatch" id="hero">
@@ -38,62 +38,48 @@ const deckCards = [
 
   <div class="hero-right">
     <div class="hero-deck" id="hero-deck">
-      <!-- Stack of back cards (visible) -->
-      <div class="deck-stack" id="deck-stack">
-        {deckCards.slice(1).map((card, i) => (
-          <div
-            class="deck-card deck-card--back"
-            data-index={i + 1}
-            style={`
-              --stack-offset: ${(i + 1) * 10}px;
-              --stack-rotate: ${(i + 1) * -3 + 2}deg;
-              --stack-z: ${deckCards.length - i - 1};
-              --stack-brightness: ${1 - (i + 1) * 0.12};
-            `}
-          >
-            <img src={card.data.image} alt={card.data.title[lang]} />
-          </div>
-        ))}
+      <div class="deck-stack" id="deck-stack" aria-hidden="true">
+        {Array.from({ length: nBack }).map((_, i) => {
+          const card = deckCards[i + 1];
+          return (
+            <div
+              class="deck-card deck-card--back"
+              data-depth={i + 1}
+              style={`
+                --stack-offset: ${(i + 1) * 10}px;
+                --stack-rotate: ${(i + 1) * -3 + 2}deg;
+                --stack-z: ${nBack - i};
+              `}
+            >
+              {card && (
+                <img src={card.data.image} alt="" loading="eager" decoding="async" />
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      <!-- Active front card -->
-      <div class="deck-card deck-card--front" id="deck-front">
+      <div
+        class="deck-card deck-card--front"
+        id="deck-front"
+        role={deckCards.length > 1 ? 'button' : undefined}
+        tabindex={deckCards.length > 1 ? 0 : -1}
+        aria-label={deckCards.length > 1 ? t('hero.deck_next') : undefined}
+        data-interactive={deckCards.length > 1 ? 'true' : 'false'}
+      >
         <img
           id="deck-front-img"
           src={deckCards[0]?.data.image}
           alt={deckCards[0]?.data.title[lang]}
+          loading="eager"
+          decoding="async"
+          draggable="false"
         />
       </div>
 
       <div class="hero-card-shadow"></div>
     </div>
 
-    <!-- Card navigation -->
-    <div class="deck-nav">
-      <button class="deck-btn deck-btn--prev" id="deck-prev" aria-label="Previous card">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-
-      <div class="deck-dots" id="deck-dots">
-        {deckCards.map((_, i) => (
-          <button
-            class={`deck-dot ${i === 0 ? 'active' : ''}`}
-            data-dot={i}
-            aria-label={`Card ${i + 1}`}
-          ></button>
-        ))}
-      </div>
-
-      <button class="deck-btn deck-btn--next" id="deck-next" aria-label="Next card">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </div>
-
-    <!-- Current card title -->
     <p class="deck-caption" id="deck-caption">{deckCards[0]?.data.title[lang]}</p>
   </div>
 
@@ -103,7 +89,6 @@ const deckCards = [
   </div>
 </section>
 
-<!-- Card data for JS -->
 <script
   id="hero-card-data"
   type="application/json"
@@ -120,9 +105,10 @@ const deckCards = [
   min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  align-items: center;
+  align-items: start;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
   padding-top: 5rem;
 }
 
@@ -133,7 +119,7 @@ const deckCards = [
   border-radius: 50%;
   background: radial-gradient(circle, rgba(200,151,58,.07) 0%, transparent 70%);
   right: -50px;
-  top: 50%;
+  top: 42%;
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -145,13 +131,13 @@ const deckCards = [
   border-radius: 50%;
   background: radial-gradient(circle, rgba(122,30,0,.1) 0%, transparent 70%);
   left: 0;
-  top: 15%;
+  top: 12%;
   pointer-events: none;
 }
 
-/* ── LEFT COLUMN ──────────────────────────── */
+/* Left column — raised so eyebrow aligns with top of card */
 .hero-left {
-  padding: 10rem 4rem 6rem 6rem;
+  padding: 5.25rem 4rem 6rem 6rem;
   position: relative;
   z-index: 2;
 }
@@ -162,7 +148,7 @@ const deckCards = [
   font-weight: 700;
   color: rgba(200,151,58,.05);
   position: absolute;
-  top: 4rem;
+  top: 2.5rem;
   left: 2rem;
   line-height: 1;
   pointer-events: none;
@@ -175,7 +161,7 @@ const deckCards = [
   letter-spacing: .55em;
   text-transform: uppercase;
   color: var(--gold);
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
   opacity: 0;
   animation: fadeLeft 1s ease .2s forwards;
 }
@@ -190,7 +176,6 @@ const deckCards = [
   margin-bottom: 2rem;
   opacity: 0;
   animation: fadeLeft 1.1s ease .35s forwards;
-  /* Stay within left column — no overflow */
   max-width: 100%;
 }
 
@@ -221,24 +206,23 @@ const deckCards = [
   animation: fadeLeft 1s ease .65s forwards;
 }
 
-/* ── RIGHT COLUMN ─────────────────────────── */
+/* Right column — top aligned with eyebrow / card top */
 .hero-right {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 8rem 5rem 6rem 2rem;
+  justify-content: flex-start;
+  padding: 5.1rem 5rem 5rem 2rem;
   position: relative;
   z-index: 3;
   opacity: 0;
   animation: fadeLeft 1.3s ease .5s forwards;
 }
 
-/* ── DECK ─────────────────────────────────── */
 .hero-deck {
   position: relative;
   width: clamp(240px, 28vw, 360px);
-  cursor: pointer;
+  overflow: visible;
 }
 
 .hero-card-shadow {
@@ -253,7 +237,7 @@ const deckCards = [
   pointer-events: none;
 }
 
-/* Back cards in the stack */
+/* Stack: fixed geometry, only img src changes — no opacity flicker */
 .deck-card--back {
   position: absolute;
   top: 0;
@@ -261,28 +245,37 @@ const deckCards = [
   width: 100%;
   border-radius: 8px;
   overflow: hidden;
-  transform:
-    translateX(var(--stack-offset))
-    rotate(var(--stack-rotate));
+  transform: translateX(var(--stack-offset)) rotate(var(--stack-rotate));
   z-index: var(--stack-z);
   box-shadow:
     0 20px 60px rgba(0,0,0,.6),
     0 0 0 1px rgba(200,151,58,.18);
-  filter: brightness(var(--stack-brightness));
-  transition: transform .5s cubic-bezier(.23,1,.32,1), filter .5s;
   pointer-events: none;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
+
+.deck-card--back:nth-child(1) { filter: brightness(0.94); }
+.deck-card--back:nth-child(2) { filter: brightness(0.88); }
+.deck-card--back:nth-child(3) { filter: brightness(0.82); }
+.deck-card--back:nth-child(4) { filter: brightness(0.76); }
+.deck-card--back:nth-child(5) { filter: brightness(0.70); }
 
 .deck-card--back img {
   width: 100%;
   display: block;
-  filter: sepia(12%) contrast(1.05);
+  filter: sepia(10%) contrast(1.04);
 }
 
-/* Front (active) card */
+/*
+ * Front card: no infinite float (it fought transitions/hover and caused glitches).
+ * Exit / enter = dedicated @keyframes + animationend (with timeout fallback).
+ */
 .deck-card--front {
   position: relative;
   z-index: 10;
+  /* Стабильная геометрия — без подпрыгивания при смене decode/img */
+  aspect-ratio: 93 / 133;
   border-radius: 8px;
   overflow: hidden;
   box-shadow:
@@ -290,92 +283,81 @@ const deckCards = [
     0 0 0 1px rgba(200,151,58,.4),
     inset 0 0 0 1px rgba(255,255,255,.05);
   transform: rotate(-1deg);
-  transition: transform .5s cubic-bezier(.23,1,.32,1), box-shadow .5s;
-  animation: cardFloat 6s ease-in-out 1.8s infinite;
+  opacity: 1;
+  outline: none;
+  backface-visibility: hidden;
 }
 
-.deck-card--front:hover {
-  transform: rotate(0deg) scale(1.02);
+.deck-card--front[data-interactive='true'] {
+  cursor: pointer;
+}
+
+.deck-card--front[data-interactive='true']:focus-visible {
   box-shadow:
-    0 50px 120px rgba(0,0,0,.85),
-    0 0 0 1px rgba(200,151,58,.6),
-    inset 0 0 0 1px rgba(255,255,255,.08);
+    0 40px 100px rgba(0,0,0,.8),
+    0 0 0 2px rgba(200,151,58,.55),
+    inset 0 0 0 1px rgba(255,255,255,.05);
+}
+
+/* Idle hover: shadow only — never touch transform (avoids fighting keyframes) */
+.deck-card--front:not(.is-busy)[data-interactive='true']:hover {
+  box-shadow:
+    0 48px 110px rgba(0,0,0,.82),
+    0 0 0 1px rgba(200,151,58,.55),
+    inset 0 0 0 1px rgba(255,255,255,.06);
+}
+
+.deck-card--front.is-busy {
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Next: current card slides down off the deck */
+.deck-card--front.anim-exit-next {
+  animation: heroExitNext 0.44s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+}
+
+/* Prev: current card slides up off the deck */
+.deck-card--front.anim-exit-prev {
+  animation: heroExitPrev 0.44s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+}
+
+/* Пока меняем src: невидимо, без лишней анимации появления (она давала «дёрганье») */
+.deck-card--front.swap-phase {
+  animation: none !important;
+  opacity: 0 !important;
+  transform: rotate(-1deg) translateY(0) scale(1) !important;
 }
 
 .deck-card--front img {
   width: 100%;
+  height: 100%;
   display: block;
+  object-fit: contain;
+  object-position: center top;
   filter: contrast(1.06) sepia(8%);
 }
 
-/* Card flip animation */
-.deck-card--front.is-flipping {
-  animation: cardFlip .5s ease forwards !important;
+@keyframes heroExitNext {
+  from {
+    transform: rotate(-1deg) translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: rotate(-2deg) translateY(112%) scale(0.93);
+    opacity: 0;
+  }
 }
 
-@keyframes cardFloat {
-  0%, 100% { transform: rotate(-1deg) translateY(0); }
-  50%       { transform: rotate(-1deg) translateY(-12px); }
-}
-
-@keyframes cardFlip {
-  0%   { transform: rotate(-1deg) translateY(0) scale(1); }
-  40%  { transform: rotate(-1deg) translateY(-20px) scale(0.96) rotateY(90deg); }
-  60%  { transform: rotate(-1deg) translateY(-20px) scale(0.96) rotateY(-90deg); }
-  100% { transform: rotate(-1deg) translateY(0) scale(1); }
-}
-
-/* ── NAV & DOTS ────────────────────────────── */
-.deck-nav {
-  display: flex;
-  align-items: center;
-  gap: 1.2rem;
-  margin-top: 2.2rem;
-}
-
-.deck-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid rgba(200,151,58,.25);
-  background: rgba(200,151,58,.05);
-  color: var(--dim);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: border-color .25s, background .25s, color .25s, transform .2s;
-  flex-shrink: 0;
-}
-
-.deck-btn:hover {
-  border-color: var(--gold);
-  background: rgba(200,151,58,.12);
-  color: var(--gold);
-  transform: scale(1.08);
-}
-
-.deck-dots {
-  display: flex;
-  gap: .6rem;
-  align-items: center;
-}
-
-.deck-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  border: 1px solid rgba(200,151,58,.35);
-  background: transparent;
-  cursor: pointer;
-  transition: background .3s, border-color .3s, transform .3s;
-  padding: 0;
-}
-
-.deck-dot.active {
-  background: var(--gold);
-  border-color: var(--gold);
-  transform: scale(1.3);
+@keyframes heroExitPrev {
+  from {
+    transform: rotate(-1deg) translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: rotate(2deg) translateY(-112%) scale(0.93);
+    opacity: 0;
+  }
 }
 
 .deck-caption {
@@ -384,13 +366,12 @@ const deckCards = [
   letter-spacing: .3em;
   text-transform: uppercase;
   color: var(--dimmer);
-  margin-top: 1rem;
+  margin-top: 1.35rem;
   text-align: center;
   min-height: 1.2em;
-  transition: opacity .3s;
+  transition: opacity .25s ease;
 }
 
-/* ── SCROLL HINT ───────────────────────────── */
 .scroll-hint {
   position: absolute;
   bottom: 2.5rem;
@@ -407,7 +388,6 @@ const deckCards = [
   gap: .7rem;
   opacity: 0;
   animation: fadeLeft 1s ease 1.6s forwards;
-  /* Don't overlap CTA buttons */
   pointer-events: none;
 }
 
@@ -418,7 +398,6 @@ const deckCards = [
   animation: scrollPulse 2s ease-in-out infinite;
 }
 
-/* ── RESPONSIVE ────────────────────────────── */
 @media (max-width: 960px) {
   .hero {
     grid-template-columns: 1fr;
@@ -469,91 +448,141 @@ const deckCards = [
     if (!dataEl) return;
 
     const cards: Array<{ image: string; title: string }> = JSON.parse(dataEl.textContent || '[]');
-    if (cards.length < 2) return;
+    if (cards.length < 1) return;
 
+    const n = cards.length;
     const frontCard = document.getElementById('deck-front') as HTMLElement;
     const frontImg = document.getElementById('deck-front-img') as HTMLImageElement;
     const captionEl = document.getElementById('deck-caption') as HTMLElement;
-    const dots = document.querySelectorAll<HTMLButtonElement>('.deck-dot');
     const backCards = document.querySelectorAll<HTMLElement>('.deck-card--back');
-    const prevBtn = document.getElementById('deck-prev') as HTMLButtonElement;
-    const nextBtn = document.getElementById('deck-next') as HTMLButtonElement;
 
     let current = 0;
-    let isAnimating = false;
+    let busy = false;
 
-    function updateBackCards(newIndex: number) {
-      // Rearrange back cards so they reflect the new deck order
-      backCards.forEach((card, i) => {
-        const dataIndex = parseInt(card.dataset.index || '1', 10);
-        const relativePos = ((dataIndex - newIndex - 1) + cards.length) % cards.length;
-        const visible = relativePos < backCards.length;
-        card.style.opacity = visible ? '1' : '0';
-        card.style.setProperty('--stack-offset', `${(relativePos + 1) * 10}px`);
-        card.style.setProperty('--stack-rotate', `${(relativePos + 1) * -3 + 2}deg`);
-        card.style.setProperty('--stack-z', String(backCards.length - relativePos));
-        card.style.setProperty('--stack-brightness', String(1 - (relativePos + 1) * 0.12));
+    const EXIT_NAME_NEXT = 'heroExitNext';
+    const EXIT_NAME_PREV = 'heroExitPrev';
+    const EXIT_MS = 500;
+
+    function syncStackImages(index: number) {
+      backCards.forEach((el, i) => {
+        const depth = i + 1;
+        const img = el.querySelector('img');
+        if (!img) return;
+        const idx = (index + depth) % n;
+        if (img.getAttribute('src') !== cards[idx].image) {
+          img.src = cards[idx].image;
+        }
+        img.alt = cards[idx].title;
       });
     }
 
-    function goTo(index: number) {
-      if (isAnimating || index === current) return;
-      isAnimating = true;
-
-      const newIndex = (index + cards.length) % cards.length;
-
-      // Flip animation on front card
-      frontCard.classList.add('is-flipping');
-
-      setTimeout(() => {
-        frontImg.src = cards[newIndex].image;
-        frontImg.alt = cards[newIndex].title;
-      }, 200); // swap at mid-flip
-
-      setTimeout(() => {
-        frontCard.classList.remove('is-flipping');
-        captionEl.style.opacity = '0';
-        setTimeout(() => {
-          captionEl.textContent = cards[newIndex].title;
-          captionEl.style.opacity = '1';
-        }, 150);
-        current = newIndex;
-        dots.forEach((d, i) => d.classList.toggle('active', i === current));
-        updateBackCards(current);
-        isAnimating = false;
-      }, 500);
+    function waitAnimEnd(el: HTMLElement, nameSubstr: string, fallbackMs: number): Promise<void> {
+      return new Promise((resolve) => {
+        let done = false;
+        const finish = () => {
+          if (done) return;
+          done = true;
+          el.removeEventListener('animationend', onEnd);
+          window.clearTimeout(tid);
+          resolve();
+        };
+        const onEnd = (e: AnimationEvent) => {
+          if (e.target !== el) return;
+          if (!e.animationName || !e.animationName.includes(nameSubstr)) return;
+          finish();
+        };
+        el.addEventListener('animationend', onEnd);
+        const tid = window.setTimeout(finish, fallbackMs);
+      });
     }
 
-    prevBtn?.addEventListener('click', () => goTo(current - 1));
-    nextBtn?.addEventListener('click', () => goTo(current + 1));
+    function updateCaption() {
+      captionEl.textContent = cards[current].title;
+    }
 
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => goTo(i));
-    });
+    async function animateTo(newIndex: number, direction: 'forward' | 'backward') {
+      if (busy || newIndex === current || n <= 1) return;
+      busy = true;
+      frontCard.classList.add('is-busy');
+      frontCard.classList.remove('anim-exit-next', 'anim-exit-prev', 'swap-phase');
 
-    // Keyboard support when hero is focused
+      const exitClass = direction === 'forward' ? 'anim-exit-next' : 'anim-exit-prev';
+      const exitName = direction === 'forward' ? EXIT_NAME_NEXT : EXIT_NAME_PREV;
+
+      void frontCard.offsetHeight;
+      frontCard.classList.add(exitClass);
+      await waitAnimEnd(frontCard, exitName, EXIT_MS);
+
+      /* Одним кадром: убрать exit, скрыть карту — без промежуточного «базового» стиля */
+      frontCard.classList.remove(exitClass);
+      frontCard.classList.add('swap-phase');
+      void frontCard.offsetHeight;
+
+      current = newIndex;
+      frontImg.src = cards[current].image;
+      frontImg.alt = cards[current].title;
+
+      try {
+        if ('decode' in frontImg) {
+          await frontImg.decode();
+        }
+      } catch {
+        /* decode can reject for broken image; still continue */
+      }
+
+      /*
+       * Один кадр при opacity:0, затем показ без fade — без «дёрганья» в конце анимации.
+       * syncStackImages только после показа лицевой карты, чтобы стопка под ней не
+       * перерисовывалась в момент, когда сквозь прозрачный front виден верх задних карт.
+       */
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(resolve);
+        });
+      });
+
+      frontCard.classList.remove('swap-phase');
+      void frontCard.offsetHeight;
+
+      syncStackImages(current);
+      updateCaption();
+
+      frontCard.classList.remove('is-busy');
+      busy = false;
+    }
+
+    function goNext() {
+      void animateTo((current + 1) % n, 'forward');
+    }
+
+    function goPrev() {
+      void animateTo((current - 1 + n) % n, 'backward');
+    }
+
     document.addEventListener('keydown', (e) => {
       const hero = document.getElementById('hero');
       if (!hero) return;
       const rect = hero.getBoundingClientRect();
       const inView = rect.top < window.innerHeight && rect.bottom > 0;
-      if (!inView) return;
-      if (e.key === 'ArrowRight') goTo(current + 1);
-      if (e.key === 'ArrowLeft') goTo(current - 1);
+      if (!inView || busy) return;
+      if (e.key === 'ArrowRight') goNext();
+      if (e.key === 'ArrowLeft') goPrev();
     });
 
-    // Swipe support
-    let touchStartX = 0;
-    const deck = document.getElementById('hero-deck');
-    deck?.addEventListener('touchstart', (e) => {
-      touchStartX = e.touches[0].clientX;
-    }, { passive: true });
-    deck?.addEventListener('touchend', (e) => {
-      const dx = e.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(dx) > 40) goTo(dx < 0 ? current + 1 : current - 1);
-    }, { passive: true });
+    frontCard.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (n <= 1) return;
+      goNext();
+    });
 
-    // Initialize back card positions
-    updateBackCards(0);
+    frontCard.addEventListener('keydown', (e) => {
+      if (n <= 1) return;
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        goNext();
+      }
+    });
+
+    syncStackImages(0);
   })();
 </script>

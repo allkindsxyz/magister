@@ -6,6 +6,7 @@
     "acquire": "Acquire the Deck"
   },
   "hero": {
+    "deck_next": "Show next card",
     "eyebrow": "54 cards · mythology · alchemy · history",
     "title": "Magister",
     "subtitle": "Cards",

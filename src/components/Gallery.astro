@@ -26,28 +26,8 @@ const suitSymbols: Record<string, string> = {
 
 <section class="gallery" id="gallery">
   <div class="gallery-header reveal">
-    <div>
-      <p class="section-label">{t('gallery.label')}</p>
-      <h2 class="gallery-title">{t('gallery.title')}</h2>
-    </div>
-    <div class="gallery-controls">
-      <p class="gallery-hint">{t('gallery.hint')}</p>
-      <div class="gallery-nav">
-        <button class="gallery-btn gallery-btn--prev" id="gallery-prev" aria-label="Previous cards">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-        <div class="gallery-progress" id="gallery-progress">
-          <div class="gallery-progress-fill" id="gallery-progress-fill"></div>
-        </div>
-        <button class="gallery-btn gallery-btn--next" id="gallery-next" aria-label="Next cards">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
-      </div>
-    </div>
+    <p class="section-label">{t('gallery.label')}</p>
+    <h2 class="gallery-title">{t('gallery.title')}</h2>
   </div>
 
   <!-- Carousel track -->
@@ -99,8 +79,23 @@ const suitSymbols: Record<string, string> = {
     <div class="carousel-fade carousel-fade--right" aria-hidden="true"></div>
   </div>
 
-  <!-- Drag hint -->
-  <p class="carousel-drag-hint" aria-hidden="true">← drag →</p>
+  <div class="carousel-toolbar">
+    <div class="gallery-nav">
+      <button class="gallery-btn gallery-btn--prev" id="gallery-prev" type="button" aria-label="Previous cards">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M10 3L5 8L10 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="gallery-progress" id="gallery-progress">
+        <div class="gallery-progress-fill" id="gallery-progress-fill"></div>
+      </div>
+      <button class="gallery-btn gallery-btn--next" id="gallery-next" type="button" aria-label="Next cards">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M6 3L11 8L6 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
 </section>
 
 <!-- Lightbox -->
@@ -133,11 +128,7 @@ const suitSymbols: Record<string, string> = {
 
 .gallery-header {
   padding: 0 6rem;
-  margin-bottom: 3.5rem;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .gallery-title {
@@ -145,26 +136,19 @@ const suitSymbols: Record<string, string> = {
   font-size: clamp(2rem, 4vw, 3.2rem);
   color: var(--parch);
   line-height: 1.1;
+  margin-top: 0.5rem;
 }
 
-.gallery-controls {
+.carousel-toolbar {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 1rem;
-}
-
-.gallery-hint {
-  font-size: .82rem;
-  font-style: italic;
-  color: var(--dimmer);
-  text-align: right;
+  justify-content: center;
+  padding: 0 2rem 2.5rem;
 }
 
 .gallery-nav {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .gallery-btn {
@@ -194,7 +178,7 @@ const suitSymbols: Record<string, string> = {
 }
 
 .gallery-progress {
-  width: 120px;
+  width: min(200px, 28vw);
   height: 2px;
   background: rgba(200,151,58,.15);
   border-radius: 2px;
@@ -217,7 +201,7 @@ const suitSymbols: Record<string, string> = {
 .carousel-track {
   display: flex;
   gap: 1.5rem;
-  padding: 2rem 6rem 3rem;
+  padding: 2rem 6rem 1.5rem;
   overflow-x: auto;
   overflow-y: visible;
   scroll-behavior: smooth;
@@ -373,23 +357,6 @@ const suitSymbols: Record<string, string> = {
   display: inline-block;
 }
 
-.carousel-drag-hint {
-  text-align: center;
-  font-family: 'Cinzel', serif;
-  font-size: .52rem;
-  letter-spacing: .4em;
-  text-transform: uppercase;
-  color: rgba(200,151,58,.2);
-  margin-top: .5rem;
-  padding-bottom: .5rem;
-  transition: opacity .3s;
-}
-
-/* Hide drag hint after first drag */
-.carousel-drag-hint.hidden {
-  opacity: 0;
-}
-
 /* ── LIGHTBOX ─────────────────────────────── */
 .lightbox {
   position: fixed;
@@ -514,24 +481,14 @@ const suitSymbols: Record<string, string> = {
 @media (max-width: 960px) {
   .gallery-header {
     padding: 0 2rem;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.2rem;
   }
 
-  .gallery-controls {
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .gallery-hint {
-    text-align: left;
+  .carousel-toolbar {
+    padding: 0 1rem 2rem;
   }
 
   .carousel-track {
-    padding: 1.5rem 2rem 2.5rem;
+    padding: 1.5rem 2rem 1rem;
     gap: 1rem;
   }
 
@@ -625,7 +582,6 @@ const suitSymbols: Record<string, string> = {
   const prevBtn = document.getElementById('gallery-prev') as HTMLButtonElement;
   const nextBtn = document.getElementById('gallery-next') as HTMLButtonElement;
   const progressFill = document.getElementById('gallery-progress-fill') as HTMLElement;
-  const dragHint = document.querySelector('.carousel-drag-hint') as HTMLElement;
 
   function getCardWidth(): number {
     const card = track.querySelector<HTMLElement>('.carousel-card');
@@ -701,10 +657,4 @@ const suitSymbols: Record<string, string> = {
     }
   });
 
-  // Hide drag hint on first interaction
-  track.addEventListener('scroll', () => {
-    if (!dragHint.classList.contains('hidden')) {
-      dragHint.classList.add('hidden');
-    }
-  }, { once: true, passive: true });
 </script>
