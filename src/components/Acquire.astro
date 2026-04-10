@@ -406,6 +406,7 @@ const slides = [
 }
 
 .acquire-visual-frame {
+  position: relative;
   border-radius: 12px;
   overflow: hidden;
   background: linear-gradient(145deg, rgba(12, 7, 1, 0.08), rgba(122, 30, 0, 0.06));
@@ -427,6 +428,18 @@ const slides = [
   width: 100%;
   height: auto;
   display: block;
+  opacity: 1;
+  transition: opacity 0.45s ease;
+}
+
+.acquire-visual-img.is-fading {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .acquire-visual-img {
+    transition-duration: 0.01ms;
+  }
 }
 
 .acquire-carousel-hint {
@@ -579,17 +592,66 @@ const slides = [
 
     const dots = Array.from(dotsRoot.querySelectorAll<HTMLButtonElement>('.acquire-dot'));
     let index = 0;
+    let busy = false;
 
-    function go(i: number) {
-      index = ((i % slides.length) + slides.length) % slides.length;
+    function prefersReducedMotion() {
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    function waitOpacityTransition(el: HTMLElement, ms: number) {
+      return new Promise<void>((resolve) => {
+        let done = false;
+        const finish = () => {
+          if (done) return;
+          done = true;
+          el.removeEventListener('transitionend', onEnd);
+          window.clearTimeout(tid);
+          resolve();
+        };
+        const onEnd = (e: TransitionEvent) => {
+          if (e.target !== el || e.propertyName !== 'opacity') return;
+          finish();
+        };
+        el.addEventListener('transitionend', onEnd);
+        const tid = window.setTimeout(finish, ms);
+      });
+    }
+
+    async function go(i: number) {
+      const next = ((i % slides.length) + slides.length) % slides.length;
+      if (next === index || busy) return;
+      busy = true;
+      const reduced = prefersReducedMotion();
+
+      if (!reduced) {
+        img.classList.add('is-fading');
+        await waitOpacityTransition(img, 500);
+      }
+
+      index = next;
       const s = slides[index];
       img.src = s.src;
       img.alt = s.alt;
+      try {
+        if ('decode' in img) {
+          await img.decode();
+        }
+      } catch {
+        /* ignore */
+      }
+
+      if (!reduced) {
+        void img.offsetHeight;
+        img.classList.remove('is-fading');
+      }
+
       dots.forEach((d, j) => {
         const on = j === index;
         d.classList.toggle('is-active', on);
         d.setAttribute('aria-selected', on ? 'true' : 'false');
       });
+
+      busy = false;
     }
 
     let touchStartX = 0;

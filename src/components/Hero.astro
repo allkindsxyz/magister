@@ -22,7 +22,7 @@ const nBack = Math.max(0, deckCards.length - 1);
   <div class="hero-glow"></div>
   <div class="hero-glow2"></div>
 
-  <div class="hero-left">
+  <div class="hero-intro">
     <div class="hero-number" aria-hidden="true">54</div>
     <p class="hero-eyebrow">{t('hero.eyebrow')}</p>
     <h1 class="hero-title">
@@ -30,10 +30,6 @@ const nBack = Math.max(0, deckCards.length - 1);
       <span class="hero-title-sub">{t('hero.subtitle')}</span>
     </h1>
     <p class="hero-body">{t('hero.body')}</p>
-    <div class="hero-cta">
-      <a href="#acquire" class="btn btn-gold">{t('hero.cta_primary')}</a>
-      <a href="#gallery" class="btn btn-outline">{t('hero.cta_secondary')}</a>
-    </div>
   </div>
 
   <div class="hero-right">
@@ -83,6 +79,13 @@ const nBack = Math.max(0, deckCards.length - 1);
     <p class="deck-caption" id="deck-caption">{deckCards[0]?.data.title[lang]}</p>
   </div>
 
+  <div class="hero-actions">
+    <div class="hero-cta">
+      <a href="#acquire" class="btn btn-gold">{t('hero.cta_primary')}</a>
+      <a href="#gallery" class="btn btn-outline">{t('hero.cta_secondary')}</a>
+    </div>
+  </div>
+
   <div class="scroll-hint">
     <span>{t('scroll_hint')}</span>
     <div class="scroll-line"></div>
@@ -105,6 +108,10 @@ const nBack = Math.max(0, deckCards.length - 1);
   min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    'intro deck'
+    'actions deck';
   align-items: start;
   position: relative;
   overflow-x: hidden;
@@ -135,11 +142,20 @@ const nBack = Math.max(0, deckCards.length - 1);
   pointer-events: none;
 }
 
-/* Left column — raised so eyebrow aligns with top of card */
-.hero-left {
-  padding: 5.25rem 4rem 6rem 6rem;
+/* Copy column — intro + CTAs share left column on desktop; stack on mobile */
+.hero-intro {
+  grid-area: intro;
+  padding: 5.25rem 4rem 0 6rem;
   position: relative;
   z-index: 2;
+}
+
+.hero-actions {
+  grid-area: actions;
+  padding: 0 4rem 6rem 6rem;
+  position: relative;
+  z-index: 2;
+  align-self: start;
 }
 
 .hero-number {
@@ -206,8 +222,10 @@ const nBack = Math.max(0, deckCards.length - 1);
   animation: fadeLeft 1s ease .65s forwards;
 }
 
-/* Right column — top aligned with eyebrow / card top */
+/* Right column — spans both rows, top aligned with eyebrow / card top */
 .hero-right {
+  grid-area: deck;
+  grid-row: 1 / -1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -401,21 +419,30 @@ const nBack = Math.max(0, deckCards.length - 1);
 @media (max-width: 960px) {
   .hero {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      'intro'
+      'deck'
+      'actions';
     min-height: auto;
     padding-top: 5rem;
   }
 
   .hero-right {
-    padding: 3rem 2rem 1rem;
-    order: -1;
+    grid-row: auto;
+    padding: 2rem 2rem 1rem;
   }
 
   .hero-deck {
     width: clamp(180px, 50vw, 280px);
   }
 
-  .hero-left {
-    padding: 1.5rem 2rem 5rem;
+  .hero-intro {
+    padding: 1.5rem 2rem 0;
+  }
+
+  .hero-actions {
+    padding: 0 2rem 5rem;
   }
 
   .hero-number {
