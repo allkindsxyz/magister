@@ -17,6 +17,7 @@ const altPath = getLocalizedPath(currentPath, altLang);
   <a href={getLocalizedPath('/', lang)} class="nav-logo">Magister</a>
 
   <ul class="nav-links">
+    <li><a href="#worlds">{t('nav.worlds')}</a></li>
     <li><a href="#gallery">{t('nav.cards')}</a></li>
     <li><a href="#games">{t('nav.games')}</a></li>
     <li><a href="#artist">{t('nav.artist')}</a></li>
@@ -47,6 +48,7 @@ const altPath = getLocalizedPath(currentPath, altLang);
 <!-- Mobile menu -->
 <div class="mobile-menu" id="mobile-menu">
   <ul>
+    <li><a href="#worlds" class="mobile-link">{t('nav.worlds')}</a></li>
     <li><a href="#gallery" class="mobile-link">{t('nav.cards')}</a></li>
     <li><a href="#games" class="mobile-link">{t('nav.games')}</a></li>
     <li><a href="#artist" class="mobile-link">{t('nav.artist')}</a></li>

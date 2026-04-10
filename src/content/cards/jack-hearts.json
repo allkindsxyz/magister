@@ -2,11 +2,11 @@
   "id": "jack-hearts",
   "suit": "hearts",
   "value": "J",
-  "category": { "en": "Greek Myths", "ru": "Грэцкія Міфы" },
-  "title": { "en": "Apollo and Daphne", "ru": "Апалон і Дафна" },
+  "category": { "en": "Greek myth", "ru": "Греческий миф" },
+  "title": { "en": "Apollo and Daphne", "ru": "Аполлон и Дафна" },
   "description": {
-    "en": "Visualisation of the myth about unhappy love between Apollo and Daphne, who was forced to turn into laurel tree to get rid of him.",
-    "ru": "Эпізод нерадуючы кахання Дафны у лаўровае дрэва, каб пазбегнуць пераследу Апалона."
+    "en": "The chase that ends in bark and laurel: Apollo’s longing and Daphne’s escape into the tree — a heart-suit episode about desire that cannot be answered in human form.",
+    "ru": "Погоня, что обрывается корой и лавром: желание Аполлона и побег Дафны в дерево — эпизод червей о том, как страсть не находит ответа в человеческом облике."
   },
   "image": "/cards/lady.png",
   "featured": false

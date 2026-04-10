@@ -6,62 +6,119 @@ interface Props {
   lang: Lang;
 }
 
-const { lang } = Astro.props;
-const t = useTranslations(lang);
+const t = useTranslations(Astro.props.lang);
 
 const shopUrl = import.meta.env.EXTERNAL_SHOP_URL || '#';
-const price = import.meta.env.DECK_PRICE || '38';
-const currency = import.meta.env.DECK_CURRENCY || '€';
+const price = '80';
+const currency = '€';
+
+const slides = [
+  { src: '/images/magister-collector-box.png', alt: t('acquire.packaging_alt') },
+  { src: '/images/magister-box-open.png', alt: t('acquire.packaging_alt_open') },
+];
 ---
 
-<section class="acquire parch-noise" id="acquire">
-  <div class="acquire-inner reveal">
-    <div class="ornament">
-      <span class="ornament-symbol">✦</span>
+<section class="acquire parch-noise" id="acquire" aria-labelledby="acquire-heading">
+  <script type="application/json" id="acquire-slides-data" set:html={JSON.stringify(slides)} />
+  <div class="acquire-shell reveal">
+    <div class="acquire-grid">
+      <div class="acquire-copy">
+        <header class="acquire-head">
+          <p class="acquire-label section-label">{t('acquire.label')}</p>
+          <h2 class="acquire-title" id="acquire-heading">{t('acquire.title')}</h2>
+          <p class="acquire-sub">{t('acquire.subtitle')}</p>
+        </header>
+
+        <p class="contents-heading">{t('acquire.contents_label')}</p>
+        <ul class="contents-list" role="list">
+          <li class="contents-item">
+            <span class="contents-diamond" aria-hidden="true">◆</span>
+            <span class="contents-text">{t('acquire.item_main_deck')}</span>
+          </li>
+          <li class="contents-item">
+            <span class="contents-diamond" aria-hidden="true">◆</span>
+            <span class="contents-text">{t('acquire.item_reference_deck')}</span>
+          </li>
+          <li class="contents-item">
+            <span class="contents-diamond" aria-hidden="true">◆</span>
+            <span class="contents-text">{t('acquire.item_grimoire')}</span>
+          </li>
+          <li class="contents-item">
+            <span class="contents-diamond" aria-hidden="true">◆</span>
+            <span class="contents-text">{t('acquire.item_box')}</span>
+          </li>
+        </ul>
+
+        <div class="shipping-callout" role="status" aria-live="polite">
+          <span class="shipping-callout__glyph" aria-hidden="true">✦</span>
+          <div class="shipping-callout__body">
+            <p class="shipping-callout__title">{t('acquire.shipping_highlight')}</p>
+            <p class="shipping-callout__sub">{t('acquire.shipping_sub')}</p>
+          </div>
+        </div>
+
+        <div class="acquire-checkout">
+          <div class="price-stack">
+            <div class="price-row">
+              <span class="price-currency">{currency}</span>
+              <span class="price-main">{price}</span>
+            </div>
+            <p class="price-note">{t('acquire.price_note')}</p>
+          </div>
+          <div class="acquire-cta">
+            <a href={shopUrl} class="btn btn-gold acquire-buy" target="_blank" rel="noopener noreferrer">
+              {t('acquire.cta')}
+            </a>
+            <p class="acquire-cta-hint">{t('acquire.cta_sub')}</p>
+          </div>
+        </div>
+
+        <p class="acquire-fine">{t('acquire.fine_print')}</p>
+      </div>
+
+      <figure class="acquire-visual">
+        <div class="acquire-carousel" id="acquire-carousel">
+          <div
+            class="acquire-carousel-stage"
+            id="acquire-carousel-stage"
+            role="button"
+            tabindex="0"
+            aria-label={t('acquire.carousel_hint')}
+          >
+            <div class="acquire-visual-frame">
+              <img
+                id="acquire-carousel-img"
+                src={slides[0].src}
+                alt={slides[0].alt}
+                width="682"
+                height="1024"
+                loading="lazy"
+                decoding="async"
+                class="acquire-visual-img"
+              />
+            </div>
+          </div>
+          <p class="acquire-carousel-hint">{t('acquire.carousel_hint')}</p>
+          <div
+            class="acquire-carousel-dots"
+            id="acquire-carousel-dots"
+            role="tablist"
+            aria-label={t('acquire.carousel_dots_label')}
+          >
+            {slides.map((_, i) => (
+              <button
+                type="button"
+                class:list={['acquire-dot', { 'is-active': i === 0 }]}
+                role="tab"
+                aria-selected={i === 0}
+                aria-label={`${t('acquire.carousel_slide')} ${i + 1}`}
+                data-index={i}
+              />
+            ))}
+          </div>
+        </div>
+      </figure>
     </div>
-
-    <p class="acquire-label section-label" style="color: rgba(122,30,0,.55)">{t('acquire.label')}</p>
-    <h2 class="acquire-title">{t('acquire.title')}</h2>
-    <p class="acquire-sub">{t('acquire.subtitle')}</p>
-
-    <div class="box-contents">
-      <div class="box-item">
-        <div class="box-icon">❖</div>
-        <div class="box-label">{t('acquire.item_cards')}</div>
-      </div>
-      <div class="box-item">
-        <div class="box-icon">⊞</div>
-        <div class="box-label">{t('acquire.item_games')}</div>
-      </div>
-      <div class="box-item">
-        <div class="box-icon">◈</div>
-        <div class="box-label">{t('acquire.item_box')}</div>
-      </div>
-      <div class="box-item">
-        <div class="box-icon">✦</div>
-        <div class="box-label">{t('acquire.item_letter')}</div>
-      </div>
-    </div>
-
-    <div class="price-row">
-      <span class="price-currency">{currency}</span>
-      <span class="price-main">{price}</span>
-    </div>
-    <p class="price-note">{t('acquire.price_note')}</p>
-
-    <div class="seal-wrap">
-      <div class="seal-btn-wrap">
-        <div class="seal-ring"></div>
-        <div class="seal-ring2"></div>
-        <a href={shopUrl} class="seal-btn" target="_blank" rel="noopener">
-          <span class="seal-symbol">✦</span>
-          <span class="seal-btn-main">{t('acquire.cta')}</span>
-          <span class="seal-btn-sub">{t('acquire.cta_sub')}</span>
-        </a>
-      </div>
-    </div>
-
-    <p class="acquire-fine">{t('acquire.fine_print')}</p>
   </div>
 </section>
 
@@ -69,201 +126,427 @@ const currency = import.meta.env.DECK_CURRENCY || '€';
 .acquire {
   background-color: var(--parch);
   background-image:
-    radial-gradient(ellipse at 10% 20%, rgba(122,30,0,.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 90% 80%, rgba(122,30,0,.08) 0%, transparent 45%),
-    radial-gradient(ellipse at 60% 50%, rgba(122,30,0,.05) 0%, transparent 55%),
-    radial-gradient(ellipse at 30% 90%, rgba(12,7,1,.06) 0%, transparent 40%);
+    radial-gradient(ellipse at 10% 20%, rgba(122, 30, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(122, 30, 0, 0.08) 0%, transparent 45%),
+    radial-gradient(ellipse at 60% 50%, rgba(122, 30, 0, 0.05) 0%, transparent 55%),
+    radial-gradient(ellipse at 30% 90%, rgba(12, 7, 1, 0.06) 0%, transparent 40%);
   position: relative;
   overflow: hidden;
-  padding: var(--section-pad-v) 4rem;
+  padding: var(--section-pad-v) clamp(1.5rem, 4vw, 4rem);
 }
 
-.acquire-inner {
-  max-width: 780px;
+.acquire-shell {
+  max-width: 1180px;
   margin: 0 auto;
   position: relative;
   z-index: 1;
-  text-align: center;
+}
+
+.acquire-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(260px, 0.92fr);
+  gap: clamp(2.25rem, 5vw, 4.25rem);
+  align-items: start;
+}
+
+.acquire-copy {
+  text-align: left;
+  min-width: 0;
+}
+
+.acquire-head {
+  margin-bottom: 1.75rem;
+}
+
+.acquire-label {
+  color: rgba(122, 30, 0, 0.55);
 }
 
 .acquire-title {
   font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: clamp(1.9rem, 3.6vw, 3.15rem);
   color: var(--ink);
-  margin-bottom: 1rem;
-  line-height: 1.15;
+  margin: 0 0 0.9rem;
+  line-height: 1.12;
+  letter-spacing: 0.02em;
+  text-wrap: balance;
 }
 
 .acquire-sub {
   font-style: italic;
-  color: rgba(12,7,1,.5);
-  font-size: 1rem;
-  margin-bottom: 3rem;
+  font-family: 'IM Fell English', Georgia, serif;
+  color: rgba(12, 7, 1, 0.55);
+  font-size: 1.05rem;
+  margin: 0;
+  line-height: 1.6;
+  max-width: 38rem;
 }
 
-.box-contents {
-  display: flex;
-  justify-content: center;
-  gap: 3rem;
-  margin: 3rem 0;
-  flex-wrap: wrap;
-}
-
-.box-item {
-  text-align: center;
-}
-
-.box-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 1px solid rgba(122,30,0,.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto .7rem;
-  font-size: 1.1rem;
-  color: rgba(122,30,0,.6);
-}
-
-.box-label {
+.contents-heading {
   font-family: 'Cinzel', serif;
-  font-size: .58rem;
-  letter-spacing: .2em;
+  font-size: 0.58rem;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(12,7,1,.45);
-  line-height: 1.4;
+  color: rgba(122, 30, 0, 0.55);
+  margin: 0 0 0.85rem;
+}
+
+.contents-list {
+  list-style: none;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  max-width: 40rem;
+}
+
+.contents-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem 0.75rem 0.85rem;
+  background: rgba(233, 223, 185, 0.55);
+  border-radius: 4px;
+  border: 1px solid rgba(122, 30, 0, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.contents-diamond {
+  flex-shrink: 0;
+  width: 1.25rem;
+  text-align: center;
+  font-size: 0.55rem;
+  line-height: 1.8;
+  color: rgba(122, 30, 0, 0.65);
+}
+
+.contents-text {
+  font-family: 'Cinzel', serif;
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(12, 7, 1, 0.62);
+  line-height: 1.55;
+}
+
+.shipping-callout {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  max-width: 40rem;
+  margin: 0 0 1.85rem;
+  padding: 1.1rem 1.2rem 1.15rem;
+  background: linear-gradient(135deg, rgba(200, 151, 58, 0.2) 0%, rgba(122, 30, 0, 0.12) 100%);
+  border: 1px solid rgba(200, 151, 58, 0.55);
+  border-radius: 6px;
+  box-shadow:
+    0 10px 32px rgba(12, 7, 1, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.shipping-callout__glyph {
+  font-size: 1.15rem;
+  color: var(--rust);
+  line-height: 1.2;
+  margin-top: 0.1rem;
+  flex-shrink: 0;
+}
+
+.shipping-callout__body {
+  min-width: 0;
+}
+
+.shipping-callout__title {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 600;
+  margin: 0 0 0.45rem;
+  line-height: 1.45;
+}
+
+.shipping-callout__sub {
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 0.92rem;
+  font-style: italic;
+  color: rgba(12, 7, 1, 0.52);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.acquire-checkout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: flex-start;
+  gap: 1.75rem 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.price-stack {
+  min-width: min(100%, 12rem);
 }
 
 .price-row {
   display: flex;
   align-items: baseline;
-  justify-content: center;
-  gap: 1rem;
-  margin: 2rem 0;
+  gap: 0.45rem;
 }
 
 .price-main {
   font-family: 'Cinzel Decorative', serif;
-  font-size: 5.5rem;
+  font-size: clamp(3rem, 6.5vw, 4.25rem);
   color: var(--ink);
   line-height: 1;
 }
 
 .price-currency {
   font-family: 'Cinzel', serif;
-  font-size: 1.8rem;
-  color: rgba(12,7,1,.4);
-  align-self: flex-start;
-  margin-top: .8rem;
-}
-
-.price-note {
-  font-size: .85rem;
-  font-style: italic;
-  color: rgba(12,7,1,.38);
-  margin-bottom: 2.5rem;
-}
-
-.seal-wrap {
-  display: flex;
-  justify-content: center;
-  margin: 1rem 0 2rem;
-}
-
-.seal-btn-wrap {
-  position: relative;
-  display: inline-block;
-}
-
-.seal-ring {
-  position: absolute;
-  inset: -18px;
-  border-radius: 50%;
-  border: 1px solid rgba(122,30,0,.2);
-  animation: sealPulse 3s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.seal-ring2 {
-  position: absolute;
-  inset: -32px;
-  border-radius: 50%;
-  border: 1px solid rgba(122,30,0,.1);
-  animation: sealPulse 3s ease-in-out infinite .8s;
-  pointer-events: none;
-}
-
-.seal-btn {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  background: var(--rust);
-  border: 3px solid rgba(255,255,255,.08);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  text-decoration: none;
-  transition: transform .3s, box-shadow .3s, background .3s;
-  box-shadow: 0 8px 40px rgba(122,30,0,.35), inset 0 1px 0 rgba(255,255,255,.1);
-}
-
-.seal-btn:hover {
-  transform: scale(1.06);
-  box-shadow: 0 16px 60px rgba(122,30,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
-  background: #9a2500;
-}
-
-.seal-btn-main {
-  font-family: 'Cinzel', serif;
-  font-size: .68rem;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--parch);
+  font-size: 1.45rem;
+  color: rgba(12, 7, 1, 0.42);
   font-weight: 600;
 }
 
-.seal-btn-sub {
-  font-family: 'Cinzel', serif;
-  font-size: .5rem;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: rgba(237,222,176,.55);
-  margin-top: .3rem;
+.price-note {
+  font-size: 0.78rem;
+  color: rgba(12, 7, 1, 0.42);
+  margin: 0.5rem 0 0;
+  line-height: 1.45;
 }
 
-.seal-symbol {
-  font-size: 1.4rem;
-  color: rgba(237,222,176,.7);
-  margin-bottom: .3rem;
+.acquire-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.acquire-buy {
+  min-width: 12.5rem;
+  text-align: center;
+}
+
+.acquire-cta-hint {
+  font-family: 'Cinzel', serif;
+  font-size: 0.52rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(12, 7, 1, 0.38);
+  margin: 0;
 }
 
 .acquire-fine {
-  font-size: .82rem;
+  font-size: 0.78rem;
   font-style: italic;
-  color: rgba(12,7,1,.32);
-  margin-top: 2.5rem;
-  line-height: 1.7;
+  font-family: 'IM Fell English', Georgia, serif;
+  color: rgba(12, 7, 1, 0.34);
+  margin: 0;
+  line-height: 1.65;
+  max-width: 36rem;
 }
 
-@media (max-width: 960px) {
-  .acquire {
-    padding: 6rem 2rem;
+.acquire-visual {
+  margin: 0;
+  position: relative;
+}
+
+.acquire-carousel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+}
+
+.acquire-carousel-stage {
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  padding: 0;
+  background: none;
+  border-radius: 12px;
+  text-align: left;
+  outline: none;
+}
+
+.acquire-carousel-stage:focus-visible {
+  box-shadow: 0 0 0 2px var(--parch), 0 0 0 4px var(--rust);
+}
+
+.acquire-visual-frame {
+  border-radius: 12px;
+  overflow: hidden;
+  background: linear-gradient(145deg, rgba(12, 7, 1, 0.08), rgba(122, 30, 0, 0.06));
+  box-shadow:
+    0 28px 70px rgba(12, 7, 1, 0.18),
+    0 0 0 1px rgba(122, 30, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  transition: box-shadow 0.25s;
+}
+
+.acquire-carousel-stage:hover .acquire-visual-frame {
+  box-shadow:
+    0 32px 78px rgba(12, 7, 1, 0.22),
+    0 0 0 1px rgba(122, 30, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.acquire-visual-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.acquire-carousel-hint {
+  font-family: 'Cinzel', serif;
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(12, 7, 1, 0.4);
+  margin: 0;
+  text-align: center;
+}
+
+.acquire-carousel-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.acquire-dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(122, 30, 0, 0.22);
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.acquire-dot:hover {
+  background: rgba(122, 30, 0, 0.4);
+}
+
+.acquire-dot.is-active {
+  background: var(--gold);
+  box-shadow: 0 0 0 2px rgba(200, 151, 58, 0.35);
+  transform: scale(1.15);
+}
+
+@media (min-width: 901px) {
+  .acquire-visual {
+    position: sticky;
+    top: 5.5rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .acquire-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
-  .price-main {
-    font-size: 4rem;
+  .acquire-visual {
+    max-width: 400px;
+    margin: 0 auto;
+    width: 100%;
   }
 
-  .seal-btn {
-    width: 140px;
-    height: 140px;
+  .acquire-copy {
+    text-align: center;
   }
 
-  .box-contents {
-    gap: 1.5rem;
+  .acquire-head,
+  .contents-heading {
+    text-align: center;
+  }
+
+  .acquire-sub,
+  .contents-list,
+  .shipping-callout,
+  .acquire-fine {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .contents-item {
+    text-align: left;
+  }
+
+  .shipping-callout {
+    text-align: left;
+  }
+
+  .acquire-checkout {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .price-stack {
+    text-align: center;
+  }
+
+  .price-row {
+    justify-content: center;
+  }
+
+  .acquire-cta {
+    align-items: center;
   }
 }
 </style>
+
+<script>
+  (function () {
+    const dataEl = document.getElementById('acquire-slides-data');
+    const img = document.getElementById('acquire-carousel-img') as HTMLImageElement | null;
+    const stage = document.getElementById('acquire-carousel-stage');
+    const dotsRoot = document.getElementById('acquire-carousel-dots');
+    if (!dataEl || !img || !stage || !dotsRoot) return;
+
+    let slides: { src: string; alt: string }[] = [];
+    try {
+      slides = JSON.parse(dataEl.textContent || '[]');
+    } catch {
+      return;
+    }
+    if (!slides.length) return;
+
+    const dots = Array.from(dotsRoot.querySelectorAll<HTMLButtonElement>('.acquire-dot'));
+    let index = 0;
+
+    function go(i: number) {
+      index = ((i % slides.length) + slides.length) % slides.length;
+      const s = slides[index];
+      img.src = s.src;
+      img.alt = s.alt;
+      dots.forEach((d, j) => {
+        const on = j === index;
+        d.classList.toggle('is-active', on);
+        d.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+
+    stage.addEventListener('click', () => go(index + 1));
+    stage.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        go(index + 1);
+      }
+    });
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => go(Number(dot.dataset.index)));
+    });
+  })();
+</script>

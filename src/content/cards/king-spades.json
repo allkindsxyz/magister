@@ -2,11 +2,11 @@
   "id": "king-spades",
   "suit": "spades",
   "value": "K",
-  "category": { "en": "Famous People", "ru": "Знаменитости" },
-  "title": { "en": "The Secret History of the Mongols", "ru": "Таемная гісторыя манголаў" },
+  "category": { "en": "Historical echo", "ru": "Историческое эхо" },
+  "title": { "en": "The Secret History of the Mongols", "ru": "Тайная история монголов" },
   "description": {
-    "en": "Swarms of locusts numbering in the billions of insects form 'flying clouds', covering and devastating vast areas.",
-    "ru": "Згрaі саранчы, што налічваюць мільярды насякомых, утвараюць «лятучыя хмары», накрываючы і спусташаючы вялізарныя плошчы."
+    "en": "The anonymous chronicle of empire on the steppe — propaganda, genealogy, and thunder across Asia. A spade-king card: power recorded by voices we barely know.",
+    "ru": "Анонимная хроника степной империи — пропаганда, родословная и гром по Азии. Король пик: власть, записанная голосами, которых мы почти не знаем."
   },
   "image": "/cards/merchant.png",
   "featured": true

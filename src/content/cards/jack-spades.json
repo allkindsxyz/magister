@@ -2,11 +2,11 @@
   "id": "jack-spades",
   "suit": "spades",
   "value": "J",
-  "category": { "en": "Famous People", "ru": "Знаменитости" },
+  "category": { "en": "Pop archetype", "ru": "Поп-архетип" },
   "title": { "en": "Michael and the Chameleon", "ru": "Майкл и хамелеон" },
   "description": {
-    "en": "An artistic metaphor for the Pop King as a man who liked to change his appearance.",
-    "ru": "Зразумелая мастацкая метафара на «поп-караля» Майкла Джэксана, як чалавека, што змяняў аблічча."
+    "en": "The chameleon as metaphor: a performer who redrew his silhouette for every era — fame as camouflage, reinvention as survival.",
+    "ru": "Хамелеон как метафора: артист, перечерчивавший силуэт для каждой эпохи — слава как маскировка, перевоплощение как выживание."
   },
   "image": "/cards/bearer.png",
   "featured": true

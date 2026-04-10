@@ -1,0 +1,298 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const suitOrder = ['hearts', 'diamonds', 'clubs', 'spades'] as const;
+type Suit = (typeof suitOrder)[number];
+
+const suitSymbols: Record<Suit, string> = {
+  hearts: '♥',
+  diamonds: '♦',
+  clubs: '♣',
+  spades: '♠',
+};
+
+/** Placeholder art until each suit has entries in the cards collection */
+const fallbackImage: Record<Suit, string> = {
+  hearts: '/cards/lady.png',
+  diamonds: '/cards/bearer.png',
+  clubs: '/cards/lady.png',
+  spades: '/cards/merchant.png',
+};
+
+const allCards = await getCollection('cards');
+
+function exampleForSuit(suit: Suit): { src: string; caption: string | null } {
+  const inSuit = allCards.filter((c) => c.data.suit === suit);
+  if (inSuit.length === 0) {
+    return { src: fallbackImage[suit], caption: null };
+  }
+  const pick = inSuit.find((c) => c.data.featured) ?? inSuit[0];
+  return {
+    src: pick.data.image,
+    caption: pick.data.title[lang],
+  };
+}
+
+const examples = Object.fromEntries(suitOrder.map((s) => [s, exampleForSuit(s)])) as Record<
+  Suit,
+  { src: string; caption: string | null }
+>;
+---
+
+<section class="worlds hatch" id="worlds" aria-labelledby="worlds-heading">
+  <div class="worlds-header reveal">
+    <p class="section-label">{t('worlds_section.label')}</p>
+    <h2 class="worlds-title" id="worlds-heading">{t('worlds_section.title')}</h2>
+    <p class="worlds-lead reveal">{t('worlds_section.lead')}</p>
+  </div>
+
+  <div class="worlds-grid">
+    {suitOrder.map((suit, i) => {
+      const ex = examples[suit];
+      const worldName = t(`worlds.${suit}.name`);
+      const alt = ex.caption ? `${worldName} — ${ex.caption}` : worldName;
+      return (
+        <article class="world-card reveal" style={`transition-delay: ${i * 0.08}s`}>
+          <div class="world-card__visual">
+            <div class="world-card__frame">
+              <img
+                class="world-card__thumb"
+                src={ex.src}
+                alt={alt}
+                width="280"
+                height="392"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            {ex.caption && <p class="world-card__caption">{ex.caption}</p>}
+          </div>
+          <span class="world-card__symbol" aria-hidden="true">{suitSymbols[suit]}</span>
+          <h3 class="world-card__name">{worldName}</h3>
+          <p class="world-card__body">{t(`worlds.${suit}.blurb`)}</p>
+        </article>
+      );
+    })}
+  </div>
+
+  <p class="worlds-footnote reveal">{t('worlds_section.footnote')}</p>
+</section>
+
+<style>
+.worlds {
+  padding: var(--section-pad-v) 0;
+  background: var(--dark2);
+  position: relative;
+  overflow: hidden;
+}
+
+.worlds-header {
+  max-width: 720px;
+  margin: 0 auto 3.5rem;
+  padding: 0 3rem;
+  text-align: center;
+}
+
+.worlds-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.8rem, 3.5vw, 3rem);
+  color: var(--parch);
+  line-height: 1.15;
+  margin-top: 0.5rem;
+}
+
+.worlds-lead {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+  color: var(--warm);
+  line-height: 1.75;
+  margin: 1.5rem 0 0;
+}
+
+.worlds-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 3rem;
+  border: 1px solid rgba(200, 151, 58, 0.1);
+  background: rgba(200, 151, 58, 0.08);
+}
+
+.world-card {
+  padding: 2rem 2rem 2.25rem;
+  background: rgba(12, 7, 1, 0.92);
+  border: 1px solid rgba(200, 151, 58, 0.08);
+  position: relative;
+  transition: background 0.35s, border-color 0.35s;
+  display: grid;
+  gap: 0.55rem 1.35rem;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    'visual'
+    'symbol'
+    'title'
+    'body';
+}
+
+.world-card:hover {
+  background: rgba(20, 12, 2, 0.96);
+  border-color: rgba(200, 151, 58, 0.22);
+}
+
+.world-card__visual {
+  grid-area: visual;
+  justify-self: center;
+  width: min(100%, 220px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.world-card__frame {
+  width: 100%;
+  max-width: 168px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--parch);
+  box-shadow:
+    0 18px 48px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(200, 151, 58, 0.22);
+  transition: box-shadow 0.35s, transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.world-card:hover .world-card__frame {
+  box-shadow:
+    0 26px 64px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(200, 151, 58, 0.35);
+  transform: translateY(-3px);
+}
+
+.world-card__thumb {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 5 / 7;
+  object-fit: contain;
+  display: block;
+  filter: contrast(1.04) sepia(6%);
+}
+
+.world-card__caption {
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  text-align: center;
+  line-height: 1.45;
+  margin: 0;
+  max-width: 12rem;
+}
+
+.world-card__symbol {
+  grid-area: symbol;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2.25rem;
+  color: rgba(200, 151, 58, 0.45);
+  display: block;
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+.world-card__name {
+  grid-area: title;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.25rem;
+  color: var(--parch);
+  margin: 0 0 0.85rem;
+  line-height: 1.25;
+}
+
+.world-card__body {
+  grid-area: body;
+  font-size: 0.92rem;
+  color: var(--dim);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.worlds-footnote {
+  max-width: 640px;
+  margin: 3rem auto 0;
+  padding: 0 3rem;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dimmer);
+  line-height: 1.8;
+}
+
+@media (min-width: 781px) {
+  .world-card {
+    grid-template-columns: clamp(118px, 26%, 172px) 1fr;
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+      'visual symbol'
+      'visual title'
+      'visual body';
+    align-items: start;
+    column-gap: 1.5rem;
+  }
+
+  .world-card__visual {
+    grid-area: visual;
+    justify-self: stretch;
+    width: auto;
+    max-width: none;
+    align-items: stretch;
+  }
+
+  .world-card__frame {
+    max-width: none;
+  }
+
+  .world-card__caption {
+    text-align: left;
+    align-self: start;
+  }
+
+  .world-card__symbol {
+    margin-top: 0.15rem;
+  }
+}
+
+@media (max-width: 780px) {
+  .worlds-grid {
+    grid-template-columns: 1fr;
+    padding: 0 1.5rem;
+  }
+
+  .worlds-header,
+  .worlds-footnote {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  .world-card__visual {
+    width: min(92vw, 240px);
+  }
+
+  .world-card__frame {
+    max-width: 200px;
+  }
+}
+</style>

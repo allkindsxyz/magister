@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
 import QuoteStrip from '../../components/QuoteStrip.astro';
+import Worlds from '../../components/Worlds.astro';
 import Gallery from '../../components/Gallery.astro';
 import Games from '../../components/Games.astro';
 import Artist from '../../components/Artist.astro';
@@ -15,11 +16,12 @@ const lang = 'en';
 <Layout
   lang={lang}
   title="Magister Cards — Collectible Art Deck"
-  description="A collectible art deck where mythology, alchemy, and real historical figures unite in a single alternative universe. 54 unique illustrated cards."
+  description="54 illustrated cards from Magister (Alexander Zhilchik) and Dr.Klein / Vasil Pochitsky — mythology, alchemy, and history in one deck."
 >
   <Nav lang={lang} />
   <Hero lang={lang} />
   <QuoteStrip lang={lang} />
+  <Worlds lang={lang} />
   <Gallery lang={lang} />
   <Games lang={lang} />
   <Artist lang={lang} />

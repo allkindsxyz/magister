@@ -1,8 +1,9 @@
 {
   "nav": {
+    "worlds": "Four Worlds",
     "cards": "The Cards",
     "games": "Games",
-    "artist": "The Artist",
+    "artist": "Authors",
     "acquire": "Acquire the Deck"
   },
   "hero": {
@@ -10,13 +11,37 @@
     "eyebrow": "54 cards · mythology · alchemy · history",
     "title": "Magister",
     "subtitle": "Cards",
-    "body": "A collectible art deck born from the author's world of Vasil Pochitsky, where mythology, alchemy, and real historical figures unite in a single alternative universe.",
+    "body": "A collectible art deck from the creative union of Magister (Alexander Zhilchik) and Dr.Klein — the studio name of painter Vasil Pochitsky — where mythology, alchemy, and history meet in one alternative universe.",
     "cta_primary": "Acquire the Deck",
     "cta_secondary": "Explore the Cards"
   },
   "quote": {
     "text": "These are not cards you simply play with. They are artifacts — each one carries a world within it, waiting to be understood.",
-    "attribution": "From the artist's notebook"
+    "attribution": "From the authors' notes"
+  },
+  "worlds_section": {
+    "label": "The Deck’s Mythology",
+    "title": "Four worlds in fifty-four faces",
+    "lead": "Magister is a full 54-card art deck. Suits are not decorative trim — each one is a realm with its own laws, cast, and symbolism. Ranks and houses are woven into the painting itself: you read the card by looking, not by corner indices.",
+    "footnote": "Every illustration is a small narrative — portrait, emblem, and historical echo at once. Text on the site expands the frame; the cardboard remains the primary grimoire."
+  },
+  "worlds": {
+    "hearts": {
+      "name": "Hearts — Olympian gods",
+      "blurb": "The classical pantheon in motion: desire, metamorphosis, oracle and flame. Hearts carry mythic episodes where mortals and immortals negotiate fate."
+    },
+    "diamonds": {
+      "name": "Diamonds — Bearers of secrets",
+      "blurb": "Alchemical emissaries, hidden orders, and whispers behind crowns. Diamonds track those who traffic in knowledge that should not travel in plain sight."
+    },
+    "clubs": {
+      "name": "Clubs — Knights Templar",
+      "blurb": "Crusade steel, lost treasure-maps, and the long shadow of the order. Clubs anchor the deck in medieval intrigue and the arc from devotion to legend."
+    },
+    "spades": {
+      "name": "Spades — Celebrities & icons",
+      "blurb": "Modern myth-making: faces the world thought it knew, reframed as archetypes. Spades ask what happens when public masks become permanent emblems."
+    }
   },
   "gallery": {
     "label": "The Collection",
@@ -25,8 +50,9 @@
     "open_btn": "Open figure →",
     "close": "Close",
     "suit_label": "Suit",
-    "value_label": "Value",
-    "category_label": "Category"
+    "value_label": "Rank",
+    "world_label": "World",
+    "category_label": "Motif"
   },
   "games": {
     "label": "Play & Ritual",
@@ -35,30 +61,41 @@
     "duration_label": "Duration"
   },
   "artist": {
-    "eyebrow": "The Hand Behind the Cards",
-    "name": "Vasil Pochitsky",
-    "quote": "I wanted to create a world that could exist in parallel with our own — where myth and history blend into something truer than either.",
-    "process_label": "Process & Origin",
-    "process_title": "Ink, concept, and alternative history",
-    "process_body_1": "Each card is a carefully researched window into a parallel universe where mythology, alchemy, and history coexist. The deck is both an art object and a playable game.",
-    "process_body_2": "The illustrations draw on deep research into historical figures, mythological archetypes, and alchemical symbolism — woven together into a coherent alternative world.",
-    "stat_year": "Year begun",
-    "stat_cards": "Cards in the deck",
-    "stat_worlds": "Thematic worlds"
+    "eyebrow": "Authors",
+    "title": "A creative union",
+    "lead": "Magister Cards is the work of Magister — Alexander Zhilchik — and Dr.Klein, Vasil Pochitsky’s artistic pseudonym.",
+    "magister_heading": "Magister · Alexander Zhilchik",
+    "magister_bio": "Creator of the characters and the deck’s mythos: businessman, philosopher, philanthropist — and, in his own way, a mystical figure.",
+    "drklein_heading": "Dr.Klein · Vasil Pochitsky",
+    "drklein_bio": "Painter and illustrator. Dr.Klein is how Pochitsky signs this body of work — the hand behind all fifty-four images.",
+    "drklein_link": "Arthive profile",
+    "process_label": "The deck",
+    "process_title": "Research, paint, play",
+    "process_intro": "Two years from the first brief to the finished edition — every card earned its place as a painting before it became cardboard.",
+    "process_body_1": "Magister locked the cast, conflicts, and four suits as living worlds; Dr.Klein built each image on archives, emblem books, and alchemical reference — research long before pigment hit the panel.",
+    "process_body_2": "Sketches were not disposable thumbnails: every study was pushed toward a finished easel piece — composition, light, and surface treated as standalone art. Only then was the work adapted to the scale and rhythm of a playing card.",
+    "process_body_3": "The result is a deck you can frame or deal: museum-grade patience, table-ready rules — research, paint, play in one object."
   },
   "acquire": {
     "label": "The Complete Deck",
     "title": "Acquire your edition",
-    "subtitle": "Each deck is a numbered collectible art object.",
-    "contents_label": "What's in the deck",
-    "item_cards": "54 Art Cards",
-    "item_games": "Game Rules",
-    "item_box": "Collector's Box",
-    "item_letter": "Artist's Note",
-    "price_note": "Worldwide shipping available",
-    "cta": "Order Now",
-    "cta_sub": "Secure Payment",
-    "fine_print": "Cards are packed with care and shipped worldwide. Each deck is individually numbered."
+    "subtitle": "Numbered edition: main deck, reference deck, and grimoire — housed in a suede-wrapped collector’s box.",
+    "contents_label": "What’s in the set",
+    "item_main_deck": "54 art cards — the playable Magister deck",
+    "item_reference_deck": "Companion deck — decodings & short card descriptions",
+    "item_grimoire": "Grimoire — worlds & full card lore",
+    "item_box": "Suede-wrapped collector’s box",
+    "shipping_highlight": "Free shipping — United States & EU",
+    "shipping_sub": "Other regions: rates shown at checkout.",
+    "price_note": "VAT included where applicable · numbered edition",
+    "cta": "Buy now",
+    "cta_sub": "Secure checkout",
+    "fine_print": "Carefully packed. Each set is individually numbered.",
+    "packaging_alt": "Magister Cards collector box in black suede with gold foil lettering and ornate seal.",
+    "packaging_alt_open": "Open collector’s box: two Magister decks in velvet lining with gold foil and gemstone clasp.",
+    "carousel_hint": "Click photo for next",
+    "carousel_dots_label": "Edition photos",
+    "carousel_slide": "Photo"
   },
   "footer": {
     "tagline": "An art deck for those who prefer their worlds layered, their history alternative, and their cards carrying meaning.",
@@ -68,7 +105,7 @@
       "instagram": "Instagram",
       "press": "Press"
     },
-    "copy": "© 2024 Magister Cards · All illustrations by Vasil Pochitsky"
+    "copy": "© 2024 Magister Cards · Concept: Alexander Zhilchik (Magister) · Illustration: Vasil Pochitsky (Dr.Klein)"
   },
   "suits": {
     "spades": "Spades",

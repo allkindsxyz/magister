@@ -2,11 +2,11 @@
   "id": "ten-hearts",
   "suit": "hearts",
   "value": "10",
-  "category": { "en": "Famous People", "ru": "Знаменитості" },
-  "title": { "en": "The Wasp's Flight", "ru": "Палёт асы" },
+  "category": { "en": "Emblem", "ru": "Эмблема" },
+  "title": { "en": "The Wasp's Flight", "ru": "Полёт осы" },
   "description": {
-    "en": "Napoleon Bonaparte took the wasp as his emblem.",
-    "ru": "Напалеон Банапарт выкарыстоўваў сімбал восы у якасці эмблемы."
+    "en": "Napoleon took the wasp as a personal emblem — speed, sting, and swarm as statecraft. The card reads ambition as something bright, dangerous, and airborne.",
+    "ru": "Наполеон избрал осу личным знаком — скорость, жало и рой как политика. Карта читает амбицию как нечто яркое, опасное и несущееся в воздухе."
   },
   "image": "/cards/bearer.png",
   "featured": false

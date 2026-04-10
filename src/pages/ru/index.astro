@@ -3,6 +3,7 @@ import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
 import QuoteStrip from '../../components/QuoteStrip.astro';
+import Worlds from '../../components/Worlds.astro';
 import Gallery from '../../components/Gallery.astro';
 import Games from '../../components/Games.astro';
 import Artist from '../../components/Artist.astro';
@@ -15,11 +16,12 @@ const lang = 'ru';
 <Layout
   lang={lang}
   title="Magister Cards — Коллекционная арт-колода"
-  description="Коллекционная художественная колода, где мифология, алхимия и реальные исторические персонажи объединены в единую альтернативную вселенную. 54 уникальные карты."
+  description="54 иллюстрированные карты: творческий союз Magister (Александр Жильчик) и Dr.Klein / Василий Почицкий — миф, алхимия и история в одной колоде."
 >
   <Nav lang={lang} />
   <Hero lang={lang} />
   <QuoteStrip lang={lang} />
+  <Worlds lang={lang} />
   <Gallery lang={lang} />
   <Games lang={lang} />
   <Artist lang={lang} />
