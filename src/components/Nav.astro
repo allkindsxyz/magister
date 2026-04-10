@@ -40,13 +40,20 @@ const altPath = getLocalizedPath(currentPath, altLang);
     <a href="#acquire" class="nav-buy">{t('nav.acquire')}</a>
   </div>
 
-  <button class="nav-burger" id="nav-burger" aria-label="Menu">
+  <button
+    class="nav-burger"
+    id="nav-burger"
+    type="button"
+    aria-label="Menu"
+    aria-expanded="false"
+    aria-controls="mobile-menu"
+  >
     <span></span><span></span><span></span>
   </button>
 </nav>
 
 <!-- Mobile menu -->
-<div class="mobile-menu" id="mobile-menu">
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
   <ul>
     <li><a href="#worlds" class="mobile-link">{t('nav.worlds')}</a></li>
     <li><a href="#gallery" class="mobile-link">{t('nav.cards')}</a></li>
@@ -71,6 +78,9 @@ nav {
   right: 0;
   z-index: 200;
   padding: 1.5rem 3.5rem;
+  padding-left: max(1.5rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1.5rem, env(safe-area-inset-right, 0px));
+  padding-top: max(1.5rem, env(safe-area-inset-top, 0px));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -172,11 +182,17 @@ nav.scrolled {
 .nav-burger {
   display: none;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px;
+  margin: -6px -8px -6px 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .nav-burger span {
@@ -192,11 +208,15 @@ nav.scrolled {
   position: fixed;
   inset: 0;
   z-index: 190;
+  padding: max(2rem, env(safe-area-inset-top)) max(1.5rem, env(safe-area-inset-right))
+    max(2rem, env(safe-area-inset-bottom)) max(1.5rem, env(safe-area-inset-left));
   background: rgba(12,7,1,.97);
   flex-direction: column;
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(8px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mobile-menu.open {
@@ -259,10 +279,16 @@ nav.scrolled {
 @media (max-width: 960px) {
   nav {
     padding: 1.2rem 1.8rem;
+    padding-left: max(1.2rem, env(safe-area-inset-left, 0px));
+    padding-right: max(1.2rem, env(safe-area-inset-right, 0px));
+    padding-top: max(1.2rem, env(safe-area-inset-top, 0px));
   }
 
   nav.scrolled {
-    padding: .9rem 1.8rem;
+    padding: 0.9rem 1.8rem;
+    padding-left: max(0.9rem, env(safe-area-inset-left, 0px));
+    padding-right: max(0.9rem, env(safe-area-inset-right, 0px));
+    padding-top: max(0.9rem, env(safe-area-inset-top, 0px));
   }
 
   .nav-links,
@@ -280,15 +306,32 @@ nav.scrolled {
   const burger = document.getElementById('nav-burger');
   const menu = document.getElementById('mobile-menu');
 
+  function setMenuOpen(open: boolean) {
+    if (!menu || !burger) return;
+    menu.classList.toggle('open', open);
+    menu.setAttribute('aria-hidden', open ? 'false' : 'true');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
   if (burger && menu) {
     burger.addEventListener('click', () => {
-      menu.classList.toggle('open');
+      setMenuOpen(!menu.classList.contains('open'));
     });
 
-    menu.querySelectorAll('.mobile-link').forEach((link) => {
-      link.addEventListener('click', () => {
-        menu.classList.remove('open');
-      });
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => setMenuOpen(false));
+    });
+
+    menu.addEventListener('click', (e) => {
+      if (e.target === menu) setMenuOpen(false);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.classList.contains('open')) {
+        setMenuOpen(false);
+        burger.focus();
+      }
     });
   }
 </script>

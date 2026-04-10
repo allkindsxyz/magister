@@ -28,6 +28,8 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -37,6 +39,22 @@ body {
   font-size: 18px;
   line-height: 1.8;
   overflow-x: hidden;
+}
+
+@media (max-width: 960px) {
+  :root {
+    --section-pad-v: 5.5rem;
+  }
+
+  .btn-gold,
+  .btn-outline {
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+  }
 }
 
 /* ── TEXTURE UTILITIES ──────────────────────────────── */

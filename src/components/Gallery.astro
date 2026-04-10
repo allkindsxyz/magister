@@ -222,6 +222,8 @@ function cardPayload(card: (typeof cards)[number]) {
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pinch-zoom;
   cursor: grab;
   /* Hide scrollbar */
   scrollbar-width: none;
@@ -321,6 +323,18 @@ function cardPayload(card: (typeof cards)[number]) {
   opacity: 1;
 }
 
+/* Touch devices: keep title/CTA visible (no hover) */
+@media (hover: none) {
+  .carousel-card__overlay {
+    opacity: 1;
+    background: linear-gradient(to top, rgba(12, 7, 1, 0.94) 0%, rgba(12, 7, 1, 0.35) 42%, transparent 72%);
+  }
+
+  .carousel-card__overlay-inner {
+    padding-bottom: 1.1rem;
+  }
+}
+
 .carousel-card__overlay-inner {
   padding: 1.5rem 1.2rem 1.4rem;
   transform: translateY(6px);
@@ -384,7 +398,8 @@ function cardPayload(card: (typeof cards)[number]) {
   opacity: 0;
   pointer-events: none;
   transition: opacity .4s;
-  padding: 2rem;
+  padding: max(1rem, env(safe-area-inset-top, 0px)) max(1rem, env(safe-area-inset-right, 0px))
+    max(1rem, env(safe-area-inset-bottom, 0px)) max(1rem, env(safe-area-inset-left, 0px));
 }
 
 .lightbox.open {
@@ -429,10 +444,12 @@ function cardPayload(card: (typeof cards)[number]) {
 
 .lb-close {
   position: absolute;
-  top: -1.2rem;
-  right: -1.2rem;
-  width: 38px;
-  height: 38px;
+  top: max(-0.5rem, env(safe-area-inset-top, 0px));
+  right: max(-0.5rem, env(safe-area-inset-right, 0px));
+  min-width: 44px;
+  min-height: 44px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1px solid rgba(200,151,58,.25);
   background: rgba(20,10,2,.95);
@@ -444,6 +461,7 @@ function cardPayload(card: (typeof cards)[number]) {
   cursor: pointer;
   transition: color .2s, border-color .2s, transform .2s;
   line-height: 1;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .lb-close:hover {
@@ -530,6 +548,12 @@ function cardPayload(card: (typeof cards)[number]) {
     width: 40px;
   }
 
+  .gallery-btn {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+  }
+
   .lb-inner {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -546,6 +570,14 @@ function cardPayload(card: (typeof cards)[number]) {
 @media (max-width: 580px) {
   .carousel-card {
     width: clamp(150px, 55vw, 220px);
+  }
+
+  .lb-suit-val {
+    font-size: clamp(2.5rem, 14vw, 3.5rem);
+  }
+
+  .lb-card {
+    width: min(72vw, 280px);
   }
 }
 </style>
@@ -586,12 +618,14 @@ function cardPayload(card: (typeof cards)[number]) {
     lbMeta.textContent = data.metaLine;
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     lbClose.focus();
   }
 
   function closeLightbox() {
     lightbox.classList.remove('open');
     document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
   }
 
   lbClose.addEventListener('click', closeLightbox);

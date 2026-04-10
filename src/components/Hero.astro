@@ -569,9 +569,34 @@ const nBack = Math.max(0, deckCards.length - 1);
       if (e.key === 'ArrowLeft') goPrev();
     });
 
+    let touchStartX = 0;
+    let skipDeckClick = false;
+    frontCard.addEventListener(
+      'touchstart',
+      (e) => {
+        touchStartX = e.changedTouches[0].clientX;
+      },
+      { passive: true }
+    );
+    frontCard.addEventListener(
+      'touchend',
+      (e) => {
+        if (n <= 1) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(dx) < 48) return;
+        skipDeckClick = true;
+        window.setTimeout(() => {
+          skipDeckClick = false;
+        }, 320);
+        if (dx < 0) goNext();
+        else goPrev();
+      },
+      { passive: true }
+    );
+
     frontCard.addEventListener('click', (e) => {
       e.preventDefault();
-      if (n <= 1) return;
+      if (n <= 1 || skipDeckClick) return;
       goNext();
     });
 
