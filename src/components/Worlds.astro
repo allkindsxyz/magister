@@ -278,7 +278,19 @@ const examples = Object.fromEntries(suitOrder.map((s) => [s, exampleForSuit(s)])
 @media (max-width: 780px) {
   .worlds-grid {
     grid-template-columns: 1fr;
-    padding: 0 1.5rem;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+  }
+
+  .world-card {
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
   }
 
   .worlds-header,
@@ -288,7 +300,7 @@ const examples = Object.fromEntries(suitOrder.map((s) => [s, exampleForSuit(s)])
   }
 
   .world-card__visual {
-    width: min(92vw, 240px);
+    width: min(100%, 240px);
   }
 
   .world-card__frame {
