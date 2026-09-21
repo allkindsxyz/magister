@@ -2,6 +2,7 @@ import { defineConfig } from 'astro/config';
 import node from '@astrojs/node';
 
 export default defineConfig({
+  site: (process.env.SITE_URL || 'https://magister.cards').replace(/\/$/, ''),
   output: 'server',
   adapter: node({ mode: 'standalone' }),
   i18n: {

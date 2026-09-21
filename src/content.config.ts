@@ -20,16 +20,4 @@ const cards = defineCollection({
   }),
 });
 
-const games = defineCollection({
-  loader: glob({ pattern: '**/*.json', base: './src/content/games' }),
-  schema: z.object({
-    id: z.string(),
-    number: z.string(),
-    title: localizedString,
-    description: localizedString,
-    players: z.string(),
-    duration: localizedString,
-  }),
-});
-
-export const collections = { cards, games };
+export const collections = { cards };

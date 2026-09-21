@@ -6,691 +6,174 @@ interface Props {
   lang: Lang;
 }
 
-const t = useTranslations(Astro.props.lang);
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 
-const shopUrl = import.meta.env.EXTERNAL_SHOP_URL || '#';
-const price = '80';
-const currency = '€';
-
-const slides = [
-  { src: '/images/magister-collector-box.png', alt: t('acquire.packaging_alt') },
-  { src: '/images/magister-box-open.png', alt: t('acquire.packaging_alt_open') },
+const contents = [
+  t('physical.item_cards'),
+  t('physical.item_art'),
+  t('physical.item_stories'),
+  t('physical.item_packaging'),
+  t('physical.item_print'),
 ];
 ---
 
-<section class="acquire parch-noise" id="acquire" aria-labelledby="acquire-heading">
-  <script type="application/json" id="acquire-slides-data" set:html={JSON.stringify(slides)} />
-  <div class="acquire-shell reveal">
-    <div class="acquire-grid">
-      <div class="acquire-copy">
-        <header class="acquire-head">
-          <p class="acquire-label section-label">{t('acquire.label')}</p>
-          <h2 class="acquire-title" id="acquire-heading">{t('acquire.title')}</h2>
-          <p class="edition-badge" aria-label={t('acquire.edition_badge')}>
-            <span class="edition-badge__dot" aria-hidden="true">◆</span>
-            {t('acquire.edition_badge')}
-          </p>
-          <p class="acquire-sub">{t('acquire.subtitle')}</p>
-        </header>
+<section class="physical editorial-section" id="edition" aria-labelledby="physical-title">
+  <div class="page-shell physical-grid">
+    <header class="physical-heading reveal">
+      <p class="section-label">{t('physical.label')}</p>
+      <h2 class="section-title" id="physical-title">{t('physical.title')}</h2>
+    </header>
 
-        <p class="contents-heading">{t('acquire.contents_label')}</p>
-        <ul class="contents-list" role="list">
-          <li class="contents-item">
-            <span class="contents-diamond" aria-hidden="true">◆</span>
-            <span class="contents-text">{t('acquire.item_main_deck')}</span>
-          </li>
-          <li class="contents-item">
-            <span class="contents-diamond" aria-hidden="true">◆</span>
-            <span class="contents-text">{t('acquire.item_reference_deck')}</span>
-          </li>
-          <li class="contents-item">
-            <span class="contents-diamond" aria-hidden="true">◆</span>
-            <span class="contents-text">{t('acquire.item_grimoire')}</span>
-          </li>
-          <li class="contents-item">
-            <span class="contents-diamond" aria-hidden="true">◆</span>
-            <span class="contents-text">{t('acquire.item_box')}</span>
-          </li>
-        </ul>
-
-        <div class="shipping-callout" role="status" aria-live="polite">
-          <span class="shipping-callout__glyph" aria-hidden="true">✦</span>
-          <div class="shipping-callout__body">
-            <p class="shipping-callout__title">{t('acquire.shipping_highlight')}</p>
-            <p class="shipping-callout__sub">{t('acquire.shipping_sub')}</p>
-          </div>
-        </div>
-
-        <div class="acquire-checkout">
-          <div class="price-stack">
-            <div class="price-row">
-              <span class="price-currency">{currency}</span>
-              <span class="price-main">{price}</span>
-            </div>
-            <p class="price-note">{t('acquire.price_note')}</p>
-          </div>
-          <div class="acquire-cta">
-            <a href={shopUrl} class="btn btn-gold acquire-buy" target="_blank" rel="noopener noreferrer">
-              {t('acquire.cta')}
-            </a>
-            <p class="acquire-cta-hint">{t('acquire.cta_sub')}</p>
-          </div>
-        </div>
-
-        <p class="acquire-fine">{t('acquire.fine_print')}</p>
-      </div>
-
-      <figure class="acquire-visual">
-        <div class="acquire-carousel" id="acquire-carousel">
-          <div
-            class="acquire-carousel-stage"
-            id="acquire-carousel-stage"
-            role="button"
-            tabindex="0"
-            aria-label={t('acquire.carousel_hint')}
-          >
-            <div class="acquire-visual-frame">
-              <img
-                id="acquire-carousel-img"
-                src={slides[0].src}
-                alt={slides[0].alt}
-                width="682"
-                height="1024"
-                loading="lazy"
-                decoding="async"
-                class="acquire-visual-img"
-              />
-            </div>
-          </div>
-          <p class="acquire-carousel-hint">{t('acquire.carousel_hint')}</p>
-          <div
-            class="acquire-carousel-dots"
-            id="acquire-carousel-dots"
-            role="tablist"
-            aria-label={t('acquire.carousel_dots_label')}
-          >
-            {slides.map((_, i) => (
-              <button
-                type="button"
-                class:list={['acquire-dot', { 'is-active': i === 0 }]}
-                role="tab"
-                aria-selected={i === 0}
-                aria-label={`${t('acquire.carousel_slide')} ${i + 1}`}
-                data-index={i}
-              />
-            ))}
-          </div>
-        </div>
-      </figure>
+    <div class="physical-copy reveal">
+      <p class="lead">{t('physical.lead')}</p>
+      <p class="body-copy">{t('physical.body')}</p>
+      <ul>
+        {contents.map((item) => <li>{item}</li>)}
+      </ul>
     </div>
+
+    <figure class="edition-image edition-image--closed reveal">
+      <img
+        src="/media/collector-box.webp"
+        alt={t('physical.closed_alt')}
+        width="682"
+        height="1024"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>{t('physical.closed_caption')}</figcaption>
+    </figure>
+
+    <figure class="edition-image edition-image--open reveal">
+      <img
+        src="/media/box-open.webp"
+        alt={t('physical.open_alt')}
+        width="682"
+        height="1024"
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>{t('physical.open_caption')}</figcaption>
+    </figure>
+
+    <p class="physical-note reveal">{t('physical.note')}</p>
   </div>
 </section>
 
 <style>
-.acquire {
-  background-color: var(--parch);
-  background-image:
-    radial-gradient(ellipse at 10% 20%, rgba(122, 30, 0, 0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 90% 80%, rgba(122, 30, 0, 0.08) 0%, transparent 45%),
-    radial-gradient(ellipse at 60% 50%, rgba(122, 30, 0, 0.05) 0%, transparent 55%),
-    radial-gradient(ellipse at 30% 90%, rgba(12, 7, 1, 0.06) 0%, transparent 40%);
-  position: relative;
-  overflow: hidden;
-  padding: var(--section-pad-v) clamp(1.5rem, 4vw, 4rem)
-    calc(var(--section-pad-v) + env(safe-area-inset-bottom, 0px));
-}
-
-.acquire-shell {
-  max-width: 1180px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
-}
-
-.acquire-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(260px, 0.92fr);
-  gap: clamp(2.25rem, 5vw, 4.25rem);
-  align-items: start;
-}
-
-.acquire-copy {
-  text-align: left;
-  min-width: 0;
-}
-
-.acquire-head {
-  margin-bottom: 1.75rem;
-}
-
-.acquire-label {
-  color: rgba(122, 30, 0, 0.55);
-}
-
-.acquire-title {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(1.9rem, 3.6vw, 3.15rem);
-  color: var(--ink);
-  margin: 0 0 0.9rem;
-  line-height: 1.12;
-  letter-spacing: 0.02em;
-  text-wrap: balance;
-}
-
-.edition-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  font-family: 'Cinzel', serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold, #b8860b);
-  background: rgba(184, 134, 11, 0.08);
-  border: 1px solid rgba(184, 134, 11, 0.28);
-  border-radius: 2px;
-  padding: 0.3em 0.75em 0.28em;
-  margin: 0 0 1rem;
-  line-height: 1;
-}
-
-.edition-badge__dot {
-  font-size: 0.5em;
-  color: var(--gold, #b8860b);
-}
-
-.acquire-sub {
-  font-style: italic;
-  font-family: 'IM Fell English', Georgia, serif;
-  color: rgba(12, 7, 1, 0.55);
-  font-size: 1.05rem;
-  margin: 0;
-  line-height: 1.6;
-  max-width: 38rem;
-}
-
-.contents-heading {
-  font-family: 'Cinzel', serif;
-  font-size: 0.58rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: rgba(122, 30, 0, 0.55);
-  margin: 0 0 0.85rem;
-}
-
-.contents-list {
-  list-style: none;
-  margin: 0 0 1.75rem;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  max-width: 40rem;
-}
-
-.contents-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem 0.75rem 0.85rem;
-  background: rgba(233, 223, 185, 0.55);
-  border-radius: 4px;
-  border: 1px solid rgba(122, 30, 0, 0.1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
-}
-
-.contents-diamond {
-  flex-shrink: 0;
-  width: 1.25rem;
-  text-align: center;
-  font-size: 0.55rem;
-  line-height: 1.8;
-  color: rgba(122, 30, 0, 0.65);
-}
-
-.contents-text {
-  font-family: 'Cinzel', serif;
-  font-size: 0.64rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(12, 7, 1, 0.62);
-  line-height: 1.55;
-}
-
-.shipping-callout {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  max-width: 40rem;
-  margin: 0 0 1.85rem;
-  padding: 1.1rem 1.2rem 1.15rem;
-  background: linear-gradient(135deg, rgba(200, 151, 58, 0.2) 0%, rgba(122, 30, 0, 0.12) 100%);
-  border: 1px solid rgba(200, 151, 58, 0.55);
-  border-radius: 6px;
-  box-shadow:
-    0 10px 32px rgba(12, 7, 1, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
-}
-
-.shipping-callout__glyph {
-  font-size: 1.15rem;
-  color: var(--rust);
-  line-height: 1.2;
-  margin-top: 0.1rem;
-  flex-shrink: 0;
-}
-
-.shipping-callout__body {
-  min-width: 0;
-}
-
-.shipping-callout__title {
-  font-family: 'Cinzel', serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--ink);
-  font-weight: 600;
-  margin: 0 0 0.45rem;
-  line-height: 1.45;
-}
-
-.shipping-callout__sub {
-  font-family: 'IM Fell English', Georgia, serif;
-  font-size: 0.92rem;
-  font-style: italic;
-  color: rgba(12, 7, 1, 0.52);
-  margin: 0;
-  line-height: 1.5;
-}
-
-.acquire-checkout {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: flex-start;
-  gap: 1.75rem 2.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.price-stack {
-  min-width: min(100%, 12rem);
-}
-
-.price-row {
-  display: flex;
-  align-items: baseline;
-  gap: 0.45rem;
-}
-
-.price-main {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(3rem, 6.5vw, 4.25rem);
-  color: var(--ink);
-  line-height: 1;
-}
-
-.price-currency {
-  font-family: 'Cinzel', serif;
-  font-size: 1.45rem;
-  color: rgba(12, 7, 1, 0.42);
-  font-weight: 600;
-}
-
-.price-note {
-  font-size: 0.78rem;
-  color: rgba(12, 7, 1, 0.42);
-  margin: 0.5rem 0 0;
-  line-height: 1.45;
-}
-
-.acquire-cta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-}
-
-.acquire-buy {
-  min-width: 12.5rem;
-  text-align: center;
-}
-
-.acquire-cta-hint {
-  font-family: 'Cinzel', serif;
-  font-size: 0.52rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: rgba(12, 7, 1, 0.38);
-  margin: 0;
-}
-
-.acquire-fine {
-  font-size: 0.78rem;
-  font-style: italic;
-  font-family: 'IM Fell English', Georgia, serif;
-  color: rgba(12, 7, 1, 0.34);
-  margin: 0;
-  line-height: 1.65;
-  max-width: 36rem;
-}
-
-.acquire-visual {
-  margin: 0;
-  position: relative;
-}
-
-.acquire-carousel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.65rem;
-  width: 100%;
-}
-
-.acquire-carousel-stage {
-  cursor: pointer;
-  width: 100%;
-  border: none;
-  padding: 0;
-  background: none;
-  border-radius: 12px;
-  text-align: left;
-  outline: none;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.acquire-carousel-stage:focus-visible {
-  box-shadow: 0 0 0 2px var(--parch), 0 0 0 4px var(--rust);
-}
-
-.acquire-visual-frame {
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  background: linear-gradient(145deg, rgba(12, 7, 1, 0.08), rgba(122, 30, 0, 0.06));
-  box-shadow:
-    0 28px 70px rgba(12, 7, 1, 0.18),
-    0 0 0 1px rgba(122, 30, 0, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
-  transition: box-shadow 0.25s;
-}
-
-.acquire-carousel-stage:hover .acquire-visual-frame {
-  box-shadow:
-    0 32px 78px rgba(12, 7, 1, 0.22),
-    0 0 0 1px rgba(122, 30, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
-}
-
-.acquire-visual-img {
-  width: 100%;
-  height: auto;
-  display: block;
-  opacity: 1;
-  transition: opacity 0.45s ease;
-}
-
-.acquire-visual-img.is-fading {
-  opacity: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .acquire-visual-img {
-    transition-duration: 0.01ms;
-  }
-}
-
-.acquire-carousel-hint {
-  font-family: 'Cinzel', serif;
-  font-size: 0.52rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(12, 7, 1, 0.4);
-  margin: 0;
-  text-align: center;
-}
-
-.acquire-carousel-dots {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.15rem;
-  flex-wrap: wrap;
-}
-
-.acquire-dot {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: none;
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-  flex-shrink: 0;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.acquire-dot::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: rgba(122, 30, 0, 0.28);
-  transition:
-    transform 0.2s,
-    background 0.2s,
-    box-shadow 0.2s;
-}
-
-.acquire-dot:hover::after,
-.acquire-dot:focus-visible::after {
-  background: rgba(122, 30, 0, 0.48);
-}
-
-.acquire-dot.is-active::after {
-  background: var(--gold);
-  box-shadow: 0 0 0 2px rgba(200, 151, 58, 0.4);
-  transform: translate(-50%, -50%) scale(1.2);
-}
-
-.acquire-dot:focus-visible {
-  outline: 2px solid rgba(122, 30, 0, 0.45);
-  outline-offset: 2px;
-}
-
-@media (min-width: 901px) {
-  .acquire-visual {
-    position: sticky;
-    top: max(5.5rem, calc(3.5rem + env(safe-area-inset-top, 0px)));
-  }
-}
-
-@media (max-width: 900px) {
-  .acquire-shell {
-    padding-left: env(safe-area-inset-left, 0px);
-    padding-right: env(safe-area-inset-right, 0px);
+  .physical {
+    background: var(--white);
   }
 
-  .acquire-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  .physical-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 4rem 1.5rem;
   }
 
-  .acquire-visual {
-    max-width: 400px;
-    margin: 0 auto;
-    width: 100%;
+  .physical-heading {
+    grid-column: 1 / 7;
   }
 
-  .acquire-copy {
-    text-align: center;
+  .physical-heading .section-title {
+    margin-top: 1.75rem;
   }
 
-  .acquire-head,
-  .contents-heading {
-    text-align: center;
+  .physical-copy {
+    grid-column: 8 / 13;
+    padding-top: 3.2rem;
   }
 
-  .acquire-sub,
-  .contents-list,
-  .shipping-callout,
-  .acquire-fine {
-    margin-left: auto;
-    margin-right: auto;
+  .physical-copy .body-copy {
+    margin-top: 1.5rem;
   }
 
-  .contents-item {
-    text-align: left;
+  .physical-copy ul {
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--line);
+    list-style: none;
   }
 
-  .shipping-callout {
-    text-align: left;
+  .physical-copy li {
+    padding-block: 0.8rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+    font: 500 0.69rem/1.4 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
   }
 
-  .acquire-checkout {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+  .edition-image {
+    grid-row: 2;
+    margin-top: clamp(2rem, 5vw, 4rem);
   }
 
-  .price-stack {
-    text-align: center;
+  .edition-image--closed {
+    grid-column: 1 / 7;
   }
 
-  .price-row {
-    justify-content: center;
+  .edition-image--open {
+    grid-column: 7 / 10;
+    align-self: end;
+    padding-bottom: 0;
   }
 
-  .acquire-cta {
-    align-items: center;
+  .edition-image img {
+    width: auto;
+    max-width: 100%;
+    max-height: 650px;
+    object-fit: contain;
+    object-position: left bottom;
+    background: var(--paper);
   }
-}
+
+  .edition-image figcaption {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font: 500 0.62rem/1.4 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .physical-note {
+    grid-column: 10 / 13;
+    grid-row: 2;
+    align-self: end;
+    margin-bottom: 2rem;
+    font-family: var(--display);
+    font-size: clamp(1.75rem, 3.3vw, 3.5rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  @media (max-width: 800px) {
+    .physical-heading,
+    .physical-copy,
+    .edition-image--closed,
+    .edition-image--open,
+    .physical-note {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+
+    .physical-copy {
+      padding-top: 0;
+    }
+
+    .edition-image {
+      margin-top: 2rem;
+    }
+
+    .edition-image--open {
+      width: 72%;
+      margin-left: auto;
+      padding-bottom: 0;
+    }
+
+    .physical-note {
+      width: 82%;
+      margin-top: 1rem;
+    }
+  }
 </style>
-
-<script>
-  (function () {
-    const dataEl = document.getElementById('acquire-slides-data');
-    const img = document.getElementById('acquire-carousel-img') as HTMLImageElement | null;
-    const stage = document.getElementById('acquire-carousel-stage');
-    const dotsRoot = document.getElementById('acquire-carousel-dots');
-    if (!dataEl || !img || !stage || !dotsRoot) return;
-
-    let slides: { src: string; alt: string }[] = [];
-    try {
-      slides = JSON.parse(dataEl.textContent || '[]');
-    } catch {
-      return;
-    }
-    if (!slides.length) return;
-
-    const dots = Array.from(dotsRoot.querySelectorAll<HTMLButtonElement>('.acquire-dot'));
-    let index = 0;
-    let busy = false;
-
-    function prefersReducedMotion() {
-      return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    }
-
-    function waitOpacityTransition(el: HTMLElement, ms: number) {
-      return new Promise<void>((resolve) => {
-        let done = false;
-        const finish = () => {
-          if (done) return;
-          done = true;
-          el.removeEventListener('transitionend', onEnd);
-          window.clearTimeout(tid);
-          resolve();
-        };
-        const onEnd = (e: TransitionEvent) => {
-          if (e.target !== el || e.propertyName !== 'opacity') return;
-          finish();
-        };
-        el.addEventListener('transitionend', onEnd);
-        const tid = window.setTimeout(finish, ms);
-      });
-    }
-
-    async function go(i: number) {
-      const next = ((i % slides.length) + slides.length) % slides.length;
-      if (next === index || busy) return;
-      busy = true;
-      const reduced = prefersReducedMotion();
-
-      if (!reduced) {
-        img.classList.add('is-fading');
-        await waitOpacityTransition(img, 500);
-      }
-
-      index = next;
-      const s = slides[index];
-      img.src = s.src;
-      img.alt = s.alt;
-      try {
-        if ('decode' in img) {
-          await img.decode();
-        }
-      } catch {
-        /* ignore */
-      }
-
-      if (!reduced) {
-        void img.offsetHeight;
-        img.classList.remove('is-fading');
-      }
-
-      dots.forEach((d, j) => {
-        const on = j === index;
-        d.classList.toggle('is-active', on);
-        d.setAttribute('aria-selected', on ? 'true' : 'false');
-      });
-
-      busy = false;
-    }
-
-    let touchStartX = 0;
-    let skipClickFromSwipe = false;
-    stage.addEventListener(
-      'touchstart',
-      (e) => {
-        touchStartX = e.changedTouches[0].clientX;
-      },
-      { passive: true }
-    );
-    stage.addEventListener(
-      'touchend',
-      (e) => {
-        const dx = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(dx) < 48) return;
-        skipClickFromSwipe = true;
-        window.setTimeout(() => {
-          skipClickFromSwipe = false;
-        }, 320);
-        if (dx < 0) go(index + 1);
-        else go(index - 1);
-      },
-      { passive: true }
-    );
-
-    stage.addEventListener('click', () => {
-      if (skipClickFromSwipe) return;
-      go(index + 1);
-    });
-    stage.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        go(index + 1);
-      }
-    });
-
-    dots.forEach((dot) => {
-      dot.addEventListener('click', () => go(Number(dot.dataset.index)));
-    });
-  })();
-</script>

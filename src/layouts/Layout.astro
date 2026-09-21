@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { absoluteUrl, localizedAbsoluteUrl } from '../lib/site';
 
 interface Props {
   title?: string;
@@ -9,13 +10,14 @@ interface Props {
 }
 
 const {
-  title = 'Magister Cards — Art Collectible Deck',
-  description = 'A collectible art deck where mythology, alchemy, and real historical figures unite in a single alternative universe.',
+  title = 'Magister Cards — 54 cards. 4 worlds. 1 alternative universe.',
+  description = 'Magister Cards is a physical collectible art card deck built around an original alternative mythology.',
   lang,
-  canonicalURL = Astro.url.href,
 } = Astro.props;
 
-const ogImage = '/og-image.jpg';
+const pathAfterLocale = Astro.url.pathname.replace(new RegExp(`^/${lang}`), '') || '/';
+const canonicalURL = Astro.props.canonicalURL ?? localizedAbsoluteUrl(lang, pathAfterLocale);
+const ogImage = absoluteUrl('/media/merchant.webp');
 ---
 <!DOCTYPE html>
 <html lang={lang}>
@@ -24,7 +26,9 @@ const ogImage = '/og-image.jpg';
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  <meta name="theme-color" content="#f3f0e8" />
   <link rel="canonical" href={canonicalURL} />
+  <script is:inline>document.documentElement.classList.add('js');</script>
 
   <!-- Open Graph -->
   <meta property="og:title" content={title} />
@@ -32,42 +36,63 @@ const ogImage = '/og-image.jpg';
   <meta property="og:image" content={ogImage} />
   <meta property="og:url" content={canonicalURL} />
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Magister Cards" />
+  <meta name="twitter:card" content="summary_large_image" />
 
   <!-- Alternate languages -->
-  <link rel="alternate" hreflang="en" href={Astro.url.href.replace(`/${lang}/`, '/en/')} />
-  <link rel="alternate" hreflang="ru" href={Astro.url.href.replace(`/${lang}/`, '/ru/')} />
+  <link rel="alternate" hreflang="en" href={localizedAbsoluteUrl('en', pathAfterLocale)} />
+  <link rel="alternate" hreflang="ru" href={localizedAbsoluteUrl('ru', pathAfterLocale)} />
+  <link rel="alternate" hreflang="x-default" href={localizedAbsoluteUrl('en', pathAfterLocale)} />
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-  <!-- Fonts preload -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
+  />
 </head>
 <body>
+  <a class="skip-link" href="#main-content">{lang === 'ru' ? 'К содержанию' : 'Skip to content'}</a>
   <slot />
 
   <script>
-    // Scroll reveal observer
     const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            e.target.classList.add('up');
-            obs.unobserve(e.target);
-          }
-        });
-      },
-      { threshold: 0.12 }
-    );
-    revealEls.forEach((el) => obs.observe(el));
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const obs = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('up');
+              obs.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.08 }
+      );
+      revealEls.forEach((el) => obs.observe(el));
+    } else {
+      revealEls.forEach((el) => el.classList.add('up'));
+    }
 
-    // Nav scroll effect
+    if (location.hash) {
+      const target = document.querySelector(location.hash);
+      if (target) {
+        target.classList.add('up');
+        target.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach((el) => {
+          el.classList.add('up');
+        });
+      }
+    }
+
     const nav = document.getElementById('main-nav');
     if (nav) {
+      const updateNav = () => nav.classList.toggle('scrolled', window.scrollY > 24);
+      updateNav();
       window.addEventListener('scroll', () => {
-        nav.classList.toggle('scrolled', window.scrollY > 60);
+        updateNav();
       }, { passive: true });
     }
   </script>

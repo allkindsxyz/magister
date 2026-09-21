@@ -1,0 +1,20 @@
+---
+/** Official SPIEL Essen mark (Dunkelblau, PNG with alpha). */
+interface Props {
+  class?: string;
+  width?: number;
+  height?: number;
+}
+
+const { class: className, width = 200, height = 87 } = Astro.props;
+---
+
+<img
+  src="/media/spiel-essen-logo.png"
+  alt=""
+  class={className}
+  width={width}
+  height={height}
+  loading="lazy"
+  decoding="async"
+/>

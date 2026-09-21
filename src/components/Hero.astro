@@ -9,632 +9,412 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-
 const allCards = await getCollection('cards');
-const deckCards = [
-  ...allCards.filter(c => c.data.featured),
-  ...allCards.filter(c => !c.data.featured),
+const cards = [
+  ...allCards.filter((card) => card.data.featured),
+  ...allCards.filter((card) => !card.data.featured),
 ].slice(0, 6);
-const nBack = Math.max(0, deckCards.length - 1);
+const backCount = Math.max(0, cards.length - 1);
 ---
 
-<section class="hero hatch" id="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-glow2"></div>
+<section class="hero" id="deck" aria-labelledby="hero-title">
+  <div class="page-shell hero-grid">
+    <div class="hero-copy">
+      <p class="section-label">{t('hero.meta')}</p>
+      <h1 id="hero-title">
+        <span>Magister</span>
+        <span>Cards</span>
+      </h1>
+      <p class="hero-lead">{t('hero.lead')}</p>
+      <p class="hero-body">{t('hero.body')}</p>
 
-  <div class="hero-intro">
-    <div class="hero-number" aria-hidden="true">54</div>
-    <p class="hero-eyebrow">{t('hero.eyebrow')}</p>
-    <h1 class="hero-title">
-      {t('hero.title')}
-      <span class="hero-title-sub">{t('hero.subtitle')}</span>
-    </h1>
-    <p class="hero-body">{t('hero.body')}</p>
-  </div>
+      <div class="hero-actions">
+        <a class="btn" href="#fifty-four">{t('hero.explore')}</a>
+        <a class="btn btn-accent" href="#spiel">
+          <span class="btn-event-mark" aria-hidden="true">✦</span>
+          {t('hero.meet')}
+        </a>
+      </div>
+    </div>
 
-  <div class="hero-right">
-    <div class="hero-deck" id="hero-deck">
-      <div class="deck-stack" id="deck-stack" aria-hidden="true">
-        {Array.from({ length: nBack }).map((_, i) => {
-          const card = deckCards[i + 1];
+    <div class="hero-deck">
+      <div class="deck-stack" aria-hidden="true">
+        {Array.from({ length: backCount }).map((_, index) => {
+          const card = cards[index + 1];
           return (
-            <div
-              class="deck-card deck-card--back"
-              data-depth={i + 1}
+            <span
+              class="deck-card deck-card-back"
               style={`
-                --stack-offset: ${(i + 1) * 10}px;
-                --stack-rotate: ${(i + 1) * -3 + 2}deg;
-                --stack-z: ${nBack - i};
+                --stack-offset: ${(index + 1) * 8}px;
+                --stack-rotate: ${(index + 1) * -2.4 + 1.6}deg;
+                --stack-z: ${backCount - index};
               `}
             >
-              {card && (
-                <img src={card.data.image} alt="" loading="eager" decoding="async" />
-              )}
-            </div>
+              {card && <img src={card.data.image} alt="" loading="eager" decoding="async" />}
+            </span>
           );
         })}
       </div>
 
-      <div
-        class="deck-card deck-card--front"
+      <button
+        class="deck-card deck-card-front"
         id="deck-front"
-        role={deckCards.length > 1 ? 'button' : undefined}
-        tabindex={deckCards.length > 1 ? 0 : -1}
-        aria-label={deckCards.length > 1 ? t('hero.deck_next') : undefined}
-        data-interactive={deckCards.length > 1 ? 'true' : 'false'}
+        type="button"
+        aria-label={t('hero.deck_next')}
+        disabled={cards.length < 2}
       >
         <img
-          id="deck-front-img"
-          src={deckCards[0]?.data.image}
-          alt={deckCards[0]?.data.title[lang]}
+          id="deck-front-image"
+          src={cards[0]?.data.image}
+          alt={cards[0]?.data.title[lang]}
+          width="920"
+          height="1316"
           loading="eager"
+          fetchpriority="high"
           decoding="async"
           draggable="false"
         />
-      </div>
-
-      <div class="hero-card-shadow"></div>
+      </button>
     </div>
-
-    <p class="deck-caption" id="deck-caption">{deckCards[0]?.data.title[lang]}</p>
-  </div>
-
-  <div class="hero-actions">
-    <div class="hero-cta">
-      <a href="#acquire" class="btn btn-gold">{t('hero.cta_primary')}</a>
-      <a href="#gallery" class="btn btn-outline">{t('hero.cta_secondary')}</a>
-    </div>
-  </div>
-
-  <div class="scroll-hint">
-    <span>{t('scroll_hint')}</span>
-    <div class="scroll-line"></div>
   </div>
 </section>
 
 <script
   id="hero-card-data"
   type="application/json"
-  set:html={JSON.stringify(
-    deckCards.map(c => ({
-      image: c.data.image,
-      title: c.data.title[lang],
-    }))
-  )}
-></script>
+  set:html={JSON.stringify(cards.map((card) => ({
+    image: card.data.image,
+    title: card.data.title[lang],
+  })))}
+/>
 
 <style>
-.hero {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    'intro deck'
-    'actions deck';
-  align-items: start;
-  position: relative;
-  overflow-x: hidden;
-  overflow-y: visible;
-  padding-top: 5rem;
-}
-
-.hero-glow {
-  position: absolute;
-  width: 700px;
-  height: 700px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(200,151,58,.07) 0%, transparent 70%);
-  right: -50px;
-  top: 42%;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
-
-.hero-glow2 {
-  position: absolute;
-  width: 500px;
-  height: 500px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(122,30,0,.1) 0%, transparent 70%);
-  left: 0;
-  top: 12%;
-  pointer-events: none;
-}
-
-/* Copy column — intro + CTAs share left column on desktop; stack on mobile */
-.hero-intro {
-  grid-area: intro;
-  padding: 5.25rem 4rem 0 6rem;
-  position: relative;
-  z-index: 2;
-}
-
-.hero-actions {
-  grid-area: actions;
-  padding: 0 4rem 6rem 6rem;
-  position: relative;
-  z-index: 2;
-  align-self: start;
-}
-
-.hero-number {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 11rem;
-  font-weight: 700;
-  color: rgba(200,151,58,.05);
-  position: absolute;
-  top: 2.5rem;
-  left: 2rem;
-  line-height: 1;
-  pointer-events: none;
-  user-select: none;
-}
-
-.hero-eyebrow {
-  font-family: 'Cinzel', serif;
-  font-size: .62rem;
-  letter-spacing: .55em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 1.75rem;
-  opacity: 0;
-  animation: fadeLeft 1s ease .2s forwards;
-}
-
-.hero-title {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(3.5rem, 6vw, 6.5rem);
-  font-weight: 700;
-  line-height: .95;
-  color: var(--parch);
-  text-shadow: 0 2px 40px rgba(200,151,58,.12);
-  margin-bottom: 2rem;
-  opacity: 0;
-  animation: fadeLeft 1.1s ease .35s forwards;
-  max-width: 100%;
-}
-
-.hero-title-sub {
-  display: block;
-  font-size: clamp(1.6rem, 3vw, 2.8rem);
-  color: var(--gold);
-  letter-spacing: .35em;
-  margin-top: .5rem;
-}
-
-.hero-body {
-  font-size: 1rem;
-  color: var(--warm);
-  font-style: italic;
-  max-width: 400px;
-  margin-bottom: 3rem;
-  opacity: 0;
-  animation: fadeLeft 1.1s ease .5s forwards;
-  line-height: 1.75;
-}
-
-.hero-cta {
-  display: flex;
-  gap: 1.2rem;
-  flex-wrap: wrap;
-  opacity: 0;
-  animation: fadeLeft 1s ease .65s forwards;
-}
-
-/* Right column — spans both rows, top aligned with eyebrow / card top */
-.hero-right {
-  grid-area: deck;
-  grid-row: 1 / -1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 5.1rem 5rem 5rem 2rem;
-  position: relative;
-  z-index: 3;
-  opacity: 0;
-  animation: fadeLeft 1.3s ease .5s forwards;
-}
-
-.hero-deck {
-  position: relative;
-  width: clamp(240px, 28vw, 360px);
-  overflow: visible;
-}
-
-.hero-card-shadow {
-  position: absolute;
-  width: 80%;
-  height: 24px;
-  background: rgba(0,0,0,.5);
-  bottom: -28px;
-  left: 10%;
-  filter: blur(20px);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-/* Stack: fixed geometry, only img src changes — no opacity flicker */
-.deck-card--back {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  border-radius: 8px;
-  overflow: hidden;
-  transform: translateX(var(--stack-offset)) rotate(var(--stack-rotate));
-  z-index: var(--stack-z);
-  box-shadow:
-    0 20px 60px rgba(0,0,0,.6),
-    0 0 0 1px rgba(200,151,58,.18);
-  pointer-events: none;
-  backface-visibility: hidden;
-  transform-style: preserve-3d;
-}
-
-.deck-card--back:nth-child(1) { filter: brightness(0.94); }
-.deck-card--back:nth-child(2) { filter: brightness(0.88); }
-.deck-card--back:nth-child(3) { filter: brightness(0.82); }
-.deck-card--back:nth-child(4) { filter: brightness(0.76); }
-.deck-card--back:nth-child(5) { filter: brightness(0.70); }
-
-.deck-card--back img {
-  width: 100%;
-  display: block;
-  filter: sepia(10%) contrast(1.04);
-}
-
-/*
- * Front card: no infinite float (it fought transitions/hover and caused glitches).
- * Exit / enter = dedicated @keyframes + animationend (with timeout fallback).
- */
-.deck-card--front {
-  position: relative;
-  z-index: 10;
-  /* Стабильная геометрия — без подпрыгивания при смене decode/img */
-  aspect-ratio: 93 / 133;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow:
-    0 40px 100px rgba(0,0,0,.8),
-    0 0 0 1px rgba(200,151,58,.4),
-    inset 0 0 0 1px rgba(255,255,255,.05);
-  transform: rotate(-1deg);
-  opacity: 1;
-  outline: none;
-  backface-visibility: hidden;
-}
-
-.deck-card--front[data-interactive='true'] {
-  cursor: pointer;
-}
-
-.deck-card--front[data-interactive='true']:focus-visible {
-  box-shadow:
-    0 40px 100px rgba(0,0,0,.8),
-    0 0 0 2px rgba(200,151,58,.55),
-    inset 0 0 0 1px rgba(255,255,255,.05);
-}
-
-/* Idle hover: shadow only — never touch transform (avoids fighting keyframes) */
-.deck-card--front:not(.is-busy)[data-interactive='true']:hover {
-  box-shadow:
-    0 48px 110px rgba(0,0,0,.82),
-    0 0 0 1px rgba(200,151,58,.55),
-    inset 0 0 0 1px rgba(255,255,255,.06);
-}
-
-.deck-card--front.is-busy {
-  pointer-events: none;
-  cursor: default;
-}
-
-/* Next: current card slides down off the deck */
-.deck-card--front.anim-exit-next {
-  animation: heroExitNext 0.44s cubic-bezier(0.45, 0, 0.55, 1) forwards;
-}
-
-/* Prev: current card slides up off the deck */
-.deck-card--front.anim-exit-prev {
-  animation: heroExitPrev 0.44s cubic-bezier(0.45, 0, 0.55, 1) forwards;
-}
-
-/* Пока меняем src: невидимо, без лишней анимации появления (она давала «дёрганье») */
-.deck-card--front.swap-phase {
-  animation: none !important;
-  opacity: 0 !important;
-  transform: rotate(-1deg) translateY(0) scale(1) !important;
-}
-
-.deck-card--front img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: contain;
-  object-position: center top;
-  filter: contrast(1.06) sepia(8%);
-}
-
-@keyframes heroExitNext {
-  from {
-    transform: rotate(-1deg) translateY(0) scale(1);
-    opacity: 1;
-  }
-  to {
-    transform: rotate(-2deg) translateY(112%) scale(0.93);
-    opacity: 0;
-  }
-}
-
-@keyframes heroExitPrev {
-  from {
-    transform: rotate(-1deg) translateY(0) scale(1);
-    opacity: 1;
-  }
-  to {
-    transform: rotate(2deg) translateY(-112%) scale(0.93);
-    opacity: 0;
-  }
-}
-
-.deck-caption {
-  font-family: 'Cinzel', serif;
-  font-size: .6rem;
-  letter-spacing: .3em;
-  text-transform: uppercase;
-  color: var(--dimmer);
-  margin-top: 1.35rem;
-  text-align: center;
-  min-height: 1.2em;
-  transition: opacity .25s ease;
-}
-
-.scroll-hint {
-  position: absolute;
-  bottom: 2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Cinzel', serif;
-  font-size: .55rem;
-  letter-spacing: .4em;
-  text-transform: uppercase;
-  color: var(--dimmer);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: .7rem;
-  opacity: 0;
-  animation: fadeLeft 1s ease 1.6s forwards;
-  pointer-events: none;
-}
-
-.scroll-line {
-  width: 1px;
-  height: 45px;
-  background: linear-gradient(to bottom, var(--gold), transparent);
-  animation: scrollPulse 2s ease-in-out infinite;
-}
-
-@media (max-width: 960px) {
   .hero {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    grid-template-areas:
-      'intro'
-      'deck'
-      'actions';
-    min-height: auto;
-    padding-top: 5rem;
+    min-height: 100svh;
+    padding-block: clamp(8rem, 12vw, 11rem) clamp(5rem, 8vw, 8rem);
   }
 
-  .hero-right {
-    grid-row: auto;
-    padding: 2rem 2rem 1rem;
+  .hero-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: center;
+    gap: 3rem 2.5rem;
   }
 
-  .hero-deck {
-    width: clamp(180px, 50vw, 280px);
+  .hero-copy {
+    grid-column: 1 / 8;
+    position: relative;
+    z-index: 2;
   }
 
-  .hero-intro {
-    padding: 1.5rem 2rem 0;
+  .hero-copy h1 {
+    display: grid;
+    margin-top: 1.6rem;
+    font-family: var(--display);
+    font-size: clamp(4.2rem, 7.4vw, 8.25rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 0.94;
+  }
+
+  .hero-copy h1 span {
+    display: block;
+  }
+
+  .hero-copy .section-label {
+    color: var(--accent);
+  }
+
+  .hero-lead {
+    max-width: 42rem;
+    margin-top: 2.25rem;
+    font-family: var(--display);
+    font-size: clamp(1.35rem, 1.85vw, 1.85rem);
+    line-height: 1.32;
+  }
+
+  .hero-body {
+    max-width: 40rem;
+    margin-top: 1.15rem;
+    color: var(--muted);
+    line-height: 1.7;
   }
 
   .hero-actions {
-    padding: 0 2rem 5rem;
-  }
-
-  .hero-number {
-    display: none;
-  }
-
-  .scroll-hint {
-    display: none;
-  }
-}
-
-@media (max-width: 580px) {
-  .hero-cta {
-    flex-direction: column;
-  }
-
-  .hero-cta .btn {
-    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
   }
 
   .hero-deck {
-    width: 55vw;
+    grid-column: 8 / 13;
+    position: relative;
+    width: min(72%, 19.8rem);
+    aspect-ratio: 93 / 133;
+    justify-self: end;
+    margin-right: 4%;
   }
-}
+
+  .deck-card {
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+    border-radius: 0.35rem;
+    background: var(--white);
+    box-shadow: 0 1.5rem 4rem rgba(23, 23, 20, 0.18);
+    backface-visibility: hidden;
+  }
+
+  .deck-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .deck-card-back {
+    position: absolute;
+    inset: 0;
+    z-index: var(--stack-z);
+    transform: translateX(var(--stack-offset)) rotate(var(--stack-rotate));
+    pointer-events: none;
+  }
+
+  .deck-card-back:nth-child(1) { filter: brightness(0.98); }
+  .deck-card-back:nth-child(2) { filter: brightness(0.95); }
+  .deck-card-back:nth-child(3) { filter: brightness(0.92); }
+  .deck-card-back:nth-child(4) { filter: brightness(0.89); }
+  .deck-card-back:nth-child(5) { filter: brightness(0.86); }
+
+  .deck-card-front {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    transform: rotate(-1deg);
+    cursor: pointer;
+  }
+
+  .deck-card-front:hover:not(.is-busy) {
+    box-shadow: 0 2rem 5rem rgba(23, 23, 20, 0.24);
+  }
+
+  .deck-card-front:disabled {
+    cursor: default;
+  }
+
+  .deck-card-front.is-busy {
+    pointer-events: none;
+  }
+
+  .deck-card-front.anim-exit-next {
+    animation: heroExitNext 440ms cubic-bezier(0.45, 0, 0.55, 1) forwards;
+  }
+
+  .deck-card-front.anim-exit-prev {
+    animation: heroExitPrev 440ms cubic-bezier(0.45, 0, 0.55, 1) forwards;
+  }
+
+  .deck-card-front.swap-phase {
+    animation: none !important;
+    opacity: 0 !important;
+    transform: rotate(-1deg) !important;
+  }
+
+  @keyframes heroExitNext {
+    from {
+      transform: rotate(-1deg) translateY(0) scale(1);
+      opacity: 1;
+    }
+    to {
+      transform: rotate(-2deg) translateY(112%) scale(0.93);
+      opacity: 0;
+    }
+  }
+
+  @keyframes heroExitPrev {
+    from {
+      transform: rotate(-1deg) translateY(0) scale(1);
+      opacity: 1;
+    }
+    to {
+      transform: rotate(2deg) translateY(-112%) scale(0.93);
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .hero {
+      min-height: auto;
+      padding-top: 7.5rem;
+    }
+
+    .hero-copy,
+    .hero-deck {
+      grid-column: 1 / -1;
+    }
+
+    .hero-deck {
+      width: min(40vw, 17.6rem);
+      justify-self: center;
+      margin-right: 0;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .hero-grid {
+      row-gap: 0;
+    }
+
+    .hero-copy {
+      display: contents;
+    }
+
+    .hero-copy > * {
+      grid-column: 1 / -1;
+    }
+
+    .hero-copy .section-label {
+      order: 1;
+    }
+
+    .hero-copy h1 {
+      order: 2;
+      margin-top: 1rem;
+      font-size: clamp(4rem, 18vw, 5.6rem);
+      line-height: 0.96;
+    }
+
+    .hero-deck {
+      order: 3;
+      width: min(50vw, 14.7rem);
+      margin-top: 2.5rem;
+    }
+
+    .hero-lead {
+      order: 4;
+      margin-top: 3rem;
+    }
+
+    .hero-body {
+      order: 5;
+    }
+
+    .hero-actions {
+      order: 6;
+      display: grid;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .deck-card-front.anim-exit-next,
+    .deck-card-front.anim-exit-prev {
+      animation-duration: 1ms;
+    }
+  }
 </style>
 
 <script>
   (() => {
-    const dataEl = document.getElementById('hero-card-data');
-    if (!dataEl) return;
+    const data = document.getElementById('hero-card-data');
+    const front = document.getElementById('deck-front') as HTMLButtonElement | null;
+    const frontImage = document.getElementById('deck-front-image') as HTMLImageElement | null;
+    if (!data || !front || !frontImage) return;
 
-    const cards: Array<{ image: string; title: string }> = JSON.parse(dataEl.textContent || '[]');
-    if (cards.length < 1) return;
-
-    const n = cards.length;
-    const frontCard = document.getElementById('deck-front') as HTMLElement;
-    const frontImg = document.getElementById('deck-front-img') as HTMLImageElement;
-    const captionEl = document.getElementById('deck-caption') as HTMLElement;
-    const backCards = document.querySelectorAll<HTMLElement>('.deck-card--back');
+    const cards: Array<{ image: string; title: string }> = JSON.parse(data.textContent || '[]');
+    const backCards = Array.from(document.querySelectorAll<HTMLElement>('.deck-card-back'));
+    if (cards.length < 2) return;
 
     let current = 0;
     let busy = false;
+    let touchStartX = 0;
+    let skipClick = false;
 
-    const EXIT_NAME_NEXT = 'heroExitNext';
-    const EXIT_NAME_PREV = 'heroExitPrev';
-    const EXIT_MS = 500;
-
-    function syncStackImages(index: number) {
-      backCards.forEach((el, i) => {
-        const depth = i + 1;
-        const img = el.querySelector('img');
-        if (!img) return;
-        const idx = (index + depth) % n;
-        if (img.getAttribute('src') !== cards[idx].image) {
-          img.src = cards[idx].image;
-        }
-        img.alt = cards[idx].title;
+    function syncBackCards() {
+      backCards.forEach((element, index) => {
+        const image = element.querySelector('img');
+        const card = cards[(current + index + 1) % cards.length];
+        if (!image || !card) return;
+        image.src = card.image;
+        image.alt = '';
       });
     }
 
-    function waitAnimEnd(el: HTMLElement, nameSubstr: string, fallbackMs: number): Promise<void> {
-      return new Promise((resolve) => {
-        let done = false;
+    function waitForAnimation(element: HTMLElement, animationName: string) {
+      return new Promise<void>((resolve) => {
+        let finished = false;
         const finish = () => {
-          if (done) return;
-          done = true;
-          el.removeEventListener('animationend', onEnd);
-          window.clearTimeout(tid);
+          if (finished) return;
+          finished = true;
+          element.removeEventListener('animationend', onEnd);
+          window.clearTimeout(timeout);
           resolve();
         };
-        const onEnd = (e: AnimationEvent) => {
-          if (e.target !== el) return;
-          if (!e.animationName || !e.animationName.includes(nameSubstr)) return;
-          finish();
+        const onEnd = (event: AnimationEvent) => {
+          if (event.target === element && event.animationName.includes(animationName)) finish();
         };
-        el.addEventListener('animationend', onEnd);
-        const tid = window.setTimeout(finish, fallbackMs);
+        const timeout = window.setTimeout(finish, 500);
+        element.addEventListener('animationend', onEnd);
       });
     }
 
-    function updateCaption() {
-      captionEl.textContent = cards[current].title;
-    }
-
-    async function animateTo(newIndex: number, direction: 'forward' | 'backward') {
-      if (busy || newIndex === current || n <= 1) return;
+    async function show(index: number, direction: 'next' | 'previous') {
+      if (busy) return;
       busy = true;
-      frontCard.classList.add('is-busy');
-      frontCard.classList.remove('anim-exit-next', 'anim-exit-prev', 'swap-phase');
+      front.classList.add('is-busy');
+      const exitClass = direction === 'next' ? 'anim-exit-next' : 'anim-exit-prev';
+      const animationName = direction === 'next' ? 'heroExitNext' : 'heroExitPrev';
+      front.classList.add(exitClass);
+      await waitForAnimation(front, animationName);
 
-      const exitClass = direction === 'forward' ? 'anim-exit-next' : 'anim-exit-prev';
-      const exitName = direction === 'forward' ? EXIT_NAME_NEXT : EXIT_NAME_PREV;
-
-      void frontCard.offsetHeight;
-      frontCard.classList.add(exitClass);
-      await waitAnimEnd(frontCard, exitName, EXIT_MS);
-
-      /* Одним кадром: убрать exit, скрыть карту — без промежуточного «базового» стиля */
-      frontCard.classList.remove(exitClass);
-      frontCard.classList.add('swap-phase');
-      void frontCard.offsetHeight;
-
-      current = newIndex;
-      frontImg.src = cards[current].image;
-      frontImg.alt = cards[current].title;
+      front.classList.remove(exitClass);
+      front.classList.add('swap-phase');
+      current = (index + cards.length) % cards.length;
+      frontImage.src = cards[current].image;
+      frontImage.alt = cards[current].title;
 
       try {
-        if ('decode' in frontImg) {
-          await frontImg.decode();
-        }
+        await frontImage.decode();
       } catch {
-        /* decode can reject for broken image; still continue */
+        // The browser can still display the image when decode rejects.
       }
 
-      /*
-       * Один кадр при opacity:0, затем показ без fade — без «дёрганья» в конце анимации.
-       * syncStackImages только после показа лицевой карты, чтобы стопка под ней не
-       * перерисовывалась в момент, когда сквозь прозрачный front виден верх задних карт.
-       */
-      await new Promise<void>((resolve) => {
-        requestAnimationFrame(() => {
-          requestAnimationFrame(resolve);
-        });
-      });
-
-      frontCard.classList.remove('swap-phase');
-      void frontCard.offsetHeight;
-
-      syncStackImages(current);
-      updateCaption();
-
-      frontCard.classList.remove('is-busy');
+      await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      front.classList.remove('swap-phase');
+      syncBackCards();
+      front.classList.remove('is-busy');
       busy = false;
     }
 
-    function goNext() {
-      void animateTo((current + 1) % n, 'forward');
-    }
+    const next = () => void show(current + 1, 'next');
+    const previous = () => void show(current - 1, 'previous');
 
-    function goPrev() {
-      void animateTo((current - 1 + n) % n, 'backward');
-    }
-
-    document.addEventListener('keydown', (e) => {
-      const hero = document.getElementById('hero');
-      if (!hero) return;
-      const rect = hero.getBoundingClientRect();
-      const inView = rect.top < window.innerHeight && rect.bottom > 0;
-      if (!inView || busy) return;
-      if (e.key === 'ArrowRight') goNext();
-      if (e.key === 'ArrowLeft') goPrev();
+    front.addEventListener('click', () => {
+      if (!skipClick) next();
     });
 
-    let touchStartX = 0;
-    let skipDeckClick = false;
-    frontCard.addEventListener(
-      'touchstart',
-      (e) => {
-        touchStartX = e.changedTouches[0].clientX;
-      },
-      { passive: true }
-    );
-    frontCard.addEventListener(
-      'touchend',
-      (e) => {
-        if (n <= 1) return;
-        const dx = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(dx) < 48) return;
-        skipDeckClick = true;
-        window.setTimeout(() => {
-          skipDeckClick = false;
-        }, 320);
-        if (dx < 0) goNext();
-        else goPrev();
-      },
-      { passive: true }
-    );
+    front.addEventListener('touchstart', (event) => {
+      touchStartX = event.changedTouches[0].clientX;
+    }, { passive: true });
 
-    frontCard.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (n <= 1 || skipDeckClick) return;
-      goNext();
+    front.addEventListener('touchend', (event) => {
+      const distance = event.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(distance) < 48) return;
+      skipClick = true;
+      window.setTimeout(() => { skipClick = false; }, 320);
+      if (distance < 0) next();
+      else previous();
+    }, { passive: true });
+
+    document.addEventListener('keydown', (event) => {
+      const hero = document.querySelector<HTMLElement>('.hero');
+      const rect = hero?.getBoundingClientRect();
+      if (!rect || rect.top >= window.innerHeight || rect.bottom <= 0 || busy) return;
+      if (event.key === 'ArrowRight') next();
+      if (event.key === 'ArrowLeft') previous();
     });
 
-    frontCard.addEventListener('keydown', (e) => {
-      if (n <= 1) return;
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        goNext();
-      }
-    });
-
-    syncStackImages(0);
+    syncBackCards();
   })();
 </script>

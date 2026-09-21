@@ -1,223 +1,148 @@
 ---
 import type { Lang } from '../i18n/utils';
 import { useTranslations } from '../i18n/utils';
+import { authorPhotoSrc } from '../lib/authorPhotos';
 
 interface Props {
   lang: Lang;
 }
 
-const t = useTranslations(Astro.props.lang);
-
-const drKleinArthiveHref =
-  'https://arthive.com/ru/artists/90797~Vasilij_Vasil%27evich_Pochitskij_dr_Klein';
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const authors = [
+  {
+    key: 'pochitsky',
+    image: authorPhotoSrc('vasil-pochitsky'),
+    profile: 'https://arthive.com/ru/artists/90797~Vasilij_Vasil%27evich_Pochitskij_dr_Klein',
+  },
+  {
+    key: 'zhilchik',
+    image: authorPhotoSrc('alexander-zhilchik'),
+    profile: null,
+    photoPosition: 'center 22%',
+  },
+];
 ---
 
-<section class="artist" id="artist">
-  <div class="artist-parch parch-noise reveal-left">
-    <div class="artist-parch-inner">
-      <p class="section-label artist-kicker artist-kicker--light">{t('artist.eyebrow')}</p>
-      <h2 class="artist-block-title artist-block-title--ink">{t('artist.title')}</h2>
-      <p class="artist-lead">{t('artist.lead')}</p>
+<section class="authors editorial-section" id="authors" aria-labelledby="authors-title">
+  <div class="page-shell">
+    <header class="authors-header reveal">
+      <p class="section-label">{t('authors.label')}</p>
+      <h2 class="section-title" id="authors-title">{t('authors.title')}</h2>
+    </header>
 
-      <div class="artist-pair">
-        <div class="artist-person">
-          <h3 class="artist-person-name">{t('artist.magister_heading')}</h3>
-          <p class="artist-person-bio">{t('artist.magister_bio')}</p>
-        </div>
-        <div class="artist-person">
-          <h3 class="artist-person-name">{t('artist.drklein_heading')}</h3>
-          <p class="artist-person-bio">{t('artist.drklein_bio')}</p>
-          <a
-            class="artist-ext-link"
-            href={drKleinArthiveHref}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {t('artist.drklein_link')}
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="artist-dark reveal-right">
-    <p class="section-label artist-kicker artist-kicker--dark">{t('artist.process_label')}</p>
-    <h3 class="artist-block-title artist-block-title--parch">{t('artist.process_title')}</h3>
-    <p class="artist-process-intro">{t('artist.process_intro')}</p>
-    <div class="artist-process-copy">
-      <p class="artist-dark-body">{t('artist.process_body_1')}</p>
-      <p class="artist-dark-body">{t('artist.process_body_2')}</p>
-      <p class="artist-dark-body">{t('artist.process_body_3')}</p>
+    <div class="authors-list">
+      {authors.map((author) => (
+        <article class="author reveal">
+          {author.image && (
+            <img
+              class="author-photo"
+              src={author.image}
+              alt={t(`authors.${author.key}.photo_alt`)}
+              width="704"
+              height="880"
+              loading="lazy"
+              decoding="async"
+              style={'photoPosition' in author && author.photoPosition
+                ? `object-position: ${author.photoPosition}`
+                : undefined}
+            />
+          )}
+          <h3>{t(`authors.${author.key}.name`)}</h3>
+          <p class="author-role">{t(`authors.${author.key}.role`)}</p>
+          <p class="author-bio">{t(`authors.${author.key}.bio`)}</p>
+          {author.profile && (
+            <a class="author-link" href={author.profile} target="_blank" rel="noopener noreferrer">
+              {t('authors.pochitsky.link')} ↗
+            </a>
+          )}
+        </article>
+      ))}
     </div>
   </div>
 </section>
 
 <style>
-.artist {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: start;
-  position: relative;
-}
-
-.artist-parch {
-  background-color: var(--parch);
-  background-image:
-    radial-gradient(ellipse at 20% 70%, rgba(122, 30, 0, 0.09) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(122, 30, 0, 0.06) 0%, transparent 45%),
-    radial-gradient(ellipse at 50% 50%, rgba(122, 30, 0, 0.04) 0%, transparent 60%);
-  padding: 5rem 4rem 5.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  position: relative;
-  overflow: hidden;
-}
-
-.artist-parch-inner {
-  position: relative;
-  z-index: 1;
-  max-width: 32rem;
-}
-
-.artist-kicker.section-label {
-  margin-bottom: 0.5rem;
-}
-
-.artist-kicker--light {
-  color: rgba(122, 30, 0, 0.55);
-}
-
-.artist-kicker--dark {
-  color: rgba(200, 151, 58, 0.75);
-}
-
-.artist-block-title {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(1.65rem, 2.8vw, 2.35rem);
-  line-height: 1.15;
-  margin: 0 0 1rem;
-}
-
-.artist-block-title--ink {
-  color: var(--ink);
-}
-
-.artist-block-title--parch {
-  color: var(--parch);
-}
-
-.artist-lead {
-  font-size: 0.95rem;
-  color: rgba(12, 7, 1, 0.72);
-  line-height: 1.65;
-  margin: 0 0 1.75rem;
-}
-
-.artist-pair {
-  display: flex;
-  flex-direction: column;
-  gap: 1.35rem;
-}
-
-.artist-person {
-  padding-top: 1.25rem;
-  border-top: 1px solid rgba(122, 30, 0, 0.18);
-}
-
-.artist-person:first-of-type {
-  padding-top: 0;
-  border-top: none;
-}
-
-.artist-person-name {
-  font-family: 'Cinzel', serif;
-  font-size: 0.68rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--ink);
-  margin: 0 0 0.55rem;
-  line-height: 1.35;
-}
-
-.artist-person-bio {
-  font-size: 0.9rem;
-  font-style: italic;
-  color: rgba(12, 7, 1, 0.68);
-  line-height: 1.65;
-  margin: 0;
-}
-
-.artist-ext-link {
-  display: inline-block;
-  margin-top: 0.65rem;
-  font-family: 'Cinzel', serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: rgba(122, 30, 0, 0.85);
-  text-decoration: none;
-  border-bottom: 1px solid rgba(122, 30, 0, 0.35);
-  transition: color 0.2s, border-color 0.2s;
-}
-
-.artist-ext-link:hover {
-  color: var(--rust);
-  border-bottom-color: var(--rust);
-}
-
-.artist-dark {
-  background: var(--dark3);
-  padding: 5rem 4rem 5.5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.artist-process-intro {
-  font-family: 'Cinzel', serif;
-  font-size: 0.72rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--gold);
-  line-height: 1.55;
-  margin: 0 0 1.35rem;
-  max-width: 32rem;
-}
-
-.artist-process-copy {
-  max-width: 32rem;
-  padding-left: 0.85rem;
-  border-left: 2px solid rgba(200, 151, 58, 0.35);
-}
-
-.artist-dark-body {
-  color: var(--dim);
-  font-style: italic;
-  font-size: 0.92rem;
-  line-height: 1.78;
-  margin: 0;
-}
-
-.artist-dark-body + .artist-dark-body {
-  margin-top: 1.05rem;
-}
-
-@media (max-width: 960px) {
-  .artist {
-    grid-template-columns: 1fr;
+  .authors {
+    border-bottom: 1px solid var(--line);
   }
 
-  .artist-parch {
-    padding: 4rem 2.25rem;
+  .authors-header {
+    display: grid;
+    gap: 1rem;
+    max-width: 44rem;
   }
 
-  .artist-parch-inner {
+  .authors-header .section-title {
     max-width: none;
+    font-size: clamp(2rem, 4.2vw, 4rem);
+    line-height: 0.98;
   }
 
-  .artist-dark {
-    padding: 4rem 2.25rem;
+  .authors-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+    margin-top: clamp(2.5rem, 4.5vw, 3.5rem);
+    padding-top: clamp(2rem, 3.5vw, 2.75rem);
+    border-top: 1px solid var(--line);
   }
-}
+
+  .author {
+    min-width: 0;
+  }
+
+  .author::after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+
+  .author-photo {
+    float: left;
+    width: clamp(6.05rem, 30.8%, 9.35rem);
+    margin: 0.15rem 1.1rem 0.5rem 0;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    object-position: center 18%;
+    filter: saturate(0.82);
+  }
+
+  .author h3 {
+    font-family: var(--display);
+    font-size: clamp(1.35rem, 2vw, 2rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .author-role {
+    margin-top: 0.45rem;
+    color: var(--accent);
+    font: 600 0.58rem/1.45 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .author-bio {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .author-link {
+    display: inline-block;
+    margin-top: 0.85rem;
+    color: var(--ink);
+    font-size: 0.85rem;
+    text-underline-offset: 0.35rem;
+  }
+
+  @media (max-width: 680px) {
+    .authors-list {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
 </style>

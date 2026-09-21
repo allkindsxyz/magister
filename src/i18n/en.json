@@ -1,29 +1,32 @@
 {
   "nav": {
-    "worlds": "Four Worlds",
-    "cards": "The Cards",
-    "games": "Games",
-    "artist": "The Makers",
-    "acquire": "Acquire the Deck"
+    "aria_label": "Primary navigation",
+    "deck": "The Deck",
+    "worlds": "The Worlds",
+    "cards": "Explore the deck",
+    "authors": "Authors",
+    "next": "Partnership",
+    "spiel": "2026",
+    "spiel_aria": "SPIEL Essen 2026",
+    "language_label": "Language",
+    "book": "Meet at SPIEL '26",
+    "book_aria": "Book a meeting at SPIEL Essen 2026",
+    "menu_open": "Open menu",
+    "menu_close": "Close menu"
   },
   "hero": {
-    "deck_next": "Show next card",
-    "eyebrow": "54 cards · four worlds · one alternative universe",
-    "title": "Magister",
-    "subtitle": "Cards",
-    "body": "A collectible art card deck that opens a gateway into an alternative mythology where alchemy, history, and modernity intertwine. Each card is a fragment of a world, revealing new meanings through play and interpretation.",
-    "cta_primary": "Acquire the Deck",
-    "cta_secondary": "Explore the Cards"
-  },
-  "quote": {
-    "text": "These are not playing cards. They are artifacts — each one carries a world. Some worlds take time.",
-    "attribution": "From the authors' notes"
+    "meta": "54 cards · 4 worlds · 1 alternative universe",
+    "lead": "A collectible art card deck opening a gateway into an alternative mythology where alchemy, history and modernity intertwine.",
+    "body": "Each card is a fragment of this world — an artwork, a character and a story to explore, interpret and play with.",
+    "explore": "Explore the deck",
+    "meet": "Meet us at SPIEL 2026",
+    "meet_aria": "Meet us at SPIEL Essen 2026",
+    "deck_next": "Show the next card in the deck"
   },
   "worlds_section": {
     "label": "The Deck's Mythology",
-    "title": "Four worlds in fifty-four faces",
-    "lead": "Magister is a full 54-card art deck. Suits are not decorative trim — each one is a realm with its own laws, cast, and symbolism. Ranks and houses are woven into the painting itself: you read the card by looking, not by corner indices.",
-    "footnote": "Every illustration is a small narrative — portrait, emblem, and historical echo at once. Text on the site expands the frame; the cardboard remains the primary grimoire."
+    "title": "4 worlds in 54 paintings",
+    "lead": "Magister is a full 54-card art deck. Suits are not decorative trim — each one is a realm with its own laws, cast, and symbolism. Ranks and houses are woven into the painting itself: you read the card by looking, not by corner indices."
   },
   "worlds": {
     "hearts": {
@@ -43,77 +46,79 @@
       "blurb": "Modern myth-making: faces the world thought it knew, reframed as archetypes. Spades ask what happens when public masks become permanent emblems."
     }
   },
-  "gallery": {
-    "label": "The Collection",
-    "title": "The Fifty-Four",
-    "hint": "Click any card to open",
-    "open_btn": "Open figure →",
-    "close": "Close",
-    "suit_label": "Suit",
-    "value_label": "Rank",
-    "world_label": "World",
-    "category_label": "Motif"
-  },
-  "games": {
-    "label": "Play & Ritual",
-    "title": "Games of the Deck",
-    "players_label": "Players",
-    "duration_label": "Duration"
-  },
-  "artist": {
-    "eyebrow": "Authors",
-    "title": "Two obsessions, one deck",
-    "lead": "Magister Cards is the work of Magister — Alexander Zhilchik — and Dr.Klein, Vasil Pochitsky's artistic pseudonym.",
-    "magister_heading": "Magister · Alexander Zhilchik",
-    "magister_bio": "Creator of the characters and the deck's mythos: businessman, philosopher, philanthropist — and, in his own way, a mystical figure.",
-    "drklein_heading": "Dr.Klein · Vasil Pochitsky",
-    "drklein_bio": "Painter and illustrator. Dr.Klein is how Pochitsky signs this body of work — the hand behind all fifty-four images.",
-    "drklein_link": "Arthive profile",
-    "process_label": "The deck",
-    "process_title": "Research, paint, play",
-    "process_intro": "Two years from the first brief to the finished edition — every card earned its place as a painting before it became cardboard.",
-    "process_body_1": "Magister locked the cast, conflicts, and four suits as living worlds; Dr.Klein built each image on archives, emblem books, and alchemical reference — research long before pigment hit the panel.",
-    "process_body_2": "Sketches were not disposable thumbnails: every study was pushed toward a finished easel piece — composition, light, and surface treated as standalone art. Only then was the work adapted to the scale and rhythm of a playing card.",
-    "process_body_3": "The result is a deck you can frame or deal: museum-grade patience, table-ready rules — research, paint, play in one object."
-  },
-  "acquire": {
-    "label": "The Complete Deck",
-    "title": "Acquire your edition",
-    "subtitle": "A numbered collector's set: the art deck, the decoder, the grimoire — sealed in suede.",
-    "edition_badge": "Limited edition · 500 copies",
-    "contents_label": "What's in the set",
-    "item_main_deck": "54 art cards — the playable Magister deck",
-    "item_reference_deck": "Companion deck — decodings & short card descriptions",
-    "item_grimoire": "Grimoire — worlds & full card lore",
-    "item_box": "Suede-wrapped collector's box",
-    "shipping_highlight": "Free shipping — United States & EU",
-    "shipping_sub": "Other regions: rates shown at checkout.",
-    "price_note": "VAT included · limited to 500 numbered copies",
-    "cta": "Order edition",
-    "cta_sub": "Secure checkout",
-    "fine_print": "Carefully packed. Each set is hand-numbered.",
-    "packaging_alt": "Magister Cards collector box in black suede with gold foil lettering and ornate seal.",
-    "packaging_alt_open": "Open collector's box: two Magister decks in velvet lining with gold foil and gemstone clasp.",
-    "carousel_hint": "Click photo for next",
-    "carousel_dots_label": "Edition photos",
-    "carousel_slide": "Photo"
-  },
-  "footer": {
-    "tagline": "For those who collect worlds, not cards.",
-    "links": {
-      "about": "About",
-      "contact": "Contact",
-      "instagram": "Instagram",
-      "press": "Press"
-    },
-    "copy": "© 2026 Magister Cards · Concept: Alexander Zhilchik (Magister) · Illustration: Vasil Pochitsky (Dr.Klein)"
-  },
   "suits": {
     "spades": "Spades",
     "hearts": "Hearts",
     "diamonds": "Diamonds",
     "clubs": "Clubs"
   },
-  "scroll_hint": "Descend",
-  "lang_switch": "RU"
+  "gallery": {
+    "label": "The Collection",
+    "title": "Explore the deck",
+    "lead": "Every card is a story. The deck contains 54 original artworks, each opening another fragment of the Magister Cards universe.",
+    "hint": "Click any card to open",
+    "open": "Open",
+    "open_btn": "Open figure →",
+    "close": "Close",
+    "previous": "Previous cards",
+    "next": "Next cards",
+    "viewer_previous": "Previous card",
+    "viewer_next": "Next card",
+    "suit_label": "Suit",
+    "value_label": "Rank",
+    "world_label": "World",
+    "category_label": "Motif"
+  },
+  "authors": {
+    "label": "Authors",
+    "title": "The people who brought Magister Cards to life",
+    "pochitsky": {
+      "name": "Vasil Pochitsky",
+      "role": "Dr. Klein · Artist · 1967–2024",
+      "bio": "Belarusian painter, illustrator and musician. Started painting in Rechitsa, and went on to exhibit from Moscow to New York; for nearly a decade his drawings ran in the national press, and he illustrated books and records throughout his career. Magister — signed, as he signed this whole body of work, Dr. Klein — is his most ambitious cycle: fifty-four paintings completed near the end of his life.",
+      "link": "More about Vasil Pochitsky",
+      "photo_alt": "Portrait of artist Vasil Pochitsky."
+    },
+    "zhilchik": {
+      "name": "Alexander Zhilchik",
+      "role": "Author of the Idea · IP Owner",
+      "bio": "Conceived the full mythology behind Magister — the houses, characters and historical threads that connect all fifty-four cards into one universe. Zhilchik owns the IP outright: no co-authors, no other rights to clear, nothing for a partner to untangle.",
+      "photo_alt": "Portrait of Alexander Zhilchik."
+    }
+  },
+  "next": {
+    "label": "Partnership",
+    "body_1": "Magister Cards is an original visual IP built around an alternative mythology, with its own characters, stories and 54 original artworks.",
+    "body_2": "We are looking for commercial partners to develop this IP into a marketable product and bring it to market.",
+    "areas": "Publishing · Production · Distribution",
+    "closing": "The future product format is open for discussion.",
+    "cta": "Meet at SPIEL 2026",
+    "image_alt": "Magister Cards physical edition in packaging."
+  },
+  "essen": {
+    "headline": "Let's meet at SPIEL Essen 2026",
+    "date": "22–25 October, Essen, Germany",
+    "logo_alt": "SPIEL Essen — international game fair",
+    "fair_link": "spiel-essen.de",
+    "lead": "See the physical deck and talk publishing, production or distribution.",
+    "matison": {
+      "name": "Dmitry Matison",
+      "role": "Business Development",
+      "bio": "Partnerships and publishing conversations.",
+      "photo_alt": "Portrait of Dmitry Matison."
+    },
+    "lightovy": {
+      "name": "Alex Lightovy",
+      "role": "Demo & Presentation",
+      "bio": "Deck demo and walkthrough of the Magister's world.",
+      "photo_alt": "Portrait of Alex Lightovy."
+    },
+    "book": "Book a meeting",
+    "contact": "hello@magister.cards"
+  },
+  "footer": {
+    "tagline": "54 cards · 4 worlds · 1 alternative universe",
+    "closing": "The art is finished. The possibilities are open — let's talk.",
+    "back_to_top": "Back to top"
+  }
 }

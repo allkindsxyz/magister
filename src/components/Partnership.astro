@@ -1,0 +1,160 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+import { CONTACT_EMAIL } from '../lib/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const areas = ['publishing', 'production', 'distribution', 'development'] as const;
+---
+
+<section class="opportunity editorial-section" id="partnership" aria-labelledby="opportunity-title">
+  <div class="page-shell">
+    <header class="opportunity-header reveal">
+      <p class="section-label">{t('opportunity.label')}</p>
+      <h2 class="section-title" id="opportunity-title">{t('opportunity.title')}</h2>
+      <p class="lead">{t('opportunity.lead')}</p>
+    </header>
+
+    <div class="opportunity-body">
+      <div class="areas reveal">
+        <p class="meta">{t('opportunity.looking_for')}</p>
+        <ul>
+          {areas.map((area, index) => (
+            <li>
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              {t(`opportunity.${area}`)}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="opportunity-copy reveal">
+        <p>{t('opportunity.body_1')}</p>
+        <p>{t('opportunity.body_2')}</p>
+        <aside>
+          <span>{t('opportunity.owner_label')}</span>
+          <strong>Alexander Zhilchik</strong>
+        </aside>
+        <div class="opportunity-actions">
+          <a
+            class="btn btn-accent"
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Magister partner deck')}`}
+          >
+            {t('opportunity.deck_cta')}
+          </a>
+          <a class="text-link" href="#spiel">{t('opportunity.cta')} ↓</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .opportunity {
+    background: var(--paper-deep);
+  }
+
+  .opportunity-header {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 2.5rem 1.5rem;
+  }
+
+  .opportunity-header .section-label {
+    grid-column: 1 / -1;
+  }
+
+  .opportunity-header .section-title {
+    grid-column: 1 / 8;
+  }
+
+  .opportunity-header .lead {
+    grid-column: 8 / 13;
+  }
+
+  .opportunity-body {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 3rem 1.5rem;
+    margin-top: clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .areas {
+    grid-column: 1 / 7;
+  }
+
+  .areas ul {
+    margin-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    list-style: none;
+  }
+
+  .areas li {
+    display: flex;
+    gap: 2rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--display);
+    font-size: clamp(1.6rem, 3vw, 3rem);
+    line-height: 1;
+  }
+
+  .areas li span {
+    color: var(--accent);
+    font: 500 0.63rem/1.8 var(--sans);
+  }
+
+  .opportunity-copy {
+    grid-column: 8 / 13;
+    display: grid;
+    gap: 1.25rem;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+
+  .opportunity-copy aside {
+    display: grid;
+    gap: 0.35rem;
+    margin-block: 1rem;
+    padding: 1.25rem 0;
+    border-block: 1px solid var(--line);
+  }
+
+  .opportunity-copy aside span {
+    color: var(--muted);
+    font: 500 0.63rem/1.4 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .opportunity-copy aside strong {
+    color: var(--ink);
+    font-family: var(--display);
+    font-size: 1.6rem;
+    font-weight: 400;
+  }
+
+  .opportunity-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 800px) {
+    .opportunity-header .section-title,
+    .opportunity-header .lead,
+    .areas,
+    .opportunity-copy {
+      grid-column: 1 / -1;
+    }
+
+  }
+</style>

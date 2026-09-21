@@ -1,0 +1,213 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const facts = [
+  ['54', t('asset.paintings')],
+  ['54', t('asset.stories')],
+  ['4', t('asset.worlds')],
+] as const;
+---
+
+<section class="asset editorial-section" id="project" aria-labelledby="asset-title">
+  <div class="page-shell asset-grid">
+    <header class="asset-heading reveal">
+      <p class="section-label">{t('asset.label')}</p>
+      <h2 class="section-title" id="asset-title">{t('asset.title')}</h2>
+    </header>
+
+    <div class="asset-copy reveal">
+      <p class="lead">{t('asset.lead')}</p>
+      <p class="body-copy">{t('asset.body')}</p>
+    </div>
+
+    <div class="asset-facts reveal" aria-label={t('asset.facts_label')}>
+      {facts.map(([value, label]) => (
+        <p><strong>{value}</strong><span>{label}</span></p>
+      ))}
+      <p class="asset-edition">
+        <strong>{t('asset.complete')}</strong>
+        <span>{t('asset.edition')}</span>
+      </p>
+    </div>
+
+    <div class="asset-sequence reveal" aria-label={t('asset.sequence_label')}>
+      <span>{t('asset.painting')}</span>
+      <i aria-hidden="true">→</i>
+      <span>{t('asset.card')}</span>
+      <i aria-hidden="true">→</i>
+      <span>{t('asset.story')}</span>
+    </div>
+
+    <aside class="asset-rights reveal">
+      <span>{t('asset.rights_label')}</span>
+      <strong>Alexander Zhilchik</strong>
+      <p>{t('asset.rights_body')}</p>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .asset-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 3rem 1.5rem;
+  }
+
+  .asset-heading {
+    grid-column: 1 / 7;
+  }
+
+  .asset-heading .section-title {
+    margin-top: 1.5rem;
+  }
+
+  .asset-copy {
+    grid-column: 8 / 13;
+    display: grid;
+    gap: 1.5rem;
+    padding-top: 2.8rem;
+  }
+
+  .asset-facts {
+    grid-column: 1 / 9;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    margin-top: clamp(2rem, 5vw, 5rem);
+    border-block: 1px solid var(--line);
+  }
+
+  .asset-facts p {
+    display: grid;
+    align-content: space-between;
+    min-height: 11rem;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-right: 1px solid var(--line);
+  }
+
+  .asset-facts p:first-child {
+    padding-left: 0;
+  }
+
+  .asset-facts p:last-child {
+    border-right: 0;
+  }
+
+  .asset-facts strong {
+    font-family: var(--display);
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    font-weight: 400;
+    letter-spacing: -0.05em;
+    line-height: 0.85;
+  }
+
+  .asset-facts .asset-edition strong {
+    max-width: 8ch;
+    color: var(--accent);
+    font-family: var(--sans);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .asset-facts span,
+  .asset-rights > span {
+    color: var(--muted);
+    font: 500 0.64rem/1.45 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .asset-sequence {
+    grid-column: 1 / 9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--display);
+    font-size: clamp(1.4rem, 2.3vw, 2.4rem);
+  }
+
+  .asset-sequence i {
+    color: var(--accent);
+    font-family: var(--sans);
+    font-size: 1rem;
+    font-style: normal;
+  }
+
+  .asset-rights {
+    grid-column: 10 / 13;
+    grid-row: 2 / 4;
+    align-self: end;
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+  }
+
+  .asset-rights strong {
+    font-family: var(--display);
+    font-size: 1.7rem;
+    font-weight: 400;
+    line-height: 1.05;
+  }
+
+  .asset-rights p {
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 850px) {
+    .asset-heading,
+    .asset-copy,
+    .asset-facts,
+    .asset-sequence,
+    .asset-rights {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+
+    .asset-copy {
+      padding-top: 0;
+    }
+
+    .asset-facts {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .asset-facts p {
+      min-height: 8rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .asset-facts p:nth-child(2) {
+      border-right: 0;
+    }
+
+    .asset-facts p:first-child {
+      padding-left: 1.5rem;
+    }
+
+    .asset-sequence {
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .asset-rights {
+      max-width: 30rem;
+    }
+  }
+</style>

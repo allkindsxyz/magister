@@ -1,0 +1,126 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="partnership editorial-section" id="partnership" aria-labelledby="partnership-label">
+  <div class="page-shell">
+    <div class="partnership-panel reveal">
+      <p class="section-label" id="partnership-label">{t('next.label')}</p>
+
+      <div class="partnership-grid">
+        <div class="partnership-copy">
+          <p class="partnership-lead">{t('next.body_1')}</p>
+          <p class="partnership-body">{t('next.body_2')}</p>
+          <p class="partnership-areas">{t('next.areas')}</p>
+          <p class="partnership-closing">{t('next.closing')}</p>
+        </div>
+
+        <figure class="partnership-visual">
+          <img
+            src="/media/partnership-packaging.jpg"
+            alt={t('next.image_alt')}
+            width="1200"
+            height="1600"
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .partnership {
+    background: var(--paper);
+    border-top: 0;
+  }
+
+  .partnership-panel {
+    padding: clamp(2rem, 4vw, 3.25rem);
+    color: var(--paper);
+    background:
+      linear-gradient(145deg, rgba(255, 253, 248, 0.04), transparent 42%),
+      var(--ink);
+    border: 1px solid color-mix(in srgb, var(--ink) 88%, var(--line));
+    box-shadow: 0 1rem 2.75rem rgba(23, 23, 20, 0.1);
+  }
+
+  .partnership .section-label {
+    color: #d4a59e;
+  }
+
+  .partnership-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 4vw, 3.5rem);
+    margin-top: 1.25rem;
+    align-items: start;
+  }
+
+  .partnership-lead {
+    max-width: 28ch;
+    font-family: var(--display);
+    font-size: clamp(1.45rem, 2.6vw, 2.2rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+  }
+
+  .partnership-body {
+    max-width: 34rem;
+    margin-top: 1.1rem;
+    color: #c8c3b8;
+    font-size: clamp(0.92rem, 1.1vw, 1rem);
+    line-height: 1.65;
+  }
+
+  .partnership-areas {
+    max-width: 28rem;
+    margin-top: 1.25rem;
+    color: #d8d3c8;
+    font-family: var(--display);
+    font-size: clamp(0.98rem, 1.25vw, 1.08rem);
+    line-height: 1.45;
+  }
+
+  .partnership-closing {
+    max-width: 28rem;
+    margin-top: 1rem;
+    color: #e4dfd4;
+    font-family: var(--display);
+    font-size: clamp(0.98rem, 1.25vw, 1.1rem);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .partnership-visual {
+    width: 85%;
+    margin: 0;
+    justify-self: center;
+  }
+
+  .partnership-visual img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (max-width: 860px) {
+    .partnership-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .partnership-lead {
+      max-width: none;
+    }
+  }
+</style>
