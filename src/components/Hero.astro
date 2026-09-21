@@ -92,6 +92,7 @@ const backCount = Math.max(0, cards.length - 1);
   .hero {
     min-height: 100svh;
     padding-block: clamp(8rem, 12vw, 11rem) clamp(5rem, 8vw, 8rem);
+    overflow-x: clip;
   }
 
   .hero-grid {
@@ -99,6 +100,7 @@ const backCount = Math.max(0, cards.length - 1);
     grid-template-columns: repeat(12, minmax(0, 1fr));
     align-items: center;
     gap: 3rem 2.5rem;
+    min-width: 0;
   }
 
   .hero-copy {
@@ -308,6 +310,15 @@ const backCount = Math.max(0, cards.length - 1);
     .hero-actions {
       order: 6;
       display: grid;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .hero-actions .btn {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
     }
   }
 

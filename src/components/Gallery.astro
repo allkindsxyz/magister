@@ -119,13 +119,14 @@ const payloads = cards.map((card) => {
 <style>
   .gallery {
     margin-top: clamp(3rem, 5vw, 4.5rem);
-    overflow: hidden;
+    overflow-x: clip;
     color: var(--ink);
   }
 
   .gallery-header {
     max-width: 40rem;
     margin-inline: auto;
+    padding-inline: var(--page-pad);
     text-align: center;
   }
 
@@ -146,17 +147,14 @@ const payloads = cards.map((card) => {
 
   .carousel-outer {
     position: relative;
-    width: 100vw;
-    max-width: 100vw;
+    width: 100%;
     margin-top: 1.75rem;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
   }
 
   .carousel-track {
     display: flex;
     gap: 1.5rem;
-    padding: 0.5rem max(var(--page-pad), calc((100vw - var(--max-width)) / 2 + var(--page-pad))) 1.25rem;
+    padding: 0.5rem var(--page-pad) 1.25rem;
     overflow-x: auto;
     overflow-y: visible;
     scroll-behavior: smooth;

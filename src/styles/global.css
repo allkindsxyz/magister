@@ -21,6 +21,7 @@
 }
 
 html {
+  overflow-x: clip;
   scroll-behavior: smooth;
   scroll-padding-top: 5.5rem;
   -webkit-text-size-adjust: 100%;
@@ -88,6 +89,7 @@ select {
 
 .page-shell {
   width: min(100%, var(--max-width));
+  min-width: 0;
   margin-inline: auto;
   padding-inline: var(--page-pad);
 }
@@ -276,6 +278,10 @@ select {
 
   .btn {
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    white-space: normal;
+    text-align: center;
   }
 }
 
