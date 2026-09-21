@@ -19,23 +19,11 @@ const backCount = Math.max(0, cards.length - 1);
 
 <section class="hero" id="deck" aria-labelledby="hero-title">
   <div class="page-shell hero-grid">
-    <div class="hero-copy">
-      <p class="section-label">{t('hero.meta')}</p>
-      <h1 id="hero-title">
-        <span>Magister</span>
-        <span>Cards</span>
-      </h1>
-      <p class="hero-lead">{t('hero.lead')}</p>
-      <p class="hero-body">{t('hero.body')}</p>
-
-      <div class="hero-actions">
-        <a class="btn" href="#fifty-four">{t('hero.explore')}</a>
-        <a class="btn btn-accent" href="#spiel">
-          <span class="btn-event-mark" aria-hidden="true">✦</span>
-          {t('hero.meet')}
-        </a>
-      </div>
-    </div>
+    <p class="section-label hero-meta">{t('hero.meta')}</p>
+    <h1 id="hero-title" class="hero-title">
+      <span>Magister</span>
+      <span>Cards</span>
+    </h1>
 
     <div class="hero-deck">
       <div class="deck-stack" aria-hidden="true">
@@ -76,6 +64,17 @@ const backCount = Math.max(0, cards.length - 1);
         />
       </button>
     </div>
+
+    <p class="hero-lead">{t('hero.lead')}</p>
+    <p class="hero-body">{t('hero.body')}</p>
+
+    <div class="hero-actions">
+      <a class="btn" href="#fifty-four">{t('hero.explore')}</a>
+      <a class="btn btn-accent" href="#spiel">
+        <span class="btn-event-mark" aria-hidden="true">✦</span>
+        {t('hero.meet')}
+      </a>
+    </div>
   </div>
 </section>
 
@@ -101,15 +100,25 @@ const backCount = Math.max(0, cards.length - 1);
     align-items: center;
     gap: 3rem 2.5rem;
     min-width: 0;
+    width: 100%;
   }
 
-  .hero-copy {
+  .hero-meta,
+  .hero-title,
+  .hero-lead,
+  .hero-body,
+  .hero-actions {
     grid-column: 1 / 8;
     position: relative;
     z-index: 2;
+    min-width: 0;
   }
 
-  .hero-copy h1 {
+  .hero-meta {
+    color: var(--accent);
+  }
+
+  .hero-title {
     display: grid;
     margin-top: 1.6rem;
     font-family: var(--display);
@@ -117,14 +126,11 @@ const backCount = Math.max(0, cards.length - 1);
     font-weight: 400;
     letter-spacing: -0.045em;
     line-height: 0.94;
+    overflow-wrap: anywhere;
   }
 
-  .hero-copy h1 span {
+  .hero-title span {
     display: block;
-  }
-
-  .hero-copy .section-label {
-    color: var(--accent);
   }
 
   .hero-lead {
@@ -151,11 +157,16 @@ const backCount = Math.max(0, cards.length - 1);
 
   .hero-deck {
     grid-column: 8 / 13;
+    grid-row: 1 / -1;
     position: relative;
+    z-index: 1;
     width: min(72%, 19.8rem);
+    max-width: 100%;
     aspect-ratio: 93 / 133;
     justify-self: end;
     margin-right: 4%;
+    overflow: hidden;
+    contain: layout paint;
   }
 
   .deck-card {
@@ -252,15 +263,41 @@ const backCount = Math.max(0, cards.length - 1);
       padding-top: 7.5rem;
     }
 
-    .hero-copy,
-    .hero-deck {
-      grid-column: 1 / -1;
+    .hero-grid {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+    }
+
+    .hero-meta {
+      order: 1;
+    }
+
+    .hero-title {
+      order: 2;
+    }
+
+    .hero-lead {
+      order: 3;
+    }
+
+    .hero-body {
+      order: 4;
+    }
+
+    .hero-actions {
+      order: 5;
     }
 
     .hero-deck {
+      order: 6;
+      grid-column: auto;
+      grid-row: auto;
       width: min(40vw, 17.6rem);
-      justify-self: center;
+      align-self: center;
       margin-right: 0;
+      margin-top: 2.5rem;
     }
   }
 
@@ -269,24 +306,7 @@ const backCount = Math.max(0, cards.length - 1);
       padding-top: 6.75rem;
     }
 
-    .hero-grid {
-      row-gap: 0;
-    }
-
-    .hero-copy {
-      display: contents;
-    }
-
-    .hero-copy > * {
-      grid-column: 1 / -1;
-    }
-
-    .hero-copy .section-label {
-      order: 1;
-    }
-
-    .hero-copy h1 {
-      order: 2;
+    .hero-title {
       margin-top: 1rem;
       font-size: clamp(4rem, 18vw, 5.6rem);
       line-height: 0.96;
@@ -313,12 +333,6 @@ const backCount = Math.max(0, cards.length - 1);
       width: 100%;
       min-width: 0;
       max-width: 100%;
-    }
-
-    .hero-actions .btn {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
     }
   }
 
