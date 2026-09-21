@@ -3,6 +3,7 @@ export const SITE_URL = String(
 ).replace(/\/$/, '');
 
 export const CONTACT_EMAIL = 'hello@magister.cards';
+export const PARTNERSHIP_EMAIL = 'partnership@magister.cards';
 export const SPIEL_ESSEN_URL = 'https://www.spiel-essen.de/en/';
 export const BOOKING_URL =
   String(import.meta.env.PUBLIC_CALENDLY_URL || '').trim() ||

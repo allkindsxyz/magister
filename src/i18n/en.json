@@ -114,7 +114,7 @@
       "photo_alt": "Portrait of Alex Lightovy."
     },
     "book": "Book a meeting",
-    "contact": "hello@magister.cards"
+    "contact_prefix": "Or email us at"
   },
   "footer": {
     "tagline": "54 cards · 4 worlds · 1 alternative universe",
