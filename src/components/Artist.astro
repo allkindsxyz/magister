@@ -140,9 +140,17 @@ const authors = [
   }
 
   @media (max-width: 680px) {
+    .authors-header .section-title {
+      font-size: clamp(1.85rem, 9vw, 2.75rem);
+    }
+
     .authors-list {
       grid-template-columns: 1fr;
       gap: 2.5rem;
+    }
+
+    .author-photo {
+      width: clamp(5.5rem, 36%, 8rem);
     }
   }
 </style>

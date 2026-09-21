@@ -115,12 +115,21 @@ const t = useTranslations(lang);
   }
 
   @media (max-width: 860px) {
+    .partnership-panel {
+      padding: clamp(1.5rem, 4vw, 2.25rem);
+    }
+
     .partnership-grid {
       grid-template-columns: 1fr;
+      gap: 1.75rem;
     }
 
     .partnership-lead {
       max-width: none;
+    }
+
+    .partnership-visual {
+      width: min(100%, 20rem);
     }
   }
 </style>

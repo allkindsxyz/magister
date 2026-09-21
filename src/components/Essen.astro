@@ -201,8 +201,37 @@ const team = [
   }
 
   @media (max-width: 720px) {
+    .spiel-header {
+      max-width: none;
+    }
+
+    .spiel-title-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
     .spiel-team {
       grid-template-columns: 1fr;
+    }
+
+    .spiel-actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .spiel-alt-contact {
+      text-align: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .spiel-title-text {
+      font-size: clamp(1.4rem, 6.2vw, 1.75rem);
+      line-height: 1.12;
+    }
+
+    .spiel-title-logo {
+      height: 2.15rem;
     }
   }
 </style>

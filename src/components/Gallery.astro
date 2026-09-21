@@ -480,11 +480,11 @@ const payloads = cards.map((card) => {
     }
   }
 
-  @media (max-width: 960px) {
+  @media (max-width: 960px) and (min-width: 761px) {
     .lb-shell {
-      width: min(100%, 22rem);
-      padding: 0 1.35rem 2.75rem;
-      max-height: calc(100svh - 2rem);
+      width: min(100%, 36rem);
+      padding: 0 1.5rem 1.5rem;
+      max-height: calc(100dvh - 2rem);
       overflow-y: auto;
     }
 
@@ -494,23 +494,94 @@ const payloads = cards.map((card) => {
     }
 
     .lb-card {
-      width: min(52vw, 220px);
+      width: min(42vw, 260px);
       margin-inline: auto;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .lightbox {
+      padding: 0;
+      align-items: stretch;
+      justify-content: stretch;
+    }
+
+    .lb-shell {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+      max-height: 100dvh;
+      padding: 0;
+      overflow: hidden;
     }
 
     .lb-close {
-      right: 1.35rem;
+      position: fixed;
+      top: max(0.65rem, env(safe-area-inset-top));
+      right: max(0.65rem, env(safe-area-inset-right));
+      transform: none;
+      z-index: 1001;
     }
 
-    .lb-arrow--prev,
-    .lb-arrow--next {
-      top: auto;
-      bottom: 0;
-      transform: translate(-50%, 50%);
+    .lb-arrow {
+      position: fixed;
+      top: 50%;
+      z-index: 1001;
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+
+    .lb-arrow--prev {
+      left: max(0.35rem, env(safe-area-inset-left));
+      transform: translateY(-50%);
     }
 
     .lb-arrow--next {
-      transform: translate(50%, 50%);
+      right: max(0.35rem, env(safe-area-inset-right));
+      transform: translateY(-50%);
+    }
+
+    .lb-inner {
+      flex: 1;
+      min-height: 0;
+      grid-template-columns: 1fr;
+      gap: 1.1rem;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      -webkit-overflow-scrolling: touch;
+      padding:
+        calc(max(0.75rem, env(safe-area-inset-top)) + 2.85rem)
+        max(1rem, env(safe-area-inset-right))
+        calc(max(1rem, env(safe-area-inset-bottom)) + 0.5rem)
+        max(1rem, env(safe-area-inset-left));
+    }
+
+    .lb-img-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: min(52dvh, 26rem);
+    }
+
+    .lb-card {
+      width: min(92vw, 19.5rem);
+      max-height: min(52dvh, 26rem);
+      margin-inline: auto;
+    }
+
+    .lb-card img {
+      width: 100%;
+      max-height: min(52dvh, 26rem);
+      object-fit: contain;
+    }
+
+    .lb-body {
+      max-width: none;
+    }
+
+    .lb-suit-val {
+      font-size: clamp(2.25rem, 12vw, 3.25rem);
     }
   }
 
@@ -529,15 +600,6 @@ const payloads = cards.map((card) => {
     }
   }
 
-  @media (max-width: 580px) {
-    .lb-suit-val {
-      font-size: clamp(2.5rem, 14vw, 3.5rem);
-    }
-
-    .lb-card {
-      width: min(72vw, 280px);
-    }
-  }
 </style>
 
 <script>
