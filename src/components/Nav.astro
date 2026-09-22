@@ -14,7 +14,16 @@ const externalBooking = BOOKING_URL.startsWith('http');
 ---
 
 <nav id="main-nav" aria-label={t('nav.aria_label')}>
-  <a href={getLocalizedPath('/', lang)} class="nav-logo" aria-label="Magister Cards">Magister Cards</a>
+  <a href={getLocalizedPath('/', lang)} class="nav-logo" aria-label="Magister Cards">
+    <img
+      class="nav-logo-img"
+      src="/media/magister-logo.png"
+      alt=""
+      width="1024"
+      height="520"
+      decoding="async"
+    />
+  </a>
 
   <ul class="nav-links">
     <li><a href="#deck">{t('nav.deck')}</a></li>
