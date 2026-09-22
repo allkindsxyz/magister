@@ -16,7 +16,9 @@
   },
   "hero": {
     "meta": "54 cards · 4 worlds · 1 alternative universe",
-    "lead": "A collectible art card deck opening a gateway into an alternative mythology where alchemy, history and modernity intertwine.",
+    "lead_before": "A collectible art ",
+    "lead_mark": "card deck",
+    "lead_after": " opening a gateway into an alternative mythology where alchemy, history and modernity intertwine.",
     "body": "Each card is a fragment of this world — an artwork, a character and a story to explore, interpret and play with.",
     "explore": "Explore the deck",
     "meet": "Meet us at SPIEL 2026",

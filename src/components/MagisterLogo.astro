@@ -3,15 +3,16 @@ interface Props {
   class?: string;
   width?: number;
   height?: number;
+  level?: boolean;
 }
 
-const { class: className, width = 112, height = 49 } = Astro.props;
+const { class: className, width = 112, height = 49, level = false } = Astro.props;
 ---
 
 <img
   src="/media/magister-logo.png"
   alt=""
-  class:list={['magister-logo', className]}
+  class:list={['magister-logo', className, { 'magister-logo--level': level }]}
   width={width}
   height={height}
   decoding="async"

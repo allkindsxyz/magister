@@ -2,6 +2,7 @@
 import type { Lang } from '../i18n/utils';
 import { useTranslations } from '../i18n/utils';
 import { getCollection } from 'astro:content';
+import MagisterLogo from './MagisterLogo.astro';
 
 interface Props {
   lang: Lang;
@@ -21,11 +22,14 @@ const backCount = Math.max(0, cards.length - 1);
   <div class="page-shell hero-grid">
     <div class="hero-copy">
       <p class="section-label hero-meta">{t('hero.meta')}</p>
-      <h1 id="hero-title" class="hero-title">
-        <span>Magister</span>
-        <span>Cards</span>
+      <h1 id="hero-title" class="hero-title" aria-label="Magister Cards">
+        <span class="hero-title__wordmark" aria-hidden="true">
+          <MagisterLogo width={880} height={407} level />
+        </span>
       </h1>
-      <p class="hero-lead">{t('hero.lead')}</p>
+      <p class="hero-lead">
+        {t('hero.lead_before')}<span class="hero-lead__mark">{t('hero.lead_mark')}</span>{t('hero.lead_after')}
+      </p>
       <p class="hero-body">{t('hero.body')}</p>
 
       <div class="hero-actions">
@@ -116,26 +120,46 @@ const backCount = Math.max(0, cards.length - 1);
   }
 
   .hero-title {
-    display: grid;
     margin-top: 1.6rem;
-    font-family: var(--display);
-    font-size: clamp(4.2rem, 7.4vw, 8.25rem);
-    font-weight: 400;
-    letter-spacing: -0.045em;
-    line-height: 0.94;
-    overflow-wrap: anywhere;
+    max-width: min(100%, 24rem);
   }
 
-  .hero-title span {
+  .hero-title__wordmark {
     display: block;
+    line-height: 0;
+    padding-block: 0.35rem 0.15rem;
+  }
+
+  .hero-title__wordmark :global(.magister-logo) {
+    width: min(100%, 22rem);
+    height: auto;
+    max-width: none;
+    filter: drop-shadow(0 0.35rem 0.85rem rgba(42, 68, 132, 0.14));
   }
 
   .hero-lead {
     max-width: 42rem;
-    margin-top: 2.25rem;
+    margin-top: 1.85rem;
     font-family: var(--display);
     font-size: clamp(1.35rem, 1.85vw, 1.85rem);
     line-height: 1.32;
+  }
+
+  .hero-lead__mark {
+    color: color-mix(in srgb, var(--brand-blue) 88%, var(--ink));
+    font-family: var(--sans);
+    font-size: 0.94em;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    padding-inline: 0.12em;
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--brand-blue) 38%, transparent) 0,
+      color-mix(in srgb, var(--brand-blue) 38%, transparent) 0.16em,
+      transparent 0.16em
+    );
   }
 
   .hero-body {
@@ -307,8 +331,11 @@ const backCount = Math.max(0, cards.length - 1);
 
     .hero-title {
       margin-top: 1rem;
-      font-size: clamp(4rem, 18vw, 5.6rem);
-      line-height: 0.96;
+      max-width: 100%;
+    }
+
+    .hero-title__wordmark :global(.magister-logo) {
+      width: min(100%, 18.5rem);
     }
 
     .hero-deck {

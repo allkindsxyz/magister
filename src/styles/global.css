@@ -12,6 +12,12 @@
   --line: #cbc6bb;
   --accent: #8d2f24;
   --accent-dark: #642019;
+  --brand-blue: #2a4484;
+  /* Figma/Illustrator: degrees from source PNG (CSS applies −1×) */
+  --brand-wordmark-rotate-design: -7.27deg;
+  --brand-wordmark-origin-x: 50%;
+  --brand-wordmark-origin-y: 50%;
+  --brand-wordmark-nudge-x: 0;
   --white: #fffdf8;
   --display: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
   --sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
@@ -46,6 +52,12 @@ body.dialog-open {
 
 body.dialog-open .mobile-book-sticky {
   display: none !important;
+}
+
+.magister-logo--level {
+  transform: rotate(calc(var(--brand-wordmark-rotate-design) * -1))
+    translateX(var(--brand-wordmark-nudge-x));
+  transform-origin: var(--brand-wordmark-origin-x) var(--brand-wordmark-origin-y);
 }
 
 img {

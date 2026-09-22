@@ -2,6 +2,7 @@
 import type { Lang } from '../i18n/utils';
 import { useTranslations } from '../i18n/utils';
 import { CONTACT_EMAIL } from '../lib/site';
+import MagisterLogo from './MagisterLogo.astro';
 
 interface Props {
   lang: Lang;
@@ -14,7 +15,12 @@ const t = useTranslations(lang);
 <footer id="contact">
   <div class="page-shell footer-grid">
     <div class="footer-main">
-      <p class="footer-title">Magister Cards</p>
+      <p class="footer-brand" aria-label="Magister Cards">
+        <span class="footer-brand__wordmark" aria-hidden="true">
+          <MagisterLogo width={880} height={407} />
+        </span>
+        <span class="footer-brand__cards" aria-hidden="true">Cards</span>
+      </p>
       <p class="footer-closing">{t('footer.closing')}</p>
       <a class="footer-email" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
     </div>
@@ -46,12 +52,40 @@ const t = useTranslations(lang);
     max-width: 52rem;
   }
 
-  .footer-title {
-    font-family: var(--display);
-    font-size: clamp(2.2rem, 10vw, 5rem);
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.18rem;
+    width: 100%;
+    margin: 0;
+  }
+
+  .footer-brand__wordmark {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .footer-brand__wordmark :global(.magister-logo) {
+    width: min(100%, 16rem);
+    height: auto;
+    max-width: none;
+    margin-inline: auto;
+    transform: translateX(0.2rem);
+    filter: drop-shadow(0 0.3rem 0.7rem rgba(42, 68, 132, 0.12));
+  }
+
+  .footer-brand__cards {
+    display: block;
+    margin: 0;
+    color: var(--brand-blue);
+    font-family: 'Bebas Neue', var(--sans);
+    font-size: clamp(1.45rem, 3.5vw, 2.05rem);
     font-weight: 400;
-    letter-spacing: -0.05em;
-    line-height: 0.92;
+    letter-spacing: 0.16em;
+    line-height: 1;
+    text-transform: uppercase;
   }
 
   .footer-closing {
@@ -93,6 +127,18 @@ const t = useTranslations(lang);
 
   .footer-bottom a {
     text-decoration: none;
+  }
+
+  @media (max-width: 560px) {
+    .footer-brand__wordmark :global(.magister-logo) {
+      width: min(100%, 13.5rem);
+      transform: translateX(0.15rem);
+    }
+
+    .footer-brand__cards {
+      font-size: clamp(1.25rem, 6.5vw, 1.65rem);
+      letter-spacing: 0.14em;
+    }
   }
 
 </style>
