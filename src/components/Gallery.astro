@@ -386,10 +386,20 @@ const payloads = cards.map((card) => {
 
   .lb-suit-val {
     margin-bottom: -0.35rem;
-    color: color-mix(in srgb, var(--paper) 12%, transparent);
+    color: var(--paper);
     font-family: var(--display);
     font-size: clamp(2rem, 4vw, 2.75rem);
     line-height: 1;
+  }
+
+  .lb-suit-val[data-suit='hearts'],
+  .lb-suit-val[data-suit='diamonds'] {
+    color: #e8a098;
+  }
+
+  .lb-suit-val[data-suit='spades'],
+  .lb-suit-val[data-suit='clubs'] {
+    color: var(--paper);
   }
 
   .lb-title {
@@ -468,13 +478,14 @@ const payloads = cards.map((card) => {
 
   @media (hover: none) {
     .carousel-card__overlay {
-      opacity: 1;
-      background: linear-gradient(to top, rgba(12, 7, 1, 0.94) 0%, rgba(12, 7, 1, 0.35) 42%, transparent 72%);
+      opacity: 0;
+      visibility: hidden;
     }
 
-    .carousel-card__overlay-inner {
-      padding-bottom: 1.1rem;
-      transform: none;
+    .carousel-card:hover .carousel-card__overlay,
+    .carousel-card:focus .carousel-card__overlay,
+    .carousel-card:focus-visible .carousel-card__overlay {
+      opacity: 0;
     }
   }
 
@@ -667,7 +678,10 @@ const payloads = cards.map((card) => {
       image.src = card.image;
       image.alt = card.title;
     }
-    if (suitVal) suitVal.textContent = `${card.suitSymbol} ${card.value}`;
+    if (suitVal) {
+      suitVal.textContent = `${card.suitSymbol} ${card.value}`;
+      suitVal.dataset.suit = card.suit;
+    }
     if (title) title.textContent = card.title;
     if (worldLine) worldLine.textContent = card.worldLine;
     if (catLine) catLine.textContent = card.categoryLine;
