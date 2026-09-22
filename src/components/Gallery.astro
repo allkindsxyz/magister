@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/utils';
-import { useTranslations } from '../i18n/utils';
+import { useTranslations, pickLocalized } from '../i18n/utils';
 import { getCollection } from 'astro:content';
 
 interface Props {
@@ -20,15 +20,15 @@ const symbols: Record<string, string> = { spades: '♠', hearts: '♥', diamonds
 const payloads = cards.map((card) => {
   const suit = card.data.suit as (typeof suits)[number];
   return {
-    title: card.data.title[lang],
-    description: card.data.description[lang],
+    title: pickLocalized(card.data.title, lang),
+    description: pickLocalized(card.data.description, lang),
     suit,
     value: card.data.value,
     image: card.data.image,
     suitSymbol: symbols[suit],
-    category: card.data.category[lang],
+    category: pickLocalized(card.data.category, lang),
     worldLine: `${t('gallery.world_label')}: ${t(`worlds.${suit}.name`)}`,
-    categoryLine: `${t('gallery.category_label')}: ${card.data.category[lang]}`,
+    categoryLine: `${t('gallery.category_label')}: ${pickLocalized(card.data.category, lang)}`,
     metaLine: `${t('gallery.suit_label')}: ${t(`suits.${suit}`)} · ${t('gallery.value_label')}: ${card.data.value}`,
   };
 });
@@ -36,7 +36,6 @@ const payloads = cards.map((card) => {
 
 <div class="gallery" id="fifty-four" aria-labelledby="gallery-title">
   <header class="gallery-header reveal">
-    <p class="gallery-lead">{t('gallery.lead')}</p>
     <h3 id="gallery-title">{t('gallery.title')}</h3>
   </header>
 
@@ -130,14 +129,8 @@ const payloads = cards.map((card) => {
     text-align: center;
   }
 
-  .gallery-lead {
-    color: var(--muted);
-    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
-    line-height: 1.55;
-  }
-
   .gallery-header h3 {
-    margin-top: 0.85rem;
+    margin-top: 0;
     font-family: var(--display);
     font-size: clamp(1.35rem, 2.2vw, 1.85rem);
     font-weight: 400;

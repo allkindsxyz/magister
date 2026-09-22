@@ -26,6 +26,11 @@
   --max-width: 81.6rem;
 }
 
+html:lang(zh-Hans) {
+  --display: 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --sans: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
 html {
   overflow-x: clip;
   scroll-behavior: smooth;

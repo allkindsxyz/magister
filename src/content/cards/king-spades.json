@@ -2,11 +2,12 @@
   "id": "king-spades",
   "suit": "spades",
   "value": "K",
-  "category": { "en": "Historical echo", "ru": "Историческое эхо" },
-  "title": { "en": "The Secret History of the Mongols", "ru": "Тайная история монголов" },
+  "category": { "en": "Historical echo", "ru": "Историческое эхо", "zh": "历史回响" },
+  "title": { "en": "The Secret History of the Mongols", "ru": "Тайная история монголов", "zh": "蒙古秘史" },
   "description": {
     "en": "The anonymous chronicle of empire on the steppe — propaganda, genealogy, and thunder across Asia. A spade-king card: power recorded by voices we barely know.",
-    "ru": "Анонимная хроника степной империи — пропаганда, родословная и гром по Азии. Король пик: власть, записанная голосами, которых мы почти не знаем."
+    "ru": "Анонимная хроника степной империи — пропаганда, родословная и гром по Азии. Король пик: власть, записанная голосами, которых мы почти не знаем.",
+    "zh": "草原帝国的匿名编年——宣传、世系与席卷亚洲的雷鸣。黑桃 K：权力由我们几乎无从知晓的声音所记录。"
   },
   "image": "/media/merchant.webp",
   "featured": true

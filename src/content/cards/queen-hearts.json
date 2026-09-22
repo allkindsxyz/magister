@@ -2,11 +2,12 @@
   "id": "queen-hearts",
   "suit": "hearts",
   "value": "Q",
-  "category": { "en": "Portrait", "ru": "Портрет" },
-  "title": { "en": "Ann and Scarab", "ru": "Анна и скарабей" },
+  "category": { "en": "Portrait", "ru": "Портрет", "zh": "肖像" },
+  "title": { "en": "Ann and Scarab", "ru": "Анна и скарабей", "zh": "安娜与圣甲虫" },
   "description": {
     "en": "A homage to Anna Pavlova: lightness, discipline, and the scarab as a solar wheel — return, resurrection, the curtain going up again.",
-    "ru": "Ода Анне Павловой: лёгкость, дисциплина и скарабей как солнечное колесо — возвращение, воскресение, снова поднимающийся занавес."
+    "ru": "Ода Анне Павловой: лёгкость, дисциплина и скарабей как солнечное колесо — возвращение, воскресение, снова поднимающийся занавес.",
+    "zh": "致敬安娜·巴甫洛娃：轻盈、纪律与作为日轮的圣甲虫——回归、复活、幕布再次升起。"
   },
   "image": "/media/pilgrims.webp",
   "featured": true

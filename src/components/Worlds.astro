@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/utils';
-import { useTranslations } from '../i18n/utils';
+import { useTranslations, pickLocalized } from '../i18n/utils';
 import { getCollection } from 'astro:content';
 import Gallery from './Gallery.astro';
 
@@ -37,7 +37,7 @@ function exampleForSuit(suit: Suit): { src: string; caption: string | null } {
   const pick = inSuit.find((card) => card.data.featured) ?? inSuit[0];
   return {
     src: pick.data.image,
-    caption: pick.data.title[lang],
+    caption: pickLocalized(pick.data.title, lang),
   };
 }
 

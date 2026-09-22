@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/utils';
-import { useTranslations } from '../i18n/utils';
+import { useTranslations, pickLocalized } from '../i18n/utils';
 import { getCollection } from 'astro:content';
 import MagisterLogo from './MagisterLogo.astro';
 
@@ -70,7 +70,7 @@ const backCount = Math.max(0, cards.length - 1);
         <img
           id="deck-front-image"
           src={cards[0]?.data.image}
-          alt={cards[0]?.data.title[lang]}
+          alt={cards[0] ? pickLocalized(cards[0].data.title, lang) : ''}
           width="920"
           height="1316"
           loading="eager"
@@ -88,7 +88,7 @@ const backCount = Math.max(0, cards.length - 1);
   type="application/json"
   set:html={JSON.stringify(cards.map((card) => ({
     image: card.data.image,
-    title: card.data.title[lang],
+    title: pickLocalized(card.data.title, lang),
   })))}
 />
 
@@ -146,20 +146,7 @@ const backCount = Math.max(0, cards.length - 1);
   }
 
   .hero-lead__mark {
-    color: color-mix(in srgb, var(--brand-blue) 88%, var(--ink));
-    font-family: var(--sans);
-    font-size: 0.94em;
     font-weight: 600;
-    letter-spacing: 0.03em;
-    box-decoration-break: clone;
-    -webkit-box-decoration-break: clone;
-    padding-inline: 0.12em;
-    background: linear-gradient(
-      to top,
-      color-mix(in srgb, var(--brand-blue) 38%, transparent) 0,
-      color-mix(in srgb, var(--brand-blue) 38%, transparent) 0.16em,
-      transparent 0.16em
-    );
   }
 
   .hero-body {

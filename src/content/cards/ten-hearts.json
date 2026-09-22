@@ -2,11 +2,12 @@
   "id": "ten-hearts",
   "suit": "hearts",
   "value": "10",
-  "category": { "en": "Emblem", "ru": "Эмблема" },
-  "title": { "en": "The Wasp's Flight", "ru": "Полёт осы" },
+  "category": { "en": "Emblem", "ru": "Эмблема", "zh": "徽记" },
+  "title": { "en": "The Wasp's Flight", "ru": "Полёт осы", "zh": "黄蜂之飞" },
   "description": {
     "en": "Napoleon took the wasp as a personal emblem — speed, sting, and swarm as statecraft. The card reads ambition as something bright, dangerous, and airborne.",
-    "ru": "Наполеон избрал осу личным знаком — скорость, жало и рой как политика. Карта читает амбицию как нечто яркое, опасное и несущееся в воздухе."
+    "ru": "Наполеон избрал осу личным знаком — скорость, жало и рой как политика. Карта читает амбицию как нечто яркое, опасное и несущееся в воздухе.",
+    "zh": "拿破仑以黄蜂为个人徽记——速度、毒刺与蜂群即治国之道。此牌将野心读作明亮、危险而凌空之物。"
   },
   "image": "/media/bearer.webp",
   "featured": false

@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/utils';
-import { useTranslations, getLocalizedPath } from '../i18n/utils';
+import { useTranslations, getLocalizedPath, LOCALE_LINKS } from '../i18n/utils';
 import { BOOKING_URL } from '../lib/site';
 import SpielLogo from './SpielLogo.astro';
 import MagisterLogo from './MagisterLogo.astro';
@@ -34,16 +34,16 @@ const externalBooking = BOOKING_URL.startsWith('http');
 
   <div class="nav-actions">
     <div class="language-switcher" aria-label={t('nav.language_label')}>
-      <a
-        href={getLocalizedPath('/', 'en')}
-        class:list={['language-link', { active: lang === 'en' }]}
-        aria-current={lang === 'en' ? 'page' : undefined}
-      >EN</a>
-      <a
-        href={getLocalizedPath('/', 'ru')}
-        class:list={['language-link', { active: lang === 'ru' }]}
-        aria-current={lang === 'ru' ? 'page' : undefined}
-      >RU</a>
+      {LOCALE_LINKS.map(({ code, label }) => (
+        <a
+          href={getLocalizedPath('/', code)}
+          class:list={['language-link', { active: lang === code }]}
+          aria-current={lang === code ? 'page' : undefined}
+          lang={code === 'zh' ? 'zh-Hans' : code}
+        >
+          {label}
+        </a>
+      ))}
     </div>
     <a
       href={BOOKING_URL}
@@ -95,8 +95,15 @@ const externalBooking = BOOKING_URL.startsWith('http');
         {t('nav.book')}
       </a>
       <div class="language-switcher">
-        <a href={getLocalizedPath('/', 'en')} class:list={['language-link', { active: lang === 'en' }]}>EN</a>
-        <a href={getLocalizedPath('/', 'ru')} class:list={['language-link', { active: lang === 'ru' }]}>RU</a>
+        {LOCALE_LINKS.map(({ code, label }) => (
+          <a
+            href={getLocalizedPath('/', code)}
+            class:list={['language-link', { active: lang === code }]}
+            lang={code === 'zh' ? 'zh-Hans' : code}
+          >
+            {label}
+          </a>
+        ))}
       </div>
     </div>
   </div>
@@ -118,9 +125,9 @@ const externalBooking = BOOKING_URL.startsWith('http');
     inset: 0 0 auto;
     z-index: 100;
     display: grid;
-    grid-template-columns: minmax(9rem, 1fr) auto minmax(15rem, 1fr);
+    grid-template-columns: minmax(9rem, 1fr) auto minmax(17rem, 1fr);
     align-items: center;
-    gap: 2rem;
+    gap: 1.35rem;
     min-height: 72px;
     padding: 0.8rem var(--page-pad);
     border-bottom: 1px solid transparent;
@@ -161,7 +168,7 @@ const externalBooking = BOOKING_URL.startsWith('http');
   .nav-links {
     display: flex;
     align-items: center;
-    gap: clamp(1rem, 2.2vw, 2.5rem);
+    gap: clamp(0.65rem, 1.45vw, 1.65rem);
     list-style: none;
   }
 
@@ -217,25 +224,29 @@ const externalBooking = BOOKING_URL.startsWith('http');
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 1.25rem;
+    gap: 0.85rem;
+    min-width: 0;
   }
 
   .language-switcher {
     display: flex;
-    gap: 0.65rem;
+    flex-shrink: 0;
+    gap: 0.45rem;
   }
 
   .nav-book {
     display: inline-flex;
+    flex-shrink: 0;
     min-height: 38px;
     align-items: center;
-    padding: 0.65rem 1rem;
+    padding: 0.65rem 0.85rem;
     background: var(--accent);
     color: var(--white);
     font: 600 0.65rem/1 var(--sans);
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-decoration: none;
     text-transform: uppercase;
+    white-space: nowrap;
   }
 
   .nav-book:hover {

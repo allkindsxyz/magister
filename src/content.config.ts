@@ -4,6 +4,7 @@ import { glob } from 'astro/loaders';
 const localizedString = z.object({
   en: z.string(),
   ru: z.string(),
+  zh: z.string().optional(),
 });
 
 const cards = defineCollection({

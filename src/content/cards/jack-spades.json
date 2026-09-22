@@ -2,11 +2,12 @@
   "id": "jack-spades",
   "suit": "spades",
   "value": "J",
-  "category": { "en": "Pop archetype", "ru": "Поп-архетип" },
-  "title": { "en": "Michael and the Chameleon", "ru": "Майкл и хамелеон" },
+  "category": { "en": "Pop archetype", "ru": "Поп-архетип", "zh": "流行原型" },
+  "title": { "en": "Michael and the Chameleon", "ru": "Майкл и хамелеон", "zh": "迈克尔与变色龙" },
   "description": {
     "en": "The chameleon as metaphor: a performer who redrew his silhouette for every era — fame as camouflage, reinvention as survival.",
-    "ru": "Хамелеон как метафора: артист, перечерчивавший силуэт для каждой эпохи — слава как маскировка, перевоплощение как выживание."
+    "ru": "Хамелеон как метафора: артист, перечерчивавший силуэт для каждой эпохи — слава как маскировка, перевоплощение как выживание.",
+    "zh": "变色龙为喻：为每个时代重绘轮廓的表演者——名望是伪装，重塑是生存。"
   },
   "image": "/media/bearer.webp",
   "featured": true

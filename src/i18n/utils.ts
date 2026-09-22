@@ -1,14 +1,30 @@
 import en from './en.json';
 import ru from './ru.json';
+import zh from './zh.json';
 
-export type Lang = 'en' | 'ru';
+export type Lang = 'en' | 'ru' | 'zh';
 export type Translations = typeof en;
 
-const translations: Record<Lang, Translations> = { en, ru };
+const translations: Record<Lang, Translations> = { en, ru, zh };
+
+export const LOCALE_LINKS: ReadonlyArray<{ code: Lang; label: string }> = [
+  { code: 'en', label: 'EN' },
+  { code: 'ru', label: 'RU' },
+  { code: 'zh', label: '中文' },
+];
+
+export type LocalizedField = { en: string; ru: string; zh?: string };
+
+export function pickLocalized(field: LocalizedField, lang: Lang): string {
+  if (lang === 'zh') return field.zh ?? field.en;
+  if (lang === 'ru') return field.ru;
+  return field.en;
+}
 
 export function getLangFromUrl(url: URL): Lang {
   const [, lang] = url.pathname.split('/');
   if (lang === 'ru') return 'ru';
+  if (lang === 'zh') return 'zh';
   return 'en';
 }
 
@@ -36,5 +52,7 @@ export function getLocalizedPath(path: string, lang: Lang): string {
 }
 
 export function getAlternateLang(lang: Lang): Lang {
-  return lang === 'en' ? 'ru' : 'en';
+  if (lang === 'en') return 'ru';
+  if (lang === 'ru') return 'zh';
+  return 'en';
 }

@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Nav from '../../components/Nav.astro';
+import Hero from '../../components/Hero.astro';
+import Worlds from '../../components/Worlds.astro';
+import Artist from '../../components/Artist.astro';
+import NextChapter from '../../components/NextChapter.astro';
+import Essen from '../../components/Essen.astro';
+import Footer from '../../components/Footer.astro';
+
+const lang = 'zh';
+---
+
+<Layout
+  lang={lang}
+  title="Magister Cards — 54 张牌 · 4 个世界 · 1 个平行宇宙"
+  description="Magister Cards 是一副围绕原创另类神话打造的实体收藏艺术卡牌。"
+>
+  <Nav lang={lang} />
+  <main id="main-content">
+    <Hero lang={lang} />
+    <Worlds lang={lang} />
+    <Artist lang={lang} />
+    <NextChapter lang={lang} />
+    <Essen lang={lang} />
+  </main>
+  <Footer lang={lang} />
+</Layout>

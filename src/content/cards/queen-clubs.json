@@ -2,11 +2,12 @@
   "id": "queen-clubs",
   "suit": "clubs",
   "value": "Q",
-  "category": { "en": "Templar lore", "ru": "Легенда ордена" },
-  "title": { "en": "Templar's Hunt", "ru": "Охота тамплиера" },
+  "category": { "en": "Templar lore", "ru": "Легенда ордена", "zh": "圣殿骑士传说" },
+  "title": { "en": "Templar's Hunt", "ru": "Охота тамплиера", "zh": "圣殿骑士的狩猎" },
   "description": {
     "en": "Jacques de Molay’s shadow on the trail: the last Grand Master as a hinge between crusading oath and later myth — the widow’s son, the unfinished hunt.",
-    "ru": "Тень Жака де Моле на тропе: последний магистр как шарнир между крестовым обетом и последующим мифом — сын вдовы, охота без конца."
+    "ru": "Тень Жака де Моле на тропе: последний магистр как шарнир между крестовым обетом и последующим мифом — сын вдовы, охота без конца.",
+    "zh": "雅克·德·莫莱的影子留在小径上：末代大团长是十字誓言与后世神话之间的枢纽——寡妇之子，未竟的狩猎。"
   },
   "image": "/media/lady.webp",
   "featured": true

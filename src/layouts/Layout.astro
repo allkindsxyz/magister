@@ -5,7 +5,7 @@ import { absoluteUrl, localizedAbsoluteUrl } from '../lib/site';
 interface Props {
   title?: string;
   description?: string;
-  lang: 'en' | 'ru';
+  lang: 'en' | 'ru' | 'zh';
   canonicalURL?: string;
 }
 
@@ -18,9 +18,12 @@ const {
 const pathAfterLocale = Astro.url.pathname.replace(new RegExp(`^/${lang}`), '') || '/';
 const canonicalURL = Astro.props.canonicalURL ?? localizedAbsoluteUrl(lang, pathAfterLocale);
 const ogImage = absoluteUrl('/media/merchant.webp');
+const htmlLang = lang === 'zh' ? 'zh-Hans' : lang;
+const skipLabel =
+  lang === 'ru' ? 'К содержанию' : lang === 'zh' ? '跳到正文' : 'Skip to content';
 ---
 <!DOCTYPE html>
-<html lang={lang}>
+<html lang={htmlLang}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -42,6 +45,7 @@ const ogImage = absoluteUrl('/media/merchant.webp');
   <!-- Alternate languages -->
   <link rel="alternate" hreflang="en" href={localizedAbsoluteUrl('en', pathAfterLocale)} />
   <link rel="alternate" hreflang="ru" href={localizedAbsoluteUrl('ru', pathAfterLocale)} />
+  <link rel="alternate" hreflang="zh-Hans" href={localizedAbsoluteUrl('zh', pathAfterLocale)} />
   <link rel="alternate" hreflang="x-default" href={localizedAbsoluteUrl('en', pathAfterLocale)} />
 
   <!-- Favicon -->
@@ -51,11 +55,11 @@ const ogImage = absoluteUrl('/media/merchant.webp');
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;800&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;800&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600&display=swap"
   />
 </head>
 <body>
-  <a class="skip-link" href="#main-content">{lang === 'ru' ? 'К содержанию' : 'Skip to content'}</a>
+  <a class="skip-link" href="#main-content">{skipLabel}</a>
   <slot />
 
   <script>

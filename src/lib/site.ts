@@ -61,7 +61,7 @@ export function absoluteUrl(path: string): string {
   return `${getSiteUrl()}${normalized}`;
 }
 
-export function localizedAbsoluteUrl(lang: 'en' | 'ru', path = '/'): string {
+export function localizedAbsoluteUrl(lang: 'en' | 'ru' | 'zh', path = '/'): string {
   const suffix = path === '/' ? '/' : path.startsWith('/') ? path : `/${path}`;
   return `${getSiteUrl()}/${lang}${suffix === '/' ? '/' : suffix}`;
 }

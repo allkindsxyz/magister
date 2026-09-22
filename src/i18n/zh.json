@@ -1,0 +1,134 @@
+{
+  "nav": {
+    "aria_label": "主导航",
+    "deck": "牌组",
+    "worlds": "四界",
+    "cards": "浏览牌组",
+    "authors": "作者",
+    "next": "合作",
+    "spiel": "2026",
+    "spiel_aria": "SPIEL Essen 2026",
+    "language_label": "语言",
+    "book": "SPIEL '26 会面",
+    "book_aria": "预约 SPIEL Essen 2026 会面",
+    "menu_open": "打开菜单",
+    "menu_close": "关闭菜单"
+  },
+  "hero": {
+    "meta": "54 张牌 · 4 个世界 · 1 个平行宇宙",
+    "lead_before": "一套可收藏的",
+    "lead_mark": "艺术卡牌",
+    "lead_after": "，开启通往另类神话的大门——炼金术、历史与现代在此交织。",
+    "body": "每一张牌都是这个世界的一个片段——一幅画、一个角色、一段可供探索、解读与演绎的故事。",
+    "explore": "浏览牌组",
+    "meet": "SPIEL 2026 见",
+    "meet_aria": "在 SPIEL Essen 2026 与我们见面",
+    "deck_next": "显示牌组中的下一张牌"
+  },
+  "worlds_section": {
+    "label": "牌组神话",
+    "title": "54 幅画中的 4 个世界",
+    "lead": "Magister 是一副独特的 54 张定制牌组，基于经典四花色体系，融合古代神话、中世纪与现代文化的符号。",
+    "mechanic": "每张牌上的图像与场景编码其花色与点数。牌面未标注花色与点数，需依照下列符号体系自行解读。"
+  },
+  "worlds": {
+    "hearts": {
+      "name": "奥林匹斯诸神",
+      "blurb": "古典神谱在运动中：欲望、变形、神谕与火焰。红心承载凡人与不朽者协商命运的神话片段。"
+    },
+    "diamonds": {
+      "name": "秘密承载者",
+      "blurb": "炼金使者、隐秘教团、王冠背后的低语。方块追踪那些传递不宜公开的知识的人。"
+    },
+    "clubs": {
+      "name": "圣殿骑士",
+      "blurb": "十字军之钢、失落的藏宝图、教团的长影。梅花将牌组锚定在中世纪阴谋与从信仰到传说的弧线中。"
+    },
+    "spades": {
+      "name": "名流",
+      "blurb": "现代造神：世人以为熟识的面孔，被重塑为原型。黑桃追问当公众面具成为永久象征时会发生什么。"
+    }
+  },
+  "suits": {
+    "spades": "黑桃",
+    "hearts": "红心",
+    "diamonds": "方块",
+    "clubs": "梅花"
+  },
+  "gallery": {
+    "label": "典藏",
+    "title": "浏览牌组",
+    "hint": "点击任意牌面查看",
+    "open": "打开",
+    "open_btn": "打开人物 →",
+    "close": "关闭",
+    "previous": "上一组牌",
+    "next": "下一组牌",
+    "viewer_previous": "上一张牌",
+    "viewer_next": "下一张牌",
+    "suit_label": "花色",
+    "value_label": "点数",
+    "world_label": "世界",
+    "category_label": "主题"
+  },
+  "authors": {
+    "preface_title": "在成为卡牌之前",
+    "preface_p1": "在 Magister 成为一副卡牌之前，先有画作。",
+    "preface_p2": "瓦西里·波奇茨基与弗拉基米尔·日尔奇克用多年时间创造自己的世界——构思角色、地点与故事，并在画布上赋予它们生命。",
+    "preface_p3": "54 张牌中的每一张，都源自其中一幅原作。",
+    "preface_p4": "牌组只是窥见一个更宏大世界的窗口。",
+    "preface_image_alt": "工作室墙上悬挂的 Magister 原作；弗拉基米尔·日尔奇克与瓦西里·波奇茨基手持卡牌。",
+    "label": "作者",
+    "title": "Magister 卡牌作者",
+    "pochitsky": {
+      "name": "瓦西里·波奇茨基",
+      "role": "Magister 宇宙的艺术家与共创作者。",
+      "bio": "白俄罗斯画家、插画师与音乐家。在列奇察开始绘画，作品从莫斯科展至纽约。近十年间他的素描见于全国报刊，职业生涯中持续为书籍与唱片绘制插图。",
+      "bio_2": "Magister 是他最雄心勃勃的系列：与弗拉基米尔·日尔奇克紧密合作，五十四幅画在画布上让共同的世界与其角色活了起来。",
+      "link": "了解更多关于瓦西里·波奇茨基",
+      "photo_alt": "艺术家瓦西里·波奇茨基肖像。"
+    },
+    "zhilchik": {
+      "name": "弗拉基米尔·日尔奇克",
+      "role": "Magister 宇宙的创作者。",
+      "bio": "日尔奇克构建了这一系列的神话体系——诸家族、角色、人物关系与历史脉络。",
+      "bio_2": "他与瓦西里·波奇茨基一同想象并发展最终呈现在画作中的世界。",
+      "photo_alt": "弗拉基米尔·日尔奇克肖像。"
+    }
+  },
+  "next": {
+    "label": "合作",
+    "body_1": "Magister Cards 是围绕另类神话构建的原创视觉 IP，拥有独立角色、故事与 54 幅原作。",
+    "body_2": "我们正在寻找商业伙伴，将这一 IP 开发为可上市产品并推向市场。",
+    "areas": "出版 · 生产 · 发行",
+    "closing": "未来产品形态开放讨论。",
+    "cta": "SPIEL 2026 见",
+    "image_alt": "包装中的 Magister Cards 实体版。"
+  },
+  "essen": {
+    "headline": "SPIEL Essen 2026 见",
+    "date": "10 月 22–25 日，德国埃森",
+    "logo_alt": "SPIEL Essen — 国际游戏展",
+    "fair_link": "spiel-essen.de",
+    "lead": "观看实体牌组，洽谈出版、生产或发行。",
+    "matison": {
+      "name": "Dmitry Matison",
+      "role": "商务拓展",
+      "bio": "合作与出版洽谈。",
+      "photo_alt": "Dmitry Matison 肖像。"
+    },
+    "lightovy": {
+      "name": "Alex Hryzunt",
+      "role": "演示与讲解",
+      "bio": "牌组演示与 Magister 世界导览。",
+      "photo_alt": "Alex Hryzunt 肖像。"
+    },
+    "book": "预约会面",
+    "contact_prefix": "或发邮件至"
+  },
+  "footer": {
+    "tagline": "54 张牌 · 4 个世界 · 1 个平行宇宙",
+    "closing": "艺术已完成。可能性敞开——欢迎洽谈。",
+    "back_to_top": "返回顶部"
+  }
+}

@@ -2,11 +2,12 @@
   "id": "jack-hearts",
   "suit": "hearts",
   "value": "J",
-  "category": { "en": "Greek myth", "ru": "Греческий миф" },
-  "title": { "en": "Apollo and Daphne", "ru": "Аполлон и Дафна" },
+  "category": { "en": "Greek myth", "ru": "Греческий миф", "zh": "希腊神话" },
+  "title": { "en": "Apollo and Daphne", "ru": "Аполлон и Дафна", "zh": "阿波罗与达芙妮" },
   "description": {
     "en": "The chase that ends in bark and laurel: Apollo’s longing and Daphne’s escape into the tree — a heart-suit episode about desire that cannot be answered in human form.",
-    "ru": "Погоня, что обрывается корой и лавром: желание Аполлона и побег Дафны в дерево — эпизод червей о том, как страсть не находит ответа в человеческом облике."
+    "ru": "Погоня, что обрывается корой и лавром: желание Аполлона и побег Дафны в дерево — эпизод червей о том, как страсть не находит ответа в человеческом облике.",
+    "zh": "追逐止于树皮与月桂：阿波罗的渴望与达芙妮遁入树身——红心牌中关于无法用人的形态回应的欲望。"
   },
   "image": "/media/lady.webp",
   "featured": false
