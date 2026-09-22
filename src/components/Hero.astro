@@ -19,11 +19,23 @@ const backCount = Math.max(0, cards.length - 1);
 
 <section class="hero" id="deck" aria-labelledby="hero-title">
   <div class="page-shell hero-grid">
-    <p class="section-label hero-meta">{t('hero.meta')}</p>
-    <h1 id="hero-title" class="hero-title">
-      <span>Magister</span>
-      <span>Cards</span>
-    </h1>
+    <div class="hero-copy">
+      <p class="section-label hero-meta">{t('hero.meta')}</p>
+      <h1 id="hero-title" class="hero-title">
+        <span>Magister</span>
+        <span>Cards</span>
+      </h1>
+      <p class="hero-lead">{t('hero.lead')}</p>
+      <p class="hero-body">{t('hero.body')}</p>
+
+      <div class="hero-actions">
+        <a class="btn" href="#fifty-four">{t('hero.explore')}</a>
+        <a class="btn btn-accent" href="#spiel">
+          <span class="btn-event-mark" aria-hidden="true">✦</span>
+          {t('hero.meet')}
+        </a>
+      </div>
+    </div>
 
     <div class="hero-deck">
       <div class="deck-stack" aria-hidden="true">
@@ -64,17 +76,6 @@ const backCount = Math.max(0, cards.length - 1);
         />
       </button>
     </div>
-
-    <p class="hero-lead">{t('hero.lead')}</p>
-    <p class="hero-body">{t('hero.body')}</p>
-
-    <div class="hero-actions">
-      <a class="btn" href="#fifty-four">{t('hero.explore')}</a>
-      <a class="btn btn-accent" href="#spiel">
-        <span class="btn-event-mark" aria-hidden="true">✦</span>
-        {t('hero.meet')}
-      </a>
-    </div>
   </div>
 </section>
 
@@ -103,11 +104,7 @@ const backCount = Math.max(0, cards.length - 1);
     width: 100%;
   }
 
-  .hero-meta,
-  .hero-title,
-  .hero-lead,
-  .hero-body,
-  .hero-actions {
+  .hero-copy {
     grid-column: 1 / 8;
     position: relative;
     z-index: 2;
@@ -157,16 +154,14 @@ const backCount = Math.max(0, cards.length - 1);
 
   .hero-deck {
     grid-column: 8 / 13;
-    grid-row: 1 / -1;
+    grid-row: 1;
     position: relative;
     z-index: 1;
     width: min(72%, 19.8rem);
-    max-width: 100%;
     aspect-ratio: 93 / 133;
     justify-self: end;
+    align-self: center;
     margin-right: 4%;
-    overflow: hidden;
-    contain: layout paint;
   }
 
   .deck-card {
@@ -270,6 +265,10 @@ const backCount = Math.max(0, cards.length - 1);
       gap: 0;
     }
 
+    .hero-copy {
+      display: contents;
+    }
+
     .hero-meta {
       order: 1;
     }
@@ -292,12 +291,12 @@ const backCount = Math.max(0, cards.length - 1);
 
     .hero-deck {
       order: 6;
-      grid-column: auto;
-      grid-row: auto;
       width: min(40vw, 17.6rem);
       align-self: center;
       margin-right: 0;
       margin-top: 2.5rem;
+      overflow: hidden;
+      contain: layout paint;
     }
   }
 
