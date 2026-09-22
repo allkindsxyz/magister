@@ -1,0 +1,18 @@
+---
+interface Props {
+  class?: string;
+  width?: number;
+  height?: number;
+}
+
+const { class: className, width = 130, height = 66 } = Astro.props;
+---
+
+<img
+  src="/media/magister-logo.png"
+  alt=""
+  class={className}
+  width={width}
+  height={height}
+  decoding="async"
+/>

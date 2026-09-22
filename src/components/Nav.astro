@@ -3,6 +3,7 @@ import type { Lang } from '../i18n/utils';
 import { useTranslations, getLocalizedPath } from '../i18n/utils';
 import { BOOKING_URL } from '../lib/site';
 import SpielLogo from './SpielLogo.astro';
+import MagisterLogo from './MagisterLogo.astro';
 
 interface Props {
   lang: Lang;
@@ -15,14 +16,7 @@ const externalBooking = BOOKING_URL.startsWith('http');
 
 <nav id="main-nav" aria-label={t('nav.aria_label')}>
   <a href={getLocalizedPath('/', lang)} class="nav-logo" aria-label="Magister Cards">
-    <img
-      class="nav-logo-img"
-      src="/media/magister-logo.png"
-      alt=""
-      width="1024"
-      height="520"
-      decoding="async"
-    />
+    <MagisterLogo class="nav-logo-img" width={130} height={66} />
   </a>
 
   <ul class="nav-links">
@@ -141,12 +135,22 @@ const externalBooking = BOOKING_URL.startsWith('http');
   }
 
   .nav-logo {
+    display: inline-flex;
     width: max-content;
-    font-family: var(--display);
-    font-size: 1.35rem;
-    font-weight: 500;
-    letter-spacing: -0.03em;
+    max-width: 100%;
+    flex-shrink: 1;
+    min-width: 0;
+    align-items: center;
+    line-height: 0;
     text-decoration: none;
+  }
+
+  .nav-logo-img {
+    display: block;
+    width: auto;
+    height: 1.72rem;
+    max-width: 8.35rem;
+    object-fit: contain;
   }
 
   .nav-links {
@@ -335,7 +339,16 @@ const externalBooking = BOOKING_URL.startsWith('http');
 
   @media (max-width: 1100px) {
     nav {
-      grid-template-columns: 1fr auto;
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .nav-logo {
+      max-width: calc(100vw - var(--page-pad) * 2 - 3.25rem);
+    }
+
+    .nav-logo-img {
+      height: 1.48rem;
+      max-width: min(7.1rem, 100%);
     }
 
     .nav-links,
