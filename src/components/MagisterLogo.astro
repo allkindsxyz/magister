@@ -5,14 +5,24 @@ interface Props {
   height?: number;
 }
 
-const { class: className, width = 130, height = 66 } = Astro.props;
+const { class: className, width = 120, height = 55 } = Astro.props;
 ---
 
 <img
   src="/media/magister-logo.png"
   alt=""
-  class={className}
+  class:list={['magister-logo', className]}
   width={width}
   height={height}
   decoding="async"
 />
+
+<style>
+  .magister-logo {
+    display: block;
+    width: auto;
+    height: 1.38rem;
+    max-width: 6.85rem;
+    object-fit: contain;
+  }
+</style>

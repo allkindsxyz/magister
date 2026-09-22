@@ -16,7 +16,7 @@ const externalBooking = BOOKING_URL.startsWith('http');
 
 <nav id="main-nav" aria-label={t('nav.aria_label')}>
   <a href={getLocalizedPath('/', lang)} class="nav-logo" aria-label="Magister Cards">
-    <MagisterLogo class="nav-logo-img" width={130} height={66} />
+    <MagisterLogo class="nav-logo-img" />
   </a>
 
   <ul class="nav-links">
@@ -145,11 +145,12 @@ const externalBooking = BOOKING_URL.startsWith('http');
     text-decoration: none;
   }
 
-  .nav-logo-img {
+  .nav-logo :global(.magister-logo),
+  .nav-logo :global(.nav-logo-img) {
     display: block;
     width: auto;
-    height: 1.72rem;
-    max-width: 8.35rem;
+    height: 1.38rem;
+    max-width: 6.85rem;
     object-fit: contain;
   }
 
@@ -346,9 +347,10 @@ const externalBooking = BOOKING_URL.startsWith('http');
       max-width: calc(100vw - var(--page-pad) * 2 - 3.25rem);
     }
 
-    .nav-logo-img {
-      height: 1.48rem;
-      max-width: min(7.1rem, 100%);
+    .nav-logo :global(.magister-logo),
+    .nav-logo :global(.nav-logo-img) {
+      height: 1.28rem;
+      max-width: min(6.2rem, 100%);
     }
 
     .nav-links,

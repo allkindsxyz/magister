@@ -54,6 +54,14 @@ img {
   height: auto;
 }
 
+#main-nav .nav-logo img {
+  width: auto;
+  max-width: 6.85rem;
+  height: 1.38rem;
+  max-height: 1.38rem;
+  object-fit: contain;
+}
+
 a {
   color: inherit;
 }
@@ -259,6 +267,12 @@ select {
 @media (max-width: 1100px) {
   #main-content {
     padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  #main-nav .nav-logo img {
+    height: 1.28rem;
+    max-height: 1.28rem;
+    max-width: min(6.2rem, calc(100vw - 7rem));
   }
 }
 
