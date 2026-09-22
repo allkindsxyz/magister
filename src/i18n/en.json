@@ -74,26 +74,26 @@
   "authors": {
     "preface_title": "Before They Became Cards",
     "preface_p1": "Long before Magister became a deck of cards, there were paintings.",
-    "preface_p2": "Vasily Pochitsky and Vladimir Zhilchik spent years creating their own worlds — inventing characters, places and stories, and bringing them to life on canvas.",
+    "preface_p2": "Vasily Pochitsky and Alexander Zhilchik spent years creating their own worlds — inventing characters, places and stories, and bringing them to life on canvas.",
     "preface_p3": "Each of the 54 cards is based on one of these original works.",
     "preface_p4": "The deck is only a glimpse into a much larger world.",
-    "preface_image_alt": "Original Magister paintings on the studio wall; Vladimir Zhilchik and Vasily Pochitsky with the card deck.",
+    "preface_image_alt": "Original Magister paintings on the studio wall; Alexander Zhilchik and Vasily Pochitsky with the card deck.",
     "label": "Authors",
     "title": "Authors of Magister Cards",
     "pochitsky": {
       "name": "Vasily Pochitsky",
       "role": "Artist and co-creator of the Magister universe.",
       "bio": "Belarusian painter, illustrator and musician. He began painting in Rechitsa and went on to exhibit from Moscow to New York. For nearly a decade, his drawings appeared in the national press, and throughout his career he illustrated books and records.",
-      "bio_2": "Magister was his most ambitious cycle: created in close collaboration with Vladimir Zhilchik, the fifty-four paintings brought their shared world and its characters to life on canvas.",
+      "bio_2": "Magister was his most ambitious cycle: created in close collaboration with Alexander Zhilchik, the fifty-four paintings brought their shared world and its characters to life on canvas.",
       "link": "More about Vasily Pochitsky",
       "photo_alt": "Portrait of artist Vasily Pochitsky."
     },
     "zhilchik": {
-      "name": "Vladimir Zhilchik",
+      "name": "Alexander Zhilchik",
       "role": "Creator of the Magister universe.",
       "bio": "Zhilchik developed the mythology behind the cycle — its houses, characters, relationships and historical threads.",
       "bio_2": "Together with Vasily Pochitsky, he imagined and developed the world that would eventually take shape across the paintings.",
-      "photo_alt": "Portrait of Vladimir Zhilchik."
+      "photo_alt": "Portrait of Alexander Zhilchik."
     }
   },
   "next": {
