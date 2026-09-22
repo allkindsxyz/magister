@@ -113,7 +113,7 @@ const externalBooking = BOOKING_URL.startsWith('http');
 
 <style>
   nav {
-    --nav-mark-height: 1.55rem;
+    --nav-mark-height: 3.0625rem;
     position: fixed;
     inset: 0 0 auto;
     z-index: 100;
@@ -151,7 +151,7 @@ const externalBooking = BOOKING_URL.startsWith('http');
     display: block;
     width: auto;
     height: var(--nav-mark-height);
-    max-width: 8rem;
+    max-width: 11rem;
     object-fit: contain;
   }
 
@@ -341,6 +341,7 @@ const externalBooking = BOOKING_URL.startsWith('http');
 
   @media (max-width: 1100px) {
     nav {
+      --nav-mark-height: 2.35rem;
       grid-template-columns: minmax(0, 1fr) auto;
     }
 
@@ -350,8 +351,8 @@ const externalBooking = BOOKING_URL.startsWith('http');
 
     .nav-logo :global(.magister-logo),
     .nav-logo :global(.nav-logo-img) {
-      height: 1.42rem;
-      max-width: min(7.35rem, 100%);
+      height: var(--nav-mark-height);
+      max-width: min(9.5rem, 100%);
     }
 
     .nav-links,

@@ -55,21 +55,21 @@ img {
 }
 
 #main-nav {
-  --nav-mark-height: 1.55rem;
+  /* Match SPIEL mark props (112×49) — same vertical size as before global CSS. */
+  --nav-mark-height: 3.0625rem;
 }
 
-#main-nav .nav-logo img {
+#main-nav .nav-logo img,
+#main-nav .nav-spiel-logo {
+  display: block;
   width: auto;
-  max-width: 8rem;
   height: var(--nav-mark-height);
   max-height: var(--nav-mark-height);
   object-fit: contain;
 }
 
-#main-nav .nav-spiel-logo {
-  width: auto;
-  height: var(--nav-mark-height);
-  max-height: var(--nav-mark-height);
+#main-nav .nav-logo img {
+  max-width: 11rem;
 }
 
 a {
@@ -280,11 +280,11 @@ select {
   }
 
   #main-nav {
-    --nav-mark-height: 1.42rem;
+    --nav-mark-height: 2.35rem;
   }
 
   #main-nav .nav-logo img {
-    max-width: min(7.35rem, calc(100vw - 7rem));
+    max-width: min(9.5rem, calc(100vw - 7rem));
   }
 }
 
