@@ -53,6 +53,7 @@ const examples = Object.fromEntries(suitOrder.map((suit) => [suit, exampleForSui
       <p class="section-label">{t('worlds_section.label')}</p>
       <h2 class="section-title" id="worlds-title">{t('worlds_section.title')}</h2>
       <p class="worlds-lead">{t('worlds_section.lead')}</p>
+      <p class="worlds-mechanic">{t('worlds_section.mechanic')}</p>
     </header>
 
     <div class="worlds-grid">
@@ -104,11 +105,19 @@ const examples = Object.fromEntries(suitOrder.map((suit) => [suit, exampleForSui
     line-height: 1;
   }
 
-  .worlds-lead {
-    margin-top: 1.75rem;
+  .worlds-lead,
+  .worlds-mechanic {
     color: var(--muted);
     font-size: clamp(1rem, 1.4vw, 1.18rem);
     line-height: 1.75;
+  }
+
+  .worlds-lead {
+    margin-top: 1.75rem;
+  }
+
+  .worlds-mechanic {
+    margin-top: 1.15rem;
   }
 
   .worlds-grid {

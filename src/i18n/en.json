@@ -26,23 +26,24 @@
   "worlds_section": {
     "label": "The Deck's Mythology",
     "title": "4 worlds in 54 paintings",
-    "lead": "Magister is a full 54-card art deck. Suits are not decorative trim — each one is a realm with its own laws, cast, and symbolism. Ranks and houses are woven into the painting itself: you read the card by looking, not by corner indices."
+    "lead": "Magister is a unique custom 54-card deck, based on the classic four-suit system that incorporates symbols from Ancient mythology, the Middle Ages, and modern culture.",
+    "mechanic": "Images and scenes on each card encode its suit and rank. But as the suits and ranks aren't marked on the cards, they all must be determined using the following symbol system."
   },
   "worlds": {
     "hearts": {
-      "name": "Hearts — Olympian gods",
+      "name": "Olympic Gods",
       "blurb": "The classical pantheon in motion: desire, metamorphosis, oracle and flame. Hearts carry mythic episodes where mortals and immortals negotiate fate."
     },
     "diamonds": {
-      "name": "Diamonds — Bearers of secrets",
+      "name": "Bearers of Secrets",
       "blurb": "Alchemical emissaries, hidden orders, and whispers behind crowns. Diamonds track those who traffic in knowledge that should not travel in plain sight."
     },
     "clubs": {
-      "name": "Clubs — Knights Templar",
+      "name": "Templars",
       "blurb": "Crusade steel, lost treasure-maps, and the long shadow of the order. Clubs anchor the deck in medieval intrigue and the arc from devotion to legend."
     },
     "spades": {
-      "name": "Spades — Celebrities & icons",
+      "name": "Celebrities",
       "blurb": "Modern myth-making: faces the world thought it knew, reframed as archetypes. Spades ask what happens when public masks become permanent emblems."
     }
   },
