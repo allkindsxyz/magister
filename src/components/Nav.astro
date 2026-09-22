@@ -55,19 +55,33 @@ const externalBooking = BOOKING_URL.startsWith('http');
     </a>
   </div>
 
-  <button
-    class="nav-toggle"
-    id="nav-toggle"
-    type="button"
-    aria-label={t('nav.menu_open')}
-    data-open-label={t('nav.menu_open')}
-    data-close-label={t('nav.menu_close')}
-    aria-expanded="false"
-    aria-controls="mobile-menu"
-  >
-    <span></span>
-    <span></span>
-  </button>
+  <div class="nav-mobile-tools">
+    <div class="language-switcher language-switcher--bar" aria-label={t('nav.language_label')}>
+      {LOCALE_LINKS.map(({ code, label }) => (
+        <a
+          href={getLocalizedPath('/', code)}
+          class:list={['language-link', { active: lang === code }]}
+          aria-current={lang === code ? 'page' : undefined}
+          lang={code === 'zh' ? 'zh-Hans' : code}
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+    <button
+      class="nav-toggle"
+      id="nav-toggle"
+      type="button"
+      aria-label={t('nav.menu_open')}
+      data-open-label={t('nav.menu_open')}
+      data-close-label={t('nav.menu_close')}
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <span></span>
+      <span></span>
+    </button>
+  </div>
 </nav>
 
 <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
@@ -94,17 +108,6 @@ const externalBooking = BOOKING_URL.startsWith('http');
       >
         {t('nav.book')}
       </a>
-      <div class="language-switcher">
-        {LOCALE_LINKS.map(({ code, label }) => (
-          <a
-            href={getLocalizedPath('/', code)}
-            class:list={['language-link', { active: lang === code }]}
-            lang={code === 'zh' ? 'zh-Hans' : code}
-          >
-            {label}
-          </a>
-        ))}
-      </div>
     </div>
   </div>
 </div>
@@ -253,8 +256,28 @@ const externalBooking = BOOKING_URL.startsWith('http');
     background: var(--accent-dark);
   }
 
+  .nav-mobile-tools {
+    display: none;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    min-width: 0;
+  }
+
+  .language-switcher--bar {
+    flex-shrink: 1;
+    min-width: 0;
+    gap: 0.35rem;
+  }
+
+  .language-switcher--bar .language-link {
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+  }
+
   .nav-toggle {
     display: none;
+    flex-shrink: 0;
     width: 44px;
     height: 44px;
     align-items: center;
@@ -359,8 +382,12 @@ const externalBooking = BOOKING_URL.startsWith('http');
       grid-template-columns: minmax(0, 1fr) auto;
     }
 
+    .nav-mobile-tools {
+      display: flex;
+    }
+
     .nav-logo {
-      max-width: calc(100vw - var(--page-pad) * 2 - 3.25rem);
+      max-width: calc(100vw - var(--page-pad) * 2 - 9.5rem);
     }
 
     .nav-logo :global(.magister-logo),
@@ -421,7 +448,10 @@ const externalBooking = BOOKING_URL.startsWith('http');
     }
     if (event.key !== 'Tab' || !menu) return;
 
-    const focusable = [toggle, ...menuLinks].filter(Boolean) as HTMLElement[];
+    const barLangLinks = Array.from(
+      document.querySelectorAll<HTMLElement>('.language-switcher--bar .language-link')
+    );
+    const focusable = [toggle, ...barLangLinks, ...menuLinks].filter(Boolean) as HTMLElement[];
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
     if (event.shiftKey && document.activeElement === first) {
