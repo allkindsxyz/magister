@@ -54,12 +54,22 @@ img {
   height: auto;
 }
 
+#main-nav {
+  --nav-mark-height: 1.55rem;
+}
+
 #main-nav .nav-logo img {
   width: auto;
-  max-width: 6.85rem;
-  height: 1.38rem;
-  max-height: 1.38rem;
+  max-width: 8rem;
+  height: var(--nav-mark-height);
+  max-height: var(--nav-mark-height);
   object-fit: contain;
+}
+
+#main-nav .nav-spiel-logo {
+  width: auto;
+  height: var(--nav-mark-height);
+  max-height: var(--nav-mark-height);
 }
 
 a {
@@ -269,10 +279,12 @@ select {
     padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
   }
 
+  #main-nav {
+    --nav-mark-height: 1.42rem;
+  }
+
   #main-nav .nav-logo img {
-    height: 1.28rem;
-    max-height: 1.28rem;
-    max-width: min(6.2rem, calc(100vw - 7rem));
+    max-width: min(7.35rem, calc(100vw - 7rem));
   }
 }
 
