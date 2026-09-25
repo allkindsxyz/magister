@@ -1,0 +1,23 @@
+{
+  "id": "9-spades",
+  "suit": "spades",
+  "value": "9",
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
+  },
+  "title": {
+    "en": "Vincent in the Field",
+    "ru": "Винсент на поле"
+  },
+  "summary": {
+    "en": "The Nine of Spades depicts the great Dutch painter Vincent van Gogh working on what is believed to be his final masterpiece.",
+    "ru": "На девятке пик изображён великий нидерландский художник Винсент ван Гог, работающий над своим последним произведением."
+  },
+  "description": {
+    "en": "Vincent van Gogh (1853–1890) was a Dutch Post-Impressionist painter whose name has become a symbol of passionate and tragic devotion to art. In just ten years he created more than 800 paintings, yet during his lifetime he sold only one.\nVan Gogh’s life was marked by constant struggle — with poverty, loneliness, and inner turmoil. He received little recognition while alive, depended financially on his brother Theo, and often felt out of place both in society and in the artistic world. His attempts to find a calling — from religious preaching to painting — were accompanied by disappointment, instability, and recurring psychological crises.\nHis bouts of anxiety and despair were intensified by isolation, and the dramatic episode in which he cut off part of his ear became a lasting symbol of his breakdown. Yet even during the darkest periods he continued to work with almost feverish intensity, transforming personal suffering into a powerful visual language.\nIt is often believed that van Gogh’s final painting was Wheatfield with Crows (1890). It is also thought that the artist shot himself in a wheat field. The painting may therefore be seen either as a staged vision of the master’s final view of the world, or as a haunting premonition of what was to come — the gaze of the ravens, creatures long regarded as messengers of the otherworld.",
+    "ru": "Винсент ван Гог (1853–1890) — нидерландский художник-постимпрессионист, чьё имя стало символом страстного и трагического служения искусству. За десять лет он создал более 800 картин, но при жизни продал лишь одну.\nСудьба ван Гога была отмечена постоянной борьбой — с бедностью, одиночеством и внутренними кризисами. Он не получил признания при жизни, материально зависел от брата Тео и часто чувствовал себя лишним — и в мире, и в искусстве. Его попытки найти призвание — от проповедничества до живописи — сопровождались разочарованиями, неустроенностью и нестабильным психическим состоянием.\nПриступы тревоги и отчаяния усиливались изоляцией, а драматический эпизод с отрезанным ухом стал символом его надлома. И всё же даже в периоды глубочайшего кризиса он продолжал работать с почти неистовой интенсивностью, превращая личную боль в мощный художественный язык.\nСчитается, что последней работой ван Гога была картина Пшеничное поле с воронами (1890). Также предполагается, что художник выстрелил в себя именно на пшеничном поле. Возможно, эта картина — инсценировка последнего взгляда мастера, а возможно — своеобразное предчувствие будущего: взгляд тех, кого принято считать вестниками потустороннего мира, — воронов."
+  },
+  "image": "/cards/9-spades.webp",
+  "featured": false
+}

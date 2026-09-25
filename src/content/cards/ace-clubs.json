@@ -1,0 +1,23 @@
+{
+  "id": "ace-clubs",
+  "suit": "clubs",
+  "value": "A",
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
+  },
+  "title": {
+    "en": "The Life and Death of the Grand Master",
+    "ru": "Жизнь и смерть Великого Магистра"
+  },
+  "summary": {
+    "en": "The Ace of Clubs is represented by Hugh de Payens, the founder of the Knights Templar. His legacy endured for centuries, and therefore he is depicted here as both alive and dead.",
+    "ru": "Тузом крестей выступает Гуго де Пейн — основатель ордена тамплиеров. Его дело пережило его на века, поэтому здесь он изображён одновременно и живым, и мёртвым."
+  },
+  "description": {
+    "en": "Hugh de Payens (c. 1070–1136) was a French knight from Champagne who entered history as the first Grand Master of the Knights Templar. Little is known about his early life; he likely belonged to the lesser nobility and may have taken part in the First Crusade or arrived in Jerusalem shortly afterward.\nAround 1119, Hugh, together with several fellow knights, founded a brotherhood dedicated to protecting Christian pilgrims in the Holy Land. King Baldwin II of Jerusalem granted them a residence on the Temple Mount, from which the order derived its name — the “Knights of the Temple,” later known as the Templars.\nIn 1129, at the Council of Troyes, the order received official recognition from the Church, largely through the support of Bernard of Clairvaux. Hugh de Payens became its first Grand Master and helped transform a small brotherhood into a powerful military-monastic organization. He died in 1136, leaving behind a structure that soon became one of the most influential institutions in medieval Europe.\nFrom a small group of knights who had taken vows within the walls of Jerusalem, the order eventually grew into one of the most powerful political forces of the Middle Ages — possessing vast landholdings across Europe, its own financial system, and direct connections with monarchs and the papacy. What began as a brotherhood protecting pilgrims evolved into an international institution capable of lending money to kings and participating in the grand politics of its time.",
+    "ru": "Гуго де Пейн (ок. 1070–1136) — французский рыцарь из Шампани, вошедший в историю как первый магистр ордена тамплиеров. О его ранней жизни известно немного; предположительно, он принадлежал к мелкому дворянству и участвовал в Первом крестовом походе или вскоре после него прибыл в Иерусалим.\nОколо 1119 года Гуго вместе с несколькими рыцарями основал братство, целью которого была защита христианских паломников на Святой земле. Король Иерусалима Балдуин II предоставил им резиденцию на Храмовой горе, откуда и произошло название ордена — «рыцари Храма» (тамплиеры).\nВ 1129 году на соборе в Труа орден получил официальное признание Церкви, во многом благодаря поддержке Бернара Клервоского. Гуго де Пейн стал первым великим магистром и способствовал превращению небольшого братства во влиятельную военно-монашескую организацию. Он умер в 1136 году, оставив после себя структуру, которая вскоре стала одной из самых могущественных в средневековой Европе.\nИз небольшого собрания рыцарей, давших обеты у стен Иерусалима, орден со временем превратился в одну из самых влиятельных политических сил Средневековья — с обширными земельными владениями по всей Европе, собственной банковской системой и прямыми связями с монархами и папским престолом. То, что начиналось как братство защитников паломников, превратилось в международную структуру, способную кредитовать королей и участвовать в большой политике своего времени."
+  },
+  "image": "/cards/ace-clubs.webp",
+  "featured": false
+}

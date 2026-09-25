@@ -65,14 +65,16 @@ const examples = Object.fromEntries(suitOrder.map((suit) => [suit, exampleForSui
           <article class="world-card reveal" style={`--delay:${index * 70}ms`}>
             <div class="world-visual">
               <div class="world-frame">
-                <img
-                  src={example.src}
-                  alt={alt}
-                  width="280"
-                  height="392"
-                  loading="lazy"
-                  decoding="async"
-                />
+                <span class="world-frame__surface">
+                  <img
+                    src={example.src}
+                    alt={alt}
+                    width="280"
+                    height="392"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </span>
               </div>
               {example.caption && <p class="world-caption">{example.caption}</p>}
             </div>
@@ -150,20 +152,30 @@ const examples = Object.fromEntries(suitOrder.map((suit) => [suit, exampleForSui
   }
 
   .world-frame {
-    overflow: hidden;
-    border: 1px solid var(--line);
-    background: var(--white);
+    background: transparent;
   }
 
-  .world-frame img {
+  .world-frame__surface {
+    position: relative;
+    display: block;
     width: 100%;
-    aspect-ratio: 5 / 7;
-    object-fit: contain;
-    transition: transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+    aspect-ratio: 920 / 1316;
+    overflow: hidden;
+    border-radius: var(--card-radius);
+    background: var(--paper-deep);
   }
 
-  .world-card:hover .world-frame img {
-    transform: translateY(-0.2rem);
+  /* Slight zoom crops scan margins baked into card webp exports */
+  .world-frame img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transform: scale(1.12);
+    transform-origin: center center;
   }
 
   .world-caption {

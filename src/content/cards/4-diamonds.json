@@ -1,0 +1,23 @@
+{
+  "id": "4-diamonds",
+  "suit": "diamonds",
+  "value": "4",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "The Carrying of Sacred Objects",
+    "ru": "Перенос священных объектов"
+  },
+  "summary": {
+    "en": "An initiate in the mysteries who has embraced the doctrine of concealing one's true beliefs.",
+    "ru": "«Перенос священных объектов»\nПосвященный в мистерии, принявший доктрину сокрытия своих подлинных взглядов."
+  },
+  "description": {
+    "en": "What matters most in this image is that it is not entirely clear who carries whom. Bearers of secrets are people who question existing hierarchies. It is no accident that a monkey sits above — a symbol of a twofold, restless mind leaping from branch to branch.\n\nAt the center stands a figure enclosed in a barrel, as in a vessel meant for preservation. The monkey seated atop adds duality to the image: it may be guardian or mockery of the sacred. In symbolic tradition it often points to imitation, to a distorted reflection of truth. Its presence therefore prompts the question — is the sacred truly being carried, or only its shadow, clothed in the form of ritual?\n\nThis subject tells us that the sacred is not always obvious and not always pure. It may be enclosed in strange forms, bear contradictions within, and demand careful handling. The carrying of sacred objects is not only an act of preservation but a trial: a way to distinguish the genuine from illusion and to understand what we bear, even when we cannot fully grasp it.",
+    "ru": "Самое главное на этом изображении, что не до конца понятно, кто кого несёт. Носители тайн - люди, ставящие под сомнение существующие иерархии. Не зря сверху сидит обезьяна - символ двойственного и переменчивого ума, скачущего с ветви на ветвь.\n\nВ центре находится фигура, заключённая в бочку, словно в сосуд, предназначенный для сохранения. Обезьяна, сидящая сверху, добавляет образу двойственность: она может быть как хранителем, так и насмешкой над священным. В традиции символов она часто указывает на подражание, на искажённое отражение истины. И потому её присутствие заставляет задуматься — действительно ли переносится священное, или же это лишь его тень, принявшая форму обряда.\n\nЭтот сюжет говорит о том, что священное не всегда очевидно и не всегда чисто. Оно может быть заключено в странные формы, нести в себе противоречия и требовать осторожности в обращении. Перенос священных объектов — это не только акт сохранения, но и испытание: способ отличить подлинное от иллюзии и понять, что именно мы несём, даже если не можем этого осознать до конца."
+  },
+  "image": "/cards/4-diamonds.webp",
+  "featured": false
+}

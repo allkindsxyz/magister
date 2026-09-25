@@ -1,0 +1,23 @@
+{
+  "id": "5-diamonds",
+  "suit": "diamonds",
+  "value": "5",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "The Wind-Drivers",
+    "ru": "Погонщики ветра"
+  },
+  "summary": {
+    "en": "Cloud herders — itinerant musicians whose sounds, tradition holds, can stir the sky and guide the movement of clouds.",
+    "ru": "Погонщики туч — странствующие музыканты, чьи звуки, по поверьям, способны тревожить небо и направлять движение облаков"
+  },
+  "description": {
+    "en": "Cloud herders are itinerant musicians whose sounds, tradition holds, can stir the sky and guide the movement of clouds. They are depicted as simple folk, yet behind them lies something more: a basket filled with the voices of the wind, where each horn sounds like a separate gust of the element. Their melodies are said to summon rain, scatter storms, or, conversely, thicken clouds above the earth.\nThey appear at the turning of seasons, when weather grows changeable and the sky restless. In such moments their music carries far beyond hearing, penetrating the very fabric of the air. People said that hearing their playing, one could feel pressure change in the chest, as though the sky itself answered an unseen call.\nThe herders themselves rarely stay in one place. Their path runs through fields, mountains, and forgotten roads, where they follow the winds like shepherds follow a flock. No one knows exactly whence they come or whither they vanish, yet they always bring the sense of change approaching — quiet or stormy, like the breath of thunder.\nThere is a belief that inside their basket lie not only instruments but beings linked to wind and cloud. These voices cannot be seen, yet their presence is felt in every sound. And if you watch the cloud herders long enough, you may notice how their music alters not only the sky but reality itself around them, subjecting it to an ancient, nearly forgotten rhythm.",
+    "ru": "Погонщики туч — странствующие музыканты, чьи звуки, по поверьям, способны тревожить небо и направлять движение облаков. Их изображают как простых людей, но за их спинами скрывается нечто большее: корзина, наполненная голосами ветра, где каждая труба звучит как отдельный порыв стихии. Считается, что их мелодии могут призывать дождь, разгонять грозы или, напротив, сгущать тучи над землёй.\nОни появляются на границе времён года, когда погода становится переменчивой, а небо — беспокойным. В такие моменты их музыка разносится далеко за пределы слышимого, проникая в саму ткань воздуха. Люди говорили, что, услышав их игру, можно почувствовать, как меняется давление в груди, будто само небо откликается на невидимый зов.\nСами погонщики редко остаются на одном месте. Их путь пролегает через поля, горы и забытые дороги, где они следуют за ветрами, словно пастухи за стадом. Никто точно не знает, откуда они приходят и куда исчезают, но их всегда сопровождает ощущение надвигающейся перемены — тихой или бурной, как дыхание грозы.\nСуществует поверье, что внутри их корзины заключены не только инструменты, но и сущности, связанные с ветром и облаками. Эти голоса невозможно увидеть, но их присутствие ощущается в каждом звуке. И если долго смотреть на погонщиков туч, можно заметить, как их музыка меняет не только небо, но и саму реальность вокруг, подчиняя её древнему и почти забытому ритму."
+  },
+  "image": "/cards/5-diamonds.webp",
+  "featured": false
+}

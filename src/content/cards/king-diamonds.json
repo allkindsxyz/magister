@@ -1,0 +1,23 @@
+{
+  "id": "king-diamonds",
+  "suit": "diamonds",
+  "value": "K",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "Keeper of the Sacred Temple",
+    "ru": "Хранитель священного храма"
+  },
+  "summary": {
+    "en": "The great priest, the hierophant — interpreter of the sacred mystery among the Greeks and in Western esotericism.\nHis name may neither be spoken nor written.",
+    "ru": "Великий жрец-иерофант - толкователь священной тайны у греков и в западной эзотерике.\nЕго имя нельзя ни произнести, ни написать."
+  },
+  "description": {
+    "en": "The King of Diamonds, Keeper of the Sacred Temple, sits motionless as the very border between the visible and the hidden. His face is old, yet in that age there is no frailty — only the trace of long service to a mystery that cannot be conveyed in ordinary speech. His name is forgotten or, perhaps, deliberately concealed, for in his office a name no longer belongs to the man. He is the hierophant, the high priest, known not by lineage and blood but by the role he performs before gods and initiates: to guard the threshold beyond which the sacred opens.\nIt was said that he was the last to enter the temple before the mysteries began and the first to meet those who emerged from them already changed. Only he might touch the sacred objects hidden from the uninitiated; only he could reveal them at the appointed hour — not as spectacle but as revelation. In the hour when the temple filled with reverent silence, he became not a man but the voice of an ancient rite through which tradition itself spoke.\nYet the Keeper's strength lay not in authority but in silence. He knew what could neither be written nor spoken without distortion. All that is truly sacred, he taught, perishes in empty retelling and is profaned by curious questions. Therefore he did not open the mysteries to those who sought in them only wonder or confirmation of their hopes. He opened them only to those ready to pass through fear, doubt, and inner death to touch a meaning greater than any human word.\nIn time the image of the Keeper became a symbol of initiation itself. His throne, resembling a wooden ark, reminds us: the sacred is not given freely — it is guarded, concealed, and demands dignity from whoever would draw near. He is the sentinel between two worlds: the earthly, where everything is named and explained, and the mystical, where the highest truth remains nameless. Thus the King of Diamonds is not merely a priest but the embodiment of a mystery that opens only to those who can fall reverently silent before its depth.",
+    "ru": "Король бубен, Хранитель священного храма, сидит недвижно, как сама граница между видимым и сокровенным. Его лицо старо, но в этой старости нет немощи — лишь след долгого служения тайне, которую нельзя передать обычным словом. Его имя забыто или, быть может, намеренно сокрыто, потому что в его сане имя уже не принадлежит человеку. Он — иерофант, великий жрец, известный не по роду и крови, а по той роли, которую исполняет перед богами и посвящаемыми: хранить порог, за которым открывается священное.\nГоворили, что он был последним, кто входил в храм перед началом мистерий, и первым, кто встречал тех, кто выходил из них уже иными. Только ему дозволялось прикасаться к священным предметам, скрытым от глаз непосвящённых, только он мог явить их в назначенный миг — не как зрелище, а как откровение. В тот час, когда храм наполнялся благоговейной тишиной, он становился не человеком, а голосом древнего обряда, через который говорила сама традиция.\nНо сила Хранителя заключалась не во власти, а в молчании. Он знал то, что нельзя было ни записать, ни произнести без искажения. Всё истинно священное, как он учил, гибнет в пустом пересказе и профанируется в любопытных вопросах. Потому он не открывал таинства тем, кто искал в них лишь чудо или подтверждение собственных надежд. Он открывал их лишь тем, кто был готов пройти через страх, сомнение и внутреннюю смерть, чтобы прикоснуться к смыслу, который больше любого человеческого слова.\nСо временем образ Хранителя стал символом самого посвящения. Его трон, похожий на деревянный ковчег, напоминает: священное не даётся даром, оно хранится, скрывается и требует достоинства от того, кто желает к нему приблизиться. Он — страж между двумя мирами: земным, где всё называют и объясняют, и мистическим, где высшая истина остаётся безымянной. Потому Король бубен — это не просто жрец, а воплощение тайны, которая открывается лишь тем, кто способен почтительно замолчать перед её глубиной."
+  },
+  "image": "/cards/king-diamonds.webp",
+  "featured": false
+}

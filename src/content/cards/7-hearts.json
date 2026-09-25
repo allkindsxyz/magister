@@ -1,0 +1,23 @@
+{
+  "id": "7-hearts",
+  "suit": "hearts",
+  "value": "7",
+  "category": {
+    "en": "Olympian gods",
+    "ru": "Олимпийские боги"
+  },
+  "title": {
+    "en": "Gaia and the Cyclopes",
+    "ru": "Гея и циклопы"
+  },
+  "summary": {
+    "en": "Gaia is the eldest of goddesses — Earth herself, Mother of all that lives. She brings forth sky, mountains, seas, Titans, and monsters; from her womb issue forces that create and destroy the world.",
+    "ru": "Гея — древнейшая из богинь, сама Земля, Матерь всего живого. Она рождает небо, горы, моря, титанов и чудовищ; из её чрева исходят силы, творящие и разрушающие мир."
+  },
+  "description": {
+    "en": "Gaia is the eldest of goddesses — Earth herself, Mother of all that lives. She brings forth sky, mountains, seas, Titans, and monsters; from her womb issue forces that create and destroy the world. She is the eternal foundation, the soil on which the cosmos rests, and the heart in which nature's rhythm is enclosed. The Cyclopes are children of Gaia and Uranus, one-eyed Titan smiths.\nUranus, fearing the power of his children, imprisoned the Cyclopes in the depths of the earth and robbed them of freedom. Gaia, suffering from this, plotted to overthrow his rule and helped her son Cronus rise against his father. Thus began one of the first conflicts among the gods.\nLater, in the age of Zeus, the Cyclopes were freed from captivity and, in gratitude, came to serve the new gods. In subterranean forges they hammer out weapons for the divine: lightning for Zeus, a trident for Poseidon, a helm of invisibility for Hades. They embody the element of fire and craft — creative labor that joins the elements of earth and sky.\nOn the card — Gaia, patroness of Earth, and small, serene Cyclopes. They rest idyllically upon her roots together with animals — fellow children of the earth. Here Gaia appears as the source of life and justice, and the Cyclopes as hidden power that, once freed, can change the course of gods and mortals alike.",
+    "ru": "Гея — древнейшая из богинь, сама Земля, Матерь всего живого. Она рождает небо, горы, моря, титанов и чудовищ; из её чрева исходят силы, творящие и разрушающие мир. Она — вечное основание, почва, на которой покоится космос, и сердце, в котором заключён ритм природы. Циклопы — дети Геи и Урана, одноглазые титаны-кузнецы.\nУран, опасаясь силы своих детей, заточил циклопов в недрах земли, лишив их свободы. Гея, страдая от этого, задумала свергнуть его власть и помогла своему сыну Крону восстать против отца. Так начался один из первых конфликтов богов.\nПозднее, уже в эпоху Зевса, циклопы были освобождены из заточения и в благодарность стали служить новым богам. В подземных кузницах они куют оружие богам: Зевсу — молнии, Посейдону — трезубец, Аиду — шлем-невидимку. Они воплощают стихию огня и ремесла, творческого труда, который соединяет стихии земли и неба.\nНа карте — Гея, покровительница Земли, и маленькие безмятежные Циклопы. Они идиллически покоятся на её корнях вместе с животными – такими же детьми земли. Гея здесь выступает как источник жизни и справедливости, а циклопы — как скрытая мощь, которая, будучи освобождённой, способна изменить ход судьбы богов и людей."
+  },
+  "image": "/cards/7-hearts.webp",
+  "featured": false
+}

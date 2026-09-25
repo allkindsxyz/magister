@@ -1,0 +1,23 @@
+{
+  "id": "7-spades",
+  "suit": "spades",
+  "value": "7",
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
+  },
+  "title": {
+    "en": "A Little Night Serenade",
+    "ru": "Маленькая ночная серенада"
+  },
+  "summary": {
+    "en": "Johann Bach — one of the greatest composers in the world. The hummingbird is known as a messenger that governs time.",
+    "ru": "Иоганн Бах - один из величайших композиторов мира. А колибри известна как посланник, управляющий временем."
+  },
+  "description": {
+    "en": "Bach’s music overcomes earthly gravity, like birds soaring above the ground. Borne by a bat and accompanied by five hummingbirds, he symbolizes the Seven of Spades — the card associated with unlocking creative potential. He wrote more than a thousand works in every possible genre, omitting only opera. Musicians of every generation drew inspiration from him — from Mozart to Moby. This great musician surely overcame every earthly limit.\nJohann Sebastian Bach was born in Germany into a family of musicians and from an early age was surrounded by musical tradition. He served as organist and kapellmeister in various cities, refining his craft and gradually forming his own style. Bach became one of the greatest composers of the Baroque era, creating works in which strict structure and deep emotion were united.\nHis music comprises complex polyphonic forms such as fugues and canons, where each line sounds independently yet forms a single harmonious whole. In his lifetime he was valued more as an outstanding organist than as a composer, and after his death his music fell temporarily into shadow. Only in the nineteenth century, thanks to Felix Mendelssohn, Bach’s work was rediscovered and recognized as a pinnacle of musical art. Today Bach is considered one of the founders of European classical music.",
+    "ru": "Музыка Баха преодолевает земное притяжение, как птицы, парящие над землей. Несомый летучей мышью и сопровождаемый пятью колибри, он символизирует семерку пик - карту, отвечающую за раскрытие творческого потенциала. Он написал более тысячи произведений во всех возможных жанрах, обойдя стороной только оперу. Им вдохновлялись музыканты всех поколений - от Моцарта до Моби. Этот великий музыкант определенно преодолел все земные ограничения.\nИоганн Себастьян Бах родился в Германии в семье музыкантов и с ранних лет был окружён музыкальной традицией. Он служил органистом и капельмейстером в разных городах, совершенствуя мастерство и постепенно формируя собственный стиль. Бах стал одним из величайших композиторов эпохи барокко, создав произведения, в которых соединились строгая структура и глубокая эмоциональность.\nЕго музыка — это сложные полифонические формы, такие как фуги и каноны, где каждая линия звучит самостоятельно, но образует единое гармоничное целое. При жизни его больше ценили как выдающегося органиста, чем как композитора, и после смерти его музыка на время оказалась в тени. Лишь в XIX веке, благодаря усилиям Феликса Мендельсона, творчество Баха было заново открыто и признано вершиной музыкального искусства. Сегодня Бах считается одним из основоположников европейской классической музыки."
+  },
+  "image": "/cards/7-spades.webp",
+  "featured": false
+}

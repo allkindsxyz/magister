@@ -15,6 +15,7 @@ const cards = defineCollection({
     value: z.string(),
     category: localizedString,
     title: localizedString,
+    summary: localizedString,
     description: localizedString,
     image: z.string(),
     featured: z.boolean().default(false),

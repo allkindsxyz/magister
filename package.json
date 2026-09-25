@@ -11,6 +11,8 @@
     "start": "node ./dist/server/entry.mjs",
     "preview": "astro preview",
     "optimize:images": "node scripts/optimize-public-images.mjs",
+    "import:deck": "node scripts/import-deck.mjs",
+    "import:apply-en": "node scripts/patch-card-en.mjs",
     "astro": "astro"
   },
   "dependencies": {

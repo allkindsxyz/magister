@@ -2,13 +2,22 @@
   "id": "queen-hearts",
   "suit": "hearts",
   "value": "Q",
-  "category": { "en": "Portrait", "ru": "Портрет", "zh": "肖像" },
-  "title": { "en": "Ann and Scarab", "ru": "Анна и скарабей", "zh": "安娜与圣甲虫" },
-  "description": {
-    "en": "A homage to Anna Pavlova: lightness, discipline, and the scarab as a solar wheel — return, resurrection, the curtain going up again.",
-    "ru": "Ода Анне Павловой: лёгкость, дисциплина и скарабей как солнечное колесо — возвращение, воскресение, снова поднимающийся занавес.",
-    "zh": "致敬安娜·巴甫洛娃：轻盈、纪律与作为日轮的圣甲虫——回归、复活、幕布再次升起。"
+  "category": {
+    "en": "Olympian gods",
+    "ru": "Олимпийские боги"
   },
-  "image": "/media/pilgrims.webp",
+  "title": {
+    "en": "Aphrodite",
+    "ru": "Афродита"
+  },
+  "summary": {
+    "en": "Goddess of love, birth, and everlasting spring.\nBorn from the sea out of drops of Uranus's blood and seed.",
+    "ru": "Богиня любви, рождения и вечной весны.\nРожденная в море из капель крови и семени Урана."
+  },
+  "description": {
+    "en": "Aphrodite is among the most enigmatic goddesses of the ancient pantheon, her origin tied to the oldest myth of birth from sea foam. Legend holds that after Cronus overthrew his father Uranus, Uranus's blood and seed fell into the sea. From the churning foam Aphrodite was born — already perfect, adult, and radiant. The waves carried her to the shores of Cyprus, where she stepped onto land and everything around her blossomed.\nFrom the moment of her appearance Aphrodite became the embodiment of attraction, desire, and beauty, which neither mortals nor gods could withstand. Even Zeus, fearing the power of her influence, gave her in marriage to Hephaestus — lame yet a master smith — hoping thus to restrain her sway. Yet that marriage bore no love: Aphrodite's heart belonged to passion, and she entered liaisons with other heroes of myth, including Ares.\nOne of the best-known episodes of her story is her bond with Adonis — a mortal whose beauty rivaled the divine. Aphrodite loved him and tried to shield him from harm, but Adonis died on the hunt, and from his blood, tradition says, the anemone flowers sprang. That tale underscores the goddess's dual nature: she grants love yet cannot ward off loss.\nAphrodite not only joins but also destroys: her intervention caused many events, including the Trojan War, which began after she promised Paris the love of the fairest woman. Here her true power shows — not in softness but in the inevitability of attraction, which can alter destinies. Aphrodite is not mere beauty but the force that governs desire, before which neither gods nor mortals can stand.",
+    "ru": "Афродита — одна из самых загадочных богинь античного пантеона, чьё происхождение связано с древнейшим мифом о рождении из морской пены. Согласно легенде, после того как Кронос низверг своего отца Урана, кровь и семя его упали в море. Из вздыбившейся пены родилась Афродита — уже совершенная, взрослая и сияющая. Волны вынесли её к берегам Кипра, где она ступила на землю, и всё вокруг расцвело.\nС момента своего появления Афродита стала воплощением притяжения, желания и красоты, которой не могли противостоять ни смертные, ни боги. Даже Зевс, опасаясь силы её влияния, выдал её замуж за Гефеста — хромого, но искусного кузнеца, надеясь таким образом сдержать её влияние. Однако брак этот не родил любви: сердце Афродиты принадлежало страсти, и она не раз вступала в связи с другими ггероями мифов, в том числе с Аресом.\nОдним из самых известных эпизодов её истории стала связь с Адонисом — смертным, чья красота соперничала с божественной. Афродита полюбила его и пыталась уберечь от опасностей, но Адонис погиб на охоте, и из его крови, по преданию, выросли цветы анемоны. Эта история подчёркивает двойственную природу богини: она дарует любовь, но не может защитить от утраты.\nАфродита не только соединяет, но и разрушает: её вмешательство стало причиной многих событий, включая Троянскую войну, начавшуюся после того, как она пообещала Парису любовь самой прекрасной женщины. В этом проявляется её истинная сила — не в мягкости, а в неотвратимости притяжения, которое способно менять судьбы. Афродита — это не просто красота, а сила, управляющая желаниями, перед которой не устоять ни богам, ни людям."
+  },
+  "image": "/cards/queen-hearts.webp",
   "featured": true
 }

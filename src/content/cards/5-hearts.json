@@ -1,0 +1,23 @@
+{
+  "id": "5-hearts",
+  "suit": "hearts",
+  "value": "5",
+  "category": {
+    "en": "Olympian gods",
+    "ru": "Олимпийские боги"
+  },
+  "title": {
+    "en": "Dryads",
+    "ru": "Дриады"
+  },
+  "summary": {
+    "en": "Dryads are forest nymphs, guardians of trees. They are among the few mortal nymphs.\nIt was believed that a dryad could not be separated from the tree to which she was bound, and died when it died.",
+    "ru": "Дриады - лесные нимфы, хранительницы деревьев. Одна из немногих смертных нимф.\nСчиталось, что дриада неотделима от дерева, с которым она связана, и умирает вместе с ним."
+  },
+  "description": {
+    "en": "Dryads are forest nymphs, spirits of trees, inseparably bound to nature and its vital force. They dwelled in groves and woods. In essence, each tree had its own dryad with its own name. They were held to embody the essence of a particular tree and, in a sense, to represent it before other living beings.\n\nIt was believed that each dryad was tied to a specific tree and lived as long as it lived. If the tree perished, the nymph died as well. Forests were therefore seen as living spaces filled with invisible beings, and felling trees could be regarded not merely as harm to nature but as killing.\nDryads rarely intervened in human affairs, yet they could show favor or wrath depending on how their domain was treated. They personified the quiet, hidden life of nature and almost never appeared in their true form. Yet anyone who entered the woods might meet danger or peace, lose the way or find a wonder — all at the dryads' will. For their breath is sap, their body trunk and branches, their voice the rustle of leaves.\n\nOver time the image of dryads became a symbol of humanity's deep bond with nature and a reminder that behind every living thing stands an unseen soul. By another account, dryads are guardian spirits who do not dwell inside the tree but simply care for it.",
+    "ru": "Дриады — это лесные нимфы, духи деревьев, неразрывно связанные с природой и её жизненной силой. Они обитали в рощах и лесах. По-сути, у каждого дерева была своя дриада со своим названием. Они считались воплощением сущности конкретного дерева, и, в каком-то смысле, представляли его перед другими живыми существами.\n\nСчиталось, что каждая дриада связана с конкретным деревом и живёт столько же, сколько и оно. Если дерево погибало, умирала и нимфа. Поэтому леса воспринимались как живые пространства, наполненные невидимыми существами, а вырубка деревьев могла считаться не просто разрушением природы, но и убийством.\nДриады редко вмешивались в дела людей, но могли проявлять благосклонность или гнев в зависимости от отношения к их обители. Они олицетворяли тихую, скрытую жизнь природы и почти никогда не появлялись в своем исконном облике. Зато любой, кто зашел в лес мог встретить опасность, покой, заблудиться или найти чудо, и все по воле дриад. Ведь их дыхание — сок, их тело — ствол и ветви, их голос — шелест листвы.\n\nСо временем образ дриад стал символом глубокой связи человека с природой и напоминанием о том, что за каждым живым существом стоит невидимая душа. По другой версии, дриады - это духи-опекуны, которые не существуют в дереве, а просто заботятся о нём."
+  },
+  "image": "/cards/5-hearts.webp",
+  "featured": false
+}

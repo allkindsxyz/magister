@@ -1,0 +1,23 @@
+{
+  "id": "8-hearts",
+  "suit": "hearts",
+  "value": "8",
+  "category": {
+    "en": "Olympian gods",
+    "ru": "Олимпийские боги"
+  },
+  "title": {
+    "en": "Amphitrite",
+    "ru": "Амфитрита"
+  },
+  "summary": {
+    "en": "Amphitrite is one of the Nereids, daughter of the sea god Nereus and wife of Poseidon. She was honored alongside her husband; Homer names her a goddess who commands sea monsters.",
+    "ru": "Амфитрита - одна из нереид, дочь бога моря Нерея и жена Посейдона. Амфитрита почиталась наравне со своим мужем; Гомер упоминает её как богиню, повелевающую морскими чудовищами."
+  },
+  "description": {
+    "en": "Once the sea god Poseidon saw fair Amphitrite among the dancing Nereids and fell in love with her. The goddess feared his power and hid in the depths of the ocean, seeking to evade his pursuit. Poseidon sent a dolphin to find her; the creature succeeded, persuaded Amphitrite to return, and in gratitude the god placed the dolphin in the sky as a constellation. Thus Amphitrite agreed to become consort of the lord of the seas.\nAs queen of the ocean she shared power with Poseidon and took her place among the sea deities. Her image is linked not to storm, as with the sea's ruler, but to the depth and calm of waters that conceal strength within. Amphitrite was worshipped on equal terms with Poseidon and was depicted enthroned beside him on a chariot drawn by sea horses.\nAmphitrite personifies the sea in its majestic, balanced aspect — not destruction but eternal motion and the hidden harmony of the depths. She became the image of the sea element in its steady, enduring form. Her presence does not wreck but holds, guides, and joins.\nShe is the silence beneath the waves, the hidden harmony in which the ocean's true might resides. And so her authority shows not in tempest but in equilibrium, where every wave, every current, and every depth obeys a single, unseen rhythm.",
+    "ru": "Однажды морской бог Посейдон увидел среди танцующих нереид прекрасную Амфитриту и воспылал к ней любовью. Однако богиня испугалась его силы и скрылась в глубинах океана, стремясь избежать его преследования. Посейдон отправил на её поиски дельфина, который сумел найти Амфитриту и убедить её вернуться. В благодарность бог поместил дельфина на небо, сделав его созвездием. Так Амфитрита согласилась стать супругой владыки морей.\nСтав царицей океана, она разделила власть с Посейдоном и заняла своё место среди морских божеств. Её образ связан не с бурей, как у владыки морей, а с глубиной и спокойствием вод, скрывающих в себе силу. Амфитрита почиталась наравне с Посейдоном и изображалась восседающей вместе с ним на колеснице, влекомой морскими конями.\nАмфитрита олицетворяет морскую стихию в её величественном и уравновешенном проявлении — не разрушение, а вечное движение и скрытую гармонию глубин. Она стала образом морской стихии в её уравновешенном и вечном проявлении. Её присутствие не разрушает, а удерживает, направляет и соединяет.\nОна — тишина под волнами, скрытая гармония, в которой заключена истинная мощь океана. И потому её власть проявляется не в буре, а в равновесии, где каждая волна, каждое течение и глубина подчинены единому, невидимому ритму."
+  },
+  "image": "/cards/8-hearts.webp",
+  "featured": false
+}

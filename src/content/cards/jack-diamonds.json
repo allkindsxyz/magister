@@ -1,0 +1,23 @@
+{
+  "id": "jack-diamonds",
+  "suit": "diamonds",
+  "value": "J",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "The Helmed Rider",
+    "ru": "Всадник в шлеме"
+  },
+  "summary": {
+    "en": "A rider hurrying to the bridge across the River, where, covering his head so he will not be recognized, he will join others like himself in mocking the procession and reviling it with obscene cries, as ancient tradition prescribes.",
+    "ru": "спешащий к мосту через Реку, где, прикрыв голову, чтобы его не узнали, он станет, вместе с себе подобными, насмехаться над участниками процессии и поносить их, выкрикивая непристойности, как предписано древней традицией."
+  },
+  "description": {
+    "en": "The Helmed Rider is a figure who hides his face not for protection but to renounce his name. His helm is not armor but a mask that lets him step outside his own personality and become part of an ancient rite. He hurries to the bridge across the River — a place where boundaries blur and familiar roles lose force. Where others cross, he remains on the bank to fulfill another, no less vital role.\nThat bridge is not merely a crossing but a point of trial where every participant in the procession must pass not only the way but the encounter. And here appear figures like him — those who cover their faces to allow themselves speech forbidden in the ordinary world. Their words are coarse, mocking, and devoid of respect, yet that is their purpose: to shatter the illusion of importance and test the steadfastness of those who walk.\nThis rite of mockery is thought to reach back to ancient traditions in which insult was a form of purification. One who cannot endure ridicule is not ready for the crossing, for beyond the bridge all external supports vanish. The Rider and his like become the voice of doubt, the reflection of inner fear that everyone carries.\nWhen the procession passes, their cries fall silent and they vanish as though they had never been part of what occurred. Yet their role is complete: they made the invisible visible. And so the Helmed Rider is not an enemy but a necessary link in the rite without which the crossing would remain mere outward movement, lacking inner trial.",
+    "ru": "Всадник в шлеме — фигура, скрывающая лицо не ради защиты, а ради отказа от имени. Его шлем — не доспех, а маска, позволяющая выйти за пределы собственной личности и стать частью древнего обряда. Он спешит к мосту через Реку — месту, где границы размываются, а привычные роли теряют силу. Там, где другие переходят, он остаётся на стороне, чтобы исполнить иную, не менее важную роль.\nЭтот мост — не просто переправа, а точка испытания, где каждый участник процессии должен пройти не только путь, но и столкновение. И именно здесь появляются такие, как он — те, кто прикрывает лицо, чтобы позволить себе говорить то, что в обычном мире запрещено. Их слова грубы, насмешливы и лишены уважения, но в этом и заключается их назначение: разрушить иллюзию значимости и проверить устойчивость идущих.\nСчитается, что этот обряд насмешки уходит корнями в древние традиции, где оскорбление было формой очищения. Тот, кто не способен выдержать насмешку, не готов к переходу, ведь за пределами моста исчезают все внешние опоры. Всадник и ему подобные становятся голосом сомнения, отражением внутреннего страха, который каждый несёт с собой.\nКогда процессия проходит, их крики затихают, а сами они исчезают, как будто никогда и не были частью происходящего. Но их роль завершена: они сделали невидимое видимым. И потому Всадник в шлеме — не враг, а необходимое звено обряда, без которого переход остался бы лишь внешним движением, лишённым внутреннего испытания."
+  },
+  "image": "/cards/jack-diamonds.webp",
+  "featured": false
+}

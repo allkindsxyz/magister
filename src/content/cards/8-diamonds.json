@@ -1,0 +1,23 @@
+{
+  "id": "8-diamonds",
+  "suit": "diamonds",
+  "value": "8",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "People Traveling on a Giant's Hat",
+    "ru": "Люди, путешествующие на шляпе гиганта"
+  },
+  "summary": {
+    "en": "The eighth day of the mysteries, devoted to repeating the ceremonies for those who missed them.",
+    "ru": "Восьмой день мистерий, посвященный повторению церемоний ради пропустивших их."
+  },
+  "description": {
+    "en": "People traveling on a giant's hat are participants in a strange, almost impossible passage that takes place on the eighth day of the mysteries. That day does not belong to the main cycle and does not repeat it literally: it exists for those who did not arrive in time, did not understand, or could not complete the path when they should have. Here everything returns, yet without its former weight — like a reflection in which one can see what once slipped away.\nThe giant who carries them neither intervenes nor directs — he merely moves, like inevitability itself. His hat becomes a space where different fates gather: people argue, doubt, listen to one another, trying to restore lost understanding. They do not undergo the trials anew but live them differently — through memory, awareness, and inner response.\nThis path demands no effort of the body but demands attention. Here one cannot hide behind action or speed — only the ability remains to see where a wrong step was taken and to accept it without resistance. The eighth day becomes not continuation but disclosure: what was not understood in motion reveals itself in stillness.\nThey say that those who complete this path do not return to the beginning, yet neither do they re-enter the former circle. They step outside repetition, carrying away not result but understanding. And so the giant's hat moves on, gathering new travelers — those who still must see what was once already before them.",
+    "ru": "Люди, путешествующие на шляпе гиганта — участники странного и почти невозможного перехода, происходящего на восьмой день мистерий. Этот день не принадлежит основному циклу и не повторяет его буквально: он существует для тех, кто не успел, не понял или не смог пройти путь вовремя. Здесь всё возвращается, но уже без прежней тяжести — как отражение, в котором можно увидеть то, что раньше ускользало.\nГигант, несущий их, не вмешивается и не направляет — он лишь движется, как сама неизбежность. Его шляпа становится пространством, где собираются разные судьбы: люди спорят, сомневаются, прислушиваются друг к другу, пытаясь восстановить утраченное понимание. Они не проходят испытания заново, но проживают их иначе — через память, осознание и внутренний отклик.\nЭтот путь не требует усилия тела, но требует внимания. Здесь нельзя скрыться за действием или скоростью — остаётся только способность увидеть, где был сделан неверный шаг, и принять это без сопротивления. Восьмой день становится не продолжением, а раскрытием: тем, что не было понято в движении, проявляется в остановке.\nГоворят, что те, кто завершает этот путь, не возвращаются к началу, но и не входят в прежний круг. Они выходят за пределы повторения, унося с собой не результат, а понимание. И потому шляпа гиганта движется дальше, собирая новых путников — тех, кому ещё предстоит увидеть то, что однажды уже было перед ними."
+  },
+  "image": "/cards/8-diamonds.webp",
+  "featured": false
+}

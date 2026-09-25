@@ -1,0 +1,23 @@
+{
+  "id": "9-clubs",
+  "suit": "clubs",
+  "value": "9",
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
+  },
+  "title": {
+    "en": "Odin’s Raven Munin near Sidon",
+    "ru": "Ворон Одина Мунин близ Сидона"
+  },
+  "summary": {
+    "en": "Thibaud Gaudin was Grand Master of the Order and unsuccessfully defended the fortress of Sidon.\nHuginn and Muninn — the pair of ravens of the god Odin, who brought him tidings.",
+    "ru": "Тибо Годен был Великим Магистром Ордена и безуспешно защищал крепость Сидон.\nХугин и Мунин - пара воронов бога Одина, приносивших ему вести."
+  },
+  "description": {
+    "en": "According to the chronicles of the crusades, Thibaud Gaudin became the last Master of the Order in the Holy Land during one of the most tragic periods of its history. After the fall of Acre in 1291 he was among the few survivors and assumed leadership of the remaining Templars when the Order’s former structure was already collapsing under the onslaught of Muslim armies.\nRetreating with the forces that remained, Thibaud fortified himself in the city of Sidon — one of the last strongholds of the crusaders on the coast. Yet the situation was hopeless: resources were exhausted, allies were withdrawing, and the enemy’s threat drew ever nearer. Understanding that fall was inevitable, he decided to evacuate the garrison and save what could still be saved.\nBefore departing the Templars destroyed the fortress so that it would not fall into enemy hands. That step became a symbol of the end of an entire era — the departure of the knightly orders from the Holy Land and the conclusion of the crusades as a real political force in the region.\nAfter these events Thibaud Gaudin moved to Cyprus, where he soon died. His fate reflected the Order’s decline: from might and influence to forced retreat and the loss of lands for which the Templars had fought for nearly two centuries. In the image Munin circles above them — the raven of memory from Scandinavian mythology. While he wheels over the field, nothing vanishes entirely: all that has been lived becomes part of a great narrative in which even an ending turns into the beginning of another, quieter, more enduring story.",
+    "ru": "Согласно хроникам крестовых походов, Тибо Годен стал последним магистром ордена в Святой земле в один из самых трагических периодов его истории. После падения Акры в 1291 году он оказался среди немногих выживших и принял на себя руководство остатками тамплиеров, когда прежняя структура ордена уже рушилась под натиском мусульманских войск.\nОтступив с уцелевшими силами, Тибо укрепился в городе Сидон — одном из последних опорных пунктов крестоносцев на побережье. Однако положение было безнадёжным: ресурсы истощались, союзники отступали, а угроза со стороны врага становилась всё ближе. Понимая неизбежность падения, он принял решение эвакуировать гарнизон и сохранить то, что ещё можно было спасти.\nПеред уходом тамплиеры разрушили крепость, чтобы она не досталась противнику. Этот шаг стал символом конца целой эпохи — ухода рыцарских орденов из Святой земли и завершения крестовых походов как реальной политической силы в регионе.\nПосле этих событий Тибо Годен перебрался на Кипр, где вскоре умер. Его судьба стала отражением заката ордена: от могущества и влияния к вынужденному отступлению и утрате земель, за которые тамплиеры сражались почти два столетия. На изображении над ними парит Мунин — ворон памяти из скандинавской мифологии. Пока он кружит над полем, ничто не исчезает окончательно: всё пережитое становится частью великого повествования, где даже конец превращается в начало иной, более тихой и вечной истории."
+  },
+  "image": "/cards/9-clubs.webp",
+  "featured": false
+}

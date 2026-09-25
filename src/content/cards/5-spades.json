@@ -1,0 +1,23 @@
+{
+  "id": "5-spades",
+  "suit": "spades",
+  "value": "5",
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
+  },
+  "title": {
+    "en": "The Shot",
+    "ru": "Выстрел"
+  },
+  "summary": {
+    "en": "Pushkin mounted on a cricket (symbol of the hearth), confronts flies as symbols of evil and plague epidemics.",
+    "ru": "Пушкин верхом на сверчке (символе дома), противостоит мухам, как символам зла и эпидемий чумы."
+  },
+  "description": {
+    "en": "Alexander Sergeyevich Pushkin was born in Moscow into a noble family and from youth showed outstanding literary talent. Studying at the Tsarskoye Selo Lyceum, he formed as a poet, absorbing ideas of freedom, honor, and independence that later became central to his work.\nPushkin is considered the founder of the modern Russian literary language. His works — from lyric poetry to the novel in verse Eugene Onegin — set new standards of expressiveness and depth. He knew how to unite simplicity and elegance, creating texts accessible and close to the widest range of readers.\nThe poet’s life was filled not only with creativity but with conflict: censorship, duels, and tense relations with authority accompanied his path. Despite this he continued to write, forming the cultural foundation on which all subsequent Russian literature grew.\nIn 1837 Pushkin died in a duel with Georges d’Anthès. His death was a tragedy for his contemporaries, and he remained in history as a figure who defined the direction of Russian culture and literature for centuries to come.",
+    "ru": "Александр Сергеевич Пушкин родился в Москве в дворянской семье и с юных лет проявил выдающийся литературный талант. Обучаясь в Царскосельском лицее, он сформировался как поэт, впитав идеи свободы, чести и независимости, которые впоследствии стали ключевыми в его творчестве.\nПушкин считается основоположником современного русского литературного языка. Его произведения — от лирики до романа в стихах «Евгений Онегин» — задали новые стандарты выразительности и глубины. Он умел соединять простоту и изящество, создавая тексты, понятные и близкие самым разным читателям.\nЖизнь поэта была наполнена не только творчеством, но и конфликтами: цензура, дуэли и напряжённые отношения с властью сопровождали его путь. Несмотря на это, он продолжал писать, формируя культурный фундамент, на котором выросла вся последующая русская литература.\nВ 1837 году Пушкин погиб на дуэли с Жоржем Дантесом. Его смерть стала трагедией для современников, а сам он остался в истории как фигура, определившая направление развития русской культуры и литературы на века вперёд."
+  },
+  "image": "/cards/5-spades.webp",
+  "featured": false
+}

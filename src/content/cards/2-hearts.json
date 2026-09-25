@@ -1,0 +1,23 @@
+{
+  "id": "2-hearts",
+  "suit": "hearts",
+  "value": "2",
+  "category": {
+    "en": "Olympian gods",
+    "ru": "Олимпийские боги"
+  },
+  "title": {
+    "en": "Sirens",
+    "ru": "Сирены"
+  },
+  "summary": {
+    "en": "The Two of Hearts is symbolized by the Sirens — winged creatures dwelling on the boundary between sea and land, possessing a mesmerizing voice capable of stripping a person of their will.",
+    "ru": "Двойку червей символизируют сирены — крылатые существа, обитающие на границе моря и суши и обладающие чарующим голосом, способным лишить человека воли."
+  },
+  "description": {
+    "en": "According to one version of the myth, the Sirens were once companions of Persephone. After her abduction by Hades, they were given wings — either to search for the goddess across the world or as punishment for failing to protect her. Since then, they have dwelled on the boundary between two realms — sea and land — embodying a dangerous temptation: knowledge that lures but can lead to destruction.\nThey are best known for their enchanting and deadly song. Upon hearing the Sirens’ voices, sailors would lose their will, steer their ships toward the shore, and perish among the coastal rocks along with their vessels. The only one who managed to escape this fate was Odysseus. Following the advice of a sorceress, he ordered his companions to plug their ears with wax, while he himself had himself bound to the ship’s mast — allowing him to hear the song without succumbing to it.\nTheir singing was said to be so beautiful that Hera once challenged them to a contest with the Muses. Despite their talent, the Sirens were defeated; the Muses plucked their feathers and fashioned them into crowns. Since then, the Muses are often depicted wearing feathered headdresses, while the Sirens came to dwell on the island of Anthemoessa. Though, more accurately, one should say they once dwelled there — for, according to legend, they were destined to perish when Odysseus succeeded in sailing past them without yielding to their temptation.",
+    "ru": "Согласно одному из вариантов мифа, сирены когда-то были спутницами Персефоны. После её похищения Аидом, они получили крылья — либо чтобы искать богиню по всему миру, либо в наказание за то, что не смогли её защитить. С тех пор они обитают на границе двух миров - моря и земли, символизируя опасное искушение — знание, которое манит, но может привести к гибели.\nОни особо известны своим чарующим и губительным пением. Услышав песню сирен, моряки теряли волю, направляли корабли к берегу и погибали среди прибрежных скал вместе со своими кораблями. Единственным, кто смог избежать участи, был Одиссей. По совету волшебницы он приказал своим спутникам заткнуть уши воском, а себя велел привязать к мачте корабля, чтобы услышать песню и при этом не погибнуть.\nПение их настолько прекрасно, что Гера однажды предложила им вступить в соревнование с музами. Несмотря на свой талант, они уступили музам, за что те ощипали им крылья и сделали из них венки. С тех пор музы изображаются в головных украшениях, а сирены обитают на острове Анфемоэсса. Хотя, корректнее будет сказать “обитали”, ведь, согласно преданию, они должны были погибнуть, когда Одиссей смог проплыть мимо них, не поддавшись искушению."
+  },
+  "image": "/cards/2-hearts.webp",
+  "featured": false
+}

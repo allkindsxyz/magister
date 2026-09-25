@@ -1,0 +1,23 @@
+{
+  "id": "ace-spades",
+  "suit": "spades",
+  "value": "A",
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
+  },
+  "title": {
+    "en": "Albert Runs at the Speed of a Turtle",
+    "ru": "Альберт бежит со скоростью черепахи"
+  },
+  "summary": {
+    "en": "In many cultures the image of the turtle was associated with the foundation and beginning of the universe.",
+    "ru": "Во многих культурах образ черепахи ассоциировался с основанием и началом вселенной."
+  },
+  "description": {
+    "en": "Albert Einstein was born in Germany and from an early age showed an interest in science and the nature of phenomena. He was educated in Switzerland and began his scientific career in a patent office, where, working on others’ inventions, he simultaneously developed his own ideas.\nIn 1905, known as his “miracle year,” Einstein published a series of papers that changed physics: he explained the photoelectric effect, laid the foundations of special relativity, and proposed the famous formula E=mc². Later he developed general relativity, rethinking gravity as the curvature of space and time.\nHis discoveries had an enormous influence on the development of science and technology, from nuclear energy to cosmology. In 1921 he received the Nobel Prize in Physics for explaining the photoelectric effect, and his name became a synonym for genius.\nEinstein spent his last years in the United States, continuing his scientific and public activity. He died in 1955, leaving behind not only fundamental theories but the image of a thinker striving to understand the structure of the universe and humanity’s place within it. For the modern person Einstein is like that very turtle on which the whole world of modern physics stands.",
+    "ru": "Альберт Эйнштейн родился в Германии и с юных лет проявлял интерес к науке и природе явлений. Образование он получил в Швейцарии, а свою научную карьеру начал в патентном бюро, где, работая над чужими изобретениями, параллельно развивал собственные идеи.\nВ 1905 году, известном как его «год чудес», Эйнштейн опубликовал ряд работ, которые изменили физику: он объяснил фотоэффект, заложил основы специальной теории относительности и предложил знаменитую формулу E=mc². Позднее он развил общую теорию относительности, переосмыслив представление о гравитации как искривлении пространства и времени.\nЕго открытия оказали огромное влияние на развитие науки и технологий, от ядерной энергетики до космологии. В 1921 году он получил Нобелевскую премию по физике за объяснение фотоэффекта, а его имя стало синонимом гениальности.\nЭйнштейн провёл последние годы в США, продолжая научную и общественную деятельность. Он умер в 1955 году, оставив после себя не только фундаментальные теории, но и образ мыслителя, стремящегося понять устройство Вселенной и место человека в ней. Для современного человека Эйнштейн - как та самая черепаха, на которой стоит весь мир современной физики."
+  },
+  "image": "/cards/ace-spades.webp",
+  "featured": false
+}

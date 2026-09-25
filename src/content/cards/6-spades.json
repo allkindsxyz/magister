@@ -1,0 +1,23 @@
+{
+  "id": "6-spades",
+  "suit": "spades",
+  "value": "6",
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
+  },
+  "title": {
+    "en": "Che Guevara Surrounded by Scorpions",
+    "ru": "Че Гевара в окружении скорпионов"
+  },
+  "summary": {
+    "en": "The scorpion’s venomous sting and the pistol in the hand of a ruthless and unyielding revolutionary.",
+    "ru": "Ядовитые жала скорпиона и пистолет в руке беспощадного и непоколебимого революционера."
+  },
+  "description": {
+    "en": "Che Guevara was born in Argentina and received a medical education, yet early travels through Latin America strongly shaped his worldview and later activity. Observing poverty and social inequality, he came to ideas of revolutionary struggle and soon joined a movement seeking to change the political order in the region.\nA key stage in his life was participation in the Cuban Revolution alongside Fidel Castro. Che Guevara proved himself as a commander and ideologue, playing an important role in the rebels’ victory in 1959. After the revolution he held high state posts, including directing economic and industrial projects.\nDespite success in Cuba, he sought to continue revolutionary struggle beyond the country’s borders. Che took part in attempts to launch movements throughout Latin America and even in Africa, viewing revolution as a global process extending beyond a single nation.\nIn 1967 Che Guevara was captured and executed in Bolivia. His image became a symbol of struggle, idealism, and readiness for self-sacrifice, and his legacy still provokes debate and reinterpretation in different parts of the world.",
+    "ru": "Че Гевара родился в Аргентине и получил медицинское образование, однако ранние путешествия по Латинской Америке сильно повлияли на его мировоззрение и дальнейшую деятельность. Наблюдая бедность и социальное неравенство, он пришёл к идеям революционной борьбы и вскоре присоединился к движению, стремящемуся изменить политический порядок в регионе.\nКлючевым этапом его жизни стало участие в Кубинской революции вместе с Фиделем Кастро. Че Гевара проявил себя как командир и идеолог, сыграв важную роль в победе повстанцев в 1959 году. После революции он занимал высокие государственные посты, в том числе руководя экономическими и промышленными проектами.\nНесмотря на успех на Кубе, он стремился продолжить революционную борьбу за пределами страны. Че участвовал в попытках развернуть движения во всей Латинской Америке и даже в Африке, рассматривая революцию как глобальный процесс, выходящий за рамки одной страны.\nВ 1967 году Че Гевара был захвачен и казнён в Боливии. Его образ стал символом борьбы, идеализма и готовности к самопожертвованию, а его наследие до сих пор вызывает споры и переосмысление в разных частях мира."
+  },
+  "image": "/cards/6-spades.webp",
+  "featured": false
+}

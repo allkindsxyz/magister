@@ -1,0 +1,23 @@
+{
+  "id": "5-clubs",
+  "suit": "clubs",
+  "value": "5",
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
+  },
+  "title": {
+    "en": "Templars Quarreling with a Raven",
+    "ru": "Тамплиеры, спорящие с вороном"
+  },
+  "summary": {
+    "en": "The raven — a mythological mediator between the world of the living and the realm of the dead; in some epics — accursed souls.",
+    "ru": "Ворон - мифологический посредник между миром живых и царством мертвых, в некоторых эпосах - проклятые души."
+  },
+  "description": {
+    "en": "According to ancient belief, the raven was regarded as a bird linked to the boundary between worlds. Its black plumage and its habit of appearing beside battlefields made it a symbol of death and a guide of souls, yet also an observer that sees what remains hidden from human sight.\nIn the mythologies of many peoples the raven often appears as a keeper of knowledge. In the Scandinavian tradition it accompanies the supreme god, bringing him tidings from across the world; in antiquity it was understood as a bird of divination. Its image combines memory, wisdom, and the ability to foretell the inevitable.\nIn medieval symbolism the raven became a sign of dual nature: it could mean both ruin and decay and insight born through trial. Its presence marks a moment of transition — when the old is already destroyed and the new has not yet taken form.\nOver time the raven fixed itself as an archetype of a border being — between life and death, light and darkness, knowledge and fear. It is not merely a harbinger of the end but a guide toward understanding, reminding us that behind every shadow lies the possibility of seeing truth.",
+    "ru": "Согласно древним представлениям, ворон считался птицей, связанной с границей между мирами. Его чёрное оперение и привычка появляться рядом с полями сражений сделали его символом смерти и проводника душ, но вместе с тем — наблюдателя, который видит то, что скрыто от человеческого взгляда.\nВ мифологиях разных народов ворон нередко выступает хранителем знания. В скандинавской традиции он сопровождает верховного бога, принося ему вести со всего мира, а в античности воспринимается как птица прорицания. Его образ соединяет в себе память, мудрость и способность предчувствовать неизбежное.\nВ средневековой символике ворон становится знаком двойственной природы: он может означать как гибель и разложение, так и прозрение, приходящее через испытание. Его присутствие указывает на момент перехода — когда старое уже разрушено, а новое ещё не обрело форму.\nСо временем ворон закрепился как архетип пограничного существа — между жизнью и смертью, светом и тьмой, знанием и страхом. Он не просто предвестник конца, но и проводник к пониманию, напоминающий, что за каждой тенью скрывается возможность увидеть истину."
+  },
+  "image": "/cards/5-clubs.webp",
+  "featured": false
+}

@@ -1,0 +1,23 @@
+{
+  "id": "3-spades",
+  "suit": "spades",
+  "value": "3",
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
+  },
+  "title": {
+    "en": "The Ascension of Yuri",
+    "ru": "Вознесение Юрия"
+  },
+  "summary": {
+    "en": "Yuri Gagarin became the first swallow of a new space age.",
+    "ru": "Юрий Гагарин стал первой ласточкой новой космической эры."
+  },
+  "description": {
+    "en": "Yuri Gagarin became a symbol of the beginning of a new era — the moment when a human being first left the bounds of Earth and looked upon it from outside. He was born into a simple family, passed from worker and pilot to cosmonaut, and was chosen for a mission meant to prove that a person can step beyond the familiar world.\nOn 12 April 1961 Gagarin made the first manned spaceflight in history aboard the Vostok-1 spacecraft. In 108 minutes he orbited Earth, proving that a human can survive in the conditions of space. His famous “Poyekhali!” (“Let’s go!”) became a symbol of the dawn of a new space age.\nAfter the flight Gagarin became a world legend and a symbol of scientific breakthrough. He represented the Soviet Union on the international stage, met with leaders of nations, and inspired millions while remaining a simple and open person.\nIn 1968 Gagarin died in an air crash during a training flight. His life became a symbol of courage and the striving toward the unknown — a step that forever changed humanity’s sense of its own possibilities.",
+    "ru": "Юрий Гагарин стал символом начала новой эпохи — момента, когда человек впервые покинул пределы Земли и взглянул на неё со стороны. Он родился в простой семье, прошёл путь от рабочего и лётчика до космонавта, и был выбран для миссии, которая должна была доказать, что человек способен выйти за границы привычного мира.\n12 апреля 1961 года Гагарин совершил первый в истории человечества полёт в космос на корабле Восток-1. За 108 минут он облетел Землю, доказав, что человек может выжить в условиях космоса. Его знаменитое «Поехали!» стало символом начала новой космической эры.\nПосле полёта Гагарин превратился в мировую легенду и символ научного прорыва. Он представлял Советский Союз на международной арене, встречался с лидерами стран и вдохновлял миллионы людей, оставаясь при этом простым и открытым человеком.\nВ 1968 году Гагарин погиб в авиакатастрофе во время тренировочного полёта. Его жизнь стала символом смелости и стремления к неизведанному — шага, который навсегда изменил представление человечества о своих возможностях."
+  },
+  "image": "/cards/3-spades.webp",
+  "featured": false
+}

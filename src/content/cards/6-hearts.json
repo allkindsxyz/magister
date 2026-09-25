@@ -1,0 +1,23 @@
+{
+  "id": "6-hearts",
+  "suit": "hearts",
+  "value": "6",
+  "category": {
+    "en": "Olympian gods",
+    "ru": "Олимпийские боги"
+  },
+  "title": {
+    "en": "Nymphs of the Water Element",
+    "ru": "Нимфы водной стихии"
+  },
+  "summary": {
+    "en": "Limnad, Nereid, and Naiad — water nymphs.\nOther elements had their own nymphs, but the water nymphs were held to be the most influential.",
+    "ru": "Лимнада, Нереида и Наяда - водные нимфы.\nУ других стихий были свои нимфы, но водные нимфы считались наиболее влиятельными."
+  },
+  "description": {
+    "en": "Limnads, Nereids, and Naiads are kinds of water nymphs, each tied to a realm of water. All embody flowing nature, yet belong to different manifestations of it — from sea depths to quiet springs.\nLimnads were spirits of lakes and still waters. Their image is linked to the unmoving surface, hidden depth, and reflection. They symbolize silence, contemplation, and inner depth, where the surface may be deceptively calm while concealing secret life beneath.\nNereids are sea nymphs, daughters of the old man of the sea, Nereus. They were thought to accompany Poseidon. Nereids dwell in the salt waters of seas and oceans, personifying the motion of waves, freedom, and boundlessness. In myth they often appear as beings kindly disposed toward mortals, aiding sailors and other heroes.\nNaiads, by contrast, are linked to fresh water — rivers, brooks, and springs. They symbolize the flow of life, renewal, and fertility. Unlike sea nymphs, naiads stand closer to the human world: their waters give life, quench thirst, and nourish the earth, making their image warmer and more earthly, yet no less mysterious.",
+    "ru": "Лимнады, Нереиды и Наяды — это разновидности водных нимф, каждая из которых связана с водным пространством. Все они олицетворяют текучую природу, но принадлежат разным её проявлениям — от морских глубин до тихих источников.\nЛимнады считались духами озёр и спокойных водоёмов. Их образ связан с неподвижной гладью воды, скрытой глубиной и отражением. Они символизируют тишину, созерцание и внутреннюю глубину, где поверхность может быть обманчиво спокойной, скрывая под собой тайную жизнь.\nНереиды — морские нимфы, дочери морского старца Нерея. Они, как считалось, сопровождали Посейдона. Нереиды обитают в солёных водах морей и океанов, олицетворяя движение волн, свободу и бескрайность. В мифах нереиды часто выступают как благосклонные к людям существа, помогающие морякам и другим героям.\nНаяды же связаны с пресной водой — реками, ручьями и источниками. Они символизируют течение жизни, обновление и плодородие. В отличие от морских нимф, наяды ближе к человеческому миру: их воды дают жизнь, утоляют жажду и питают землю, делая их образ более тёплым и земным, но не менее загадочным."
+  },
+  "image": "/cards/6-hearts.webp",
+  "featured": false
+}

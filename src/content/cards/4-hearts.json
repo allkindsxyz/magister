@@ -1,0 +1,23 @@
+{
+  "id": "4-hearts",
+  "suit": "hearts",
+  "value": "4",
+  "category": {
+    "en": "Olympian gods",
+    "ru": "Олимпийские боги"
+  },
+  "title": {
+    "en": "The Abduction of Europa by Zeus",
+    "ru": "Похищение Европы Зевсом"
+  },
+  "summary": {
+    "en": "Zeus, in the form of a white bull, appeared on the beach where Europa was spending time with her companions.\nHe abducted the beauty and carried her away to Crete.",
+    "ru": "Зевс, в образе белого быка, появился на пляже, где Европа проводила время с подругами.\nОн похитил красавицу и увез ее на Крит."
+  },
+  "description": {
+    "en": "Once Europa, daughter of the Phoenician king Agenor, walked along the seashore with her companions. At that moment Zeus saw her and was enchanted by her surpassing beauty. To draw near, he took the form of a snow-white bull, approached the girl, lay at her feet, and let her stroke him, inspiring complete trust.\nFeeling safe, Europa dared to sit upon his back, and in the same instant the bull rose and swiftly bore her toward the sea. Before she could collect herself, the girl was among the waves: Zeus swam the sea with her and brought her to the island of Crete, where he revealed his true form.\nOn Crete Europa became Zeus's beloved and bore him sons, among them Minos — the island's future king. Afterward Zeus granted Europa protection and arranged her fate, giving her in marriage to the Cretan king. Her destiny was bound to a new world, far from her homeland. There Europa lived out her life.\n\nIn time her name came to denote the lands in the west to which she had been carried, and became a symbol of passage, fate, and the beginning of a new story. In Europa's honor a whole part of the world was later named, for this myth symbolically retells the movement of Greek civilization across the sea — toward the West.",
+    "ru": "Однажды Европа, дочь финикийского царя Агенора, гуляла по берегу моря вместе со своими подругами. В этот момент Зевс увидел её и был очарован невероятной красотой. Чтобы приблизиться к ней, он принял облик белоснежного быка, подошёл к девушке, лёг у её ног и позволил ей погладить себя, внушая полное доверие.\nПочувствовав безопасность, Европа осмелилась сесть ему на спину, и в тот же миг бык поднялся и  стремительно  понёс её к морю. Не успев опомниться, девушка оказалась среди волн: Зевс переплыл с ней море и доставил её на остров Крит, где открыл своё истинное обличие.\nНа Крите Европа стала возлюбленной Зевса и родила ему сыновей, среди которых был Минос — будущий царь острова. После этого Зевс даровал Европе защиту и устроил её судьбу, выдав замуж за критского царя. Её судьба оказалась связана с новым миром, вдали от родины. Там Европа прожила до окончания своей жизни.\n\nСо временем её имя стало обозначать земли на западе, к которым она была перенесена, и превратилось в символ перехода, судьбы и начала новой истории. В честь Европы впоследствии была названа целая часть света, поскольку этот миф символически пересказывает историю перемещения греческой цивилизации за моря - на Запад."
+  },
+  "image": "/cards/4-hearts.webp",
+  "featured": false
+}

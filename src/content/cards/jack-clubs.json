@@ -1,0 +1,23 @@
+{
+  "id": "jack-clubs",
+  "suit": "clubs",
+  "value": "J",
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
+  },
+  "title": {
+    "en": "Miracle of the Horse",
+    "ru": "Чудо о коне"
+  },
+  "summary": {
+    "en": "Armand de Périgord — Grand Master of the Order of the Temple. He vowed to enter the Order after nearly dying in a fall from his horse.",
+    "ru": "Арман де Перигор - Великий Магистр Ордена Тамплиеров. Он поклялся вступить в Орден после того, как чуть не погиб, упав с лошади."
+  },
+  "description": {
+    "en": "According to historical sources, Armand de Périgord (d. 1244) came from a noble French family and entered the Order of the Temple, where he eventually rose to high rank. In 1232 he was elected Grand Master, heading the Order during unceasing conflicts in the Holy Land.\nUnder his leadership the Templars took an active part in military campaigns against Muslim forces, striving to hold the positions of the Christian states in the East. Armand de Périgord devoted attention to strengthening defenses and cooperating with other orders and rulers, yet the situation in the region remained extremely unstable.\nThe culmination of his activity was the Battle of La Forbie in 1244 — one of the heaviest defeats suffered by the crusaders. In that battle the combined Christian forces were routed, and Armand de Périgord himself, according to most sources, fell on the field together with a great number of knights of the Order.\nHis death became a symbol of a turning point in the history of the crusades: after La Forbie the Christians’ position in the Holy Land weakened considerably. The life of Armand de Périgord reflects the fate of the Order in the thirteenth century — constant struggle, mounting losses, and the gradual decline of its former might.",
+    "ru": "Согласно историческим источникам, Арман де Перигор (ум. 1244) происходил из знатного французского рода и вступил в орден тамплиеров, где со временем занял высокое положение. В 1232 году он был избран Великим Магистром, возглавив орден в период непрекращающихся конфликтов на Святой земле.\nВо время его руководства тамплиеры активно участвовали в военных кампаниях против мусульманских сил, стараясь удержать позиции христианских государств на Востоке. Арман де Перигор уделял внимание укреплению обороны и взаимодействию с другими орденами и правителями, однако ситуация в регионе оставалась крайне нестабильной.\nКульминацией его деятельности стала битва при Ла-Форби в 1244 году — одно из самых тяжёлых поражений крестоносцев. В этом сражении объединённые силы христиан были разгромлены, а сам Арман де Перигор, по большинству источников, погиб на поле боя вместе с большим числом рыцарей ордена.\nЕго смерть стала символом переломного момента в истории крестовых походов: после Ла-Форби позиции христиан в Святой земле значительно ослабли. Жизнь Армана де Перигорского отражает судьбу ордена в XIII веке — постоянную борьбу, нарастающие потери и постепенный закат прежнего могущества."
+  },
+  "image": "/cards/jack-clubs.webp",
+  "featured": false
+}

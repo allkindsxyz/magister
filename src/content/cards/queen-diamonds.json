@@ -1,0 +1,23 @@
+{
+  "id": "queen-diamonds",
+  "suit": "diamonds",
+  "value": "Q",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "The Maiden with Pitchers",
+    "ru": "Девушка с кувшинами»."
+  },
+  "summary": {
+    "en": "A priestess bearing small vessels whose contents can instill in those who share in the mystery brighter hopes regarding the end of life and all eternity.",
+    "ru": "Жрица, несущая небольшие сосуды с содержимым, способным внушить причастным к мистерии более светлые надежды о конце жизни и всей вечности."
+  },
+  "description": {
+    "en": "The Maiden with Pitchers is a priestess standing on the border between the everyday and the concealed, between knowledge and experience. Her image is still, yet filled with inner action: she neither walks nor calls — she offers. The pitchers set before her are not mere vessels but containers of passage, each holding not substance but the possibility of altering perception.\nIt is believed that they contain the kykeon — the sacred mixture linked to rites devoted to Demeter. That drink was not meant to quench thirst: it opened another level of perception, allowing participants in the mysteries to touch what lies beyond ordinary consciousness. By tasting it, a person did not learn the truth — he became able to live it.\nOld priests whispered that she too had once come to Eleusis as a mortal, broken by loss. She sought an answer that neither philosophers nor physicians nor songs at feasts could give. Only after passing through the sacred rites did she see that the world is not divided into light and dark, life and death, meeting and loss: all of it is part of one great circle, like the wreath of roses above her head. Since then she remained at the temple to bring others not comfort in the usual sense, but something harder and more precious — hope that does not deny pain.\nTherefore her image endured not as a mere girl's but as a guide's. She does not promise the body immortality nor deceive with easy happiness. She only reminds us that beyond the last door everyone fears there may lie not emptiness but continuation of the path. Her pitchers are not vessels of wine nor gifts for an earthly feast but signs of initiation: accept bitterness to gain clarity; pass through darkness to see light otherwise. And so the Maiden with Pitchers remains a quiet priestess of hope — one born not despite the mystery but within it.",
+    "ru": "Девушка с кувшинами — жрица, стоящая на границе между обыденным и сокрытым, между знанием и переживанием. Её образ неподвижен, но наполнен внутренним действием: она не идёт и не зовёт, а предлагает. Кувшины, расставленные перед ней, — не просто сосуды, а вместилища перехода, каждый из которых содержит не вещество, а возможность изменить восприятие.\nСчитается, что в них заключён кикеон — священная смесь, связанная с обрядами, посвящёнными Деметра. Этот напиток не был предназначен для утоления жажды: он открывал иной уровень восприятия, позволяя участникам мистерий прикоснуться к тому, что скрыто за пределами обычного сознания. Вкушая его, человек не узнавал истину — он становился способен её пережить.\nСтарые жрецы шептали, что однажды она тоже пришла в Элевсин как смертная, сломленная утратой. Она искала ответа, который не могли дать ни философы, ни лекари, ни песни на пирах. И только пройдя через священные обряды, увидела, что мир не делится на свет и мрак, жизнь и смерть, встречу и потерю: всё это — части одного великого круга, подобного венку из роз над её головой. С тех пор она осталась при храме, чтобы нести другим не утешение в привычном смысле слова, а более трудную и более драгоценную вещь — надежду, не отрицающую боли.\nПотому её образ и сохранился как образ не просто девушки, а проводницы. Она не обещает бессмертия телу и не обманывает лёгким счастьем. Она лишь напоминает, что за последней дверью, которой все страшатся, может скрываться не пустота, а продолжение пути. Её кувшины — это не сосуды с вином и не дары для земного застолья, а знаки посвящения: принять горечь, чтобы обрести ясность; пройти через мрак, чтобы иначе увидеть свет. И потому «Девушка с кувшинами» остаётся тихой жрицей надежды — той, что рождается не вопреки тайне, а внутри неё."
+  },
+  "image": "/cards/queen-diamonds.webp",
+  "featured": false
+}

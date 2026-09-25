@@ -1,0 +1,23 @@
+{
+  "id": "king-clubs",
+  "suit": "clubs",
+  "value": "K",
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
+  },
+  "title": {
+    "en": "Keeper of the Skull",
+    "ru": "Хранитель черепа"
+  },
+  "summary": {
+    "en": "Grand Master of the Order of the Temple\nBertrand de Blanchefort with the crowned skull-relic Caput Mortuum.",
+    "ru": "Великий Магистр Ордена Тамплиеров\nБертран де Бланфор с коронованным черепом-святыней Caput Mortuum."
+  },
+  "description": {
+    "en": "Bertrand de Blanchefort came from a noble French family and entered the Order of the Temple, where he quickly distinguished himself as an experienced warrior and strategist. In 1156 he was elected Grand Master, leading the Order during a period of active military operations in the Holy Land.\nUnder his leadership the Templars strengthened their military role, taking part in campaigns against Muslim forces and fortifying the defense of key strongholds. During his tenure the Order continued to expand its influence in both the East and Europe, consolidating its network of estates and its system of governance.\nThere is also a legend of the skull he holds in his hand. A belief circulated that the Master, driven mad by the death of his beloved, opened her grave and united with her lifeless body. Returning nine months later, he found a skull there and never parted with it again. The skull was thought to bring him luck and help him foretell the future.\n\nHe died in 1169, leaving behind an Order whose position had grown considerably stronger. His rule became an important stage in the development of the Templars, when their role as a military force and political player continued to rise steadily.",
+    "ru": "Бертран де Бланфор происходил из знатного французского рода и вступил в орден тамплиеров, где быстро проявил себя как опытный воин и стратег. В 1156 году он был избран великим магистром, возглавив орден в период активных военных действий на Святой земле.\nВо время его руководства тамплиеры усилили свою военную роль, участвуя в кампаниях против мусульманских сил и укрепляя оборону ключевых крепостей. При нём орден продолжил расширять своё влияние как на Востоке, так и в Европе, укрепляя сеть владений и систему управления.\nТакже есть легенда о черепе, который он держит в руке. Ходило поверье. что магистр, обезумевший от смерти любимой, вскрыл могилу и соединился с её безжизненным телом. Вернувшись туда через 9 месяцев, он нашёл там череп и больше с ним не расставался. Считалось, что череп приносил ему удачу и помогал предсказывать будущее.\n\nОн умер в 1169 году, оставив после себя орден, значительно усиливший свои позиции. Его правление стало важным этапом развития тамплиеров, когда их роль как военной силы и политического игрока продолжала неуклонно расти."
+  },
+  "image": "/cards/king-clubs.webp",
+  "featured": false
+}

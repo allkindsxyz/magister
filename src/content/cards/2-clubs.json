@@ -1,0 +1,23 @@
+{
+  "id": "2-clubs",
+  "suit": "clubs",
+  "value": "2",
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
+  },
+  "title": {
+    "en": "Death in Battle",
+    "ru": "Смерть в бою"
+  },
+  "summary": {
+    "en": "Gerard de Ridefort — Grand Master of the Order who led the Order’s army to total defeat at the battle against Saladin’s forces at Hattin.",
+    "ru": "Жерар де Ридфор - Великий Магистр Ордена, приведший армию Ордена к полному разгрому в битве с армией Саладина при Хаттине."
+  },
+  "description": {
+    "en": "The Two of Clubs represents Gerard de Ridefort — one of the most controversial leaders of the Order of the Temple, who held the office of Grand Master in the final years before the fall of the Kingdom of Jerusalem. Little is known of his origins: he was presumably a knight from Flanders who came to the East in search of service and position. He began his career in the Holy Land as a mercenary, but after personal setbacks and the loss of patronage he entered the Order of the Temple.\nThanks to his resolve and military experience he rose quickly through the hierarchy and in 1184 became Grand Master, heading the Order in one of the tensest periods of its history. Gerard de Ridefort became known for his harsh and often adventurist policy. He favored active military action against the Muslims and played a key role in the events that led to the catastrophic defeat of the crusaders at the Battle of Hattin in 1187, where the army was crushed by Saladin’s forces.\nAfter the defeat he was taken prisoner, and rumor has it that in exchange for his freedom he renounced Christianity. That episode strongly affected the Order’s reputation and became one of the main charges cited when the Order was suppressed. In 1189, during the siege of Acre, Gerard de Ridefort fell in battle. His life became a symbol both of determination and devotion to the cause and of fatal errors whose consequences altered the course of crusader history.",
+    "ru": "Низший ранг крестей представляет Жерар де Ридфор — один из самых противоречивых лидеров ордена тамплиеров, занимавший пост Великого Магистра в последние годы перед падением Иерусалимского королевства. О его происхождении известно немного: предположительно, он был рыцарем из Фландрии и прибыл на Восток в поисках службы и положения. Свою карьеру в Святой земле он начал как наёмник, но после личных неудач и утраты покровительства вступил в орден тамплиеров.\nБлагодаря решительности и военному опыту он быстро продвинулся по иерархии и в 1184 году стал Великим Магистром, возглавив орден в один из самых напряжённых периодов его истории. Жерар де Ридфор прославился своей жёсткой и зачастую авантюрной политикой. Он был сторонником активных военных действий против мусульман и сыграл ключевую роль в событиях, приведших к катастрофическому поражению крестоносцев в битве при Хаттине в 1187 году, где армия была разгромлена войсками Саладина.\nПосле поражения он попал в плен, и, поговаривают, что, в обмен на свою свободу, отрекся от христианства. Этот случай сильно повлиял на репутацию ордена и послужил одним из основных обвинений, из-за которых орден был устранен. В 1189 году, во время осады Акры, Жерар де Ридфор погиб в бою. Его жизнь стала символом как решимости и преданности делу, так и роковых ошибок, последствия которых изменили ход истории крестоносных государств."
+  },
+  "image": "/cards/2-clubs.webp",
+  "featured": false
+}

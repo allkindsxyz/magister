@@ -1,0 +1,23 @@
+{
+  "id": "4-clubs",
+  "suit": "clubs",
+  "value": "4",
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
+  },
+  "title": {
+    "en": "Hunt for the White Lion",
+    "ru": "Охота на белого льва"
+  },
+  "summary": {
+    "en": "The white lion — a popular symbol of the knightly orders of the Middle Ages, embodying heavenly strength granted to a warrior of Christ.",
+    "ru": "Белый лев - популярный символ рыцарских орденов Средневековья, олицетворяющий небесную силу, дарованную воину Христа."
+  },
+  "description": {
+    "en": "The white lion was considered one of the most exalted images in heraldry and medieval symbolism as a whole. Unlike the familiar golden or red lion, it embodied not so much force and dominion as purity, nobility, and supreme justice. Its white color was associated with light, spiritual integrity, and divine patronage.\nIn knightly culture the white lion became a mark of election — the symbol of a warrior who fights for the highest ideals. It could denote inner strength, restraint, and the ability to preserve honor even in the hardest trials. Such an image was often linked with the ideal of the perfect knight.\nIn heraldry the white lion appeared less often than others, which only strengthened its meaning as a sign of exceptionality. It could be shown on the coats of arms of rulers and noble houses, underscoring their striving for just rule and moral purity. Sometimes it was associated with divine right and the protection of higher powers.\nOver time the white lion became not only a symbol of strength but an image of inner light capable of opposing darkness. In it power and gentleness, authority and responsibility are joined, making it a sign not of mere dominion but of conscious and just choice.",
+    "ru": "Белый лев считался одним из самых возвышенных образов в геральдике и средневековой символике в целом. В отличие от привычного золотого или красного льва, он олицетворял не столько силу и власть, сколько чистоту, благородство и высшую справедливость. Его белый цвет связывался с идеями света, духовной непорочности и божественного покровительства.\nВ рыцарской культуре белый лев становился знаком избранности — символом воина, который сражается во имя высших идеалов. Он мог обозначать внутреннюю силу, сдержанность и способность сохранять честь даже в самых тяжёлых испытаниях. Такой образ нередко ассоциировался с идеалом совершенного рыцаря.\nВ геральдике белый лев встречался реже других, что лишь усиливало его значение как знака исключительности. Он мог изображаться на гербах правителей и знатных родов, подчёркивая их стремление к справедливому правлению и моральной чистоте. Иногда его связывали с божественным правом власти и защитой высших сил.\nСо временем белый лев стал не только символом силы, но и образом внутреннего света, способного противостоять тьме. В нём соединяются мощь и мягкость, власть и ответственность, делая его знаком не просто господства, но осознанного и справедливого выбора."
+  },
+  "image": "/cards/4-clubs.webp",
+  "featured": false
+}

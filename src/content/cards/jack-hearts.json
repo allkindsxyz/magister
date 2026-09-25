@@ -2,13 +2,22 @@
   "id": "jack-hearts",
   "suit": "hearts",
   "value": "J",
-  "category": { "en": "Greek myth", "ru": "Греческий миф", "zh": "希腊神话" },
-  "title": { "en": "Apollo and Daphne", "ru": "Аполлон и Дафна", "zh": "阿波罗与达芙妮" },
-  "description": {
-    "en": "The chase that ends in bark and laurel: Apollo’s longing and Daphne’s escape into the tree — a heart-suit episode about desire that cannot be answered in human form.",
-    "ru": "Погоня, что обрывается корой и лавром: желание Аполлона и побег Дафны в дерево — эпизод червей о том, как страсть не находит ответа в человеческом облике.",
-    "zh": "追逐止于树皮与月桂：阿波罗的渴望与达芙妮遁入树身——红心牌中关于无法用人的形态回应的欲望。"
+  "category": {
+    "en": "Olympian gods",
+    "ru": "Олимпийские боги"
   },
-  "image": "/media/lady.webp",
-  "featured": false
+  "title": {
+    "en": "Apollo and Daphne",
+    "ru": "Аполлон и Дафна"
+  },
+  "summary": {
+    "en": "The episode in which Daphne becomes a laurel tree — the only way to escape Apollo's amorous pursuit.",
+    "ru": "Эпизод превращения Дафны в лавровое дерево, как единственный способ избежать любовных преследований Аполлона."
+  },
+  "description": {
+    "en": "Once proud Apollo mocked the young god of love Eros, doubting the power of his arrows. In reply Eros chose to prove otherwise: he struck Apollo with a golden arrow that awakens irresistible love, and the nymph Daphne with a leaden one that breeds revulsion toward affection.\nSeized by sudden passion, Apollo rushed after Daphne. He pursued her through woods and fields, unable to overcome his longing. He pleaded and promised, but that only made Daphne flee faster. For her his love was not a gift but a threat that could strip away her freedom.\nWhen Daphne's strength began to fail and she felt she could run no more, she turned to her father Peneus with a plea to save her from pursuit. In that instant her body began to change: her feet took root in the earth, her skin became bark, and her arms rose toward the sky as branches. Thus she became a laurel tree, slipping forever from Apollo's grasp at the cost of her human form.\nApollo, reaching her in that moment, could only embrace her altered body and feel cold bark beneath his hands where living flesh had been. Accepting the inevitable, he made the laurel his sacred tree and crowned himself with a wreath of deathless remembrance. Though the laurel crown would become a symbol of glory and victory, at its heart remains the story of a union that never was — love that could not be mutual and therefore turned into an eternal sign of loss and transformation.",
+    "ru": "Однажды гордый Аполлон стал насмехаться над юным богом любви Эротом, усомнившись в силе его стрел. В ответ Эрот решил доказать обратное: он поразил Аполлона золотой стрелой, пробуждающей неудержимую любовь, а нимфу Дафну — свинцовой, вызывающей отвращение к чувству.\nОхваченный внезапной страстью, Аполлон устремился за Дафной. Он преследовал её сквозь леса и поля, не в силах преодолеть своё влечение. Он обращался к ней с мольбами и обещаниями, но это заставляло Дафну бежать ещё быстрее. Для неё его любовь была не даром, а угрозой, способной лишить её свободы.\nКогда силы начали покидать Дафну и она почувствовала, что не сможет больше бежать, она обратилась к своему отцу Пенею с просьбой спасти её от преследования. В тот же миг её тело начало меняться: ноги укоренились в земле, кожа превратилась в кору, а руки поднялись к небу ветвями. Так она превратилась в лавровое дерево, навсегда ускользнув от Аполлона, но ценой утраты человеческого облика.\nАполлон, достигнув её в этот момент, смог лишь обнять уже изменённое тело и почувствовать под руками холодную кору вместо живой плоти. Приняв неизбежность, он сделал лавр своим священным деревом, возложив на себя венец бессмертной памяти. И хоть в итоге лавровый венок стал символом славы и победы, но в его основе остаётся история несостоявшегося союза — любви, которая не смогла быть взаимной и потому превратилась в вечный знак утраты и преображения."
+  },
+  "image": "/cards/jack-hearts.webp",
+  "featured": true
 }

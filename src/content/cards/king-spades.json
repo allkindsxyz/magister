@@ -2,13 +2,22 @@
   "id": "king-spades",
   "suit": "spades",
   "value": "K",
-  "category": { "en": "Historical echo", "ru": "Историческое эхо", "zh": "历史回响" },
-  "title": { "en": "The Secret History of the Mongols", "ru": "Тайная история монголов", "zh": "蒙古秘史" },
-  "description": {
-    "en": "The anonymous chronicle of empire on the steppe — propaganda, genealogy, and thunder across Asia. A spade-king card: power recorded by voices we barely know.",
-    "ru": "Анонимная хроника степной империи — пропаганда, родословная и гром по Азии. Король пик: власть, записанная голосами, которых мы почти не знаем.",
-    "zh": "草原帝国的匿名编年——宣传、世系与席卷亚洲的雷鸣。黑桃 K：权力由我们几乎无从知晓的声音所记录。"
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
   },
-  "image": "/media/merchant.webp",
+  "title": {
+    "en": "The Secret History of the Mongols",
+    "ru": "Тайная история монголов"
+  },
+  "summary": {
+    "en": "Swarms of locusts numbering billions form “flying clouds” that cover and devastate vast territories.",
+    "ru": "Стаи саранчи, насчитывающие миллиарды насекомых, образуют «летучие облака», покрывающие и опустошающие огромные территории."
+  },
+  "description": {
+    "en": "The King of Spades is a truly famous figure who wielded influence across an entire continent long before social networks existed. This is Genghis Khan, the great khan of the Mongols — a figure that evokes contradictory feelings yet reached incredible heights in the art of war. The empire he created continued to expand after his death, and the consequences of the Mongol-Tatar yoke still echo through historical events.\n\nGenghis Khan, it is believed, was born in the steppes of Central Asia and from an early age faced harsh struggle for survival. After his father’s death his family fell into exile, and the future ruler had to carve his own path, gathering supporters around him and gradually strengthening his power. Overcoming internal strife, he united the scattered Mongol tribes and in 1206 was proclaimed great khan.\nGenghis Khan created an effective military system based on strict discipline, mobility, and clear organization, which allowed his army to win victories over significantly superior enemy forces. It is no accident that the commander is depicted mounted on a locust — as on a symbol of mass disaster. Mongol raids were brutal and devastating.\nGenghis Khan died in 1227, leaving behind an empire that continued to expand after his death. His figure remains a symbol of strength, strategic thought, and the transformation of the world. Yet few know that besides war, Mongol culture also spread law and writing to conquered lands, so that in the reputation of the Great Khan blank spaces still remain.",
+    "ru": "Королём пик выступает действительно известная личность, имевшая влияние на целом материке ещё до появления социальных сетей. Это Чингисхан, великий хан монголов, фигура, вызывающая противоречивые чувства, но достигшая невероятных высот в военном деле. Империя, которую он создал, расширялась и после его смерти, а последствия монголо-татарского ига до сих просвечиваются в течении исторических событий.\n\nЧингисхан, как считается родился в степях Центральной Азии и с ранних лет столкнулся с суровой борьбой за выживание. После гибели отца его семья оказалась в изгнании, и будущему правителю пришлось самостоятельно прокладывать путь, объединяя вокруг себя сторонников и постепенно укрепляя свою власть. Преодолев внутренние распри, он сумел объединить разрозненные монгольские племена и в 1206 году был провозглашён великим ханом.\nЧингисхан создал эффективную военную систему, основанную на строгой дисциплине, мобильности и чёткой организации, что позволило его армии одерживать победы над значительно превосходящими силами противников. Неслучайно полководец изображен верхом на саранче - как на символе массового бедствия. Набеги монголов были жестоки и опустошительны.\nЧингисхан умер в 1227 году, оставив после себя империю, которая продолжила расширяться и после его смерти. Его фигура остаётся символом силы, стратегического мышления и преобразования мира. Хотя мало кто знает, что кроме войны, монгольская культура также распространяла на захваченные земли право и письменность, так что в репутации Великого Хана всё же остаются белые пятна."
+  },
+  "image": "/cards/king-spades.webp",
   "featured": true
 }

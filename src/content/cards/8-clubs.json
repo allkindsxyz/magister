@@ -1,0 +1,23 @@
+{
+  "id": "8-clubs",
+  "suit": "clubs",
+  "value": "8",
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
+  },
+  "title": {
+    "en": "The Eighth Day of Christian Rosenkreutz’s Wedding",
+    "ru": "Восьмой день свадьбы Христиана Розенкрейца"
+  },
+  "summary": {
+    "en": "The Chymical Wedding of Christian Rosenkreutz in 1459 — a Rosicrucian manifesto, a philosophical and symbolic parable about Christian Rosenkreutz’s seven-day journey to a royal wedding.",
+    "ru": "«Химическая свадьба Христиана Розенкрейца в 1459 году» - манифест розенкрейцеров, философско-символическая притча о семидневном путешествии Христиана Розенкрейца на королевскую свадьбу."
+  },
+  "description": {
+    "en": "The Chymical Wedding of Christian Rosenkreutz is a mystical work of the early seventeenth century, attributed to Johann Valentin Andreae and linked to the Rosicrucian tradition. The text is cast as an allegorical narrative, but behind its fairy-tale surface lies a complex system of symbols uniting Christian, Hermetic, and alchemical ideas. It is an encoded description of a spiritual path in which every event carries a hidden meaning.\nThe plot revolves around Christian Rosenkreutz, who receives an invitation to a mysterious “wedding” and sets out on his way. Over seven days he passes through a succession of trials in a castle, confronting images of death, purification, and rebirth. He observes processes reminiscent of alchemical operations and gradually becomes a participant in what unfolds, moving from outward observation to inner experience.\nThe “wedding” itself in this context is not a literal event but symbolizes the union of opposites — spirit and matter, masculine and feminine, inner and outer. It is the central moment of the alchemical work, in which wholeness and transformation are achieved. Through this union the hero undergoes inner change, losing his former form and gaining a new one.\nThis story, known as The Chymical Wedding of Christian Rosenkreutz, became one of the key texts of European mysticism. It symbolizes the path of initiation, where true union is possible only through trial, the death of the old, and the birth of the new — in alchemy as in the human being. The work describes seven days of the wedding, but the artist of the card extends the story, imagining what happens after the cycle is complete.",
+    "ru": "«Химическая свадьба Христиана Розенкрейца» — мистическое произведение начала XVII века, приписываемое Иоганну Валентину Андреэ и связанное с традицией розенкрейцеров. Текст написан в форме аллегорического повествования, но за внешней сказочностью скрывается сложная система символов, объединяющая христианские, герметические и алхимические идеи. Это зашифрованное описание духовного пути, в котором каждое событие имеет скрытый смысл.\nСюжет разворачивается вокруг Христиана Розенкрейца, который получает приглашение на таинственную «свадьбу» и отправляется в путь. В течение семи дней он проходит через череду испытаний в замке, сталкиваясь с образами смерти, очищения и возрождения. Он наблюдает процессы, напоминающие алхимические операции, и постепенно становится участником происходящего, переходя от внешнего наблюдения к внутреннему переживанию.\nСама «свадьба» в этом контексте не является буквальным событием, а символизирует соединение противоположностей — духа и материи, мужского и женского, внутреннего и внешнего. Это центральный момент алхимического делания, в котором достигается целостность и преображение. Через этот союз герой проходит внутреннюю трансформацию, утрачивая прежнюю форму и обретая новую.\nЭтот сюжет, известный как «Химическая свадьба Христиана Розенкрейца», стал одним из ключевых текстов европейского мистицизма. Он символизирует путь посвящения, где истинное соединение возможно лишь через испытание, смерть старого и рождение нового — как в алхимии, так и в самом человеке. В произведении описывается 7 дней свадьбы, но автор картины достраивает историю, представляя, что же происходит после завершения цикла."
+  },
+  "image": "/cards/8-clubs.webp",
+  "featured": false
+}

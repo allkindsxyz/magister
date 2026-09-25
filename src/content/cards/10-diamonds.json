@@ -1,0 +1,23 @@
+{
+  "id": "10-diamonds",
+  "suit": "diamonds",
+  "value": "10",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "The Barrel-Bearer",
+    "ru": "Носильщик бочек"
+  },
+  "summary": {
+    "en": "One who usually accompanies those who have declared their wish to be initiated into the mysteries.",
+    "ru": "Тот, кто обычно сопровождает выразивших своё желание быть посвященными в таинства мистерии."
+  },
+  "description": {
+    "en": "The Barrel-Bearer wanders the roads, gathering those who have lost their face — people whose will has weakened and whose fate has grown empty and colorless. He finds them in forgotten places, at life's margins, among those who have ceased to seek meaning. Without many words he offers them a path, and many, unable to resist inner emptiness, join him as though accepting the inevitable.\nIt is believed that the barrels are only a passage — a closed space between worlds where a person loses touch with familiar reality. Inside, the last gleams of former life fade, names and images are erased, and only quiet waiting remains. The Bearer does not hurry; his step is even and unchanged, as though he follows a route long laid out, leading beyond the visible.\nThat path ends where the roads of the living do not go — in another, hidden world concealed from sight. There the true transformation occurs: all that is superfluous falls away, and a person meets what cannot be carried out of former existence. The mystery of truth unfolds not in words but in experience itself, which cannot be shared or explained.\nThere is a belief that the Bearer belongs to no single time and never stops for good. His way runs between worlds, collecting those who stand on the boundary. And if you meet him on the road, it is best not to linger too long nearby — for his burden may grow heavier by exactly one person.",
+    "ru": "Носильщик бочек странствует по дорогам, собирая тех, кто утратил своё лицо — людей, чья воля ослабла, а судьба стала пустой и бесцветной. Он находит их в забытых местах, на обочинах жизни, среди тех, кто уже перестал искать смысл. Без лишних слов он предлагает им путь, и многие, не в силах сопротивляться внутренней пустоте, присоединяются, словно принимая неизбежное.\nСчитается, что бочки — лишь переход, замкнутое пространство между мирами, где человек теряет связь с привычной реальностью. Внутри гаснут последние отблески прежней жизни, стираются имена и образы, и остаётся лишь тихое ожидание. Носильщик не спешит, его шаг ровен и неизменен, будто он следует давно проложенному маршруту, ведущему за пределы видимого.\nЭтот путь заканчивается там, куда не ведут дороги живых — в ином, потустороннем мире, скрытом от глаз. Именно там происходит истинное превращение: всё лишнее отпадает, и человек встречается с тем, что невозможно унести с собой из прежнего существования. Таинство истины раскрывается не словами, а самим переживанием, которое невозможно разделить или объяснить.\nСуществует поверье, что носильщик не принадлежит ни одному времени и никогда не останавливается окончательно. Его путь пролегает между мирами, собирая тех, кто оказался на границе. И если встретить его в дороге, лучше не задерживаться рядом слишком долго — ведь его ноша может стать тяжелее ровно на одного человека."
+  },
+  "image": "/cards/10-diamonds.webp",
+  "featured": false
+}

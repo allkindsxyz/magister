@@ -1,0 +1,23 @@
+{
+  "id": "6-clubs",
+  "suit": "clubs",
+  "value": "6",
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
+  },
+  "title": {
+    "en": "Celebrations for the Capture of Acre",
+    "ru": "Торжества по поводу взятия Акры"
+  },
+  "summary": {
+    "en": "Acre — an ancient city conquered by knights under the leadership of Baldwin I.\nUntil the end of the Crusades it was the capital of the Kingdom of Jerusalem.",
+    "ru": "Акра - древний город, завоёванный рыцарями под предводительством Балдуина I.\nДо окончания Крестовых походов он был столицей Иерусалимского королевства."
+  },
+  "description": {
+    "en": "According to the chronicles of the crusades, the Siege of Acre (now Akko) became one of the key and bloodiest episodes in the struggle for the Holy Land. The city of Acre, held by Muslim forces, became the center of a prolonged siege in which the armies of the European crusaders and the forces of Sultan Saladin converged.\nThe siege lasted nearly two years and was accompanied by famine, disease, and constant attacks on both sides. Among the crusaders were the kings Richard I Lionheart and Philip II Augustus, who sought to break the city’s defenses while Saladin tried to lift the siege from without. Battles raged not only at Acre’s walls but in the open field.\nIn 1191, after exhausting fighting, the city capitulated and passed under crusader control. This was an important victory that allowed them to secure the coast and continue the campaign. Yet success was accompanied by brutal consequences: soon after the city’s capture thousands of prisoners were executed on Richard’s orders.\nThe capture of Acre became a symbol not only of military resolve but of the tragedy of the crusades — the collision of cultures, faiths, and ambitions. It showed at what cost victories are won and became one of those events where heroism and cruelty proved inseparable.",
+    "ru": "Согласно хроникам крестовых походов, Осада Акры (теперь Акко) стала одним из ключевых и самых кровопролитных эпизодов борьбы за Святую землю. Город Акко, удерживаемый мусульманскими войсками, оказался в центре длительной осады, в которой сошлись армии европейских крестоносцев и силы султана Саладина.\nОсада длилась почти два года и сопровождалась голодом, болезнями и постоянными атаками с обеих сторон. Крестоносцы, среди которых были короли Ричард I Львиное Сердце и Филипп II Август, стремились прорвать оборону города, в то время как Саладин пытался снять осаду извне. Сражения шли не только у стен Акры, но и в открытом поле.\nВ 1191 году, после изнурительной борьбы, город капитулировал и перешёл под контроль крестоносцев. Это стало важной победой, позволившей им закрепиться на побережье и продолжить кампанию. Однако успех сопровождался жестокими последствиями: вскоре после взятия города по приказу Ричарда были казнены тысячи пленных.\nВзятие Акры стало символом не только военной решимости, но и трагедии крестовых походов — столкновения культур, веры и амбиций. Оно показало, какой ценой достигаются победы, и стало одним из тех событий, где героизм и жестокость оказались неразделимы."
+  },
+  "image": "/cards/6-clubs.webp",
+  "featured": false
+}

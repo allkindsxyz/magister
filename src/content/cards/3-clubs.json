@@ -1,0 +1,23 @@
+{
+  "id": "3-clubs",
+  "suit": "clubs",
+  "value": "3",
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
+  },
+  "title": {
+    "en": "Finding the Black Stone at Mount Untersberg",
+    "ru": "Обретение черного камня у горы Унтерберг"
+  },
+  "summary": {
+    "en": "Hubert Koch — a commander of the Order who awaited the coming of the goddess Isais beneath Mount Untersberg.",
+    "ru": "Губерт Кох - комтур Ордена, который ждал прихода богини Исаис под горой Унтерберг."
+  },
+  "description": {
+    "en": "Whether a figure such as Hubert Koch ever existed is an open question. No sources mentioning him appear online, but the artist of the card left the following account. He is referred to as “Knight Hubert,” the “Black Commander,” or the “leader of ravens,” likely connected with his coat of arms — two silver raven heads on a black field, reminiscent of Odin’s ravens Huginn and Muninn. During his travels in the East he was also known as “Abt Isa” (“servant of Jesus”) and “Ra’is” (“chief”); he spoke Arabic fluently and knew Persian. He is thought to have visited Alamut and studied the ancient teachings of the Near East.\nWhile wandering through Mesopotamia, Koch sought traces of the ancient teaching of the “Kutæans,” which he linked to the origins of Christianity. In a night vision a being named Isais appeared to him and pointed the way to a mountain in the West — the Untersberg. There he was to found a monastery and prepare for the coming of a new age. Connecting this revelation with the idea of the “millennial kingdom,” Koch set out for Europe to fulfill the command he had received.\nIn 1221 he reached the Untersberg, where together with followers he founded a fortified monastery and, according to tradition, a hidden temple linked to a system of caves. It was there, it is believed, that the first apparition of Isais occurred, continuing for twelve years and ending with the transmission of “revelations.” Around Koch a secret brotherhood formed, later called the “Lords of the Black Stone,” whose symbol was a magical stone allegedly given by Isais.\nThis community gradually separated from the Order of the Temple, retaining only outward affiliation, and developed its own symbolism, rituals, and aims. According to tradition, its members sought to prepare the advent of a new world epoch, using the knowledge and artifacts they had received. After the mid-thirteenth century traces of the brotherhood vanish, and Koch’s further fate remains unknown: in one version he was executed; in another he and his followers attained immortality and continued their hidden work.",
+    "ru": "Существовала ли такая фигура как Губерт Кох — вопрос насущный. Источников с его упоминаниями в сети нет, но автор картины оставил о нём следующие сведения. Он упоминается как «рыцарь Губерт», «Чёрный Комтур» или «предводитель воронов», что, вероятно, связано с его гербом — двумя серебряными головами воронов на чёрном фоне, напоминающими воронов Одина Хугина и Мунина. Во время путешествий по Востоку он был известен также как «Abt Isa» («слуга Иисуса») и «Ra’is» («вождь»), свободно владел арабским и знал персидский язык. Предполагается, что он посещал Аламут и изучал древние учения Ближнего Востока.\nВо время странствий по Месопотамии Кох искал следы древнего учения «кутаеров», которое он связывал с истоками христианства. В одном из ночных видений ему явилось существо по имени Исаис, указавшее путь к горе на Западе — Унтерсбергу. Там он должен был основать обитель и подготовиться к наступлению новой эпохи. Связав это откровение с идеей «тысячелетнего царства», Кох отправился в Европу, чтобы исполнить полученное указание.\nВ 1221 году он достиг Унтерсберга, где вместе с последователями основал укреплённую обитель и, по преданию, скрытый храм, связанный с системой пещер. Именно там, как считается, произошло первое явление Исаис, продолжавшееся в течение двенадцати лет и завершившееся передачей «откровений». Вокруг Коха сформировалось тайное братство, получившее впоследствии название «Господа Чёрного Камня», чьим символом стал магический камень, якобы переданный Исаис.\nЭто сообщество постепенно отделилось от ордена тамплиеров, сохранив лишь внешнюю принадлежность, и выработало собственную символику, ритуалы и цели. Согласно преданию, его участники стремились подготовить наступление новой мировой эпохи, используя полученные знания и артефакты. После середины XIII века следы братства исчезают, а дальнейшая судьба Коха остаётся неизвестной: по одной версии, он был казнён, по другой — вместе с последователями обрёл бессмертие и продолжил скрытую деятельность."
+  },
+  "image": "/cards/3-clubs.webp",
+  "featured": false
+}

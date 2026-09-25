@@ -2,13 +2,22 @@
   "id": "queen-clubs",
   "suit": "clubs",
   "value": "Q",
-  "category": { "en": "Templar lore", "ru": "Легенда ордена", "zh": "圣殿骑士传说" },
-  "title": { "en": "Templar's Hunt", "ru": "Охота тамплиера", "zh": "圣殿骑士的狩猎" },
-  "description": {
-    "en": "Jacques de Molay’s shadow on the trail: the last Grand Master as a hinge between crusading oath and later myth — the widow’s son, the unfinished hunt.",
-    "ru": "Тень Жака де Моле на тропе: последний магистр как шарнир между крестовым обетом и последующим мифом — сын вдовы, охота без конца.",
-    "zh": "雅克·德·莫莱的影子留在小径上：末代大团长是十字誓言与后世神话之间的枢纽——寡妇之子，未竟的狩猎。"
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
   },
-  "image": "/media/lady.webp",
+  "title": {
+    "en": "The Templar Hunt",
+    "ru": "Охота Тамплиера"
+  },
+  "summary": {
+    "en": "Dedicated to Jacques de Molay, the last Grand Master of the Order of the Temple, whose symbolism was inherited by the Freemasons in the figure of the “son of the widow.”",
+    "ru": "Посвящается Жаку де Мол, последнему Великому Магистру Ордена Тамплиеров, символизм которого был унаследован масонами в образе «сына вдовы»."
+  },
+  "description": {
+    "en": "Jacques de Molay became the last Grand Master of the Order of the Temple and one of the most tragic figures in its history. He entered the Order in his youth and devoted his life to its service; in 1292 he took leadership of the Templars, striving to preserve their influence after the loss of the Holy Land.\nIn a changed world Jacques de Molay sought to reform the Order and restore its military significance, proposing new crusades. Yet the political situation in Europe had shifted: interest in eastern campaigns was fading, while the wealth and independence of the Templars aroused growing discontent among secular rulers.\nIn 1307, on the orders of the French king Philip IV the Fair, mass arrests of Templars began. Jacques de Molay was seized, accused of heresy, and tortured until he gave confessions that he later recanted. During the fabricated trials the Inquisition brought countless absurd charges, including idol worship, spitting on the cross, and obscene rituals. Among them may have been the wearing of women’s clothing.\nIn 1314 Jacques de Molay was burned at the stake in Paris. Legend holds that before his death he cursed the king and the pope, calling on them to appear before God’s judgment — and both soon died. His death became a symbol of the end of the Order of the Temple and one of the most dramatic pages in European history.",
+    "ru": "Жак де Моле стал последним великим магистром ордена тамплиеров и одной из самых трагических фигур его истории. Он вступил в орден в юности и посвятил жизнь служению, а в 1292 году возглавил тамплиеров, пытаясь сохранить их влияние после утраты Святой земли.\nВ условиях изменившегося мира Жак де Моле стремился реформировать орден и вернуть ему военное значение, предлагая новые крестовые походы. Однако политическая ситуация в Европе изменилась: интерес к восточным кампаниям угасал, а богатство и независимость тамплиеров вызывали всё большее недовольство светских правителей.\nВ 1307 году по приказу французского короля Филипп IV Красивый начались массовые аресты тамплиеров. Жак де Моле был схвачен, обвинён в ереси и подвергнут пыткам, в результате которых дал признательные показания, позже от них отказавшись.В ходе сфабрикованных процессов над тамплиерами инквизиция выдвигала множество абсурдных обвинений, включая поклонение идолам, плевание на крест и непристойные ритуалы.Среди них могло быть и облачение в женские одежды.\nВ 1314 году Жак де Моле был сожжён на костре в Париже. По легенде, перед смертью он проклял короля и папу, призвав их предстать перед Божьим судом — и вскоре оба действительно умерли. Его гибель стала символом конца ордена тамплиеров и одной из самых драматичных страниц европейской истории."
+  },
+  "image": "/cards/queen-clubs.webp",
   "featured": true
 }

@@ -1,0 +1,23 @@
+{
+  "id": "ace-diamonds",
+  "suit": "diamonds",
+  "value": "A",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "The Light-Bearer",
+    "ru": "“Несущий свет”"
+  },
+  "summary": {
+    "en": "The Ace of Diamonds is the ancient Greek philosopher Diogenes, bearer of light. As a keeper of secrets he goes barefoot and extravagant — yet what are worldly conventions when one is devoted to truth?",
+    "ru": "Высшим рангом бубей выступает несущий свет древнегреческий философ Диоген. Как носитель тайны, он бос и экстравагантен, но к чему мирские условности, когда ты предан истине?"
+  },
+  "description": {
+    "en": "Barefoot as a tortoise that carries its own shelter upon its back, Diogenes wandered through Athens in broad daylight with a lit lantern. When asked what he was doing, he answered: \"I am looking for a human being.\" In that mocking performance lies a sorrowful conclusion: an honest, virtuous person cannot be found even at noon with a torch — and Diogenes casts light upon that truth.\n\nHe was a true sage not only because he could ironize what happened around him, but because he could express a profound thought without resorting to words at all. Moreover, he left no writings behind, gathered no disciples, and owned nothing. Diogenes preached radical simplicity and rejection of society's conventions.\n\nTradition holds that he lived in a large clay jar and believed happiness is attained through freedom from desire, wealth, and social norms. His way of life was a philosophical protest against luxury, power, and hypocrisy. Diogenes was a genuine bearer of secrets because he did not even need to hide them: his whole appearance showed that to be happy is simple — yet for all that, he remained misunderstood.\n\nAnother legend links Diogenes with Alexander the Great. When the conqueror offered to grant any wish, Diogenes replied only: \"Stand aside — you are blocking my sun.\" The emperor was so struck by this ordinary man that he declared: had he not been Alexander, he would have wished to be Diogenes of Sinope.",
+    "ru": "Босой, как черепаха - несущий на себе свое собственное укрытие, Диоген средь ясного дня бродил по Афинам с горящим фонарём. Когда у него спрашивали, что же он делает, то он отвечал: “Ищу человека”. В этом насмешливом представлении таится грустный вывод: настоящего, честного, добродетельного человека и днём с огнём не сыщешь, и Диоген проливает свет на эту истину.\n\nОн был настоящим мудрецом не только потому что умел иронизировать над происходящим, но и потому, что мог выразить глубокую мысль, совершенно не прибегая к помощи слов. Более того, он не оставил после себя произведений, не повел за собой учеников, и даже не имел никакого имущества. Диоген проповедовал радикальную простоту жизни и отказ от условностей общества.\n\nПо преданию, он жил в большой глиняной бочке и считал, что счастье достигается через свободу от желаний, богатства и общественных норм. Его образ жизни был своего рода философским протестом против роскоши, власти и лицемерия. Диоген был настоящим носителем тайны, потому что даже не нуждался в том, чтобы как-то её скрывать. Он всем своим видом показывал, что быть счастливым просто, но, несмотря на это, так и остался непонятым.\n\nЕще одна легенда о Диогене связана со встречей с Александром Македонским. Когда завоеватель предложил исполнить любое его желание, Диоген ответил лишь: «Отойди, ты заслоняешь мне солнце». Император был настолько восхищен этой заурядной личностью, что утверждал: если бы он не был Александром Македонским, он желал бы быть Диогеном Синопским.\n\nКРЕСТИ"
+  },
+  "image": "/cards/ace-diamonds.webp",
+  "featured": false
+}

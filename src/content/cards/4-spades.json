@@ -1,0 +1,23 @@
+{
+  "id": "4-spades",
+  "suit": "spades",
+  "value": "4",
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
+  },
+  "title": {
+    "en": "Adolf and Joseph. An Aerial Battle",
+    "ru": "Адольф и Иосиф. Воздушная битва"
+  },
+  "summary": {
+    "en": "In some cultures the sparrow symbolizes pugnacity and greed.",
+    "ru": "В некоторых культурах воробей символизирует драчливость и жадность."
+  },
+  "description": {
+    "en": "The confrontation between Adolf Hitler and Joseph Stalin became one of the central conflicts of world history. Despite the signing of a non-aggression pact in 1939, their agreement was temporary and concealed deep ideological and geopolitical opposition between two regimes.\nIn 1941 Germany launched Operation Barbarossa — a large-scale invasion of Soviet territory. The war’s opening phase was heavy for the USSR: the rapid advance of German forces led to enormous losses and the threat of capture of key cities, including Moscow.\nYet as the war progressed initiative began to shift to the Soviet Union. Decisive turning points were the battles at Stalingrad and Kursk, where the German army suffered crushing defeats. Industrial mobilization, numerical superiority, and the perseverance of Soviet troops played a decisive role in changing the course of the war.\nThe confrontation between Hitler and Stalin ended in 1945 with the defeat of Nazi Germany. This conflict was not only a military clash but a struggle of two systems whose consequences shaped the political map of the world for decades to come.",
+    "ru": "Противостояние Адольфа Гитлера и Иосифа Сталина стало одним из центральных конфликтов мировой истории. Несмотря на подписание пакта о ненападении в 1939 году, их соглашение носило временный характер и скрывало глубокое идеологическое и геополитическое противостояние двух режимов.\nВ 1941 году Германия начала операцию «Барбаросса» — масштабное вторжение на территорию Советского Союза. Начальный этап войны оказался тяжёлым для СССР: стремительное продвижение немецких войск привело к огромным потерям и угрозе захвата ключевых городов, включая Москву.\nОднако по мере развития войны инициатива начала переходить к Советскому Союзу. Переломными стали битвы под Сталинградом и на Курской дуге, где немецкая армия потерпела сокрушительные поражения. Промышленная мобилизация, численное превосходство и упорство советских войск сыграли решающую роль в изменении хода войны.\nПротивостояние Гитлера и Сталина завершилось в 1945 году поражением нацистской Германии. Этот конфликт стал не только военным столкновением, но и борьбой двух систем, последствия которой определили политическую карту мира на десятилетия вперёд."
+  },
+  "image": "/cards/4-spades.webp",
+  "featured": false
+}

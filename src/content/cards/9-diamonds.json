@@ -1,0 +1,23 @@
+{
+  "id": "9-diamonds",
+  "suit": "diamonds",
+  "value": "9",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "The Secret Initiation Ceremony",
+    "ru": "Тайная церемония посвящения"
+  },
+  "summary": {
+    "en": "One who is permitted to lift the veils that shroud the central mystery.",
+    "ru": "Тот, которому позволено снимать покровы, окутывающие главную тайну."
+  },
+  "description": {
+    "en": "Woven garments are an attribute of bearers of secrets for good reason. The sacrifice of the \"wicker man\" appears in descriptions of ancient Celtic rites. Druids fashioned enormous figures from branches and placed people inside them. These structures were set alight, and thus sacrifice was offered to the gods. Modern historians, however, treat such accounts with caution.\nNevertheless, what matters here is the idea itself — that through fire a person crosses the boundary of the earthly world. Druids, as priests and keepers of knowledge, conducted rites tied to the cycles of nature, fertility, and passages between worlds. Fire played an important role as a purifying, sacred force capable of conveying gifts to the gods. In this context the wicker man may be seen as a symbolic embodiment of sacrifice joining the earthly and the divine.\nIn time this motif became a enduring myth and cultural image. It was reinterpreted in literature, art, and film, where it became a symbol of collective ritual, fear, and secret knowledge. Despite the doubtful historical reliability, the \"wicker man\" continues to live as a powerful archetype reflecting ancient notions of sacrifice, rebirth, and humanity's bond with the forces of nature.",
+    "ru": "Плетеная одежда является атрибутом носителей тайны неспроста. Жертвоприношение «плетёного человека» упоминается в описании древних кельтских обрядов. Друиды изготавливали огромные фигуры из прутьев, внутри которых помещали людей. Эти конструкции поджигались, и таким образом совершалось жертвоприношение богам. Однако современные историки относятся к этим свидетельствам с осторожностью.\nТем не менее, здесь важна сама идея, в которой человек через огонь преодолевает границу земного мира. Друиды, как жрецы и хранители знаний, проводили обряды, связанные с циклами природы, плодородием и переходами между мирами. Огонь играл важную роль как очищающая и сакральная сила, способная передавать дары богам. В этом контексте образ плетёного человека можно рассматривать как символическое воплощение жертвы, соединяющей земное и божественное.\nСо временем этот мотив превратился в устойчивый миф и культурный образ. Он был переосмыслен в литературе, искусстве и кино, где стал символом коллективного ритуала, страха и тайного знания. Несмотря на сомнительность исторической достоверности, «плетёный человек» продолжает жить как мощный архетип, отражающий древние представления о жертве, возрождении и связи человека с силами природы."
+  },
+  "image": "/cards/9-diamonds.webp",
+  "featured": false
+}

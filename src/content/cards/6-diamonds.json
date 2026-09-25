@@ -1,0 +1,23 @@
+{
+  "id": "6-diamonds",
+  "suit": "diamonds",
+  "value": "6",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "The Sacred Chariot",
+    "ru": "Священная колесница"
+  },
+  "summary": {
+    "en": "Initiates who set out on pilgrimage to a certain secret place in the mountains.",
+    "ru": "Посвященные, отправившиеся в паломничество в некое тайное место в горах."
+  },
+  "description": {
+    "en": "The Sacred Chariot is an image of movement in which the way matters more than the goal, and the cargo is its own bearer. In it sits one who has taken the role of guide, together with those whose fates are not yet complete. A boat set upon wheels joins the incompatible: water and earth, path and passage, forward motion and inward descent. It is not a means of travel but a form of ritual in which movement itself becomes sacred action.\nInside the baskets are people already torn from the former world yet not yet entered into the new. They do not resist or seek escape; their state is acceptance and waiting. The one who drives the chariot does not rule them but accompanies them, holding them in a single space of passage. His gaze is fixed ahead, yet he sees not the road but what lies beyond it.\nThe pairing of boat and wheels has special meaning: a sign that boundaries between worlds are no longer fixed. Passage may occur anywhere if inner order is preserved. The oar in the companion's hand reminds us that even on land movement obeys the laws of depth, and the flag on his back marks belonging to a path that has no reverse.\nThey say the Sacred Chariot appears where enough unfinished destinies have gathered. It collects them and leads them away, not destroying but joining into a single stream. And when it vanishes from sight, only the feeling remains that something has changed — not in space but in the very order of things.",
+    "ru": "Священная колесница — образ движения, в котором путь важнее цели, а груз и является своим носителем. В ней сидит тот, кто принял на себя роль проводника, и вместе с ним — те, чьи судьбы ещё не завершены. Лодка, поставленная на колёса, соединяет несовместимое: воду и землю, путь и переход, движение вперёд и погружение внутрь. Это не средство передвижения, а форма ритуала, в котором само движение становится священным действием.\nВнутри корзин — люди, уже оторванные от прежнего мира, но ещё не вступившие в новый. Они не сопротивляются, не ищут выхода, их состояние — это принятие и ожидание. Тот, кто ведёт колесницу, не управляет ими, а сопровождает, удерживая их в едином пространстве перехода. Его взгляд направлен вперёд, но он видит не дорогу, а то, что лежит за её пределами.\nОсобое значение имеет сочетание лодки и колёс: знак того, что границы между мирами больше не фиксированы. Переход может происходить в любом месте, если соблюдён внутренний порядок. Весло в руках спутника напоминает, что даже на суше движение подчиняется законам глубины, а флаг за спиной указывает на принадлежность к пути, который не имеет обратного направления.\nГоворят, что Священная колесница появляется там, где накопилось достаточно незавершённых судеб. Она собирает их и уводит, не разрушая, а соединяя в единый поток. И когда она исчезает из поля зрения, остаётся лишь ощущение, что что-то изменилось — не в пространстве, а в самом порядке вещей."
+  },
+  "image": "/cards/6-diamonds.webp",
+  "featured": false
+}

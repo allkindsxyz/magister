@@ -1,0 +1,23 @@
+{
+  "id": "2-spades",
+  "suit": "spades",
+  "value": "2",
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
+  },
+  "title": {
+    "en": "School of the Mantis",
+    "ru": "Школа богомола"
+  },
+  "summary": {
+    "en": "Who masters the mantis stance better: the mantis itself or Bruce Lee, who perfected his movements?",
+    "ru": "Кто лучше владеет позой богомола: сам богомол или доведший до совершенства свои движения Брюс Ли?"
+  },
+  "description": {
+    "en": "Who masters the mantis stance better: the mantis itself or Bruce Lee, who perfected his movements? This mirroring pair opens the suit of spades and warns that it will present people who have reached perfection in their craft. Bruce Lee had and has no equal in the martial arts. A keen fighter in childhood, he devoted his entire life to the technique of combat and also became a world-famous actor and director.\nBruce Lee was born in San Francisco but grew up in Hong Kong, where from an early age he began studying martial arts. Training under the master Ip Man, he mastered the Wing Chun style, which became the foundation of his further path; later he moved to the United States, where he began to teach and shape his own approach to combat. Striving to go beyond tradition, Bruce Lee created his own philosophy — Jeet Kune Do — based on principles of flexibility, efficiency, and rejection of rigid forms.\nHe believed that true mastery lies not in following a style but in the ability to adapt, to “be water,” taking the shape of any circumstance. Wide fame came through films in which he not only demonstrated combat skill but changed the very perception of Eastern martial arts in the world. His screen image became a symbol of strength, speed, and inner discipline, and his influence spread far beyond cinema.\nBruce Lee died in 1973 under circumstances not fully clarified, which only strengthened the legend surrounding his person. His life became a symbol of the search for one’s own path, the union of body and spirit, and the overcoming of limits — both physical and cultural.",
+    "ru": "Кто лучше владеет позой богомола: сам богомол или доведший до совершенства свои движения Брюс Ли? Эта повторяющая друг друга двоица открывает масть пик и предупреждает, что в ней будут присутствовать люди, достигшие совершенства в своем мастерстве. Брюсу Ли не было и нет равных в боевых искусствах. Будучи заядлым драчуном в детстве, он не только всю жизнь посвятил технике боя, но и стал всемирно известным актером и режиссером.\nБрюс Ли родился в Сан-Франциско, но вырос в Гонконге, где с ранних лет начал заниматься боевыми искусствами. Обучаясь у мастера Ип Мана, он освоил стиль вин-чун, который стал основой его дальнейшего пути, а позже переехал в США, где начал преподавать и формировать собственный подход к бою. Стремясь выйти за рамки традиций, Брюс Ли создал собственную философию — джит кун-до, основанную на принципах гибкости, эффективности и отказа от жёстких форм.\nОн считал, что истинное мастерство заключается не в следовании стилю, а в способности адаптироваться, «быть водой», принимая форму любых обстоятельств.Широкую известность ему принесли фильмы, в которых он не только демонстрировал боевые навыки, но и менял само восприятие восточных единоборств в мире. Его экранный образ стал символом силы, скорости и внутренней дисциплины, а влияние распространилось далеко за пределы кино.\nБрюс Ли умер в 1973 году при не до конца выясненных обстоятельствах, что лишь усилило легенду вокруг его личности. Его жизнь стала символом поиска собственного пути, соединения тела и духа и преодоления границ — как физических, так и культурных."
+  },
+  "image": "/cards/2-spades.webp",
+  "featured": false
+}

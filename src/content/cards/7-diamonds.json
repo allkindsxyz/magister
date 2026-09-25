@@ -1,0 +1,23 @@
+{
+  "id": "7-diamonds",
+  "suit": "diamonds",
+  "value": "7",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "The Barrel-Bearers",
+    "ru": "Носильщики бочек"
+  },
+  "summary": {
+    "en": "Those who take part in the athletic games of the seventh day in honor of two goddesses.",
+    "ru": "Участвующие в атлетических играх седьмого дня в честь двух богинь."
+  },
+  "description": {
+    "en": "The Barrel-Bearers are figures entering a trial where strength is measured by the ability to keep balance on the edge. Their movement is unsteady: leaning on long stilts, they rise above the earth and lose familiar footing. This contest is held in honor of two goddesses — powers symbolizing opposing principles between which their path unfolds.\nEach participant carries on his back a barrel in which another is enclosed — watching, waiting, or perhaps having already traveled part of the way. These figures do not interfere, yet their presence adds meaning: the athlete carries not only himself but a reflection, a burden, or a witness. Victory here is impossible without accord between the one who walks and the one he bears.\nThe seventh day is considered the concluding stage when all previous trials converge in a single action. Here it no longer matters who is swifter or stronger — what matters is the ability to go on without losing balance. Stilts lift the participants above the ground but also make every step perilous, turning movement into constant risk.\nThey say that those who reach the end of the path no longer return to their former state. They do not become victors in the ordinary sense but pass into a new understanding — where support is no longer required and balance becomes inward.",
+    "ru": "Носильщики бочек - фигуры, вступающие в испытание, где сила измеряется способностью удерживать равновесие на грани. Их движение неустойчиво: опираясь на длинные ходули, они поднимаются над землёй, теряя привычную опору. Это состязание проходит в честь двух богинь — сил, символизирующих противоположные начала, между которыми и разворачивается их путь.\nКаждый из участников несёт за спиной бочку, внутри которой заключён иной — наблюдающий, ожидающий или, возможно, уже прошедший часть пути. Эти фигуры не вмешиваются, но их присутствие придаёт происходящему дополнительный смысл: атлет несёт не только себя, но и отражение, груз или свидетеля. Победа здесь невозможна без согласия между тем, кто идёт, и тем, кто им несом.\nСедьмой день считается завершающим этапом, когда все предыдущие испытания сходятся в одном действии. Здесь уже не важно, кто быстрее или сильнее — важна способность пройти, не потеряв равновесия. Ходули поднимают участников над землёй, но вместе с этим делают каждый шаг опасным, превращая движение в постоянный риск.\nГоворят, что те, кто достигает конца пути, уже не возвращаются к прежнему состоянию. Они не становятся победителями в обычном смысле, но переходят в новое понимание — где опора больше не требуется, а равновесие становится внутренним."
+  },
+  "image": "/cards/7-diamonds.webp",
+  "featured": false
+}

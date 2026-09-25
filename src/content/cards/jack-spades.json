@@ -2,13 +2,22 @@
   "id": "jack-spades",
   "suit": "spades",
   "value": "J",
-  "category": { "en": "Pop archetype", "ru": "Поп-архетип", "zh": "流行原型" },
-  "title": { "en": "Michael and the Chameleon", "ru": "Майкл и хамелеон", "zh": "迈克尔与变色龙" },
-  "description": {
-    "en": "The chameleon as metaphor: a performer who redrew his silhouette for every era — fame as camouflage, reinvention as survival.",
-    "ru": "Хамелеон как метафора: артист, перечерчивавший силуэт для каждой эпохи — слава как маскировка, перевоплощение как выживание.",
-    "zh": "变色龙为喻：为每个时代重绘轮廓的表演者——名望是伪装，重塑是生存。"
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
   },
-  "image": "/media/bearer.webp",
+  "title": {
+    "en": "Michael and the Chameleon",
+    "ru": "Майкл и хамелеон"
+  },
+  "summary": {
+    "en": "An artistic metaphor for the “King of Pop” Michael Jackson as a man who changed his appearance.",
+    "ru": "Художественная метафора на «короля поп-музыки» Майкла Джексона как человека, изменявшего свою внешность."
+  },
+  "description": {
+    "en": "Michael Jackson was born in the United States and began his career in childhood as a member of the family group Jackson 5. Even then he stood out for his unusual voice and stage charisma, and in time he became one of the most recognizable artists in the world.\nIn his solo career Jackson achieved unprecedented success, releasing albums such as Thriller, Bad, and Dangerous. His music united pop, soul, funk, and rock, and his videos became full-fledged works of art that changed the industry. Dance moves, including the famous “moonwalk,” became his trademark.\nYet his life was accompanied by constant press attention, scandals, and inner difficulties. The pressure of fame, personal trials, and controversial accusations made his fate complex and contradictory despite worldwide success.\nMichael Jackson died in 2009, leaving behind an enormous cultural legacy. He is called the “King of Pop,” and his influence on music, dance, and visual culture remains significant to this day. He changed images like a chameleon and also experimented heavily with his appearance in everyday life.",
+    "ru": "Майкл Джексон родился в США и начал свою карьеру ещё в детстве как участник семейной группы Jackson 5. Уже тогда он выделялся необычным голосом и сценической харизмой, а со временем стал одним из самых узнаваемых артистов в мире.\nВ сольной карьере Джексон достиг беспрецедентного успеха, выпустив такие альбомы, как «Thriller», «Bad» и «Dangerous». Его музыка объединяла поп, соул, фанк и рок, а клипы превратились в полноценные художественные произведения, изменившие индустрию. Танцевальные движения, включая знаменитую «лунную походку», стали его визитной карточкой.\nОднако его жизнь сопровождалась постоянным вниманием прессы, скандалами и внутренними трудностями. Давление славы, личные переживания и неоднозначные обвинения сделали его судьбу сложной и противоречивой, несмотря на мировой успех.\nМайкл Джексон умер в 2009 году, оставив после себя огромное культурное наследие. Его называют «королём поп-музыки», а его влияние на музыку, танец и визуальную культуру остаётся значительным и по сей день. Он не только менял образы как хамелеон, но и сильно экспериментировал со своей внешностью в обыденности."
+  },
+  "image": "/cards/jack-spades.webp",
   "featured": true
 }

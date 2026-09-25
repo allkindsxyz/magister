@@ -1,0 +1,23 @@
+{
+  "id": "3-diamonds",
+  "suit": "diamonds",
+  "value": "3",
+  "category": {
+    "en": "Bearers of secrets",
+    "ru": "Носители тайн"
+  },
+  "title": {
+    "en": "The Barrel-Bearer",
+    "ru": "Носильщица бочек"
+  },
+  "summary": {
+    "en": "Those who have learned the secret of the harmony of numbers; who conceal what others have long since proclaimed aloud.",
+    "ru": "Познавшие тайну гармонии чисел; скрывающие то, что другие давно уже разгласили."
+  },
+  "description": {
+    "en": "The Barrel-Bearer is a figure carrying two linked destinies held in fragile balance. Her face is hidden; only her eyes remain open, watching the world without taking part. On her shoulders is a yoke, and at either side barrels in which people ready to cross the threshold are enclosed. In her barrels are sages who have traveled the path of knowledge, renounced former truths, and seen something impossible to put into words. Their faces are calm, yet in that calm lies completion: they no longer seek because they have found, but have not yet crossed the boundary where another mode of being begins.\nIt is believed that after a mystery is revealed a person cannot simply go on living as before. Knowledge demands passage, and at that moment the bearer appears. She gathers those who are ready and carries them carefully, keeping balance between past and future. In her barrels they dwell not in captivity but in silence — the last silence before a new form of existence begins.\nHer path runs through invisible spaces where ordinary laws do not apply. Here differences among teachings, names, and ways vanish, and only essence remains — pure knowledge freed from form. The sages in the barrels do not lose themselves but gradually let go of all that no longer matters, preparing for rebirth that will occur not within but beyond this world.\nWhen the bearer reaches the boundary, she stops and the barrels open. Those who emerge do not return — they enter an enlightened life where knowledge is not goal but natural state. She herself continues on the road, for there are always those who have drawn near the truth and need a guide for the final step.",
+    "ru": "Носильщица бочек — фигура, несущая две связанные судьбы, удерживаемые в хрупком равновесии. Её лицо скрыто, и лишь глаза остаются открытыми, наблюдая за миром без участия. На её плечах — коромысло, а по сторонам — бочки, в которых заключены люди, готовые переступить предел. В её бочках — мудрецы, прошедшие путь познания, отказавшиеся от прежних истин и увидевшие нечто, что невозможно выразить словами. Их лица спокойны, но в этом спокойствии чувствуется завершённость: они уже не ищут, потому что нашли, но ещё не перешли границу, за которой начинается иное существование.\nСчитается, что после раскрытия тайны человек не может сразу продолжать жить как прежде. Знание требует перехода, и именно в этот момент появляется носильщица. Она собирает тех, кто готов, и бережно несёт их, удерживая равновесие между прошлым и будущим. В её бочках они пребывают не в заточении, а в состоянии тишины — последней перед началом новой формы бытия.\nЕё путь пролегает через невидимые пространства, где не действуют привычные законы. Здесь исчезают различия между учениями, именами и путями, и остаётся только суть — чистое знание, освобождённое от формы. Мудрецы в бочках не теряют себя, но постепенно отказываются от всего, что больше не имеет значения, готовясь к перерождению, которое произойдёт не внутри, а за пределами этого мира.\nКогда носильщица достигает границы, она останавливается, и бочки раскрываются. Те, кто выходит из них, уже не возвращаются назад — они вступают в просветлённую жизнь, где знание становится не целью, а естественным состоянием. Сама же она продолжает путь, ведь всегда есть те, кто приблизился к истине и нуждается в проводнике, чтобы сделать последний шаг."
+  },
+  "image": "/cards/3-diamonds.webp",
+  "featured": false
+}

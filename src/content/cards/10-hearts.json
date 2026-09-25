@@ -1,0 +1,23 @@
+{
+  "id": "10-hearts",
+  "suit": "hearts",
+  "value": "10",
+  "category": {
+    "en": "Olympian gods",
+    "ru": "Олимпийские боги"
+  },
+  "title": {
+    "en": "Persephone",
+    "ru": "Персефона"
+  },
+  "summary": {
+    "en": "The Ten of Hearts is embodied by Persephone — a goddess of the dual nature of cyclical existence, who appears both as the queen of spring and fertility and as the ruler of the underworld.",
+    "ru": "Десятку червей олицетворяет Персефона — богиня двойственности цикличного бытия, выступающая одновременно как царица весны и плодородия и как владычица преисподней."
+  },
+  "description": {
+    "en": "According to myth, the young Persephone, daughter of Demeter, was once gathering flowers in a meadow. Suddenly the earth split open, and from the dark chasm emerged Hades — the lord of the underworld. Enchanted by her beauty, he seized the girl and carried her away to his shadowy kingdom.\nUnaware of her daughter’s fate, Demeter wandered the world for nine days and nights with torches in her hands, refusing food and rest. When she finally learned the truth, she left Olympus in grief and deprived the earth of its fertility. Fields withered, people began to starve, and Zeus then ordered Hades to return Persephone to her mother.\nHades agreed, but before obeying the command he offered Persephone the seeds of a pomegranate — a fruit symbolizing marriage and an unbreakable bond with the world of the dead. Unaware of their meaning, Persephone tasted them and thereby bound herself forever to the underworld. It was therefore decided that she would spend part of the year with Demeter on earth and part beside Hades in the realm of shadows.\nPersephone thus became not only the goddess of spring and rebirth but also the queen of the underworld. When she returns to her mother, the earth blossoms and fills with life; when she descends again into darkness, nature falls silent, giving way to autumn and winter. In her fate light and darkness, maidenhood and sovereignty, life and death are united — an eternal cycle to which all living things are subject.",
+    "ru": "Согласно мифу, однажды юная Персефона, дочь Деметры, собирала цветы на лугу. Земля внезапно разверзлась, и из чёрной расселины явился Аид — владыка подземного царства. Очарованный её красотой, он схватил девушку и унёс в своё мрачное царство.\nДеметра, не зная, где её дочь, девять дней и ночей блуждала по свету с факелами в руках, отказываясь от пищи и покоя. Узнав правду, она в скорби покинула Олимп и лишила землю плодородия. Поля иссохли, люди начали гибнуть от голода, и тогда Зевс повелел Аиду вернуть Персефону матери.\nАид согласился, но прежде чем повиноваться приказу, Аид предложил Персефоне вкусить зёрна граната — плода брака и неразрывной связи с миром мёртвых. По незнанию Персефона отведала их и таким образом навсегда связала себя узами с преисподней. Поэтому было решено, что часть года она будет проводить с Деметрой на земле, а часть — рядом с Аидом, в царстве теней.\nПерсефона стала не только богиней весны и возрождения, но и царицей подземного мира. Когда она возвращается к матери, земля расцветает и наполняется жизнью; когда же вновь нисходит во мрак, природа замирает, уступая место осени и зиме. В её судьбе соединились свет и тьма, девичество и царственность, жизнь и смерть — вечный цикл, которому подчинено всё живое."
+  },
+  "image": "/cards/10-hearts.webp",
+  "featured": false
+}

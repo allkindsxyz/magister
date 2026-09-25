@@ -24,6 +24,8 @@
   --page-pad: clamp(1.5rem, 5.5vw, 6.5rem);
   --section-space: clamp(7.5rem, 14vw, 13rem);
   --max-width: 81.6rem;
+  /* ~physical deck corner proportion (≈5% of card width) */
+  --card-radius: clamp(0.55rem, 6%, 0.95rem);
 }
 
 html:lang(zh-Hans) {

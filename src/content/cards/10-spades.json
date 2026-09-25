@@ -1,0 +1,23 @@
+{
+  "id": "10-spades",
+  "suit": "spades",
+  "value": "10",
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
+  },
+  "title": {
+    "en": "Flight of the Wasp",
+    "ru": "Полёт осы"
+  },
+  "summary": {
+    "en": "Napoleon I Bonaparte used\nthe wasp as an emblem.",
+    "ru": "Наполеон І Бонапарт использовал\nсимвол осы в качестве эмблемы."
+  },
+  "description": {
+    "en": "Napoleon Bonaparte was born on the island of Corsica and made a name for himself quickly during the French Revolution. Thanks to his talent as a commander and political decisiveness he rose rapidly through the ranks and in 1799 carried out a coup, becoming First Consul of France.\nIn 1804 Napoleon proclaimed himself emperor and began large-scale reforms in France, including the creation of the Civil Code, which influenced the legal systems of many countries. At the same time he pursued an active foreign policy, expanding France’s borders and establishing his influence across nearly all of Europe.\nHis military campaigns brought both brilliant victories and heavy defeats. The turning point was the failed campaign in Russia in 1812, after which his power began to decline swiftly. In 1815, after a brief return to power, he suffered final defeat at the Battle of Waterloo.\nNapoleon was exiled to the island of Saint Helena, where he spent his last years and died in 1821. His figure remains a symbol of ambition, genius, and the striving for power, and his influence on European history is still felt. As his emblem Napoleon wore the wasp.",
+    "ru": "Наполеон Бонапарт родился на острове Корсика и достаточно быстро сделал себе имя во время Французской революции. Благодаря таланту полководца и политической решительности он быстро поднялся по служебной лестнице и в 1799 году совершил переворот, став первым консулом Франции.\nВ 1804 году Наполеон провозгласил себя императором и начал масштабные реформы во Франции, включая создание Гражданского кодекса, который оказал влияние на правовые системы многих стран. Одновременно он вёл активную внешнюю политику, расширяя границы Франции и устанавливая своё влияние почти по всей Европе.\nЕго военные кампании принесли как блестящие победы, так и тяжёлые поражения. Переломным моментом стала неудачная кампания в России в 1812 году, после которой его могущество начало стремительно ослабевать. В 1815 году после краткого возвращения к власти он окончательно потерпел поражение в битве при Ватерлоо.\nНаполеон был сослан на остров Святой Елены, где провёл последние годы жизни и умер в 1821 году. Его фигура остаётся символом амбиций, гениальности и стремления к власти, а его влияние на историю Европы ощущается до сих пор. А в качестве эмблемы наполеон носил осу."
+  },
+  "image": "/cards/10-spades.webp",
+  "featured": false
+}

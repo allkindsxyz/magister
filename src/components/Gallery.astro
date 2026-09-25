@@ -2,6 +2,7 @@
 import type { Lang } from '../i18n/utils';
 import { useTranslations, pickLocalized } from '../i18n/utils';
 import { getCollection } from 'astro:content';
+import { shuffle } from '../utils/shuffle';
 
 interface Props {
   lang: Lang;
@@ -10,11 +11,8 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const allCards = await getCollection('cards');
-const cards = [
-  ...allCards.filter((card) => card.data.featured),
-  ...allCards.filter((card) => !card.data.featured),
-];
 const suits = ['spades', 'hearts', 'diamonds', 'clubs'] as const;
+const cards = shuffle(allCards);
 const symbols: Record<string, string> = { spades: '♠', hearts: '♥', diamonds: '♦', clubs: '♣' };
 
 const payloads = cards.map((card) => {
@@ -26,9 +24,7 @@ const payloads = cards.map((card) => {
     value: card.data.value,
     image: card.data.image,
     suitSymbol: symbols[suit],
-    category: pickLocalized(card.data.category, lang),
     worldLine: `${t('gallery.world_label')}: ${t(`worlds.${suit}.name`)}`,
-    categoryLine: `${t('gallery.category_label')}: ${pickLocalized(card.data.category, lang)}`,
     metaLine: `${t('gallery.suit_label')}: ${t(`suits.${suit}`)} · ${t('gallery.value_label')}: ${card.data.value}`,
   };
 });
@@ -63,7 +59,6 @@ const payloads = cards.map((card) => {
               <div class="carousel-card__overlay-inner">
                 <span class="carousel-card__suit">{card.suitSymbol}{card.value}</span>
                 <span class="carousel-card__name">{card.title}</span>
-                <span class="carousel-card__cat">{card.category}</span>
                 <span class="carousel-card__btn">{t('gallery.open_btn')}</span>
               </div>
             </div>
@@ -99,10 +94,7 @@ const payloads = cards.map((card) => {
       <div class="lb-text" aria-live="polite">
         <div class="lb-suit-val" id="lb-suit-val"></div>
         <h2 class="lb-title" id="lb-title"></h2>
-        <div class="lb-kicker">
-          <p class="lb-kicker-line" id="lb-world-line"></p>
-          <p class="lb-kicker-line" id="lb-cat-line"></p>
-        </div>
+        <p class="lb-kicker-line" id="lb-world-line"></p>
         <div class="lb-divider"></div>
         <p class="lb-body" id="lb-body"></p>
         <p class="lb-meta" id="lb-meta"></p>
@@ -203,11 +195,9 @@ const payloads = cards.map((card) => {
   .carousel-card__inner {
     position: relative;
     overflow: hidden;
-    border-radius: 0.45rem;
-    background: var(--paper);
-    box-shadow:
-      0 1.25rem 3.75rem rgba(0, 0, 0, 0.28),
-      0 0 0 1px rgba(23, 23, 20, 0.1);
+    border-radius: var(--card-radius);
+    background: transparent;
+    box-shadow: 0 1.25rem 3.75rem rgba(23, 23, 20, 0.22);
     transform: translateY(0);
     transition:
       box-shadow 400ms ease,
@@ -217,9 +207,7 @@ const payloads = cards.map((card) => {
   .carousel-card:hover .carousel-card__inner,
   .carousel-card:focus .carousel-card__inner,
   .carousel-card:focus-visible .carousel-card__inner {
-    box-shadow:
-      0 1.9rem 5rem rgba(0, 0, 0, 0.38),
-      0 0 0 1px rgba(23, 23, 20, 0.16);
+    box-shadow: 0 1.9rem 5rem rgba(23, 23, 20, 0.28);
     transform: translateY(-8px);
   }
 
@@ -229,7 +217,7 @@ const payloads = cards.map((card) => {
     aspect-ratio: 5 / 7;
     object-fit: contain;
     border-radius: inherit;
-    background: var(--paper);
+    background: transparent;
     filter: contrast(1.04) sepia(8%);
     transition: filter 400ms ease;
   }
@@ -294,15 +282,6 @@ const payloads = cards.map((card) => {
     text-transform: uppercase;
   }
 
-  .carousel-card__cat {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #c8c3b8;
-    font-size: 0.72rem;
-    font-style: italic;
-    line-height: 1.35;
-  }
-
   .carousel-card__btn {
     display: inline-block;
     padding-bottom: 1px;
@@ -319,10 +298,11 @@ const payloads = cards.map((card) => {
     width: 2.5rem;
     height: 2.5rem;
     place-items: center;
-    border: 1px solid rgba(255, 253, 248, 0.28);
+    border: 1px solid var(--line);
     border-radius: 50%;
-    background: rgba(20, 16, 12, 0.92);
-    color: currentColor;
+    background: var(--white);
+    color: var(--ink);
+    box-shadow: 0 0.35rem 1.25rem rgba(23, 23, 20, 0.12);
     cursor: pointer;
     z-index: 2;
   }
@@ -336,8 +316,10 @@ const payloads = cards.map((card) => {
     justify-content: center;
     padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
       max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
-    background: rgba(8, 7, 5, 0.97);
-    color: var(--paper);
+    background: color-mix(in srgb, var(--paper) 78%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--ink);
   }
 
   .lightbox[hidden] {
@@ -346,15 +328,24 @@ const payloads = cards.map((card) => {
 
   .lb-shell {
     position: relative;
-    width: min(100%, 50rem);
-    padding: 0 1.75rem;
+    width: min(100%, 56rem);
+    padding: 0 clamp(2.5rem, 6vw, 3.5rem);
   }
 
   .lb-inner {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: clamp(1.25rem, 2.5vw, 2rem);
+    grid-template-columns: minmax(168px, 240px) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 2.75rem);
     align-items: start;
+  }
+
+  .lb-text {
+    min-width: 0;
+    max-height: min(82dvh, 40rem);
+    overflow-x: visible;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0.35rem 0.35rem 0.25rem 0;
   }
 
   .lb-img-wrap {
@@ -364,35 +355,42 @@ const payloads = cards.map((card) => {
   .lb-card {
     width: clamp(168px, 20vw, 240px);
     overflow: hidden;
-    border-radius: 0.45rem;
-    background: var(--paper);
-    box-shadow:
-      0 2.5rem 6.25rem rgba(0, 0, 0, 0.9),
-      0 0 0 1px rgba(255, 253, 248, 0.18);
+    border-radius: var(--card-radius);
+    background: transparent;
+    box-shadow: 0 1.5rem 3.5rem rgba(23, 23, 20, 0.24);
   }
 
   .lb-card img {
     display: block;
     width: 100%;
     object-fit: contain;
+    border-radius: inherit;
   }
 
   .lb-suit-val {
-    margin-bottom: -0.35rem;
-    color: var(--paper);
+    margin: 0 0 0.4rem;
+    padding-top: 0.08em;
+    color: var(--ink);
     font-family: var(--display);
     font-size: clamp(2rem, 4vw, 2.75rem);
-    line-height: 1;
+    line-height: 1.25;
   }
 
   .lb-suit-val[data-suit='hearts'],
   .lb-suit-val[data-suit='diamonds'] {
-    color: #e8a098;
+    color: var(--accent);
   }
 
-  .lb-suit-val[data-suit='spades'],
-  .lb-suit-val[data-suit='clubs'] {
-    color: var(--paper);
+  .lb-suit-val :global(.lb-suit-symbol) {
+    display: inline-block;
+    padding-top: 0.1em;
+    line-height: 1;
+    vertical-align: -0.06em;
+  }
+
+  .lb-suit-val :global(.lb-suit-rank) {
+    margin-left: 0.12em;
+    font-variant-numeric: tabular-nums;
   }
 
   .lb-title {
@@ -404,42 +402,34 @@ const payloads = cards.map((card) => {
     line-height: 1.15;
   }
 
-  .lb-kicker {
-    margin-bottom: 0.85rem;
-  }
-
   .lb-kicker-line {
-    margin: 0;
-    color: #aaa69c;
+    margin: 0 0 0.85rem;
+    color: var(--muted);
     font: 600 0.62rem/1.7 var(--sans);
     letter-spacing: 0.22em;
     text-transform: uppercase;
-  }
-
-  .lb-kicker-line + .lb-kicker-line {
-    margin-top: 0.35rem;
   }
 
   .lb-divider {
     width: 2.5rem;
     height: 1px;
     margin-bottom: 1rem;
-    background: color-mix(in srgb, var(--paper) 28%, transparent);
+    background: var(--line);
   }
 
   .lb-body {
-    max-width: 22rem;
+    max-width: none;
     margin-bottom: 0.85rem;
-    color: #e4dfd4;
-    font-family: var(--display);
-    font-size: 0.88rem;
-    font-style: italic;
-    line-height: 1.65;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    font-style: normal;
+    line-height: 1.75;
     white-space: pre-line;
   }
 
   .lb-meta {
-    color: #8d887e;
+    color: var(--muted);
     font: 600 0.58rem/1.5 var(--sans);
     letter-spacing: 0.3em;
     text-transform: uppercase;
@@ -461,12 +451,10 @@ const payloads = cards.map((card) => {
 
   .lb-arrow--prev {
     left: 0;
-    transform: translate(-50%, -50%);
   }
 
   .lb-arrow--next {
     right: 0;
-    transform: translate(50%, -50%);
   }
 
   @media (hover: none) {
@@ -491,13 +479,30 @@ const payloads = cards.map((card) => {
     }
 
     .lb-inner {
-      grid-template-columns: 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 1.25rem;
+    }
+
+    .lb-img-wrap {
+      flex: 0 0 auto;
+      max-height: min(50dvh, 24rem);
+      overflow: hidden;
     }
 
     .lb-card {
       width: min(42vw, 260px);
+      max-height: min(50dvh, 24rem);
       margin-inline: auto;
+    }
+
+    .lb-card img {
+      max-height: min(50dvh, 24rem);
+      object-fit: contain;
+    }
+
+    .lb-text {
+      flex: 0 0 auto;
     }
   }
 
@@ -528,54 +533,76 @@ const payloads = cards.map((card) => {
 
     .lb-arrow {
       position: fixed;
-      top: 50%;
+      top: auto;
+      bottom: max(0.85rem, env(safe-area-inset-bottom));
       z-index: 1001;
-      width: 2.75rem;
-      height: 2.75rem;
+      width: 3rem;
+      height: 3rem;
+      transform: none;
     }
 
     .lb-arrow--prev {
-      left: max(0.35rem, env(safe-area-inset-left));
-      transform: translateY(-50%);
+      left: max(1rem, env(safe-area-inset-left));
     }
 
     .lb-arrow--next {
-      right: max(0.35rem, env(safe-area-inset-right));
-      transform: translateY(-50%);
+      right: max(1rem, env(safe-area-inset-right));
     }
 
     .lb-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
       flex: 1;
       min-height: 0;
-      grid-template-columns: 1fr;
-      gap: 1.1rem;
+      gap: 1rem;
+      overflow-x: hidden;
       overflow-y: auto;
       overscroll-behavior: contain;
       -webkit-overflow-scrolling: touch;
       padding:
-        calc(max(0.75rem, env(safe-area-inset-top)) + 2.85rem)
-        max(1rem, env(safe-area-inset-right))
-        calc(max(1rem, env(safe-area-inset-bottom)) + 0.5rem)
-        max(1rem, env(safe-area-inset-left));
+        calc(max(0.75rem, env(safe-area-inset-top)) + 2.75rem)
+        0
+        calc(max(1rem, env(safe-area-inset-bottom)) + 4.25rem)
+        0;
     }
 
     .lb-img-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: min(52dvh, 26rem);
+      flex: 0 0 auto;
+      display: block;
+      width: 100%;
+      padding-inline: max(0.5rem, env(safe-area-inset-left)) max(0.5rem, env(safe-area-inset-right));
+      overflow: visible;
     }
 
     .lb-card {
-      width: min(92vw, 19.5rem);
-      max-height: min(52dvh, 26rem);
-      margin-inline: auto;
+      flex: 0 0 auto;
+      width: 100%;
+      max-height: none;
+      margin-inline: 0;
+      overflow: visible;
+      border-radius: 0;
+      box-shadow: none;
+      background: transparent;
     }
 
     .lb-card img {
+      display: block;
       width: 100%;
-      max-height: min(52dvh, 26rem);
+      height: auto;
+      max-height: none;
       object-fit: contain;
+      object-position: center;
+      border-radius: var(--card-radius);
+    }
+
+    .lb-text {
+      flex: 0 0 auto;
+      position: relative;
+      z-index: 0;
+      max-height: none;
+      overflow: visible;
+      padding-inline: max(1.15rem, env(safe-area-inset-left)) max(1.15rem, env(safe-area-inset-right));
     }
 
     .lb-body {
@@ -583,7 +610,8 @@ const payloads = cards.map((card) => {
     }
 
     .lb-suit-val {
-      font-size: clamp(2.25rem, 12vw, 3.25rem);
+      font-size: clamp(1.85rem, 9vw, 2.5rem);
+      line-height: 1.3;
     }
   }
 
@@ -612,9 +640,7 @@ const payloads = cards.map((card) => {
     value: string;
     image: string;
     suitSymbol: string;
-    category: string;
     worldLine: string;
-    categoryLine: string;
     metaLine: string;
   }
 
@@ -657,7 +683,6 @@ const payloads = cards.map((card) => {
   const suitVal = document.getElementById('lb-suit-val');
   const title = document.getElementById('lb-title');
   const worldLine = document.getElementById('lb-world-line');
-  const catLine = document.getElementById('lb-cat-line');
   const body = document.getElementById('lb-body');
   const meta = document.getElementById('lb-meta');
   let currentIndex = 0;
@@ -672,12 +697,11 @@ const payloads = cards.map((card) => {
       image.alt = card.title;
     }
     if (suitVal) {
-      suitVal.textContent = `${card.suitSymbol} ${card.value}`;
       suitVal.dataset.suit = card.suit;
+      suitVal.innerHTML = `<span class="lb-suit-symbol" aria-hidden="true">${card.suitSymbol}</span><span class="lb-suit-rank">${card.value}</span>`;
     }
     if (title) title.textContent = card.title;
     if (worldLine) worldLine.textContent = card.worldLine;
-    if (catLine) catLine.textContent = card.categoryLine;
     if (body) body.textContent = card.description;
     if (meta) meta.textContent = card.metaLine;
   }

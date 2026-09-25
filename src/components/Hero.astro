@@ -2,6 +2,7 @@
 import type { Lang } from '../i18n/utils';
 import { useTranslations, pickLocalized } from '../i18n/utils';
 import { getCollection } from 'astro:content';
+import { shuffle } from '../utils/shuffle';
 import MagisterLogo from './MagisterLogo.astro';
 
 interface Props {
@@ -11,10 +12,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const allCards = await getCollection('cards');
-const cards = [
-  ...allCards.filter((card) => card.data.featured),
-  ...allCards.filter((card) => !card.data.featured),
-].slice(0, 6);
+const cards = shuffle(allCards.filter((card) => card.data.featured)).slice(0, 6);
 const backCount = Math.max(0, cards.length - 1);
 ---
 
@@ -54,7 +52,11 @@ const backCount = Math.max(0, cards.length - 1);
                 --stack-z: ${backCount - index};
               `}
             >
-              {card && <img src={card.data.image} alt="" loading="eager" decoding="async" />}
+              {card && (
+                <span class="deck-card__surface">
+                  <img src={card.data.image} alt="" loading="eager" decoding="async" />
+                </span>
+              )}
             </span>
           );
         })}
@@ -67,17 +69,19 @@ const backCount = Math.max(0, cards.length - 1);
         aria-label={t('hero.deck_next')}
         disabled={cards.length < 2}
       >
-        <img
-          id="deck-front-image"
-          src={cards[0]?.data.image}
-          alt={cards[0] ? pickLocalized(cards[0].data.title, lang) : ''}
-          width="920"
-          height="1316"
-          loading="eager"
-          fetchpriority="high"
-          decoding="async"
-          draggable="false"
-        />
+        <span class="deck-card__surface">
+          <img
+            id="deck-front-image"
+            src={cards[0]?.data.image}
+            alt={cards[0] ? pickLocalized(cards[0].data.title, lang) : ''}
+            width="920"
+            height="1316"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            draggable="false"
+          />
+        </span>
       </button>
     </div>
   </div>
@@ -176,19 +180,31 @@ const backCount = Math.max(0, cards.length - 1);
   }
 
   .deck-card {
-    overflow: hidden;
-    border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
-    border-radius: 0.35rem;
-    background: var(--white);
-    box-shadow: 0 1.5rem 4rem rgba(23, 23, 20, 0.18);
+    overflow: visible;
+    border: none;
+    background: transparent;
+    filter: drop-shadow(0 1.25rem 2.75rem rgba(23, 23, 20, 0.2));
     backface-visibility: hidden;
   }
 
-  .deck-card img {
+  .deck-card__surface {
     display: block;
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    border-radius: var(--card-radius);
+    line-height: 0;
+    isolation: isolate;
+  }
+
+  .deck-card__surface img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
+    object-position: center;
   }
 
   .deck-card-back {
@@ -216,7 +232,7 @@ const backCount = Math.max(0, cards.length - 1);
   }
 
   .deck-card-front:hover:not(.is-busy) {
-    box-shadow: 0 2rem 5rem rgba(23, 23, 20, 0.24);
+    filter: drop-shadow(0 1.5rem 3.25rem rgba(23, 23, 20, 0.26));
   }
 
   .deck-card-front:disabled {

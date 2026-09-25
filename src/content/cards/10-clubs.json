@@ -1,0 +1,23 @@
+{
+  "id": "10-clubs",
+  "suit": "clubs",
+  "value": "10",
+  "category": {
+    "en": "Templars",
+    "ru": "Тамплиеры"
+  },
+  "title": {
+    "en": "Defense of the Fortress",
+    "ru": "Защита крепости"
+  },
+  "summary": {
+    "en": "Robert de Craon was the second Grand Master\nof the Order of the Temple. He proved himself a brilliant organizer, transforming the Order into a powerful force within the crusader states.",
+    "ru": "Робер де Краон был вторым Великим Магистром\nОрдена Тамплиеров. Он проявил себя как блестящий организатор, превратив Орден в мощную силу в государствах крестоносцев."
+  },
+  "description": {
+    "en": "Robert de Craon succeeded Hugues de Payens as the second Grand Master of the Order of the Temple. Little is known of his origins: he was a Burgundian knight of noble birth who joined the brotherhood soon after the Order’s founding.\nAfter Hugues de Payens died in 1136, Robert took command and set about strengthening and expanding the Order. Under him the Templars received important privileges from the papacy, including the right to answer directly to the Pope of Rome, bypassing the local church hierarchy. This made the Order an independent and influential structure within the Christian world.\nHe took an active part in military campaigns in the East and also helped expand the Order’s network of estates in Europe. Thanks to his efforts the Templars began to become not only a military force but an organizationally powerful system with its own resources and the support of the nobility.\nRobert de Craon died in 1149 in the Holy Land. His rule was an important stage in the Order’s formation, when a small brotherhood finally took shape as one of the key powers of the age of the crusades.",
+    "ru": "Робер де Краон стал преемником Гуго де Пейна и вторым великим магистром ордена тамплиеров. О его происхождении известно немного: он был бургундским рыцарем, принадлежавшим к знатному роду, и вскоре после основания ордена присоединился к братству.\nПосле смерти Гуго де Пейна в 1136 году Робер возглавил орден и занялся его укреплением и расширением. При нём тамплиеры получили важные привилегии от папства, включая право подчиняться напрямую Папе Римскому, минуя местную церковную иерархию. Это сделало орден независимой и влиятельной структурой внутри христианского мира.\nОн активно участвовал в военных кампаниях на Востоке, а также способствовал расширению сети владений ордена в Европе. Благодаря его усилиям тамплиеры начали превращаться не только в военную, но и в организационно мощную систему с собственными ресурсами и поддержкой знати.\nРобер де Краон умер в 1149 году в Святой земле. Его правление стало важным этапом становления ордена, когда из небольшого братства он окончательно оформился в одну из ключевых сил эпохи крестовых походов."
+  },
+  "image": "/cards/10-clubs.webp",
+  "featured": false
+}

@@ -1,0 +1,23 @@
+{
+  "id": "8-spades",
+  "suit": "spades",
+  "value": "8",
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
+  },
+  "title": {
+    "en": "Shakespeare’s Eighth Sonnet",
+    "ru": "Восьмой сонет Шекспира"
+  },
+  "summary": {
+    "en": "The “dead heads” of Yorick, the roses\nof Lancaster and York, and their creator William, mounted on the metaphorical demiurge — the spider.",
+    "ru": "«Мертвые головы» Йорика, розы\nЛанкастеров и Йорков, и их создатель Уильям, верхом на метафорическом демиурге - пауке."
+  },
+  "description": {
+    "en": "William Shakespeare was born in Stratford-upon-Avon and became one of the greatest authors in world literature. Few precise facts about his life survive, yet it is known that he worked as an actor and playwright in London, where he was associated with the theatrical company the Lord Chamberlain’s Men.\nShakespeare created a rich legacy of plays and sonnets, including tragedies, comedies, and historical chronicles. His works — such as Hamlet, Romeo and Juliet, and Macbeth — explore human nature, power, love, and inner conflict, remaining relevant across centuries.\nLike a spider, he wove entire worlds with his pen. He possessed a unique language and the ability to convey complex feelings through the living speech of his characters. Many expressions and images he introduced became fixed phrases in English and quotations heard in every culture.\nShakespeare died in 1616, leaving a legacy that continues to shape theatre and literature. His work became a symbol of the depth of the human soul and the inexhaustibility of artistic language. Yet whether it was one man or an entire group of authors remains unknown to this day.",
+    "ru": "Уильям Шекспир родился в Стратфорде-на-Эйвоне и стал одним из величайших авторов мировой литературы. О его жизни сохранилось немного точных сведений, однако известно, что он работал актёром и драматургом в Лондоне, где был связан с театральной труппой «Слуги лорда-камергера».\nШекспир создал богатое наследие пьес и сонетов, среди которых трагедии, комедии и исторические хроники. Его произведения — такие как «Гамлет», «Ромео и Джульетта» и «Макбет» — исследуют человеческую природу, власть, любовь и внутренние противоречия, оставаясь актуальными на протяжении веков.\nКак паук, он плел целые миры своим пером.Он обладал уникальным языком и способностью передавать сложные чувства через живую речь персонажей. Многие выражения и образы, введённые им, стали устойчивыми выражениями в английском языке и цитатами, которые можно услышать в любой культуре.\nШекспир умер в 1616 году, оставив после себя наследие, которое продолжает формировать театр и литературу. Его творчество стало символом глубины человеческой души и неисчерпаемости художественного слова. Но был ли это один человек или целая группа авторов, до сих пор становится неизвестным."
+  },
+  "image": "/cards/8-spades.webp",
+  "featured": false
+}

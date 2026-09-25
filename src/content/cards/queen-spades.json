@@ -1,0 +1,23 @@
+{
+  "id": "queen-spades",
+  "suit": "spades",
+  "value": "Q",
+  "category": {
+    "en": "Celebrities",
+    "ru": "Знаменитости"
+  },
+  "title": {
+    "en": "Anna and the Scarab",
+    "ru": "Анна и скарабей"
+  },
+  "summary": {
+    "en": "The painting is dedicated to Anna Pavlova — one of the greatest ballerinas of the twentieth century.\nThe scarab — a symbol of the sun and of return.",
+    "ru": "Картина посвящена Анне Павловой — одной из величайших балерин ХХ века.\nСкарабей - символ солнца и возвращения."
+  },
+  "description": {
+    "en": "Anna Pavlova was born in Saint Petersburg and from an early age showed a drive toward dance. She trained at the Imperial Theatre School, where despite a fragile physique she achieved outstanding success through perseverance and extraordinary expressiveness.\nPavlova became one of the leading ballerinas of the Mariinsky Theatre and was renowned for her unique style, in which technique combined with deep emotion. Her best-known number was the miniature The Dying Swan, which became a symbol of ballet art and her personal creative calling card.\nIn time she formed her own company and began touring the world, introducing audiences in many countries to classical ballet. Thanks to her performances ballet ceased to be exclusively court art and became accessible to a wide public.\nAnna Pavlova died in 1931, but her name remained a symbol of grace, devotion to art, and the ability to convey feeling through movement. Her contribution to the development of ballet made her one of the most significant figures in the history of dance.",
+    "ru": "Анна Павлова родилась в Санкт-Петербурге и с раннего возраста проявила стремление к танцу. Она обучалась в Императорском театральном училище, где, несмотря на хрупкое телосложение, благодаря упорству и необычайной выразительности сумела добиться выдающихся успехов.\nПавлова стала одной из ведущих балерин Мариинского театра и прославилась своим уникальным стилем, в котором техника сочеталась с глубокой эмоциональностью. Её самым известным номером стала миниатюра «Умирающий лебедь», ставшая символом балетного искусства и её личной творческой визитной карточкой.\nСо временем она создала собственную труппу и начала гастролировать по всему миру, знакомя зрителей разных стран с классическим балетом. Благодаря её выступлениям балет перестал быть исключительно придворным искусством и стал доступен широкой аудитории.\nАнна Павлова умерла в 1931 году, но её имя осталось символом грации, преданности искусству и способности передавать чувства через движение. Её вклад в развитие балета сделал её одной из самых значимых фигур в истории танца."
+  },
+  "image": "/cards/queen-spades.webp",
+  "featured": false
+}
