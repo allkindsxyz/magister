@@ -1098,6 +1098,27 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
       letter-spacing: 0.08em;
     }
 
+    .play-stage-bar .play-nav-back,
+    .play-stage-bar .play-nav-close {
+      gap: 0.525rem;
+      min-height: calc(3.35rem * 0.75);
+      padding: 0 calc(0.7rem * 0.75);
+      border: 1px solid var(--play-gold);
+      background: var(--play-ground);
+      color: var(--play-gold);
+      font-size: calc(0.72rem * 0.75);
+      letter-spacing: 0.06em;
+    }
+
+    .play-stage-bar .play-nav-back:hover,
+    .play-stage-bar .play-nav-back:focus-visible,
+    .play-stage-bar .play-nav-close:hover,
+    .play-stage-bar .play-nav-close:focus-visible {
+      border-color: var(--play-gold-hot);
+      background: var(--play-ground);
+      color: var(--play-gold-hot);
+    }
+
     .play-stage-name {
       min-width: 0;
       overflow: hidden;
@@ -1157,9 +1178,10 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
 
     .play-stage.is-cover .play-nav-back,
     .play-stage.is-cover .play-nav-close {
-      padding: 0 0.7rem;
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
+      min-height: calc(2.85rem * 0.75);
+      padding: 0 calc(0.7rem * 0.75);
+      font-size: calc(0.72rem * 0.75);
+      letter-spacing: 0.06em;
     }
 
     .play-stage.is-cover .play-stage-name {
