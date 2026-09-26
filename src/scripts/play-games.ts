@@ -35,7 +35,7 @@ type BoardEntry = { name: string; ms: number; errors: number | null };
 
 const SAVE_KEY = 'magister-play-v1';
 const FIVE_MS = 5 * 60 * 1000;
-const BOARD_GATE = 5;
+const BOARD_GATE = 52;
 const COURT = ['A', 'J', 'Q', 'K'];
 const PIPS = ['2', '3', '4', '5', '6', '7', '8', '9', '10'];
 const RITUAL_MS = 30_000;
