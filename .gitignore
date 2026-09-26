@@ -20,6 +20,9 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# runtime leaderboard
+data/
+
 # local deck import (large binaries)
 import/cardsimages.zip
 import/raw-cards/

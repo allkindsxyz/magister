@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Magister Cards — Dmitry Matison — business card (print)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --paper: #f3f0e8;
+      --paper-deep: #e8e3d8;
+      --ink: #171714;
+      --muted: #69675f;
+      --accent: #8d2f24;
+      --card-w: 85mm;
+      --card-h: 55mm;
+      --text-col: 38.5mm;
+      --text-photo-gap: 2mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    @page {
+      size: 85mm 55mm;
+      margin: 0;
+    }
+
+    html,
+    body {
+      margin: 0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .sheet {
+      position: relative;
+      width: var(--card-w);
+      height: var(--card-h);
+      overflow: hidden;
+      background: var(--paper);
+    }
+
+    .visual {
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      bottom: 0;
+      left: calc(var(--text-col) + var(--text-photo-gap));
+      right: -26mm;
+      pointer-events: none;
+    }
+
+    .visual__photo {
+      position: absolute;
+      top: 0;
+      right: -6mm;
+      width: auto;
+      height: 100%;
+      min-width: 108%;
+      max-width: none;
+      object-fit: cover;
+      object-position: 52% center;
+      filter: drop-shadow(0 1mm 2.5mm rgba(0, 0, 0, 0.14));
+    }
+
+    .copy {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      width: var(--text-col);
+      height: 100%;
+      padding: 3.2mm 0 2.8mm 3.8mm;
+      background: var(--paper);
+      color: var(--ink);
+    }
+
+    .brand {
+      height: 6.8mm;
+      width: auto;
+      flex-shrink: 0;
+    }
+
+    .copy-main {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      padding-top: 2.2mm;
+    }
+
+    .name {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 12.5pt;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    .role {
+      margin-top: 1mm;
+      font-family: 'Inter', Helvetica, Arial, sans-serif;
+      font-size: 6pt;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .product-hint {
+      margin-top: 1.8mm;
+      font-family: 'Inter', sans-serif;
+      font-size: 5.4pt;
+      line-height: 1.3;
+      color: var(--muted);
+    }
+
+    .site {
+      display: inline-block;
+      align-self: flex-start;
+      margin-top: 2.2mm;
+      padding-bottom: 0.35mm;
+      border-bottom: 0.4mm solid var(--accent);
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 9.5pt;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .contacts {
+      margin-top: 2mm;
+      list-style: none;
+      display: grid;
+      gap: 1.1mm;
+    }
+
+    .contacts li {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.4mm;
+      font-family: 'Inter', sans-serif;
+      font-size: 6pt;
+      line-height: 1.25;
+      color: var(--ink);
+    }
+
+    .contacts svg {
+      flex: 0 0 auto;
+      width: 3mm;
+      height: 3mm;
+      margin-top: 0.2mm;
+      color: var(--accent);
+    }
+
+    .footer {
+      flex-shrink: 0;
+      margin-top: 2mm;
+      padding-top: 1.8mm;
+      border-top: 0.2mm solid var(--paper-deep);
+      display: flex;
+      align-items: center;
+      gap: 1.8mm;
+    }
+
+    .spiel-logo {
+      height: 4.8mm;
+      width: auto;
+      flex-shrink: 0;
+    }
+
+    .spiel-note {
+      font-family: 'Inter', sans-serif;
+      font-size: 4.6pt;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      line-height: 1.2;
+    }
+
+    @media print {
+      html,
+      body {
+        width: var(--card-w);
+        height: var(--card-h);
+      }
+    }
+
+    @media screen {
+      html {
+        background: #b8b3a8;
+      }
+
+      body {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 32px 16px;
+        background: #b8b3a8;
+      }
+
+      .sheet {
+        box-shadow: 0 10px 36px rgba(0, 0, 0, 0.22);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sheet">
+    <div class="visual" aria-hidden="true">
+      <img class="visual__photo" src="assets/packaging-hero.jpg" alt="" />
+    </div>
+
+    <div class="copy">
+      <img class="brand" src="assets/magister-logo.png" alt="Magister" />
+
+      <div class="copy-main">
+        <h1 class="name">Dmitry Matison</h1>
+        <p class="role">Business Development</p>
+        <p class="product-hint">Collectible art card deck · 54 cards · 4 worlds</p>
+
+        <a class="site" href="https://magister.cards">magister.cards</a>
+
+        <ul class="contacts">
+          <li>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M4 6.5 12 12l8-5.5V18a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18V6.5Z" />
+              <path d="M4 6.5 12 12l8-5.5" />
+            </svg>
+            <span>dima@magister.cards</span>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.96 7.96 0 0 1-4.075-1.125l-.293-.175-2.868.86.86-2.868-.175-.293A7.96 7.96 0 0 1 4 12C4 7.589 7.589 4 12 4s8 3.589 8 8-3.589 8-8 8z" />
+            </svg>
+            <span>WhatsApp +31 6 3325 3556</span>
+          </li>
+        </ul>
+      </div>
+
+      <footer class="footer">
+        <img class="spiel-logo" src="assets/spiel-essen-logo.png" alt="SPIEL Essen" />
+        <p class="spiel-note">See you at SPIEL Essen 2026</p>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

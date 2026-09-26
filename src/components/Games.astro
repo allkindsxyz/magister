@@ -1,0 +1,3252 @@
+---
+import type { Lang } from '../i18n/utils';
+import { pickLocalized, useTranslations } from '../i18n/utils';
+import { gamesCopy } from '../i18n/gamesCopy';
+import { getCollection } from 'astro:content';
+import MagisterLogo from './MagisterLogo.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const copy = gamesCopy[lang];
+
+const lessonSuits = ['hearts', 'diamonds', 'clubs', 'spades'] as const;
+const campSuits = ['hearts', 'clubs', 'diamonds', 'spades'] as const;
+const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'] as const;
+const symbols: Record<(typeof lessonSuits)[number], string> = {
+  hearts: '♥',
+  diamonds: '♦',
+  clubs: '♣',
+  spades: '♠',
+};
+
+const rankSet = new Set<string>(ranks);
+const allCards = await getCollection('cards');
+const cards = allCards
+  .filter((card) => rankSet.has(card.data.value) && lessonSuits.includes(card.data.suit))
+  .map((card) => ({
+    id: card.data.id,
+    suit: card.data.suit,
+    value: card.data.value,
+    title: pickLocalized(card.data.title, lang),
+    summary: pickLocalized(card.data.summary, lang),
+    description: pickLocalized(card.data.description, lang),
+    image: card.data.image,
+  }));
+
+const byId = new Map(cards.map((card) => [card.id, card]));
+
+const payload = {
+  lang,
+  copy,
+  worlds: {
+    hearts: { name: t('worlds.hearts.name'), blurb: t('worlds.hearts.blurb') },
+    diamonds: { name: t('worlds.diamonds.name'), blurb: t('worlds.diamonds.blurb') },
+    clubs: { name: t('worlds.clubs.name'), blurb: t('worlds.clubs.blurb') },
+    spades: { name: t('worlds.spades.name'), blurb: t('worlds.spades.blurb') },
+  },
+  suitLabels: {
+    hearts: t('suits.hearts'),
+    diamonds: t('suits.diamonds'),
+    clubs: t('suits.clubs'),
+    spades: t('suits.spades'),
+  },
+  symbols,
+  cards,
+};
+
+const art = (id: string) => byId.get(id)?.image ?? '';
+const worldsArt = ['jack-hearts', 'ace-diamonds', 'queen-clubs', 'king-spades'].map(art);
+const aceArt: Record<(typeof lessonSuits)[number], string> = {
+  hearts: art('ace-hearts'),
+  diamonds: art('ace-diamonds'),
+  clubs: art('ace-clubs'),
+  spades: art('ace-spades'),
+};
+const destinyGround = art('ace-diamonds');
+const destinySlip = art('4-hearts');
+const oracleArt = art('king-spades');
+const fanSrc = cards[0]?.image ?? '';
+const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
+---
+
+<section class="play-games editorial-section" id="play" aria-labelledby="play-title">
+  <div class="page-shell">
+    <header class="play-header">
+      <p class="play-kicker">{copy.kicker}</p>
+      <h2 class="section-title" id="play-title">{copy.title}</h2>
+      <p class="play-lead">{copy.lead}</p>
+    </header>
+
+    <div class="play-menu play-posters" role="list">
+      <button class="poster" type="button" data-action="open" data-game="learn" aria-pressed="false">
+        <span class="poster-title">{copy.menu.learn_title}</span>
+        <span class="poster-stage">
+          <span class="poster-art poster-art--worlds" aria-hidden="true">
+            {worldsArt.map((src) => <img src={src} alt="" />)}
+          </span>
+        </span>
+        <span class="poster-body">{copy.menu.learn_blurb}</span>
+        <span class="poster-play">{copy.cta}</span>
+      </button>
+      <button class="poster" type="button" data-action="open" data-game="birthday" aria-pressed="false">
+        <span class="poster-title">{copy.menu.birth_title}</span>
+        <span class="poster-stage">
+          <span class="poster-art poster-art--destiny" aria-hidden="true">
+            <img src={destinyGround} alt="" />
+            <img src={destinySlip} alt="" />
+          </span>
+        </span>
+        <span class="poster-body">{copy.menu.birth_blurb}</span>
+        <span class="play-lock" data-lock-for="birthday">{copy.soon.title} {copy.soon.body}</span>
+        <span class="poster-play">{copy.cta}</span>
+      </button>
+      <button class="poster" type="button" data-action="open" data-game="destiny" aria-pressed="false">
+        <span class="poster-title">{copy.menu.destiny_title}</span>
+        <span class="poster-stage">
+          <span class="poster-art poster-art--oracle" aria-hidden="true">
+            <img src={oracleArt} alt="" />
+            <span class="poster-candle"></span>
+          </span>
+        </span>
+        <span class="poster-body">{copy.menu.destiny_blurb}</span>
+        <span class="play-lock" data-lock-for="destiny">{copy.soon.title} {copy.soon.body}</span>
+        <span class="poster-play">{copy.cta}</span>
+      </button>
+    </div>
+
+    <button class="play-scrim" type="button" data-action="close" hidden aria-label={copy.back}></button>
+    <div class="play-stage" id="play-stage" hidden>
+      <div class="play-stage-bar">
+        <button class="play-nav-back" type="button" data-action="close">
+          <span class="play-nav-mark" aria-hidden="true">←</span>
+          <span class="play-nav-label">{copy.back}</span>
+        </button>
+        <button class="play-nav-close" type="button" data-action="close" hidden>
+          <span aria-hidden="true">×</span>
+          {copy.zoom_close}
+        </button>
+        <button class="play-record-open" type="button" data-action="record-open" hidden>{copy.learn.record}</button>
+        <p id="play-stage-name" class="play-stage-name">
+          <MagisterLogo class="play-stage-logo" level width={112} height={49} />
+          <span id="play-stage-title"></span>
+        </p>
+      </div>
+
+      <div class="play-records" id="play-record" hidden>
+        <button class="play-records-scrim" type="button" data-action="record-close" aria-label={copy.zoom_close}></button>
+        <div class="play-records-card" role="dialog" aria-modal="true" aria-labelledby="play-records-title">
+          <button class="play-records-close" type="button" data-action="record-close">
+            <span aria-hidden="true">×</span>
+            {copy.zoom_close}
+          </button>
+          <h3 id="play-records-title" tabindex="-1">{copy.board.title}</h3>
+          <span class="fw-result-rule" aria-hidden="true"></span>
+          <p id="play-records-best" hidden></p>
+          <p id="play-records-empty">{copy.board.empty}</p>
+          <div class="play-records-scroll">
+            <table class="play-records-table" id="play-records-table" hidden>
+              <thead>
+                <tr>
+                  <th scope="col">{copy.board.name}</th>
+                  <th scope="col">{copy.board.errors}</th>
+                  <th scope="col">{copy.board.time}</th>
+                </tr>
+              </thead>
+              <tbody id="play-records-list"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen="fw-threshold" hidden>
+        <MagisterLogo class="fw-title-logo" level width={112} height={49} />
+        <h3 class="fw-title-name" tabindex="-1">{copy.menu.learn_title}</h3>
+        <span class="fw-title-rule" aria-hidden="true"></span>
+        <div class="fw-fan" id="fw-fan" aria-hidden="true">
+          {worldsArt.map((src, index) => <img src={src} alt="" style={`--tilt:${[-8, -3, 4, 9][index] ?? 0}deg`} />)}
+        </div>
+        <p class="fw-title-lead">{copy.learn.threshold}</p>
+        <div class="fw-title-actions">
+          <button class="btn btn-accent" type="button" data-action="fw-enter">{copy.learn.enter}</button>
+        </div>
+      </div>
+
+      <div data-screen="fw-worlds" hidden>
+        <h3 class="fw-worlds-title" tabindex="-1">{copy.learn.worlds_lead}</h3>
+        <span class="fw-title-rule" aria-hidden="true"></span>
+        <p class="fw-title-lead">{copy.learn.worlds_meet}</p>
+        <ul class="fw-ignite" id="fw-ignite">
+          {lessonSuits.map((suit) => (
+            <li data-suit={suit}>
+              <img class="fw-ignite-card" src={aceArt[suit]} alt="" width="168" height="240" decoding="async" />
+              <span class="fw-ignite-copy">
+                <span class="fw-suit-name">{t(`worlds.${suit}.name`)}</span>
+                <span class="fw-ignite-suit">
+                  <span class={`fw-suit-mark play-sym play-sym--${suit}`} aria-hidden="true">{symbols[suit]}</span>
+                  <span>{t(`suits.${suit}`)}</span>
+                </span>
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div class="fw-title-actions">
+          <button class="btn btn-accent" type="button" data-action="fw-meet">{copy.learn.play}</button>
+        </div>
+      </div>
+
+      <div data-screen="fw-suit" hidden>
+        <div class="fw-portrait">
+          <figure class="fw-portrait-card">
+            <img id="fw-suit-img" alt={copy.card_alt} width="280" height="400" decoding="async" />
+          </figure>
+          <div class="fw-portrait-copy">
+            <h3 class="fw-suit-name fw-world-title" id="fw-suit-name" tabindex="-1">
+              <span class="lb-suit-symbol" id="fw-suit-world-mark" aria-hidden="true"></span>
+              <span id="fw-suit-world"></span>
+            </h3>
+            <p class="fw-suit-blurb" id="fw-suit-blurb"></p>
+            <div class="fw-card-caption">
+              <span class="fw-card-rule" aria-hidden="true"></span>
+              <div class="fw-card-id">
+                <p class="lb-suit-val" id="fw-suit-kicker"><span class="lb-suit-rank" id="fw-suit-rank"></span><span class="lb-suit-symbol" id="fw-suit-symbol" aria-hidden="true"></span></p>
+                <p class="fw-suit-title" id="fw-suit-title"></p>
+              </div>
+              <p class="fw-suit-line" id="fw-suit-line"></p>
+              <button class="fw-story-toggle" type="button" id="fw-suit-story" data-action="fw-suit-story">{copy.learn.read_story}</button>
+              <div class="fw-meet-full" id="fw-suit-full" hidden></div>
+            </div>
+            <div class="fw-title-actions">
+              <button class="btn btn-accent" type="button" data-action="fw-know" id="fw-suit-know"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen="fw-meet" hidden>
+        <div class="fw-portrait">
+          <figure class="fw-portrait-card" id="fw-meet-card">
+            <img id="fw-meet-img" alt={copy.card_alt} width="280" height="400" decoding="async" />
+          </figure>
+          <div class="fw-portrait-copy fw-meet-copy">
+            <h3 class="fw-suit-name fw-world-title" id="fw-meet-kicker" tabindex="-1">
+              <span class="lb-suit-symbol" id="fw-meet-symbol" aria-hidden="true"></span>
+              <span id="fw-meet-world"></span>
+            </h3>
+            <p class="fw-suit-blurb" id="fw-meet-ask"></p>
+            <div class="fw-options" id="fw-meet-options"></div>
+            <div class="fw-meet-body">
+              <div class="fw-meet-reply" id="fw-meet-feedback" hidden>
+                <p class="fw-meet-reply-line">
+                  <span class="fw-meet-pip" id="fw-meet-mark"></span>
+                  <span class="fw-meet-answer-name" id="fw-meet-answer-name"></span>
+                  <span id="fw-meet-line"></span>
+                </p>
+                <p class="fw-meet-brief" id="fw-meet-brief"></p>
+                <button class="fw-story-toggle" type="button" id="fw-meet-story" data-action="fw-meet-story"></button>
+                <div class="fw-meet-full" id="fw-meet-full" hidden></div>
+              </div>
+            </div>
+            <div class="fw-title-actions fw-meet-dock">
+              <button class="btn btn-accent" type="button" id="fw-meet-next" data-action="fw-meet-next" hidden>{copy.learn.continue}</button>
+              <div id="fw-meet-gate" hidden>
+                <button class="btn fw-meet-more" type="button" data-action="fw-meet-more">{copy.learn.study_more}</button>
+                <button class="btn btn-accent" type="button" data-action="fw-meet-onward">{copy.learn.continue}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen="fw-count" class="fw-board" hidden>
+        <div class="fw-portrait">
+          <figure class="fw-portrait-card" id="fw-count-card">
+            <img id="fw-count-pip" alt={copy.card_alt} width="280" height="400" decoding="async" />
+          </figure>
+          <div class="fw-portrait-copy">
+            <h3 class="fw-suit-name" id="fw-count-heading" tabindex="-1">{copy.learn.count_pip_title}</h3>
+            <p class="fw-suit-blurb">{copy.learn.count_pip_body}</p>
+            <p class="fw-suit-blurb fw-count-zoom">{copy.learn.count_pip_zoom}</p>
+            <p class="fw-suit-blurb fw-count-zoom-touch">{copy.learn.count_pip_zoom_touch}</p>
+            <div class="fw-card-caption">
+              <span class="fw-card-rule" aria-hidden="true"></span>
+              <div class="fw-card-id">
+                <p class="lb-suit-val" id="fw-count-kicker"><span class="lb-suit-rank" id="fw-count-rank"></span><span class="lb-suit-symbol" id="fw-count-symbol" aria-hidden="true"></span></p>
+                <p class="fw-suit-title" id="fw-count-card-title"></p>
+              </div>
+              <p class="fw-suit-line" id="fw-count-line"></p>
+            </div>
+            <div class="fw-title-actions">
+              <button class="btn btn-accent" type="button" data-action="fw-trial" data-trial="pip">{copy.learn.continue}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen="fw-count-court" class="fw-board" hidden>
+        <div class="fw-portrait">
+          <figure class="fw-portrait-card" id="fw-count-face-card">
+            <img id="fw-count-face" alt={copy.card_alt} width="280" height="400" decoding="async" />
+          </figure>
+          <div class="fw-portrait-copy">
+            <h3 class="fw-suit-name" tabindex="-1">{copy.learn.count_court_title}</h3>
+            <p class="fw-suit-blurb">{copy.learn.count_court_body}</p>
+            <div class="fw-card-caption">
+              <span class="fw-card-rule" aria-hidden="true"></span>
+              <div class="fw-card-id">
+                <p class="lb-suit-val" id="fw-count-face-kicker"><span class="lb-suit-rank" id="fw-count-face-rank"></span><span class="lb-suit-symbol" id="fw-count-face-symbol" aria-hidden="true"></span></p>
+                <p class="fw-suit-title" id="fw-count-face-title"></p>
+              </div>
+              <p class="fw-suit-line" id="fw-count-face-line"></p>
+            </div>
+            <div class="fw-title-actions">
+              <button class="btn btn-accent" type="button" data-action="fw-trial" data-trial="court">{copy.learn.continue}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen="fw-trial" class="fw-board" hidden>
+        <div class="fw-portrait">
+          <figure class="fw-portrait-card" id="fw-trial-card">
+            <img id="fw-trial-img" alt={copy.card_alt} width="280" height="400" decoding="async" />
+          </figure>
+          <div class="fw-portrait-copy">
+            <p class="fw-suit-blurb" id="fw-trial-kicker" tabindex="-1"></p>
+            <div class="fw-options" id="fw-trial-suits">
+              {lessonSuits.map((suit) => (
+                <button class="fw-trial-suit" type="button" data-action="fw-suit" data-suit={suit}>
+                  <span class="lb-suit-symbol" data-suit={suit} aria-hidden="true">{symbols[suit]}</span>
+                  <span>{t(`worlds.${suit}.name`)}</span>
+                </button>
+              ))}
+            </div>
+            <div class="fw-dial" id="fw-trial-dial" hidden></div>
+            <div class="fw-court" id="fw-trial-court" hidden></div>
+            <div class="fw-meet-reply" id="fw-trial-feedback" hidden>
+              <p class="fw-meet-reply-line">
+                <span class="fw-meet-pip" id="fw-trial-mark"></span>
+                <span class="fw-meet-answer-name" id="fw-trial-answer-name"></span>
+                <span id="fw-trial-line"></span>
+              </p>
+              <p class="fw-meet-brief" id="fw-trial-brief"></p>
+              <button class="fw-story-toggle" type="button" id="fw-trial-story" data-action="fw-trial-story"></button>
+              <div class="fw-meet-full" id="fw-trial-full" hidden></div>
+            </div>
+            <div class="fw-title-actions">
+              <button class="btn btn-accent" type="button" id="fw-trial-next" data-action="fw-trial-next" hidden>{copy.learn.continue}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen="fw-spread-intro" class="fw-spread-intro" hidden>
+        <p class="fw-spread-kicker">{copy.learn.spread_kicker}</p>
+        <h3 class="fw-spread-intro-title" tabindex="-1">{copy.learn.spread_learned}</h3>
+        <p class="fw-spread-intro-body">{copy.learn.spread_body}</p>
+        <p class="fw-spread-best" id="fw-spread-best" hidden></p>
+        <button class="btn fw-spread-start" type="button" data-action="fw-begin">{copy.learn.spread_begin}</button>
+      </div>
+
+      <div data-screen="fw-spread" class="fw-board" hidden>
+        <div class="fw-portrait">
+          <figure class="fw-portrait-card" id="fw-spread-card">
+            <img id="play-sort-img" alt={copy.card_alt} width="280" height="400" decoding="async" />
+          </figure>
+          <div class="fw-portrait-copy">
+            <h3 class="fw-spread-clock" id="play-timer" tabindex="-1">5:00.0</h3>
+            <p class="fw-spread-count" id="fw-spread-count"></p>
+            <div class="fw-options" id="play-sort-suits">
+              {lessonSuits.map((suit) => (
+                <button class="fw-trial-suit" type="button" data-action="fw-spread-suit" data-suit={suit}>
+                  <span class="lb-suit-symbol" data-suit={suit} aria-hidden="true">{symbols[suit]}</span>
+                  <span>{t(`worlds.${suit}.name`)}</span>
+                </button>
+              ))}
+            </div>
+            <div class="fw-dial" id="fw-spread-dial" hidden></div>
+            <div class="fw-court" id="fw-spread-court" hidden></div>
+            <button class="fw-spread-back" type="button" id="play-sort-back" data-action="fw-resuit" hidden>{copy.learn.other_world}</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="fw-result" id="fw-result" hidden>
+        <div class="fw-result-card" role="dialog" aria-modal="true" aria-labelledby="fw-result-title">
+          <h3 class="fw-result-title" id="fw-result-title" tabindex="-1"></h3>
+          <p class="fw-result-lead" id="fw-result-lead"></p>
+          <span class="fw-result-rule" aria-hidden="true"></span>
+          <p id="play-done-time" class="fw-result-time"></p>
+          <p class="fw-result-line" id="fw-result-line"></p>
+          <p class="fw-result-note" id="play-done-note" hidden></p>
+          <div class="fw-place" id="fw-place" hidden>
+            <p class="fw-place-kicker">{copy.learn.place_kicker}</p>
+            <p class="fw-place-rank">
+              <span class="fw-place-no" id="fw-place-no"></span>
+              <span class="fw-place-of" id="fw-place-of"></span>
+            </p>
+          </div>
+          <p class="fw-chronicle" id="fw-save-ask" hidden>{copy.learn.chronicle}</p>
+          <form id="play-claim-form" class="fw-claim" hidden>
+            <input id="play-name" name="name" type="text" maxlength="24" autocomplete="nickname" placeholder={copy.learn.name_placeholder} aria-label={copy.learn.name_label} required />
+            <button class="fw-claim-text" type="submit">{copy.learn.save_name}</button>
+            <button class="fw-claim-text" type="button" data-action="fw-dismiss-save">{copy.learn.not_now}</button>
+          </form>
+          <p id="play-claim-note" class="fw-result-note"></p>
+          <div class="fw-victory" id="fw-victory" hidden></div>
+          <button class="btn fw-result-again" type="button" id="fw-result-retry" data-action="fw-retry">{copy.learn.again_climb}</button>
+          <button class="fw-result-link" type="button" id="play-open-birth" data-action="open" data-game="birthday" hidden>{copy.learn.open_birthday}</button>
+          <button class="fw-result-link" type="button" data-action="record-open">{copy.learn.open_chronicle} →</button>
+        </div>
+      </div>
+
+      <div data-screen="birthday" hidden>
+        <h3 tabindex="-1">{copy.menu.birth_title}</h3>
+        <p class="play-prose">{copy.birthday.intro}</p>
+        <ul class="play-spheres">
+          {campSuits.map((suit) => (
+            <li>
+              <span class={`play-sym play-sym--${suit}`} aria-hidden="true">{symbols[suit]}</span>
+              {copy.birthday.spheres[suit]}
+            </li>
+          ))}
+        </ul>
+        <form id="play-birth-form">
+          <div class="play-date">
+            <label class="play-field">
+              {copy.birthday.month}
+              <select id="play-month" name="month"></select>
+            </label>
+            <label class="play-field">
+              {copy.birthday.day}
+              <select id="play-day" name="day"></select>
+            </label>
+          </div>
+          <div class="play-actions">
+            <button class="btn btn-accent" type="submit">{copy.birthday.show}</button>
+          </div>
+        </form>
+      </div>
+
+      <div data-screen="birthday-result" hidden>
+        <p class="play-kicker" id="play-birth-date" tabindex="-1"></p>
+        <div id="play-birth-joker" hidden>
+          <h3>{copy.birthday.joker_title}</h3>
+          <p class="play-prose">{copy.birthday.joker_body}</p>
+        </div>
+        <div id="play-birth-cards"></div>
+        <div class="play-actions">
+          <button class="btn" type="button" data-action="goto" data-goto="birthday">{copy.birthday.another}</button>
+          <button class="btn btn-accent" type="button" data-action="open" data-game="destiny">{copy.birthday.open_destiny}</button>
+        </div>
+      </div>
+
+      <div data-screen="destiny" hidden>
+        <h3 tabindex="-1">{copy.destiny.title}</h3>
+        <label class="play-field">
+          {copy.destiny.prompt_label}
+          <textarea id="play-question" maxlength="140" placeholder={copy.destiny.prompt_placeholder} autocomplete="off"></textarea>
+        </label>
+        <div class="play-actions">
+          <button class="btn btn-accent" type="button" data-action="destiny-hold">{copy.destiny.hold}</button>
+        </div>
+      </div>
+
+      <div data-screen="destiny-wait" hidden>
+        <p id="play-question-echo" class="play-asked" hidden></p>
+        <div class="play-ring-wrap">
+          <svg class="play-ring" viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="play-ring-track" cx="60" cy="60" r="52"></circle>
+            <circle class="play-ring-value" id="play-ring-value" cx="60" cy="60" r="52"></circle>
+          </svg>
+          <span id="play-ring-num" class="play-ring-num" tabindex="-1">30</span>
+        </div>
+        <p id="play-hint" class="play-hint"></p>
+        <div class="play-fan" id="play-fan" hidden>
+          {Array.from({ length: 5 }, () => (
+            <img src={fanSrc} alt="" width="92" height="132" decoding="async" />
+          ))}
+        </div>
+        <div class="play-actions play-actions--center">
+          <button class="btn btn-accent" type="button" id="play-shuffle" data-action="destiny-shuffle" hidden>{copy.destiny.shuffle}</button>
+          <button class="btn btn-accent" type="button" id="play-draw" data-action="destiny-draw" hidden>{copy.destiny.draw}</button>
+        </div>
+      </div>
+
+      <div data-screen="destiny-result" hidden>
+        <p id="play-asked" class="play-asked" hidden></p>
+        <div class="play-flip is-down" id="play-flip">
+          <div class="play-flip-inner">
+            <div class="play-flip-face play-flip-back" aria-hidden="true"><span>Magister</span></div>
+            <div class="play-flip-face play-flip-front">
+              <img id="play-destiny-img" alt="" width="280" height="400" decoding="async" />
+            </div>
+          </div>
+        </div>
+        <div id="play-destiny-reading"></div>
+        <div class="play-actions">
+          <button class="btn" type="button" data-action="destiny-reset">{copy.destiny.again}</button>
+        </div>
+      </div>
+
+      <div data-screen="soon" class="fw-spread-intro" hidden>
+        <h3 class="fw-spread-intro-title" id="play-soon-title" tabindex="-1">{copy.soon.title}</h3>
+        <p class="fw-spread-intro-body">{copy.soon.body}</p>
+        <img class="fw-soon-back" src="/media/card-back.jpg" alt="" width="782" height="1024" decoding="async" />
+      </div>
+
+      <div class="play-zoom" id="play-zoom" hidden role="dialog" aria-modal="true" aria-label={copy.zoom}>
+        <button class="play-zoom-close" id="play-zoom-close" type="button" data-action="zoom-close">{copy.zoom_close}</button>
+        <button class="play-zoom-sheet" type="button" data-action="zoom-close" aria-label={copy.zoom_close}>
+          <img id="play-zoom-img" alt="" />
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <p id="play-live" class="play-live" aria-live="polite"></p>
+  <template id="play-reading-template">
+    <article class="play-reading">
+      <div class="play-reading-frame">
+        <img alt="" width="280" height="400" decoding="async" />
+      </div>
+      <div class="play-reading-copy">
+        <p class="play-reading-meta lb-suit-val"></p>
+        <h3 class="play-reading-title"></h3>
+        <p class="play-reading-world"></p>
+        <p class="play-reading-sphere"></p>
+        <p class="play-reading-summary"></p>
+        <div class="play-reading-body"></div>
+      </div>
+    </article>
+  </template>
+  <script id="play-data" type="application/json" set:html={payloadJson} />
+</section>
+
+<script>
+  import { mountPlayGames } from '../scripts/play-games';
+  mountPlayGames();
+</script>
+
+<style is:global>
+  .play-games {
+    --play-ground: #0d0b09;
+    --play-ink: #141110;
+    --play-parchment: #e9e0c8;
+    --play-dim: #a89b7d;
+    --play-maroon: #4e1c26;
+    --play-maroon-hot: #7a2c39;
+    --play-gold: #b0904f;
+    --play-gold-hot: #d4b56d;
+    --ink: var(--play-parchment);
+    --muted: var(--play-dim);
+    --paper: var(--play-ink);
+    --paper-deep: var(--play-ground);
+    --white: var(--play-ground);
+    --line: rgba(233, 224, 200, 0.16);
+    --accent: var(--play-gold);
+    --accent-dark: var(--play-maroon-hot);
+    --display: 'Fraunces', 'Noto Serif SC', 'Newsreader', Georgia, serif;
+    background: var(--play-ground);
+    color: var(--play-parchment);
+    font-family: 'Spectral', 'Noto Serif SC', Georgia, serif;
+  }
+
+  .play-games [hidden] {
+    display: none !important;
+  }
+
+  .play-games .section-title {
+    max-width: 10ch;
+    color: var(--play-parchment);
+  }
+
+  .play-header .play-kicker {
+    margin-bottom: 0.85rem;
+  }
+
+  .play-lead,
+  .play-prose {
+    max-width: 42rem;
+    color: var(--muted);
+    font-size: 1.02rem;
+    line-height: 1.65;
+  }
+
+  .play-lead {
+    margin-top: 1.25rem;
+  }
+
+  .play-prose {
+    margin-top: 0.85rem;
+  }
+
+  .play-posters {
+    display: grid;
+    gap: clamp(1.15rem, 2.4vw, 1.85rem);
+    margin-top: clamp(1.5rem, 3vw, 2.4rem);
+  }
+
+  .poster {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    padding: 0.45rem;
+    border: 1px solid rgba(176, 144, 79, 0.55);
+    background: var(--play-ink);
+    color: var(--play-parchment);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .poster:focus-visible {
+    outline: 2px solid var(--play-gold-hot);
+    outline-offset: 3px;
+  }
+
+  .poster-stage {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    background: var(--play-ground);
+  }
+
+  .poster:hover .poster-art img,
+  .poster[aria-pressed='true'] .poster-art img {
+    transform: scale(1.03);
+  }
+
+  .poster:hover .poster-art--destiny img:last-child,
+  .poster[aria-pressed='true'] .poster-art--destiny img:last-child {
+    transform: rotate(7deg) scale(1.03);
+  }
+
+  .poster.is-locked .poster-art {
+    filter: saturate(0.7) brightness(0.78);
+  }
+
+  .poster-art,
+  .poster-shade {
+    position: absolute;
+    inset: 0;
+  }
+
+  .poster-art img {
+    position: absolute;
+    object-fit: cover;
+    filter: saturate(0.78) contrast(1.04);
+    transition: transform 700ms ease;
+  }
+
+  .poster-art--worlds img {
+    width: 48%;
+    height: 38%;
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.45);
+  }
+
+  .poster-art--worlds img:nth-child(1) { top: 16%; left: 5%; }
+  .poster-art--worlds img:nth-child(2) { top: 18%; right: 5%; left: auto; }
+  .poster-art--worlds img:nth-child(3) { top: 42%; left: 14%; width: 44%; }
+  .poster-art--worlds img:nth-child(4) { top: 38%; right: 7%; left: auto; width: 42%; }
+
+  .poster-art--destiny img:first-child {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-position: center 30%;
+  }
+
+  .poster-art--destiny img:last-child {
+    top: 14%;
+    right: -12%;
+    width: 46%;
+    height: 42%;
+    object-position: left top;
+    transform: rotate(7deg);
+    box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.55);
+  }
+
+  .poster-art--oracle img {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-position: center 22%;
+  }
+
+  .poster-candle {
+    position: absolute;
+    top: 4%;
+    left: 28%;
+    width: 44%;
+    height: 36%;
+    background: radial-gradient(circle, rgba(212, 181, 109, 0.42), transparent 68%);
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  .poster-title {
+    padding: 0.35rem 0.45rem 0.15rem;
+    font-family: var(--display);
+    font-size: clamp(1.85rem, 2.4vw, 2.45rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+
+  .poster-body,
+  .poster .play-lock {
+    padding: 0 0.45rem;
+    color: var(--play-dim);
+    font-size: 0.95rem;
+    line-height: 1.45;
+    white-space: pre-line;
+  }
+
+  .poster .play-lock {
+    color: var(--play-gold);
+  }
+
+  .poster-play {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.85rem;
+    background: var(--play-gold);
+    color: var(--play-ground);
+    font: 600 0.95rem/1 'Spectral', Georgia, serif;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .poster:hover .poster-play,
+  .poster:focus-visible .poster-play {
+    background: var(--play-gold-hot);
+  }
+
+  @media (max-width: 859px) {
+    .poster {
+      max-height: 100svh;
+      gap: 0.4rem;
+      padding: 0.4rem;
+    }
+
+    .poster-stage {
+      max-height: 34svh;
+    }
+
+    .poster-title {
+      font-size: 1.55rem;
+      padding: 0.1rem 0.35rem 0;
+    }
+
+    .poster-body,
+    .poster .play-lock {
+      font-size: 0.84rem;
+      line-height: 1.35;
+    }
+  }
+
+  .play-kicker {
+    color: var(--play-gold);
+    font: 600 0.68rem/1.2 'Spectral', Georgia, serif;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .play-card-title,
+  .play-stage h3,
+  .play-records h3 {
+    font-family: var(--display);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .play-card-title {
+    font-size: clamp(1.7rem, 2.4vw, 2.15rem);
+  }
+
+  .play-stage h3 {
+    margin: 0;
+    font-size: clamp(1.45rem, 3vw, 2.15rem);
+  }
+
+  .play-card-blurb,
+  .play-lock {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .play-lock {
+    color: var(--accent-dark);
+  }
+
+  .play-records {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:
+      max(1rem, env(safe-area-inset-top))
+      max(1rem, env(safe-area-inset-right))
+      max(1rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+  }
+
+  .play-records-scrim {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(8, 6, 5, 0.62);
+    cursor: pointer;
+  }
+
+  .play-records-card {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    width: min(100%, 34rem);
+    max-height: min(100%, 36rem);
+    padding: 1.35rem 1.15rem 1.05rem;
+    border: 1px solid rgba(176, 144, 79, 0.55);
+    background: var(--play-ground);
+    box-shadow: 0 1.4rem 3.5rem rgba(0, 0, 0, 0.45);
+    text-align: center;
+  }
+
+  .play-records-close {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.2rem;
+    padding: 0 0.75rem;
+    border: 0;
+    background: var(--play-gold);
+    color: var(--play-ground);
+    cursor: pointer;
+    font: 600 0.68rem/1 'Spectral', Georgia, serif;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .play-records-close:hover,
+  .play-records-close:focus-visible {
+    background: var(--play-gold-hot);
+  }
+
+  .play-stage h3#play-records-title {
+    margin: 0.15rem 4.5rem 0;
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(1.7rem, 3.4vh, 2.2rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+  }
+
+  #play-records-best {
+    margin: 0.7rem 0 0;
+    color: var(--play-dim);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: 0.98rem;
+    font-style: italic;
+    line-height: 1.35;
+  }
+
+  #play-records-empty {
+    margin: 1.15rem 0 0.35rem;
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: 1.15rem;
+    font-style: italic;
+  }
+
+  .play-records-scroll:not(:has(table[hidden])) {
+    min-height: 0;
+    margin-top: 0.85rem;
+    overflow: auto;
+  }
+
+  .play-records-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .play-records-table th:first-child,
+  .play-records-table td:first-child {
+    width: 52%;
+  }
+
+  .play-records-table th:nth-child(2),
+  .play-records-table td:nth-child(2) {
+    width: 22%;
+  }
+
+  .play-records-table th {
+    padding: 0.4rem 0.35rem 0.55rem;
+    border-bottom: 1px solid rgba(176, 144, 79, 0.55);
+    color: var(--play-gold);
+    font: 600 0.68rem/1.2 'Spectral', Georgia, serif;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .play-records-table th:nth-child(2),
+  .play-records-table th:nth-child(3),
+  .play-records-table td:nth-child(2),
+  .play-records-table td:nth-child(3) {
+    text-align: right;
+  }
+
+  .play-records-table th:first-child,
+  .play-records-table td:first-child {
+    text-align: left;
+  }
+
+  .play-records-table td {
+    padding: 0.62rem 0.35rem;
+    border-bottom: 1px solid rgba(176, 144, 79, 0.18);
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: 1.12rem;
+  }
+
+  .play-records-table td:first-child {
+    max-width: 12rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .play-records-table tr.is-fast td:last-child {
+    color: var(--play-gold-hot);
+  }
+
+  .play-scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 190;
+    border: 0;
+    background: rgba(13, 11, 9, 0.72);
+    cursor: pointer;
+  }
+
+  .play-stage {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--play-ground);
+    color: var(--play-parchment);
+    padding:
+      max(0.7rem, env(safe-area-inset-top))
+      max(1rem, env(safe-area-inset-right))
+      max(0.7rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+    overscroll-behavior: none;
+  }
+
+  @media (min-width: 860px) {
+    .play-stage {
+      inset: auto;
+      top: 50%;
+      left: 50%;
+      width: calc(min(100%, var(--max-width)) - 2 * var(--page-pad));
+      height: min(92dvh, 58rem);
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(176, 144, 79, 0.55);
+      box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  @media (max-width: 859px) {
+    .play-scrim {
+      display: none !important;
+    }
+  }
+
+  html.play-lock,
+  html.play-lock body {
+    overflow: hidden;
+  }
+
+  .play-stage-bar {
+    position: relative;
+    z-index: 6;
+    display: grid;
+    flex: none;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.75rem;
+    margin-bottom: clamp(1.45rem, 3.2vh, 2.25rem);
+  }
+
+  .play-stage-bar .play-nav-back,
+  .play-stage-bar .play-stage-name,
+  .play-stage-bar .play-nav-close,
+  .play-stage-bar .play-record-open {
+    grid-row: 1;
+  }
+
+  .play-stage-bar .play-nav-back {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .play-stage-bar .play-stage-name {
+    grid-column: 2;
+    justify-self: center;
+    align-self: center;
+    text-align: center;
+  }
+
+  .play-stage-bar .play-nav-close,
+  .play-stage-bar .play-record-open {
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  .play-nav-back,
+  .play-nav-close {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    min-width: 12.5rem;
+    min-height: 3.35rem;
+    padding: 0 1.45rem;
+    border: 0;
+    background: var(--play-gold);
+    color: var(--play-ground);
+    cursor: pointer;
+    font: 600 0.95rem/1 'Spectral', Georgia, serif;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .play-nav-back:hover,
+  .play-nav-back:focus-visible,
+  .play-nav-close:hover,
+  .play-nav-close:focus-visible {
+    background: var(--play-gold-hot);
+  }
+
+  .play-stage-name {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    margin: 0;
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(1.35rem, 2.1vw, 1.8rem);
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .play-games .play-stage-name img.play-stage-logo {
+    display: block;
+    flex: none;
+    width: auto;
+    height: 2cap;
+    max-width: none;
+    max-height: 2cap;
+    object-fit: contain;
+  }
+
+  .play-stage-name > span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .play-stage.is-title .play-stage-name {
+    display: none;
+  }
+
+  @media (max-width: 859px) {
+    .play-stage-bar {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+
+    .play-stage-bar .play-nav-back,
+    .play-stage-bar .play-nav-close,
+    .play-stage-bar .play-record-open {
+      width: auto;
+      min-width: 0;
+      padding: 0 0.7rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+    }
+
+    .play-stage-name {
+      min-width: 0;
+      overflow: hidden;
+      font-size: 1.08rem;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .play-stage.is-cover .play-stage-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    flex-direction: row;
+    align-items: center;
+    column-gap: 0.75rem;
+    margin-bottom: clamp(1.45rem, 3.2vh, 2.25rem);
+  }
+
+  .play-stage.is-cover .play-nav-back {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .play-stage.is-cover .play-stage-name {
+    display: inline-flex;
+    grid-column: 2;
+    min-width: 0;
+    overflow: hidden;
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(1.35rem, 2.1vw, 1.8rem);
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .play-stage.is-cover .play-nav-close {
+    grid-column: 3;
+    justify-self: end;
+  }
+
+  .play-stage.is-cover .play-record-open {
+    display: none;
+  }
+
+  .play-stage.is-cover .play-nav-back,
+  .play-stage.is-cover .play-nav-close {
+    width: auto;
+    min-width: 0;
+    min-height: 2.85rem;
+    padding: 0 1.2rem;
+  }
+
+  @media (max-width: 859px) {
+    .play-stage.is-cover .play-stage-bar {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+    }
+
+    .play-stage.is-cover .play-nav-back,
+    .play-stage.is-cover .play-nav-close {
+      padding: 0 0.7rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+    }
+
+    .play-stage.is-cover .play-stage-name {
+      font-size: 1.08rem;
+    }
+  }
+
+  .play-stage.is-title .play-stage-name {
+    display: none;
+  }
+
+  .play-stage.is-cover > [data-screen='fw-worlds'] {
+    align-items: center;
+    text-align: center;
+  }
+
+  @media (min-width: 860px) {
+    .play-stage.is-cover > [data-screen='fw-worlds'] {
+      justify-content: center;
+    }
+  }
+
+  .play-stage.is-title > [data-screen='fw-threshold'] {
+    align-items: center;
+    text-align: center;
+  }
+
+  .play-stage h3.fw-title-name {
+    width: 100%;
+    margin: 0.85rem 0 0;
+    padding: 0 0.4rem;
+    font-size: clamp(3.4rem, 9vw, 6.6rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+  }
+
+  .play-games img.fw-title-logo {
+    display: block;
+    width: auto;
+    height: clamp(2.4rem, 6vw, 3.15rem);
+    max-width: min(18rem, 72%);
+    max-height: none;
+    margin: 0 auto;
+    object-fit: contain;
+  }
+
+  .fw-title-rule {
+    display: block;
+    flex: none;
+    width: 4.25rem;
+    height: 1px;
+    margin: 0.95rem auto 0;
+    background: var(--play-gold);
+  }
+
+  .fw-kicker {
+    margin: 0.35rem 0 0;
+    color: var(--play-gold);
+    font: 600 0.78rem/1.2 'Spectral', Georgia, serif;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .play-stage h3.fw-worlds-title {
+    width: 100%;
+    max-width: 18em;
+    margin: 0.7rem 0 0;
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+
+  .fw-title-lead {
+    max-width: 34rem;
+    margin: 0.85rem 0 0;
+    color: var(--play-parchment);
+    font-size: clamp(1.12rem, 1.8vw, 1.32rem);
+    line-height: 1.45;
+  }
+
+  .fw-title-actions {
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    width: min(100%, 18.5rem);
+    margin: 1.15rem 0 0.85rem;
+  }
+
+  .fw-title-actions .btn {
+    width: 100%;
+    min-height: 3.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .play-stage > [data-screen]:not([hidden]) {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .play-stage > [data-screen^='fw-']:not([hidden]) {
+    overflow: auto;
+  }
+
+  .play-stage.is-turn > [data-screen]:not([hidden]) {
+    animation: fw-turn 450ms ease-in-out;
+  }
+
+  .play-stage.is-leaving {
+    background: #000;
+  }
+
+  .play-stage.is-leaving > * {
+    opacity: 0;
+    transition: opacity 250ms linear;
+  }
+
+  .play-stage .play-prose {
+    margin-top: 0.4rem;
+    font-size: 0.95rem;
+  }
+
+  .play-stage > [data-screen='destiny-wait']:not([hidden]),
+  .play-stage > [data-screen='destiny']:not([hidden]),
+  .play-stage > [data-screen='sort-intro']:not([hidden]) {
+    justify-content: center;
+  }
+
+  .play-stage > [data-screen='birthday']:not([hidden]),
+  .play-stage > [data-screen='birthday-result']:not([hidden]),
+  .play-stage > [data-screen='destiny-result']:not([hidden]),
+  .play-stage > [data-screen='sort-done']:not([hidden]) {
+    overflow: auto;
+  }
+
+  .play-back {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    font: 600 0.68rem/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .play-back:hover {
+    color: var(--ink);
+  }
+
+  .play-lesson {
+    display: grid;
+    flex: 1 1 auto;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 0.65rem;
+    min-height: 0;
+    margin-top: 0.7rem;
+  }
+
+  .play-lesson figure {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    margin: 0;
+  }
+
+  .play-shot {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .play-zoom-open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.3rem;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: zoom-in;
+  }
+
+  .play-zoom-open img {
+    flex: 1 1 auto;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    max-width: 100%;
+    max-height: calc(100% - 1.7rem);
+    object-fit: contain;
+    border-radius: var(--card-radius);
+    box-shadow: 0 0.85rem 2rem rgba(23, 23, 20, 0.14);
+  }
+
+  .play-zoom-chip {
+    flex: none;
+    padding: 0.32rem 0.55rem;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--white);
+    font: 600 0.62rem/1 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .play-reading-frame img,
+  .play-flip-front img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--card-radius);
+    box-shadow: 0 0.85rem 2rem rgba(23, 23, 20, 0.14);
+  }
+
+  .play-lesson figcaption {
+    display: grid;
+    flex: none;
+    gap: 0.1rem;
+    margin-top: 0.35rem;
+    color: var(--muted);
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+
+  .play-lesson figcaption span {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .play-lesson figcaption strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .play-playfield {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .play-answers {
+    flex: none;
+  }
+
+  .play-face {
+    flex: 1 1 auto;
+    width: 100%;
+    min-height: 0;
+    margin: 0.25rem auto;
+  }
+
+  .play-status {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.45rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .play-suits,
+  .play-ranks {
+    display: grid;
+    gap: 0.45rem;
+    margin-top: 0.8rem;
+  }
+
+  .play-suits {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .play-ranks {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+
+  .play-choice {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--line);
+    background: var(--white);
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .play-choice:hover,
+  .play-choice.is-selected {
+    border-color: var(--ink);
+  }
+
+  .play-choice.is-selected {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .play-choice.is-shaking {
+    animation: play-shake 0.35s ease;
+  }
+
+  .play-sym,
+  .play-games .lb-suit-symbol,
+  .play-games .lb-suit-rank {
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .play-sym {
+    font-size: 1.65rem;
+  }
+
+  .play-sym--hearts,
+  .play-sym--diamonds,
+  .play-games .lb-suit-symbol[data-suit='hearts'],
+  .play-games .lb-suit-symbol[data-suit='diamonds'] {
+    color: #c45656;
+  }
+
+  .play-choice.is-selected .play-sym--hearts,
+  .play-choice.is-selected .play-sym--diamonds {
+    color: var(--paper);
+  }
+
+  .play-actions {
+    display: flex;
+    flex: none;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.7rem;
+  }
+
+  .play-actions--center {
+    justify-content: center;
+  }
+
+  .play-feedback {
+    min-height: 1.4em;
+    margin-top: 0.75rem;
+  }
+
+  .play-feedback.is-no {
+    color: var(--accent-dark);
+  }
+
+  .play-sort-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .play-timer {
+    font-family: var(--display);
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .play-timer.is-over {
+    color: var(--accent);
+  }
+
+  .play-placed {
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .play-tableau-scroll {
+    flex: none;
+    margin-top: 0.45rem;
+    overflow-x: auto;
+  }
+
+  .play-tableau {
+    display: grid;
+    gap: 0.2rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .play-tableau-row {
+    display: grid;
+    grid-template-columns: 1.2rem repeat(13, minmax(0, 1fr));
+    gap: 0.2rem;
+    align-items: center;
+  }
+
+  .play-slot {
+    position: relative;
+    aspect-ratio: 920 / 1316;
+    background: var(--paper);
+    overflow: hidden;
+  }
+
+  .play-slot span {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: var(--muted);
+    font-size: 0.55rem;
+  }
+
+  .play-slot img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .play-slot.is-filled span {
+    opacity: 0;
+  }
+
+  .play-field {
+    display: block;
+    margin-top: 1rem;
+    color: var(--muted);
+    font: 600 0.68rem/1.3 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .play-games input,
+  .play-games select,
+  .play-games textarea {
+    width: 100%;
+    margin-top: 0.4rem;
+    padding: 0.75rem 0.8rem;
+    border: 1px solid var(--line);
+    border-radius: 0;
+    background: var(--white);
+    color: var(--ink);
+    font: 400 1rem/1.4 var(--sans);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .play-games textarea {
+    min-height: 6.5rem;
+    resize: vertical;
+  }
+
+  .play-date {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .play-spheres {
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .play-spheres li {
+    margin-top: 0.35rem;
+    line-height: 1.45;
+  }
+
+  .play-reading {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1.35rem;
+  }
+
+  .play-reading-meta,
+  .play-reading-world,
+  .play-reading-sphere {
+    color: var(--muted);
+    line-height: 1.45;
+  }
+
+  .play-reading-sphere {
+    margin-top: 0.35rem;
+  }
+
+  .play-reading-summary {
+    margin-top: 0.75rem;
+    font-family: var(--display);
+    font-size: 1.2rem;
+    line-height: 1.45;
+  }
+
+  .play-reading-body {
+    margin-top: 0.9rem;
+  }
+
+  .play-reading-body p + p {
+    margin-top: 0.85rem;
+  }
+
+  .play-reading--text {
+    margin-top: 1.5rem;
+  }
+
+  .play-ring-wrap {
+    position: relative;
+    width: 9rem;
+    height: 9rem;
+    margin: 1.4rem auto 0.4rem;
+  }
+
+  .play-ring {
+    width: 100%;
+    height: 100%;
+  }
+
+  .play-ring-track,
+  .play-ring-value {
+    fill: none;
+    stroke-width: 2;
+  }
+
+  .play-ring-track {
+    stroke: var(--line);
+  }
+
+  .play-ring-value {
+    stroke: var(--accent);
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 60px 60px;
+  }
+
+  .play-ring-num {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: var(--display);
+    font-size: 2.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .play-hint {
+    min-height: 1.5em;
+    margin-top: 0.8rem;
+    text-align: center;
+    font-family: var(--display);
+    font-size: clamp(1.25rem, 2vw, 1.6rem);
+    line-height: 1.35;
+  }
+
+  .play-asked {
+    display: grid;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+  }
+
+  .play-asked span:last-child {
+    font-family: var(--display);
+    font-size: 1.35rem;
+    line-height: 1.35;
+  }
+
+  .play-fan {
+    position: relative;
+    height: 9rem;
+    margin: 1rem auto;
+    width: min(100%, 24rem);
+  }
+
+  .play-fan img {
+    --shift: 0rem;
+    position: absolute;
+    top: 0.4rem;
+    left: 50%;
+    width: 4.4rem;
+    height: auto;
+    border-radius: var(--card-radius);
+    box-shadow: 0 0.6rem 1.4rem rgba(23, 23, 20, 0.18);
+    animation: play-riffle 0.48s ease-in-out infinite alternate;
+  }
+
+  .play-fan img:nth-child(1) { --shift: -7.2rem; animation-delay: 0s; }
+  .play-fan img:nth-child(2) { --shift: -3.6rem; animation-delay: 0.08s; }
+  .play-fan img:nth-child(3) { --shift: 0rem; animation-delay: 0.16s; }
+  .play-fan img:nth-child(4) { --shift: 3.6rem; animation-delay: 0.04s; }
+  .play-fan img:nth-child(5) { --shift: 7.2rem; animation-delay: 0.12s; }
+
+  .play-flip {
+    width: min(100%, 16rem);
+    margin-inline: auto;
+    perspective: 1000px;
+  }
+
+  .play-flip-inner {
+    position: relative;
+    aspect-ratio: 920 / 1316;
+    transform-style: preserve-3d;
+    transition: transform 0.7s ease;
+  }
+
+  .play-flip.is-down .play-flip-inner {
+    transform: rotateY(180deg);
+  }
+
+  .play-flip-face {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: var(--card-radius);
+    backface-visibility: hidden;
+  }
+
+  .play-flip-back {
+    display: grid;
+    place-items: center;
+    background: var(--play-ink);
+    color: var(--play-gold);
+    transform: rotateY(180deg);
+    font-family: var(--display);
+    font-size: 1.35rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .play-flip-front img {
+    height: 100%;
+    object-fit: cover;
+    box-shadow: none;
+  }
+
+  .play-live {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @keyframes play-shake {
+    0%,
+    100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  @keyframes play-riffle {
+    from { translate: calc(-50% + var(--shift)) 0; }
+    to { translate: calc(-50% + var(--shift) + 16px) -8px; }
+  }
+
+  .play-zoom {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: rgba(13, 11, 9, 0.94);
+  }
+
+  .play-zoom-close {
+    position: absolute;
+    top: max(0.85rem, env(safe-area-inset-top));
+    right: max(0.85rem, env(safe-area-inset-right));
+    z-index: 1;
+    padding: 0.55rem 0.8rem;
+    border: 0;
+    background: var(--white);
+    color: var(--ink);
+    cursor: pointer;
+    font: 600 0.68rem/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .play-zoom-sheet {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding:
+      max(3.4rem, calc(env(safe-area-inset-top) + 2.6rem))
+      max(1rem, env(safe-area-inset-right))
+      max(1rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+    border: 0;
+    background: transparent;
+    cursor: zoom-out;
+  }
+
+  .play-zoom-sheet img {
+    width: auto;
+    height: auto;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: var(--card-radius);
+    box-shadow: 0 1.2rem 3rem rgba(0, 0, 0, 0.35);
+  }
+
+  #play-sort-back {
+    margin-top: 0.35rem;
+  }
+
+  .play-sort-bar .play-timer {
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+  }
+
+  @media (min-width: 720px) {
+
+    .play-suits {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .play-ranks {
+      grid-template-columns: repeat(13, minmax(0, 1fr));
+    }
+
+    .play-date {
+      grid-template-columns: 1fr 8rem;
+      max-width: 28rem;
+    }
+  }
+
+  @media (min-width: 860px) {
+    .play-menu,
+    .play-lesson {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .play-menu {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .play-lesson {
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    .play-playfield {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(16rem, 26rem);
+      gap: 1.25rem;
+      align-items: center;
+    }
+
+    .play-reading {
+      grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+      align-items: start;
+    }
+
+    .play-reading--text {
+      grid-template-columns: minmax(0, 40rem);
+    }
+  }
+
+  .play-record-open {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--play-gold-hot);
+    cursor: pointer;
+    font: 600 0.72rem/1 'Spectral', Georgia, serif;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .play-sheet {
+    position: absolute;
+    inset: 0;
+    z-index: 8;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    overflow: auto;
+    padding: 0.2rem 0.1rem 1rem;
+    background: var(--play-ground);
+  }
+
+  .play-sheet-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .play-sheet-bar p {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 1.35rem;
+  }
+
+  .fw-fan {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    justify-content: center;
+    width: min(100%, 34rem);
+    min-height: 0;
+    margin: 0.15rem 0 1.35rem;
+    padding-bottom: 0.2rem;
+  }
+
+  .fw-fan img {
+    width: auto;
+    height: clamp(5.8rem, 16vh, 10.25rem);
+    max-width: 22%;
+    margin: 0 -1.8%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    filter: saturate(0.78);
+    transform: rotate(var(--tilt));
+    box-shadow: 0 1.1rem 2.2rem rgba(0, 0, 0, 0.45);
+    transition: transform 450ms ease, opacity 450ms ease;
+  }
+
+  .fw-fan.is-apart img {
+    transform: translateY(-18%) rotate(var(--tilt));
+    opacity: 0.15;
+  }
+
+  .fw-portrait {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 0.85rem;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .fw-portrait-card {
+    display: flex;
+    flex: none;
+    align-items: flex-end;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    overflow: visible;
+  }
+
+  .fw-portrait-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: var(--card-radius);
+    -webkit-touch-callout: none;
+    user-select: none;
+  }
+
+  .fw-loupe {
+    position: fixed;
+    z-index: 400;
+    border: 2px solid rgba(212, 181, 109, 0.95);
+    border-radius: 50%;
+    box-shadow:
+      0 0.7rem 1.8rem rgba(0, 0, 0, 0.5),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+    background-color: #1a1612;
+    background-repeat: no-repeat;
+    pointer-events: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .fw-portrait-card img {
+      cursor: zoom-in;
+    }
+  }
+
+  .fw-portrait-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .fw-card-caption {
+    margin-top: 3.25rem;
+  }
+
+  .fw-card-caption .fw-card-rule {
+    margin-top: 0;
+  }
+
+  .fw-card-rule {
+    display: block;
+    width: 2.5rem;
+    height: 1px;
+    margin: 1.35rem 0 0;
+    background: rgba(233, 224, 200, 0.45);
+  }
+
+  .fw-card-id {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.15rem 0.7rem;
+    margin-top: 1.05rem;
+  }
+
+  .play-games .fw-portrait-copy .lb-suit-val {
+    margin: 0;
+    color: var(--play-parchment);
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    line-height: 1;
+  }
+
+  .play-games .fw-card-id .lb-suit-val {
+    font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+  }
+
+  .play-games .fw-portrait-copy .lb-suit-val[data-suit='hearts'],
+  .play-games .fw-portrait-copy .lb-suit-val[data-suit='diamonds'] {
+    color: #c45656;
+  }
+
+  .play-stage h3.fw-suit-name {
+    margin: 0;
+    max-width: none;
+    font-size: clamp(calc(2.7rem - 2pt), calc(4.6vw - 2pt), calc(4.1rem - 2pt));
+    line-height: 0.98;
+  }
+
+  .fw-suit-blurb,
+  .fw-suit-line {
+    margin: 1rem 0 0;
+    max-width: none;
+    line-height: 1.6;
+  }
+
+  .fw-suit-blurb {
+    color: var(--play-parchment);
+    font-size: clamp(1.2rem, 1.7vw, 1.45rem);
+  }
+
+  .fw-count-zoom,
+  .fw-count-zoom-touch {
+    margin-top: 0.85rem;
+  }
+
+  .fw-count-zoom-touch {
+    display: none;
+  }
+
+  @media (max-width: 859px) {
+    .fw-count-zoom {
+      display: none;
+    }
+
+    .fw-count-zoom-touch {
+      display: block;
+    }
+  }
+
+  .fw-card-id .fw-suit-title {
+    margin: 0;
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+
+  .fw-suit-line {
+    margin-top: 0.55rem;
+    color: var(--play-parchment);
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    font-style: normal;
+    line-height: 1.75;
+  }
+
+  .fw-portrait-copy .fw-title-actions {
+    align-items: stretch;
+    width: 100%;
+    margin-top: auto;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-top: 0.85rem;
+  }
+
+  .fw-portrait-copy .fw-title-actions .btn {
+    white-space: normal;
+  }
+
+  .fw-world-title {
+    display: flex;
+    align-items: baseline;
+    align-items: first baseline;
+    gap: 0.28em;
+  }
+
+  .fw-world-title .lb-suit-symbol {
+    flex: none;
+    align-self: baseline;
+    align-self: first baseline;
+    margin: 0;
+    font-size: 0.87em;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  .fw-meet-copy {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .fw-meet-copy > .fw-suit-blurb,
+  .fw-meet-copy > .fw-options {
+    flex: none;
+  }
+
+  .fw-meet-copy > .fw-suit-blurb {
+    margin-top: 1lh;
+  }
+
+  .fw-meet-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    min-height: 0;
+    overflow: auto;
+    text-align: left;
+  }
+
+  .fw-meet-copy .fw-suit-blurb,
+  .fw-meet-copy .fw-options,
+  .fw-meet-copy .fw-options button {
+    text-align: left;
+  }
+
+  .fw-meet-dock {
+    flex: none;
+    margin-top: 0;
+  }
+
+  #fw-meet-gate {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: 100%;
+  }
+
+  .fw-portrait-copy .fw-options {
+    margin-top: 1.15rem;
+  }
+
+  .fw-portrait-copy .fw-options button {
+    width: 100%;
+  }
+
+  .fw-portrait-copy .fw-suit-line {
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 859px) {
+    .play-stage:has(> [data-screen='fw-suit']:not([hidden])),
+    .play-stage:has(> [data-screen='fw-meet']:not([hidden])),
+    .play-stage:has(> .fw-board:not([hidden])) {
+      padding-right: 0.45rem;
+      padding-left: 0.45rem;
+    }
+
+    [data-screen='fw-meet'] .fw-portrait {
+      gap: 0.4rem;
+    }
+
+    [data-screen='fw-meet'] .fw-suit-blurb {
+      margin-top: 1lh;
+    }
+
+    .play-stage > [data-screen='fw-suit']:not([hidden]),
+    .play-stage > [data-screen='fw-meet']:not([hidden]),
+    .play-stage > .fw-board:not([hidden]) {
+      overflow: auto;
+    }
+
+    .fw-portrait-card img {
+      width: 80%;
+      max-width: none;
+      height: auto;
+    }
+
+    .fw-portrait-copy .fw-dial,
+    .fw-portrait-copy .fw-court {
+      display: grid;
+      overflow: visible;
+    }
+
+    .fw-portrait-copy .fw-dial {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .fw-portrait-copy .fw-court {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .fw-portrait-copy .fw-dial button,
+    .fw-portrait-copy .fw-court button {
+      flex: none;
+      width: 100%;
+    }
+
+    .fw-meet-copy {
+      height: auto;
+      min-height: auto;
+      flex: none;
+      justify-content: flex-start;
+    }
+
+    .fw-meet-body {
+      flex: none;
+      overflow: visible;
+      justify-content: flex-start;
+    }
+
+    [data-screen='fw-meet'].is-answered .fw-suit-name,
+    [data-screen='fw-meet'].is-answered #fw-meet-ask,
+    [data-screen='fw-meet'].is-answered .fw-options,
+    [data-screen='fw-trial'].is-answered #fw-trial-kicker,
+    [data-screen='fw-trial'].is-answered .fw-options,
+    [data-screen='fw-trial'].is-answered .fw-dial,
+    [data-screen='fw-trial'].is-answered .fw-court {
+      display: none !important;
+    }
+
+    [data-screen='fw-meet'].is-answered .fw-meet-dock,
+    [data-screen='fw-trial'].is-answered .fw-title-actions {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 4;
+      width: auto;
+      margin: 0;
+      padding: 0.7rem 0.85rem calc(0.7rem + env(safe-area-inset-bottom));
+      border-top: 1px solid rgba(176, 144, 79, 0.4);
+      background: var(--play-ground);
+    }
+
+    [data-screen='fw-meet'].is-answered,
+    [data-screen='fw-trial'].is-answered {
+      padding-bottom: calc(5.4rem + env(safe-area-inset-bottom));
+    }
+  }
+
+  @media (min-width: 860px) {
+    .play-stage > [data-screen='fw-suit']:not([hidden]),
+    .play-stage > [data-screen='fw-meet']:not([hidden]),
+    .play-stage > .fw-board:not([hidden]) {
+      overflow: hidden;
+    }
+
+    .fw-portrait {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      /* A definite row. An auto row plus height: 0 / min-height: 100% on the copy collapses that column to 0 in Safari. */
+      grid-template-rows: minmax(0, 1fr);
+      gap: clamp(1rem, 2.2vw, 2.2rem);
+      align-items: stretch;
+      align-content: stretch;
+      height: 100%;
+      min-height: 0;
+      container-type: size;
+    }
+
+    .fw-portrait-card {
+      align-items: center;
+      align-self: center;
+      height: auto;
+      width: auto;
+      max-height: 100%;
+      min-height: 0;
+      overflow: visible;
+    }
+
+    .fw-portrait-card img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: min(46cqw, 34rem);
+      max-height: 100cqh;
+      object-fit: contain;
+      border-radius: var(--card-radius);
+    }
+
+    .fw-portrait-copy {
+      align-self: stretch;
+      height: auto;
+      min-height: 0;
+      max-height: none;
+      justify-content: flex-start;
+      overflow: auto;
+      padding: 0 0.2rem 0 0;
+    }
+
+    [data-screen='fw-suit'] .fw-portrait-copy {
+      overflow: auto;
+    }
+
+    [data-screen='fw-suit'] .fw-card-caption,
+    [data-screen='fw-count'] .fw-card-caption,
+    [data-screen='fw-count-court'] .fw-card-caption {
+      margin-top: auto;
+      padding-top: 2.5rem;
+    }
+
+    [data-screen='fw-suit'] .fw-portrait-copy,
+    .fw-board .fw-portrait-copy {
+      overflow: auto;
+    }
+
+    [data-screen='fw-spread'] .fw-portrait-copy {
+      padding-top: 0.2rem;
+    }
+
+    [data-screen='fw-suit'] .fw-portrait-copy > .fw-title-actions,
+    .fw-board .fw-portrait-copy > .fw-title-actions {
+      position: sticky;
+      bottom: 0;
+      background: var(--play-ground);
+    }
+  }
+
+  .fw-ignite {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem;
+    width: min(100%, 40rem);
+    margin: 1.15rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .fw-ignite li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.8rem;
+    min-height: 0;
+    padding: 0.55rem 0.85rem 0.55rem 0.55rem;
+    border: 1px solid rgba(176, 144, 79, 0.28);
+    background: rgba(20, 17, 16, 0.55);
+    opacity: 0.34;
+    text-align: left;
+    transition: opacity 220ms ease, border-color 220ms ease;
+  }
+
+  .fw-ignite-card {
+    flex: none;
+    width: auto;
+    height: clamp(4.6rem, 11vh, 6.15rem);
+    border-radius: 0.32rem;
+    object-fit: cover;
+    box-shadow: 0 0.35rem 0.8rem rgba(0, 0, 0, 0.42);
+  }
+
+  .fw-ignite-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.22rem;
+    min-width: 0;
+  }
+
+  .fw-ignite .fw-suit-name {
+    font-size: clamp(1.08rem, 1.5vw, 1.35rem);
+    line-height: 1.15;
+    text-align: left;
+  }
+
+  .fw-ignite-suit {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--play-dim);
+    font-family: 'Spectral', Georgia, serif;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .fw-ignite .fw-suit-mark {
+    flex: none;
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1;
+    text-transform: none;
+  }
+
+  @media (max-width: 859px) {
+    .fw-ignite {
+      grid-template-columns: 1fr;
+      width: min(100%, 26rem);
+    }
+
+    .fw-ignite-card {
+      height: 5.05rem;
+    }
+  }
+
+  .fw-ignite li.is-lit {
+    opacity: 1;
+    border-color: rgba(212, 181, 109, 0.72);
+  }
+
+  .fw-suit-mark {
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(3.2rem, 6.5vw, 5rem);
+    font-weight: 400;
+    line-height: 0.9;
+  }
+
+  .fw-ignite .play-sym--hearts,
+  .fw-ignite .play-sym--diamonds {
+    color: #c45656;
+  }
+
+  .fw-ignite .play-sym--clubs,
+  .fw-ignite .play-sym--spades {
+    color: var(--play-parchment);
+  }
+
+  .fw-suit-name {
+    font-family: var(--display);
+    font-size: clamp(1.15rem, 2vw, 1.6rem);
+    line-height: 1.05;
+  }
+
+  .fw-card {
+    display: grid;
+    justify-items: center;
+    margin: 0.45rem auto;
+  }
+
+  .fw-card img {
+    width: auto;
+    max-width: min(100%, 16rem);
+    max-height: min(34vh, 22rem);
+    object-fit: contain;
+  }
+
+  .fw-card.is-set img,
+  #fw-meet-card.is-set img,
+  #fw-trial-card.is-set img,
+  #fw-spread-card.is-set img {
+    animation: fw-set 300ms cubic-bezier(0.2, 1.35, 0.4, 1);
+  }
+
+  .fw-card.is-true img,
+  #fw-meet-card.is-true img,
+  #fw-trial-card.is-true img,
+  #fw-spread-card.is-true img {
+    animation: fw-glow 600ms ease;
+  }
+
+  .fw-card.is-dim img,
+  #fw-meet-card.is-dim img,
+  #fw-trial-card.is-dim img,
+  #fw-spread-card.is-dim img {
+    animation: fw-gutter 420ms ease;
+  }
+
+  .fw-card.is-away img,
+  #fw-spread-card.is-away img {
+    animation: fw-away 280ms ease forwards;
+  }
+
+  .fw-ask {
+    margin: 0.35rem 0;
+    color: var(--play-dim);
+  }
+
+  [data-screen='fw-trial'] .fw-suit-blurb {
+    margin-top: 0;
+  }
+
+  .fw-trial-suit {
+    display: flex;
+    align-items: baseline;
+    align-items: first baseline;
+    gap: 0.28em;
+  }
+
+  .fw-trial-suit .lb-suit-symbol {
+    flex: none;
+    align-self: baseline;
+    align-self: first baseline;
+    font-size: 0.87em;
+  }
+
+  .fw-options {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .fw-options button {
+    min-height: 3.15rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--play-parchment);
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Spectral', 'Noto Serif SC', Georgia, serif;
+    font-size: clamp(1.2rem, 1.7vw, 1.45rem);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .fw-options button:hover,
+  .fw-options button:focus-visible {
+    border-color: var(--play-gold);
+  }
+
+  .fw-options button:disabled {
+    cursor: default;
+    opacity: 1;
+  }
+
+  .fw-options button.is-hit,
+  .fw-options button.is-hit:disabled,
+  .fw-dial button.is-hit,
+  .fw-dial button.is-hit:disabled,
+  .fw-court button.is-hit,
+  .fw-court button.is-hit:disabled {
+    border-color: #3cba78;
+    background: rgba(60, 186, 120, 0.2);
+    color: #d9f5e4;
+  }
+
+  .fw-options button.is-miss,
+  .fw-options button.is-miss:disabled,
+  .fw-dial button.is-miss,
+  .fw-dial button.is-miss:disabled,
+  .fw-court button.is-miss,
+  .fw-court button.is-miss:disabled {
+    border-color: #c45656;
+    background: rgba(196, 86, 86, 0.22);
+    color: #f6d4d4;
+  }
+
+  .fw-dial button:disabled,
+  .fw-court button:disabled {
+    cursor: default;
+    opacity: 1;
+  }
+
+  .fw-meet-reply {
+    display: block;
+    margin: 1rem 0 0;
+    text-align: left;
+  }
+
+  .fw-meet-reply-line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    margin: 0;
+    font-family: 'Spectral', 'Noto Serif SC', Georgia, serif;
+    font-size: clamp(1.2rem, 1.7vw, 1.45rem);
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
+  .fw-meet-pip {
+    display: inline-flex;
+    flex: none;
+    align-items: baseline;
+    gap: 0.04em;
+    color: inherit;
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: 1em;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .fw-meet-reply.is-hit #fw-meet-line,
+  .fw-meet-reply.is-hit #fw-trial-line {
+    color: #3cba78;
+  }
+
+  .fw-meet-reply.is-miss #fw-meet-line,
+  .fw-meet-reply.is-miss #fw-trial-line {
+    color: #c45656;
+  }
+
+  .fw-meet-pip[data-suit='hearts'],
+  .fw-meet-pip[data-suit='diamonds'] {
+    color: #c45656;
+  }
+
+  .fw-meet-answer-name {
+    color: var(--play-parchment);
+  }
+
+  .fw-meet-brief {
+    margin: 0.55rem 0 0;
+    color: var(--play-parchment);
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+  }
+
+  .fw-story-toggle {
+    display: inline-flex;
+    margin-top: 0.4rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--play-gold-hot);
+    cursor: pointer;
+    font: 600 0.82rem/1.4 'Spectral', 'Noto Serif SC', Georgia, serif;
+    letter-spacing: 0.03em;
+    text-align: left;
+  }
+
+  .fw-story-toggle:hover,
+  .fw-story-toggle:focus-visible {
+    color: var(--play-parchment);
+  }
+
+  .fw-meet-full {
+    margin-top: 0.55rem;
+    color: var(--play-parchment);
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .fw-meet-full p {
+    margin: 0;
+  }
+
+  .fw-meet-full p + p {
+    margin-top: 0.7rem;
+  }
+
+  .btn.fw-meet-more {
+    border: 1px solid var(--play-gold);
+    background: transparent;
+    color: var(--play-gold-hot);
+  }
+
+  .btn.fw-meet-more:hover,
+  .btn.fw-meet-more:focus-visible {
+    background: rgba(176, 144, 79, 0.16);
+  }
+
+  .fw-dial,
+  .fw-court {
+    display: flex;
+    gap: 0.35rem;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+  }
+
+  .fw-portrait-copy .fw-dial,
+  .fw-portrait-copy .fw-court {
+    flex-wrap: wrap;
+    margin-top: 1.15rem;
+    overflow: visible;
+  }
+
+  .fw-dial button,
+  .fw-court button {
+    flex: 1 0 2.5rem;
+    min-height: 2.85rem;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--play-parchment);
+    cursor: pointer;
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: 1.45rem;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+
+  .fw-court button {
+    flex-basis: 3.2rem;
+    font-size: 1.7rem;
+  }
+
+  .play-games .play-reading-meta.lb-suit-val {
+    display: flex;
+    align-items: baseline;
+    gap: 0.12em;
+    margin: 0;
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .play-games .play-reading-meta.lb-suit-val[data-suit='hearts'],
+  .play-games .play-reading-meta.lb-suit-val[data-suit='diamonds'] {
+    color: #c45656;
+  }
+
+  .play-stage h3.fw-spread-clock {
+    margin: 0;
+    padding-top: 0.08em;
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(2.35rem, 6.4vh, 3.7rem);
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+
+  @media (max-width: 859px) {
+    .play-stage h3.fw-spread-clock {
+      font-size: 2.45rem;
+      line-height: 1.05;
+    }
+
+    [data-screen='fw-spread'] .fw-spread-count {
+      margin-top: 0.35rem;
+    }
+  }
+
+  .fw-spread-count {
+    margin: 0.7rem 0 0;
+    color: var(--play-dim);
+    font-family: 'Spectral', 'Noto Serif SC', Georgia, serif;
+    font-size: clamp(1.2rem, 1.7vw, 1.45rem);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  [data-screen='fw-spread'] .fw-options,
+  [data-screen='fw-spread'] .fw-dial,
+  [data-screen='fw-spread'] .fw-court {
+    margin-top: 1.35rem;
+  }
+
+  @media (max-width: 859px) {
+    [data-screen='fw-spread'] .fw-options,
+    [data-screen='fw-spread'] .fw-dial,
+    [data-screen='fw-spread'] .fw-court {
+      margin-top: 0.75rem;
+    }
+  }
+
+  .fw-spread-back {
+    align-self: flex-start;
+    margin: 0.85rem 0 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--play-gold-hot);
+    cursor: pointer;
+    font: 600 0.78rem/1.2 'Spectral', Georgia, serif;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .fw-spread-back:hover,
+  .fw-spread-back:focus-visible {
+    color: var(--play-parchment);
+  }
+
+  .play-stage > [data-screen='fw-spread-intro']:not([hidden]),
+  .play-stage > [data-screen='soon']:not([hidden]) {
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: min(100%, 42rem);
+    padding-top: clamp(0.4rem, 3vh, 2rem);
+  }
+
+  .play-stage > [data-screen='soon']:not([hidden]) {
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .play-stage > [data-screen='soon'] .fw-spread-intro-title,
+  .play-stage > [data-screen='soon'] .fw-spread-intro-body {
+    flex: none;
+    text-align: center;
+  }
+
+  .play-stage > [data-screen='soon'] .fw-spread-intro-body {
+    margin-top: 0.65rem;
+  }
+
+  .fw-soon-back {
+    flex: 0 1 auto;
+    width: auto;
+    height: auto;
+    max-width: min(70%, 16.5rem);
+    max-height: min(38dvh, 22rem);
+    margin: 0.9rem 0 0;
+    object-fit: contain;
+    border-radius: clamp(0.4rem, 3.2%, 0.7rem);
+  }
+
+  .fw-spread-kicker {
+    margin: 0;
+    color: var(--play-gold);
+    font: 600 0.72rem/1 'Spectral', 'Noto Serif SC', Georgia, serif;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .play-stage h3.fw-spread-intro-title {
+    max-width: 9.4em;
+    margin: 0.85rem 0 0;
+    padding-top: 0.04em;
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(2.85rem, 5.6vw, 4.7rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+  }
+
+  .fw-spread-intro-body,
+  .fw-spread-best {
+    max-width: 36rem;
+    margin: 1.55rem 0 0;
+    color: var(--play-parchment);
+    font-family: 'Spectral', 'Noto Serif SC', Georgia, serif;
+    font-size: clamp(1.12rem, 1.7vw, 1.32rem);
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  .fw-spread-best {
+    margin-top: 1.45rem;
+  }
+
+  .fw-spread-best strong {
+    color: var(--play-gold-hot);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .fw-spread-start {
+    align-self: flex-start;
+    width: 13.5rem;
+    margin-top: 2.1rem;
+    border: 0;
+    background: #c6ae78;
+    color: #1a140e;
+    min-height: 3.35rem;
+    letter-spacing: 0.16em;
+  }
+
+  .fw-spread-start:hover,
+  .fw-spread-start:focus-visible {
+    border: 0;
+    background: #d4c08a;
+    color: #1a140e;
+  }
+
+  .fw-result {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto;
+    padding:
+      max(4.4rem, calc(env(safe-area-inset-top) + 3.6rem))
+      max(1.25rem, env(safe-area-inset-right))
+      max(0.85rem, env(safe-area-inset-bottom))
+      max(1.25rem, env(safe-area-inset-left));
+    background: var(--play-ground);
+  }
+
+  .fw-result::before,
+  .fw-result::after {
+    content: '';
+    flex: 1 1 0;
+    min-height: 0;
+  }
+
+  .fw-result-card {
+    flex: 0 0 auto;
+    width: min(100%, 34rem);
+    padding: 0.15rem 0.2rem 0.15rem;
+    border: 0;
+    background: transparent;
+    text-align: center;
+  }
+
+  .play-stage h3.fw-result-title {
+    margin: 0;
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(1.9rem, 4.2vh, 2.55rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .fw-result-lead {
+    max-width: 22rem;
+    margin: 0.4rem auto 0;
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(1.05rem, 2vh, 1.25rem);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  .fw-result-rule {
+    display: block;
+    width: 3.4rem;
+    height: 1px;
+    margin: 0.7rem auto 0;
+    background: rgba(176, 144, 79, 0.85);
+  }
+
+  .fw-result-time {
+    margin: 0.45rem 0 0;
+    padding-top: 0.04em;
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(3.15rem, 8.5vh, 4.35rem);
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .fw-result-line {
+    margin: 0.4rem 0 0;
+    color: var(--play-dim);
+    font-family: 'Spectral', 'Noto Serif SC', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.4;
+  }
+
+  .fw-result-note {
+    max-width: 24rem;
+    margin: 0.65rem auto 0;
+    color: var(--play-dim);
+    font-family: 'Spectral', 'Noto Serif SC', Georgia, serif;
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+
+  .fw-result-note:empty {
+    display: none;
+  }
+
+  .fw-place {
+    width: min(100%, 16.5rem);
+    margin: 0.85rem auto 0;
+    padding: 0.55rem 0.9rem 0.6rem;
+    border: 1px solid rgba(176, 144, 79, 0.7);
+  }
+
+  .fw-place-kicker,
+  .fw-chronicle {
+    margin: 0;
+    color: var(--play-dim);
+    font: 600 0.72rem/1.3 'Spectral', 'Noto Serif SC', Georgia, serif;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .fw-chronicle {
+    margin-top: 0.85rem;
+  }
+
+  .fw-place-rank {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.4rem;
+    margin: 0.35rem 0 0;
+  }
+
+  .fw-place-no {
+    color: #d4b56d;
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(1.85rem, 3.6vh, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .fw-place-of {
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+
+  .fw-claim {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.35rem 1.15rem;
+    margin-top: 0.45rem;
+  }
+
+  .play-games .fw-result input {
+    width: 8.5rem;
+    margin: 0;
+    padding: 0 0 0.15rem;
+    border: 0;
+    border-bottom: 1px solid rgba(233, 224, 200, 0.45);
+    border-radius: 0;
+    background: transparent;
+    color: var(--play-parchment);
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 1.2;
+    text-align: center;
+    text-transform: none;
+  }
+
+  .play-games .fw-result input::placeholder {
+    color: rgba(233, 224, 200, 0.55);
+    font-style: italic;
+  }
+
+  .fw-claim-text {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--play-parchment);
+    cursor: pointer;
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  .fw-claim-text:hover,
+  .fw-claim-text:focus-visible {
+    color: #d4b56d;
+  }
+
+  .fw-result-again {
+    width: 100%;
+    margin-top: 0.95rem;
+    border: 0;
+    background: #c6ae78;
+    color: #1a140e;
+    min-height: 2.85rem;
+    letter-spacing: 0.12em;
+  }
+
+  .fw-result-again:hover,
+  .fw-result-again:focus-visible {
+    border: 0;
+    background: #d4c08a;
+    color: #1a140e;
+  }
+
+  .fw-result-link {
+    display: block;
+    margin: 0.55rem auto 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: rgba(233, 224, 200, 0.72);
+    cursor: pointer;
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  .fw-result-link:hover,
+  .fw-result-link:focus-visible {
+    color: var(--play-parchment);
+  }
+
+  .fw-time {
+    margin: 0;
+    color: var(--play-dim);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.95rem;
+  }
+
+  .fw-victory {
+    display: flex;
+    align-items: flex-end;
+    height: 6.5rem;
+    margin-bottom: 0.6rem;
+    overflow: hidden;
+  }
+
+  .fw-victory img {
+    width: 2.1rem;
+    height: 3rem;
+    margin-left: -1.15rem;
+    object-fit: cover;
+    animation: fw-sweep 700ms ease both;
+    animation-delay: calc(var(--i) * 15ms);
+  }
+
+  .fw-victory img:first-child {
+    margin-left: 0;
+  }
+
+  @keyframes fw-turn {
+    from { transform: rotateY(78deg); opacity: 0.35; }
+    to { transform: none; opacity: 1; }
+  }
+
+  @keyframes fw-set {
+    from { transform: translateY(12px) rotateX(8deg); }
+    to { transform: none; }
+  }
+
+  @keyframes fw-glow {
+    0%, 100% { box-shadow: none; }
+    45% { box-shadow: 0 0 2.2rem rgba(212, 181, 109, 0.55); }
+  }
+
+  @keyframes fw-gutter {
+    0%, 100% { opacity: 1; }
+    40% { opacity: 0.35; }
+  }
+
+  @keyframes fw-away {
+    to { transform: translateY(16px) rotate(-7deg); opacity: 0; }
+  }
+
+  @keyframes fw-sweep {
+    from { transform: translateY(120%); }
+    to { transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .play-choice.is-shaking,
+    .play-fan img,
+    .fw-card.is-set img,
+    .fw-card.is-true img,
+    .fw-card.is-dim img,
+    .fw-card.is-away img,
+    .fw-victory img,
+    .play-stage.is-turn > [data-screen]:not([hidden]) {
+      animation: none;
+    }
+
+    .play-stage.is-leaving > * {
+      transition: none;
+    }
+
+    .play-flip-inner {
+      transition: none;
+    }
+  }
+</style>
