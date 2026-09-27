@@ -3059,6 +3059,24 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     color: #1a140e;
   }
 
+  @media (max-width: 859px) {
+    .fw-title-actions {
+      align-items: stretch;
+      width: 100%;
+    }
+
+    .fw-title-actions .btn,
+    .fw-title-actions .fw-title-timed,
+    .fw-spread-start {
+      min-height: 48px;
+    }
+
+    .fw-spread-start {
+      align-self: stretch;
+      width: 100%;
+    }
+  }
+
   .fw-result {
     position: absolute;
     inset: 0;
