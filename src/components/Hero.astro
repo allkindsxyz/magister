@@ -163,7 +163,22 @@ const t = useTranslations(lang);
     }
 
     .hero-title {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .hero-pack {
       order: 2;
+      width: min(78vw, 24rem);
+      align-self: center;
+      margin-top: 1.5rem;
     }
 
     .hero-lead {
@@ -176,13 +191,6 @@ const t = useTranslations(lang);
 
     .hero-actions {
       order: 5;
-    }
-
-    .hero-pack {
-      order: 6;
-      width: min(78vw, 24rem);
-      align-self: center;
-      margin-top: 2.5rem;
     }
   }
 
@@ -191,32 +199,21 @@ const t = useTranslations(lang);
       padding-top: 6.75rem;
     }
 
-    .hero-title {
-      margin-top: 1rem;
-      max-width: 100%;
-    }
-
-    .hero-title__wordmark :global(.magister-logo) {
-      width: min(100%, 18.5rem);
-    }
-
     .hero-pack {
-      order: 3;
       width: min(86vw, 22rem);
-      margin-top: 2rem;
+      margin-top: 1.25rem;
     }
 
     .hero-lead {
-      order: 4;
-      margin-top: 3rem;
+      margin-top: 2.25rem;
     }
 
     .hero-body {
-      order: 5;
+      order: 4;
     }
 
     .hero-actions {
-      order: 6;
+      order: 5;
       display: grid;
       width: 100%;
       min-width: 0;
