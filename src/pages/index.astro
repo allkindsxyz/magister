@@ -1,11 +1,9 @@
 ---
 // Root redirect: detect language from Accept-Language header, fallback to 'en'
 const acceptLang = (Astro.request.headers.get('accept-language') || '').toLowerCase();
-const redirectTo = acceptLang.includes('zh')
-  ? '/zh/'
-  : acceptLang.includes('ru')
-    ? '/ru/'
-    : '/en/';
+const tags = acceptLang.split(',').map((part) => part.split(';')[0].trim());
+const wants = (code: string) => tags.some((tag) => tag === code || tag.startsWith(`${code}-`));
+const redirectTo = wants('zh') ? '/zh/' : wants('be') ? '/be/' : wants('ru') ? '/ru/' : '/en/';
 
 return Astro.redirect(redirectTo, 302);
 ---

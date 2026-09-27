@@ -5,7 +5,7 @@ import { absoluteUrl, localizedAbsoluteUrl } from '../lib/site';
 interface Props {
   title?: string;
   description?: string;
-  lang: 'en' | 'ru' | 'zh';
+  lang: 'en' | 'ru' | 'be' | 'zh';
   canonicalURL?: string;
 }
 
@@ -20,7 +20,7 @@ const canonicalURL = Astro.props.canonicalURL ?? localizedAbsoluteUrl(lang, path
 const ogImage = absoluteUrl('/media/merchant.webp');
 const htmlLang = lang === 'zh' ? 'zh-Hans' : lang;
 const skipLabel =
-  lang === 'ru' ? 'К содержанию' : lang === 'zh' ? '跳到正文' : 'Skip to content';
+  lang === 'ru' ? 'К содержанию' : lang === 'be' ? 'Да зместу' : lang === 'zh' ? '跳到正文' : 'Skip to content';
 ---
 <!DOCTYPE html>
 <html lang={htmlLang}>
@@ -45,6 +45,7 @@ const skipLabel =
   <!-- Alternate languages -->
   <link rel="alternate" hreflang="en" href={localizedAbsoluteUrl('en', pathAfterLocale)} />
   <link rel="alternate" hreflang="ru" href={localizedAbsoluteUrl('ru', pathAfterLocale)} />
+  <link rel="alternate" hreflang="be" href={localizedAbsoluteUrl('be', pathAfterLocale)} />
   <link rel="alternate" hreflang="zh-Hans" href={localizedAbsoluteUrl('zh', pathAfterLocale)} />
   <link rel="alternate" hreflang="x-default" href={localizedAbsoluteUrl('en', pathAfterLocale)} />
 

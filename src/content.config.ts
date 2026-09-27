@@ -4,6 +4,7 @@ import { glob } from 'astro/loaders';
 const localizedString = z.object({
   en: z.string(),
   ru: z.string(),
+  be: z.string().optional(),
   zh: z.string().optional(),
 });
 

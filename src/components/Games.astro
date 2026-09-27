@@ -172,6 +172,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
         <p class="fw-title-lead">{copy.learn.threshold}</p>
         <div class="fw-title-actions">
           <button class="btn btn-accent" type="button" data-action="fw-enter">{copy.learn.enter}</button>
+          <button class="btn fw-title-timed" type="button" data-action="fw-timed">{copy.learn.timed}</button>
         </div>
       </div>
 
@@ -1163,6 +1164,48 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     display: none;
   }
 
+  .play-stage.is-title .play-record-open {
+    display: inline-flex;
+    grid-column: 1;
+    justify-self: start;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 2.85rem;
+    padding: 0 1.2rem;
+    border: 0;
+    background: var(--play-gold);
+    color: var(--play-ground);
+    font: 600 0.95rem/1 'Spectral', Georgia, serif;
+    letter-spacing: 0.16em;
+  }
+
+  .play-stage.is-title .play-record-open:hover,
+  .play-stage.is-title .play-record-open:focus-visible {
+    background: var(--play-gold-hot);
+    color: var(--play-ground);
+  }
+
+  .play-stage:not(.is-title) .play-record-open {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 12.5rem;
+    min-height: 3.35rem;
+    padding: 0 1.45rem;
+    border: 0;
+    background: var(--play-gold);
+    color: var(--play-ground);
+    font: 600 0.95rem/1 'Spectral', Georgia, serif;
+    letter-spacing: 0.16em;
+  }
+
+  .play-stage:not(.is-title) .play-record-open:hover,
+  .play-stage:not(.is-title) .play-record-open:focus-visible {
+    background: var(--play-gold-hot);
+    color: var(--play-ground);
+  }
+
   .play-stage.is-cover .play-nav-back,
   .play-stage.is-cover .play-nav-close {
     width: auto;
@@ -1177,11 +1220,38 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     }
 
     .play-stage.is-cover .play-nav-back,
-    .play-stage.is-cover .play-nav-close {
+    .play-stage.is-cover .play-nav-close,
+    .play-stage.is-title .play-record-open {
       min-height: calc(2.85rem * 0.75);
       padding: 0 calc(0.7rem * 0.75);
       font-size: calc(0.72rem * 0.75);
       letter-spacing: 0.06em;
+    }
+
+    .play-stage.is-title .play-record-open {
+      border: 1px solid var(--play-gold);
+      background: var(--play-ground);
+      color: var(--play-gold);
+    }
+
+    .play-stage:not(.is-title) .play-record-open {
+      min-width: 0;
+      min-height: calc(3.35rem * 0.75);
+      padding: 0 calc(0.7rem * 0.75);
+      border: 1px solid var(--play-gold);
+      background: var(--play-ground);
+      color: var(--play-gold);
+      font-size: calc(0.72rem * 0.75);
+      letter-spacing: 0.06em;
+    }
+
+    .play-stage.is-title .play-record-open:hover,
+    .play-stage.is-title .play-record-open:focus-visible,
+    .play-stage:not(.is-title) .play-record-open:hover,
+    .play-stage:not(.is-title) .play-record-open:focus-visible {
+      border-color: var(--play-gold-hot);
+      background: var(--play-ground);
+      color: var(--play-gold-hot);
     }
 
     .play-stage.is-cover .play-stage-name {
@@ -1279,6 +1349,22 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     min-height: 3.65rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
+  }
+
+  .fw-title-actions .fw-title-timed {
+    min-height: 2.7rem;
+    border: 1px solid var(--play-gold);
+    background: transparent;
+    color: var(--play-gold);
+    font-family: 'Spectral', Georgia, serif;
+    letter-spacing: 0.16em;
+  }
+
+  .play-games .fw-title-timed:hover,
+  .play-games .fw-title-timed:focus-visible {
+    border-color: var(--play-gold-hot);
+    background: transparent;
+    color: var(--play-gold-hot);
   }
 
   .play-stage > [data-screen]:not([hidden]) {

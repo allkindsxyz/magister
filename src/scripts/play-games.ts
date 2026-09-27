@@ -15,7 +15,7 @@ type PlayCard = {
 };
 
 type PlayData = {
-  lang: 'en' | 'ru' | 'zh';
+  lang: 'en' | 'ru' | 'be' | 'zh';
   copy: GamesCopy;
   worlds: Record<Suit, { name: string; blurb: string }>;
   suitLabels: Record<Suit, string>;
@@ -418,7 +418,7 @@ export function mountPlayGames(): void {
 
   function formatDate(month: number, day: number): string {
     if (data.lang === 'zh') return `${month}月${day}日`;
-    if (data.lang === 'ru') return `${day} ${copy.dateMonths[month - 1] ?? ''}`;
+    if (data.lang === 'ru' || data.lang === 'be') return `${day} ${copy.dateMonths[month - 1] ?? ''}`;
     return `${copy.dateMonths[month - 1] ?? ''} ${day}`;
   }
 
@@ -498,7 +498,7 @@ export function mountPlayGames(): void {
     const cover = titleScreen || soonScreen || worldsScreen || suitScreen || meetScreen || board;
     stage.classList.toggle('is-title', titleScreen);
     stage.classList.toggle('is-cover', cover);
-    recordBtn.hidden = !next.startsWith('fw-') || cover;
+    recordBtn.hidden = !next.startsWith('fw-') || (cover && !titleScreen);
     backBtn.hidden = titleScreen || soonScreen;
     closeBtn.hidden = !cover;
     if (worldsScreen) backBtn.dataset.action = 'fw-back';
@@ -509,6 +509,7 @@ export function mountPlayGames(): void {
     else if (next === 'fw-trial' && trial === 'court') backBtn.dataset.action = 'fw-count-court';
     else if (next === 'fw-trial' && trial === 'card') backBtn.dataset.action = 'fw-trial-court';
     else if (next === 'fw-trial') backBtn.dataset.action = 'fw-count';
+    else if (next === 'fw-spread-intro') backBtn.dataset.action = 'fw-back';
     else if (next === 'fw-spread') {
       backBtn.dataset.action = 'goto';
       backBtn.dataset.goto = 'fw-spread-intro';
@@ -1609,6 +1610,7 @@ export function mountPlayGames(): void {
     }
     else if (action === 'record-close') recordSheet.hidden = true;
     else if (action === 'fw-enter') enterWorlds();
+    else if (action === 'fw-timed') show('fw-spread-intro');
     else if (action === 'fw-back') show('fw-threshold');
     else if (action === 'fw-back-worlds') show('fw-worlds');
     else if (action === 'fw-back-suit') showSuit();
