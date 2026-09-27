@@ -92,9 +92,12 @@ const payloads = cards.map((card) => {
 
     <div class="lb-inner">
       <div class="lb-img-wrap">
-        <div class="lb-card">
-          <img id="lb-img" src="" alt="" />
-        </div>
+        <button class="lb-zoom-open" id="lb-zoom-open" type="button" data-zoom-label={t('gallery.zoom')} aria-label={t('gallery.zoom')}>
+          <span class="lb-card">
+            <img id="lb-img" src="" alt="" />
+          </span>
+          <span class="lb-zoom-chip" aria-hidden="true">{t('gallery.zoom')}</span>
+        </button>
       </div>
       <div class="lb-text" aria-live="polite">
         <div class="lb-suit-val" id="lb-suit-val"></div>
@@ -107,6 +110,12 @@ const payloads = cards.map((card) => {
     </div>
 
     <button class="lb-arrow lb-arrow--next" id="viewer-next" type="button" aria-label={t('gallery.viewer_next')}>→</button>
+  </div>
+  <div class="lb-zoom" id="lb-zoom" hidden>
+    <button class="lb-zoom-close" id="lb-zoom-close" type="button">{t('gallery.close')}</button>
+    <button class="lb-zoom-sheet" id="lb-zoom-sheet" type="button" aria-label={t('gallery.close')}>
+      <img id="lb-zoom-img" alt="" />
+    </button>
   </div>
 </div>
 
@@ -355,6 +364,79 @@ const payloads = cards.map((card) => {
 
   .lb-img-wrap {
     position: relative;
+  }
+
+  .lb-zoom-open {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.55rem;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: zoom-in;
+    font: inherit;
+  }
+
+  .lb-zoom-chip {
+    padding: 0.32rem 0.55rem;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--white);
+    font: 600 0.62rem/1 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .lb-zoom {
+    position: fixed;
+    inset: 0;
+    z-index: 1002;
+    background: rgba(13, 11, 9, 0.94);
+  }
+
+  .lb-zoom-close {
+    position: absolute;
+    top: max(0.85rem, env(safe-area-inset-top));
+    right: max(0.85rem, env(safe-area-inset-right));
+    z-index: 1;
+    padding: 0.55rem 0.8rem;
+    border: 0;
+    background: var(--white);
+    color: var(--ink);
+    cursor: pointer;
+    font: 600 0.68rem/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .lb-zoom-sheet {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding:
+      max(3.4rem, calc(env(safe-area-inset-top) + 2.6rem))
+      max(1rem, env(safe-area-inset-right))
+      max(1rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+    border: 0;
+    background: transparent;
+    cursor: zoom-out;
+  }
+
+  .lb-zoom-sheet img {
+    width: auto;
+    height: auto;
+    min-width: 0;
+    min-height: 0;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: var(--card-radius);
+    box-shadow: 0 1.2rem 3rem rgba(0, 0, 0, 0.35);
   }
 
   .lb-card {
@@ -686,6 +768,11 @@ const payloads = cards.map((card) => {
   const previous = document.getElementById('viewer-prev');
   const next = document.getElementById('viewer-next');
   const image = document.getElementById('lb-img') as HTMLImageElement | null;
+  const zoom = document.getElementById('lb-zoom');
+  const zoomOpen = document.getElementById('lb-zoom-open') as HTMLButtonElement | null;
+  const zoomClose = document.getElementById('lb-zoom-close') as HTMLButtonElement | null;
+  const zoomSheet = document.getElementById('lb-zoom-sheet');
+  const zoomImage = document.getElementById('lb-zoom-img') as HTMLImageElement | null;
   const suitVal = document.getElementById('lb-suit-val');
   const title = document.getElementById('lb-title');
   const worldLine = document.getElementById('lb-world-line');
@@ -701,6 +788,10 @@ const payloads = cards.map((card) => {
     if (image) {
       image.src = card.image;
       image.alt = card.title;
+    }
+    if (zoomOpen) {
+      const label = zoomOpen.dataset.zoomLabel || '';
+      zoomOpen.setAttribute('aria-label', label ? `${label}: ${card.title}` : card.title);
     }
     if (suitVal) {
       suitVal.hidden = !card.suitSymbol;
@@ -732,8 +823,29 @@ const payloads = cards.map((card) => {
     close?.focus();
   }
 
+  function openZoom() {
+    if (!zoom || !image || !zoomImage) return;
+    const src = image.currentSrc || image.src;
+    if (!src) return;
+    zoomImage.src = src;
+    zoomImage.alt = image.alt;
+    zoom.hidden = false;
+    zoomClose?.focus();
+  }
+
+  function closeZoom(restoreFocus = true) {
+    if (!zoom || zoom.hidden) return;
+    zoom.hidden = true;
+    if (zoomImage) {
+      zoomImage.removeAttribute('src');
+      zoomImage.alt = '';
+    }
+    if (restoreFocus) zoomOpen?.focus();
+  }
+
   function closeViewer() {
     if (!viewer) return;
+    if (zoom && !zoom.hidden) closeZoom(false);
     viewer.hidden = true;
     viewer.setAttribute('inert', '');
     viewer.setAttribute('aria-hidden', 'true');
@@ -751,6 +863,10 @@ const payloads = cards.map((card) => {
     });
   });
 
+  zoomOpen?.addEventListener('click', openZoom);
+  zoomClose?.addEventListener('click', closeZoom);
+  zoomSheet?.addEventListener('click', closeZoom);
+
   close?.addEventListener('click', closeViewer);
   previous?.addEventListener('click', () => renderCard(currentIndex - 1));
   next?.addEventListener('click', () => renderCard(currentIndex + 1));
@@ -761,12 +877,21 @@ const payloads = cards.map((card) => {
 
   document.addEventListener('keydown', (event) => {
     if (!viewer || viewer.hidden) return;
+    if (zoom && !zoom.hidden) {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeZoom();
+      }
+      return;
+    }
     if (event.key === 'Escape') closeViewer();
     if (event.key === 'ArrowLeft') renderCard(currentIndex - 1);
     if (event.key === 'ArrowRight') renderCard(currentIndex + 1);
     if (event.key !== 'Tab') return;
 
-    const focusable = Array.from(viewer.querySelectorAll<HTMLElement>('button:not([disabled])'));
+    const focusable = Array.from(viewer.querySelectorAll<HTMLElement>('button:not([disabled])')).filter(
+      (button) => !button.closest('[hidden]'),
+    );
     const first = focusable[0];
     const last = focusable.at(-1);
     if (!first || !last) return;
