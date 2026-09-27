@@ -57,15 +57,13 @@ const t = useTranslations(lang);
 
   .hero-grid {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 36rem) minmax(20rem, 1fr);
     align-items: center;
-    gap: 3rem 2.5rem;
+    gap: 3rem 1.5rem;
     min-width: 0;
-    width: 100%;
   }
 
   .hero-copy {
-    grid-column: 1 / 8;
     position: relative;
     z-index: 2;
     min-width: 0;
@@ -120,15 +118,13 @@ const t = useTranslations(lang);
   }
 
   .hero-pack {
-    grid-column: 8 / 13;
-    grid-row: 1;
     z-index: 1;
     position: relative;
     /* Source canvas is 1536×1024; the box itself is 676×956 at (426, 34). */
     width: min(100%, 20rem);
     aspect-ratio: 676 / 956;
     margin: 0;
-    justify-self: end;
+    justify-self: center;
     align-self: center;
   }
 
