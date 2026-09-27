@@ -26,7 +26,10 @@ const symbols: Record<(typeof lessonSuits)[number], string> = {
 const rankSet = new Set<string>(ranks);
 const allCards = await getCollection('cards');
 const cards = allCards
-  .filter((card) => rankSet.has(card.data.value) && lessonSuits.includes(card.data.suit))
+  .filter((card) => {
+    if (card.data.back || !card.data.suit || !card.data.value) return false;
+    return rankSet.has(card.data.value) && lessonSuits.includes(card.data.suit);
+  })
   .map((card) => ({
     id: card.data.id,
     suit: card.data.suit,
@@ -496,7 +499,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
       <div data-screen="soon" class="fw-spread-intro" hidden>
         <h3 class="fw-spread-intro-title" id="play-soon-title" tabindex="-1">{copy.soon.title}</h3>
         <p class="fw-spread-intro-body">{copy.soon.body}</p>
-        <img class="fw-soon-back" src="/media/card-back.jpg" alt="" width="782" height="1024" decoding="async" />
+        <img class="fw-soon-back" src="/media/card-back.jpg" alt="" width="732" height="1024" decoding="async" />
       </div>
 
       <div class="play-zoom" id="play-zoom" hidden role="dialog" aria-modal="true" aria-label={copy.zoom}>

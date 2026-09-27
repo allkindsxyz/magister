@@ -23,7 +23,8 @@
     "explore": "Исследовать колоду",
     "meet": "Встретиться на SPIEL 2026",
     "meet_aria": "Встретимся на SPIEL Essen 2026",
-    "deck_next": "Показать следующую карту в колоде"
+    "deck_next": "Показать следующую карту в колоде",
+    "pack_alt": "Коробка Magister Cards"
   },
   "worlds_section": {
     "label": "Мифология колоды",

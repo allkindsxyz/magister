@@ -30,7 +30,7 @@ const fallbackImage: Record<Suit, string> = {
 const allCards = await getCollection('cards');
 
 function exampleForSuit(suit: Suit): { src: string; caption: string | null } {
-  const inSuit = allCards.filter((card) => card.data.suit === suit);
+  const inSuit = allCards.filter((card) => card.data.suit === suit && !card.data.back);
   if (inSuit.length === 0) {
     return { src: fallbackImage[suit], caption: null };
   }

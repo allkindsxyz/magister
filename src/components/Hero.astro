@@ -1,8 +1,6 @@
 ---
 import type { Lang } from '../i18n/utils';
-import { useTranslations, pickLocalized } from '../i18n/utils';
-import { getCollection } from 'astro:content';
-import { shuffle } from '../utils/shuffle';
+import { useTranslations } from '../i18n/utils';
 import MagisterLogo from './MagisterLogo.astro';
 
 interface Props {
@@ -11,9 +9,6 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const allCards = await getCollection('cards');
-const cards = shuffle(allCards.filter((card) => card.data.featured)).slice(0, 6);
-const backCount = Math.max(0, cards.length - 1);
 ---
 
 <section class="hero" id="deck" aria-labelledby="hero-title">
@@ -39,62 +34,19 @@ const backCount = Math.max(0, cards.length - 1);
       </div>
     </div>
 
-    <div class="hero-deck">
-      <div class="deck-stack" aria-hidden="true">
-        {Array.from({ length: backCount }).map((_, index) => {
-          const card = cards[index + 1];
-          return (
-            <span
-              class="deck-card deck-card-back"
-              style={`
-                --stack-offset: ${(index + 1) * 8}px;
-                --stack-rotate: ${(index + 1) * -2.4 + 1.6}deg;
-                --stack-z: ${backCount - index};
-              `}
-            >
-              {card && (
-                <span class="deck-card__surface">
-                  <img src={card.data.image} alt="" loading="eager" decoding="async" />
-                </span>
-              )}
-            </span>
-          );
-        })}
-      </div>
-
-      <button
-        class="deck-card deck-card-front"
-        id="deck-front"
-        type="button"
-        aria-label={t('hero.deck_next')}
-        disabled={cards.length < 2}
-      >
-        <span class="deck-card__surface">
-          <img
-            id="deck-front-image"
-            src={cards[0]?.data.image}
-            alt={cards[0] ? pickLocalized(cards[0].data.title, lang) : ''}
-            width="920"
-            height="1316"
-            loading="eager"
-            fetchpriority="high"
-            decoding="async"
-            draggable="false"
-          />
-        </span>
-      </button>
-    </div>
+    <figure class="hero-pack">
+      <img
+        src="/media/pack.png"
+        alt={t('hero.pack_alt')}
+        width="1536"
+        height="1024"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </figure>
   </div>
 </section>
-
-<script
-  id="hero-card-data"
-  type="application/json"
-  set:html={JSON.stringify(cards.map((card) => ({
-    image: card.data.image,
-    title: pickLocalized(card.data.title, lang),
-  })))}
-/>
 
 <style>
   .hero {
@@ -167,116 +119,26 @@ const backCount = Math.max(0, cards.length - 1);
     margin-top: 2.5rem;
   }
 
-  .hero-deck {
+  .hero-pack {
     grid-column: 8 / 13;
     grid-row: 1;
-    position: relative;
     z-index: 1;
-    width: min(72%, 19.8rem);
-    aspect-ratio: 93 / 133;
+    position: relative;
+    /* Source canvas is 1536×1024; the box itself is 676×956 at (426, 34). */
+    width: min(100%, 20rem);
+    aspect-ratio: 676 / 956;
+    margin: 0;
     justify-self: end;
     align-self: center;
-    margin-right: 4%;
   }
 
-  .deck-card {
-    overflow: visible;
-    border: none;
-    background: transparent;
-    filter: drop-shadow(0 1.25rem 2.75rem rgba(23, 23, 20, 0.2));
-    backface-visibility: hidden;
-  }
-
-  .deck-card__surface {
-    display: block;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    border-radius: var(--card-radius);
-    line-height: 0;
-    isolation: isolate;
-  }
-
-  .deck-card__surface img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    object-position: center;
-  }
-
-  .deck-card-back {
+  .hero-pack img {
     position: absolute;
-    inset: 0;
-    z-index: var(--stack-z);
-    transform: translateX(var(--stack-offset)) rotate(var(--stack-rotate));
-    pointer-events: none;
-  }
-
-  .deck-card-back:nth-child(1) { filter: brightness(0.98); }
-  .deck-card-back:nth-child(2) { filter: brightness(0.95); }
-  .deck-card-back:nth-child(3) { filter: brightness(0.92); }
-  .deck-card-back:nth-child(4) { filter: brightness(0.89); }
-  .deck-card-back:nth-child(5) { filter: brightness(0.86); }
-
-  .deck-card-front {
-    position: relative;
-    z-index: 10;
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    transform: rotate(-1deg);
-    cursor: pointer;
-  }
-
-  .deck-card-front:hover:not(.is-busy) {
-    filter: drop-shadow(0 1.5rem 3.25rem rgba(23, 23, 20, 0.26));
-  }
-
-  .deck-card-front:disabled {
-    cursor: default;
-  }
-
-  .deck-card-front.is-busy {
-    pointer-events: none;
-  }
-
-  .deck-card-front.anim-exit-next {
-    animation: heroExitNext 440ms cubic-bezier(0.45, 0, 0.55, 1) forwards;
-  }
-
-  .deck-card-front.anim-exit-prev {
-    animation: heroExitPrev 440ms cubic-bezier(0.45, 0, 0.55, 1) forwards;
-  }
-
-  .deck-card-front.swap-phase {
-    animation: none !important;
-    opacity: 0 !important;
-    transform: rotate(-1deg) !important;
-  }
-
-  @keyframes heroExitNext {
-    from {
-      transform: rotate(-1deg) translateY(0) scale(1);
-      opacity: 1;
-    }
-    to {
-      transform: rotate(-2deg) translateY(112%) scale(0.93);
-      opacity: 0;
-    }
-  }
-
-  @keyframes heroExitPrev {
-    from {
-      transform: rotate(-1deg) translateY(0) scale(1);
-      opacity: 1;
-    }
-    to {
-      transform: rotate(2deg) translateY(-112%) scale(0.93);
-      opacity: 0;
-    }
+    width: calc(1536 / 676 * 100%);
+    max-width: none;
+    height: auto;
+    left: calc(-426 / 676 * 100%);
+    top: calc(-34 / 956 * 100%);
   }
 
   @media (max-width: 900px) {
@@ -316,14 +178,11 @@ const backCount = Math.max(0, cards.length - 1);
       order: 5;
     }
 
-    .hero-deck {
+    .hero-pack {
       order: 6;
-      width: min(40vw, 17.6rem);
+      width: min(78vw, 24rem);
       align-self: center;
-      margin-right: 0;
       margin-top: 2.5rem;
-      overflow: hidden;
-      contain: layout paint;
     }
   }
 
@@ -341,10 +200,10 @@ const backCount = Math.max(0, cards.length - 1);
       width: min(100%, 18.5rem);
     }
 
-    .hero-deck {
+    .hero-pack {
       order: 3;
-      width: min(50vw, 14.7rem);
-      margin-top: 2.5rem;
+      width: min(86vw, 22rem);
+      margin-top: 2rem;
     }
 
     .hero-lead {
@@ -365,114 +224,4 @@ const backCount = Math.max(0, cards.length - 1);
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .deck-card-front.anim-exit-next,
-    .deck-card-front.anim-exit-prev {
-      animation-duration: 1ms;
-    }
-  }
 </style>
-
-<script>
-  (() => {
-    const data = document.getElementById('hero-card-data');
-    const front = document.getElementById('deck-front') as HTMLButtonElement | null;
-    const frontImage = document.getElementById('deck-front-image') as HTMLImageElement | null;
-    if (!data || !front || !frontImage) return;
-
-    const cards: Array<{ image: string; title: string }> = JSON.parse(data.textContent || '[]');
-    const backCards = Array.from(document.querySelectorAll<HTMLElement>('.deck-card-back'));
-    if (cards.length < 2) return;
-
-    let current = 0;
-    let busy = false;
-    let touchStartX = 0;
-    let skipClick = false;
-
-    function syncBackCards() {
-      backCards.forEach((element, index) => {
-        const image = element.querySelector('img');
-        const card = cards[(current + index + 1) % cards.length];
-        if (!image || !card) return;
-        image.src = card.image;
-        image.alt = '';
-      });
-    }
-
-    function waitForAnimation(element: HTMLElement, animationName: string) {
-      return new Promise<void>((resolve) => {
-        let finished = false;
-        const finish = () => {
-          if (finished) return;
-          finished = true;
-          element.removeEventListener('animationend', onEnd);
-          window.clearTimeout(timeout);
-          resolve();
-        };
-        const onEnd = (event: AnimationEvent) => {
-          if (event.target === element && event.animationName.includes(animationName)) finish();
-        };
-        const timeout = window.setTimeout(finish, 500);
-        element.addEventListener('animationend', onEnd);
-      });
-    }
-
-    async function show(index: number, direction: 'next' | 'previous') {
-      if (busy) return;
-      busy = true;
-      front.classList.add('is-busy');
-      const exitClass = direction === 'next' ? 'anim-exit-next' : 'anim-exit-prev';
-      const animationName = direction === 'next' ? 'heroExitNext' : 'heroExitPrev';
-      front.classList.add(exitClass);
-      await waitForAnimation(front, animationName);
-
-      front.classList.remove(exitClass);
-      front.classList.add('swap-phase');
-      current = (index + cards.length) % cards.length;
-      frontImage.src = cards[current].image;
-      frontImage.alt = cards[current].title;
-
-      try {
-        await frontImage.decode();
-      } catch {
-        // The browser can still display the image when decode rejects.
-      }
-
-      await new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-      front.classList.remove('swap-phase');
-      syncBackCards();
-      front.classList.remove('is-busy');
-      busy = false;
-    }
-
-    const next = () => void show(current + 1, 'next');
-    const previous = () => void show(current - 1, 'previous');
-
-    front.addEventListener('click', () => {
-      if (!skipClick) next();
-    });
-
-    front.addEventListener('touchstart', (event) => {
-      touchStartX = event.changedTouches[0].clientX;
-    }, { passive: true });
-
-    front.addEventListener('touchend', (event) => {
-      const distance = event.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(distance) < 48) return;
-      skipClick = true;
-      window.setTimeout(() => { skipClick = false; }, 320);
-      if (distance < 0) next();
-      else previous();
-    }, { passive: true });
-
-    document.addEventListener('keydown', (event) => {
-      const hero = document.querySelector<HTMLElement>('.hero');
-      const rect = hero?.getBoundingClientRect();
-      if (!rect || rect.top >= window.innerHeight || rect.bottom <= 0 || busy) return;
-      if (event.key === 'ArrowRight') next();
-      if (event.key === 'ArrowLeft') previous();
-    });
-
-    syncBackCards();
-  })();
-</script>

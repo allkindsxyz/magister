@@ -1,0 +1,30 @@
+{
+  "id": "card-back",
+  "back": true,
+  "category": {
+    "en": "The deck",
+    "ru": "Колода",
+    "be": "Калода",
+    "zh": "牌组"
+  },
+  "title": {
+    "en": "Card back",
+    "ru": "Рубашка",
+    "be": "Рубашка",
+    "zh": "牌背"
+  },
+  "summary": {
+    "en": "The reverse of every card in the deck.",
+    "ru": "Оборот каждой карты колоды.",
+    "be": "Адварот кожнай карты калоды.",
+    "zh": "整副牌共用的牌背。"
+  },
+  "description": {
+    "en": "The reverse of every card in the deck.",
+    "ru": "Оборот каждой карты колоды.",
+    "be": "Адварот кожнай карты калоды.",
+    "zh": "整副牌共用的牌背。"
+  },
+  "image": "/media/card-back.jpg",
+  "featured": false
+}

@@ -12,8 +12,9 @@ const cards = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/cards' }),
   schema: z.object({
     id: z.string(),
-    suit: z.enum(['spades', 'hearts', 'diamonds', 'clubs']),
-    value: z.string(),
+    suit: z.enum(['spades', 'hearts', 'diamonds', 'clubs']).optional(),
+    value: z.string().optional(),
+    back: z.boolean().optional(),
     category: localizedString,
     title: localizedString,
     summary: localizedString,

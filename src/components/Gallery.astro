@@ -16,16 +16,21 @@ const cards = shuffle(allCards);
 const symbols: Record<string, string> = { spades: '♠', hearts: '♥', diamonds: '♦', clubs: '♣' };
 
 const payloads = cards.map((card) => {
-  const suit = card.data.suit as (typeof suits)[number];
+  const isBack = Boolean(card.data.back) || !card.data.suit;
+  const suit = card.data.suit as (typeof suits)[number] | undefined;
   return {
     title: pickLocalized(card.data.title, lang),
     description: pickLocalized(card.data.description, lang),
-    suit,
-    value: card.data.value,
+    suit: suit ?? '',
+    value: isBack ? '' : (card.data.value ?? ''),
     image: card.data.image,
-    suitSymbol: symbols[suit],
-    worldLine: `${t('gallery.world_label')}: ${t(`worlds.${suit}.name`)}`,
-    metaLine: `${t('gallery.suit_label')}: ${t(`suits.${suit}`)} · ${t('gallery.value_label')}: ${card.data.value}`,
+    suitSymbol: isBack || !suit ? '' : symbols[suit],
+    worldLine: isBack || !suit ? '' : `${t('gallery.world_label')}: ${t(`worlds.${suit}.name`)}`,
+    metaLine:
+      isBack || !suit
+        ? ''
+        : `${t('gallery.suit_label')}: ${t(`suits.${suit}`)} · ${t('gallery.value_label')}: ${card.data.value}`,
+    back: isBack,
   };
 });
 ---
@@ -57,7 +62,7 @@ const payloads = cards.map((card) => {
             />
             <div class="carousel-card__overlay">
               <div class="carousel-card__overlay-inner">
-                <span class="carousel-card__suit">{card.suitSymbol}{card.value}</span>
+                {!card.back && <span class="carousel-card__suit">{card.suitSymbol}{card.value}</span>}
                 <span class="carousel-card__name">{card.title}</span>
                 <span class="carousel-card__btn">{t('gallery.open_btn')}</span>
               </div>
@@ -642,6 +647,7 @@ const payloads = cards.map((card) => {
     suitSymbol: string;
     worldLine: string;
     metaLine: string;
+    back?: boolean;
   }
 
   const dataNode = document.getElementById('gallery-data');
@@ -697,13 +703,22 @@ const payloads = cards.map((card) => {
       image.alt = card.title;
     }
     if (suitVal) {
+      suitVal.hidden = !card.suitSymbol;
       suitVal.dataset.suit = card.suit;
-      suitVal.innerHTML = `<span class="lb-suit-symbol" aria-hidden="true">${card.suitSymbol}</span><span class="lb-suit-rank">${card.value}</span>`;
+      suitVal.innerHTML = card.suitSymbol
+        ? `<span class="lb-suit-symbol" aria-hidden="true">${card.suitSymbol}</span><span class="lb-suit-rank">${card.value}</span>`
+        : '';
     }
     if (title) title.textContent = card.title;
-    if (worldLine) worldLine.textContent = card.worldLine;
+    if (worldLine) {
+      worldLine.hidden = !card.worldLine;
+      worldLine.textContent = card.worldLine;
+    }
     if (body) body.textContent = card.description;
-    if (meta) meta.textContent = card.metaLine;
+    if (meta) {
+      meta.hidden = !card.metaLine;
+      meta.textContent = card.metaLine;
+    }
   }
 
   function openViewer(index: number, source: HTMLElement) {

@@ -23,7 +23,8 @@
     "explore": "浏览牌组",
     "meet": "SPIEL 2026 见",
     "meet_aria": "在 SPIEL Essen 2026 与我们见面",
-    "deck_next": "显示牌组中的下一张牌"
+    "deck_next": "显示牌组中的下一张牌",
+    "pack_alt": "Magister Cards 卡盒"
   },
   "worlds_section": {
     "label": "牌组神话",
