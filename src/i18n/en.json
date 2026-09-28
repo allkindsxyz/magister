@@ -64,6 +64,8 @@
     "open_btn": "Open figure →",
     "close": "Close",
     "zoom": "Enlarge",
+    "share": "Share",
+    "share_copied": "Copied",
     "previous": "Previous cards",
     "next": "Next cards",
     "viewer_previous": "Previous card",

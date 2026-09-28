@@ -19,6 +19,7 @@ const payloads = cards.map((card) => {
   const isBack = Boolean(card.data.back) || !card.data.suit;
   const suit = card.data.suit as (typeof suits)[number] | undefined;
   return {
+    id: card.data.id,
     title: pickLocalized(card.data.title, lang),
     description: pickLocalized(card.data.description, lang),
     suit: suit ?? '',
@@ -100,7 +101,15 @@ const payloads = cards.map((card) => {
         </button>
       </div>
       <div class="lb-text" aria-live="polite">
-        <div class="lb-suit-val" id="lb-suit-val"></div>
+        <div class="lb-suit-row">
+          <div class="lb-suit-val" id="lb-suit-val"></div>
+          <button class="btn lb-share" id="lb-share" type="button" data-copied={t('gallery.share_copied')}>
+            <span class="lb-share-stack">
+              <span class="lb-share-face" data-idle>{t('gallery.share')}</span>
+              <span class="lb-share-face" data-done aria-hidden="true">{t('gallery.share_copied')}</span>
+            </span>
+          </button>
+        </div>
         <h2 class="lb-title" id="lb-title"></h2>
         <p class="lb-kicker-line" id="lb-world-line"></p>
         <div class="lb-divider"></div>
@@ -454,8 +463,17 @@ const payloads = cards.map((card) => {
     border-radius: inherit;
   }
 
+  .lb-suit-row {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-bottom: 0.4rem;
+  }
+
   .lb-suit-val {
-    margin: 0 0 0.4rem;
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
     padding-top: 0.08em;
     color: var(--ink);
     font-family: var(--display);
@@ -513,6 +531,58 @@ const payloads = cards.map((card) => {
     font-style: normal;
     line-height: 1.75;
     white-space: pre-line;
+  }
+
+  .lb-share {
+    flex: none;
+    width: auto;
+    min-height: 0;
+    margin-left: auto;
+    padding: 0.55rem 0.8rem;
+    background: transparent;
+    white-space: nowrap;
+  }
+
+  .lb-share:hover,
+  .lb-share:focus-visible {
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .lb-share.is-copied,
+  .lb-share.is-copied:hover,
+  .lb-share.is-copied:focus-visible {
+    border-color: #3cba78;
+    background: #3cba78;
+    color: var(--white);
+  }
+
+  .lb-share-stack {
+    display: grid;
+  }
+
+  .lb-share-face {
+    grid-area: 1 / 1;
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 180ms ease,
+      transform 180ms ease;
+  }
+
+  .lb-share-face[data-done] {
+    opacity: 0;
+    transform: translateY(0.35rem);
+  }
+
+  .lb-share.is-copied .lb-share-face[data-idle] {
+    opacity: 0;
+    transform: translateY(-0.35rem);
+  }
+
+  .lb-share.is-copied .lb-share-face[data-done] {
+    opacity: 1;
+    transform: none;
   }
 
   .lb-meta {
@@ -721,6 +791,7 @@ const payloads = cards.map((card) => {
 
 <script>
   interface CardData {
+    id: string;
     title: string;
     description: string;
     suit: string;
@@ -778,8 +849,38 @@ const payloads = cards.map((card) => {
   const worldLine = document.getElementById('lb-world-line');
   const body = document.getElementById('lb-body');
   const meta = document.getElementById('lb-meta');
+  const share = document.getElementById('lb-share') as HTMLButtonElement | null;
+  const shareIdle = share?.querySelector<HTMLElement>('[data-idle]') ?? null;
+  const shareDone = share?.querySelector<HTMLElement>('[data-done]') ?? null;
   let currentIndex = 0;
   let opener: HTMLElement | null = null;
+  let shareTimer = 0;
+
+  function cardLink(id: string): string {
+    const url = new URL(window.location.href);
+    url.search = '';
+    url.searchParams.set('card', id);
+    url.hash = '';
+    return url.toString();
+  }
+
+  function syncCardLink(id: string | null) {
+    const url = new URL(window.location.href);
+    if (id) url.searchParams.set('card', id);
+    else url.searchParams.delete('card');
+    url.hash = '';
+    const next = `${url.pathname}${url.search}`;
+    if (`${window.location.pathname}${window.location.search}` !== next) {
+      history.replaceState(null, '', next);
+    }
+  }
+
+  function resetShare() {
+    window.clearTimeout(shareTimer);
+    share?.classList.remove('is-copied');
+    shareIdle?.removeAttribute('aria-hidden');
+    shareDone?.setAttribute('aria-hidden', 'true');
+  }
 
   function renderCard(index: number) {
     if (!cards.length) return;
@@ -810,6 +911,8 @@ const payloads = cards.map((card) => {
       meta.hidden = !card.metaLine;
       meta.textContent = card.metaLine;
     }
+    resetShare();
+    syncCardLink(card.id);
   }
 
   function openViewer(index: number, source: HTMLElement) {
@@ -850,7 +953,45 @@ const payloads = cards.map((card) => {
     viewer.setAttribute('inert', '');
     viewer.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('dialog-open');
+    resetShare();
+    syncCardLink(null);
     opener?.focus();
+  }
+
+  async function writeClipboard(text: string): Promise<boolean> {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      const area = document.createElement('textarea');
+      area.value = text;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.top = '0';
+      area.style.left = '-9999px';
+      document.body.appendChild(area);
+      area.select();
+      let ok = false;
+      try {
+        ok = document.execCommand('copy');
+      } catch {
+        ok = false;
+      }
+      area.remove();
+      return ok;
+    }
+  }
+
+  async function copyCardLink() {
+    const card = cards[currentIndex];
+    if (!card || !share) return;
+    const ok = await writeClipboard(cardLink(card.id));
+    if (!ok) return;
+    share.classList.add('is-copied');
+    shareIdle?.setAttribute('aria-hidden', 'true');
+    shareDone?.removeAttribute('aria-hidden');
+    window.clearTimeout(shareTimer);
+    shareTimer = window.setTimeout(resetShare, 1600);
   }
 
   track?.querySelectorAll<HTMLElement>('.carousel-card').forEach((card) => {
@@ -867,6 +1008,7 @@ const payloads = cards.map((card) => {
   zoomClose?.addEventListener('click', closeZoom);
   zoomSheet?.addEventListener('click', closeZoom);
 
+  share?.addEventListener('click', () => void copyCardLink());
   close?.addEventListener('click', closeViewer);
   previous?.addEventListener('click', () => renderCard(currentIndex - 1));
   next?.addEventListener('click', () => renderCard(currentIndex + 1));
@@ -903,4 +1045,11 @@ const payloads = cards.map((card) => {
       first.focus();
     }
   });
+
+  const requestedId = new URLSearchParams(window.location.search).get('card');
+  if (requestedId) {
+    const index = cards.findIndex((card) => card.id === requestedId);
+    const source = track?.querySelector<HTMLElement>(`.carousel-card[data-index="${index}"]`);
+    if (index >= 0 && source) openViewer(index, source);
+  }
 </script>

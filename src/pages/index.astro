@@ -4,6 +4,8 @@ const acceptLang = (Astro.request.headers.get('accept-language') || '').toLowerC
 const tags = acceptLang.split(',').map((part) => part.split(';')[0].trim());
 const wants = (code: string) => tags.some((tag) => tag === code || tag.startsWith(`${code}-`));
 const redirectTo = wants('zh') ? '/zh/' : wants('be') ? '/be/' : wants('ru') ? '/ru/' : '/en/';
+const target = new URL(redirectTo, Astro.url);
+target.search = Astro.url.search;
 
-return Astro.redirect(redirectTo, 302);
+return Astro.redirect(`${target.pathname}${target.search}`, 302);
 ---
