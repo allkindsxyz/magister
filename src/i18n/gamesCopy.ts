@@ -6,6 +6,7 @@ export type GamesCopy = {
   lead: string;
   cta: string;
   back: string;
+  exit: string;
   confirm: string;
   next: string;
   retry: string;
@@ -154,6 +155,7 @@ const en: GamesCopy = {
   lead: 'Three games. One deck.',
   cta: 'Play',
   back: 'Back',
+  exit: 'Exit',
   confirm: 'Got it',
   next: 'Next card',
   retry: 'Start this level again',
@@ -367,6 +369,7 @@ const ru: GamesCopy = {
   lead: 'Три игры. Одна колода.',
   cta: 'Играть',
   back: 'Назад',
+  exit: 'Выйти',
   confirm: 'Понятно',
   next: 'Следующая карта',
   retry: 'Начать уровень заново',
@@ -580,6 +583,7 @@ const be: GamesCopy = {
   lead: 'Тры гульні. Адна калода.',
   cta: 'Гуляць',
   back: 'Назад',
+  exit: 'Выйсці',
   confirm: 'Зразумела',
   next: 'Наступная карта',
   retry: 'Пачаць узровень нанова',
@@ -793,6 +797,7 @@ const zh: GamesCopy = {
   lead: '三场游戏。一副牌。',
   cta: '开始',
   back: '返回',
+  exit: '退出',
   confirm: '明白了',
   next: '下一张',
   retry: '重来这一关',

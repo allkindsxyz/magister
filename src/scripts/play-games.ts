@@ -499,8 +499,8 @@ export function mountPlayGames(): void {
     stage.classList.toggle('is-title', titleScreen);
     stage.classList.toggle('is-cover', cover);
     recordBtn.hidden = !next.startsWith('fw-') || (cover && !titleScreen);
-    backBtn.hidden = titleScreen || soonScreen;
-    closeBtn.hidden = !cover;
+    backBtn.hidden = soonScreen;
+    closeBtn.hidden = !cover || titleScreen;
     if (worldsScreen) backBtn.dataset.action = 'fw-back';
     else if (suitScreen) backBtn.dataset.action = 'fw-back-worlds';
     else if (meetScreen) backBtn.dataset.action = 'fw-back-suit';
@@ -515,7 +515,7 @@ export function mountPlayGames(): void {
       backBtn.dataset.goto = 'fw-spread-intro';
     } else backBtn.dataset.action = 'close';
     backMark.textContent = '←';
-    backLabel.textContent = copy.back;
+    backLabel.textContent = titleScreen ? copy.exit : copy.back;
     root?.querySelectorAll<HTMLElement>('[data-screen]').forEach((panel) => {
       panel.hidden = panel.dataset.screen !== next;
     });
