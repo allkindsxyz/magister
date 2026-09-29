@@ -1091,7 +1091,9 @@ export function mountPlayGames(): void {
     pulse(loreCard, seen ? 'true' : 'dim');
     loreOptions.querySelectorAll('button').forEach((button) => {
       button.toggleAttribute('disabled', true);
-      if (button.dataset.id === id) button.classList.add(seen ? 'is-hit' : 'is-miss');
+      const optionId = button.dataset.id ?? '';
+      if (optionId === id) button.classList.add(seen ? 'is-hit' : 'is-miss');
+      else if (!seen && optionId === question.correct_answer) button.classList.add('is-hit');
     });
     say(line);
   }
