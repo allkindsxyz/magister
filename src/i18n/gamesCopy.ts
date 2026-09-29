@@ -19,9 +19,8 @@ export type GamesCopy = {
     birth_title: string;
     birth_blurb: string;
     birth_lock: string;
-    destiny_title: string;
-    destiny_blurb: string;
-    destiny_lock: string;
+    lore_title: string;
+    lore_blurb: string;
   };
   learn: {
     threshold: string;
@@ -108,24 +107,31 @@ export type GamesCopy = {
     day: string;
     show: string;
     another: string;
-    open_destiny: string;
+    open_lore: string;
     joker_title: string;
     joker_body: string;
     missing: string;
     date_line: string;
     spheres: Record<SuitName, string>;
   };
-  destiny: {
-    title: string;
-    prompt_label: string;
-    prompt_placeholder: string;
-    hold: string;
-    hints: string[];
-    shuffle: string;
-    shuffling: string;
-    draw: string;
+  lore: {
+    threshold: string;
+    enter: string;
+    resume: string;
+    begin: string;
     again: string;
-    you_asked: string;
+    levels: Record<'Story' | 'Context' | 'Nuances', string>;
+    level_blurbs: Record<'Story' | 'Context' | 'Nuances', string>;
+    level_title: string;
+    next_level: string;
+    pass_title: string;
+    tally: string;
+    fail_note: string;
+    done_title: string;
+    done_note: string;
+    locked: string;
+    seen: string[];
+    missed: string[];
   };
   locked: {
     to_learn: string;
@@ -168,9 +174,8 @@ const en: GamesCopy = {
     birth_title: 'Card of Destiny',
     birth_blurb: 'Every birthday has its card. Enter your date of birth and find the card that has followed you since the day you were born.',
     birth_lock: 'Opens if you lay the deck out in five minutes or less.',
-    destiny_title: 'The Oracle',
-    destiny_blurb: 'When the odds are even, ask the deck. Think of what troubles you. Draw one card. Let Magister answer.',
-    destiny_lock: 'Opens after your birthday card.',
+    lore_title: 'Initiation',
+    lore_blurb: 'Each card holds more than first glance reveals. Go from its stories to meanings and secrets.',
   },
   learn: {
     threshold:
@@ -272,7 +277,7 @@ const en: GamesCopy = {
     day: 'Day',
     show: 'Show my card',
     another: 'Another date',
-    open_destiny: 'Card of destiny',
+    open_lore: 'Initiation',
     joker_title: '31 December — the Joker',
     joker_body:
       'This is the day that brings the count to 365. Camp sets it between the Ace of Hearts and the King of Spades. Both paintings are open below.',
@@ -285,23 +290,33 @@ const en: GamesCopy = {
       spades: 'Winter — work, inner growth, trials, will, wisdom.',
     },
   },
-  destiny: {
-    title: 'Card of destiny',
-    prompt_label: 'What do you want a hint about?',
-    prompt_placeholder: 'One question. It stays on this page.',
-    hold: 'Hold the question',
-    hints: [
-      'What do you want a hint about?',
-      'Hold one question, not a list.',
-      'Let the picture answer sideways.',
-      'Don’t reach for the card yet.',
-      'When the ring closes, shuffle.',
-    ],
-    shuffle: 'Shuffle',
-    shuffling: 'Shuffling',
-    draw: 'Draw a card',
-    again: 'Ask again',
-    you_asked: 'You asked',
+  lore: {
+    threshold:
+      'Each card holds more than first glance reveals. Initiation leads inward — from the stories a card tells, through the meanings hidden in them, to the secrets the Magister does not open to everyone.',
+    enter: 'Play',
+    resume: 'Continue',
+    begin: 'Begin',
+    again: 'Play again',
+    levels: {
+      Story: 'Stories',
+      Context: 'Meanings',
+      Nuances: 'Secrets',
+    },
+    level_blurbs: {
+      Story: 'The card does not hide: first it simply tells what happened.',
+      Context: 'Then it gets harder: behind every plot stands a reason, a motive, someone’s will.',
+      Nuances: 'And only to a few it opens the last thing — a detail after which everything read before looks different.',
+    },
+    level_title: 'Level {n}: {name}',
+    next_level: 'Next level',
+    pass_title: 'You finished the {name} level.',
+    tally: 'Guessed: {hits}. Misses: {misses}.',
+    fail_note: 'Too many misses. Play this level again.',
+    done_title: 'You have completed Initiation.',
+    done_note: 'You are now familiar with the mythology of Magister.',
+    locked: 'Clear the previous level first.',
+    seen: ['Correct.', 'Yes, you are right.', 'All true.'],
+    missed: ['Not quite.', 'Not this time.', 'Look closer.'],
   },
   locked: {
     to_learn: 'Learn the deck',
@@ -382,9 +397,8 @@ const ru: GamesCopy = {
     birth_title: 'Карта судьбы',
     birth_blurb: 'У каждого дня рождения есть своя карта. Введите дату и найдите карту, которая идёт за вами с самого рождения.',
     birth_lock: 'Откроется, если разложить колоду за пять минут или быстрее.',
-    destiny_title: 'Оракул',
-    destiny_blurb: 'Когда шансы равны, спросите колоду. Подумайте о том, что тревожит. Вытяните одну карту. Пусть Magister ответит.',
-    destiny_lock: 'Откроется после карты рождения.',
+    lore_title: 'Посвящение',
+    lore_blurb: 'Каждая карта хранит больше, чем видно с первого взгляда. От историй — к смыслам и тайнам.',
   },
   learn: {
     threshold:
@@ -486,7 +500,7 @@ const ru: GamesCopy = {
     day: 'День',
     show: 'Показать карту',
     another: 'Другая дата',
-    open_destiny: 'Карта судьбы',
+    open_lore: 'Посвящение',
     joker_title: '31 декабря — джокер',
     joker_body:
       'Этот день доводит счёт до 365. У Кэмпа он стоит между тузом червей и королём пик. Обе картины открыты ниже.',
@@ -499,23 +513,33 @@ const ru: GamesCopy = {
       spades: 'Зима — работа, внутренний рост, испытания, воля, мудрость.',
     },
   },
-  destiny: {
-    title: 'Карта судьбы',
-    prompt_label: 'О чём вы хотите подсказку?',
-    prompt_placeholder: 'Один вопрос. Он останется на этой странице.',
-    hold: 'Держать вопрос',
-    hints: [
-      'О чём вы хотите подсказку?',
-      'Один вопрос, не список.',
-      'Пусть картина ответит сбоку.',
-      'Пока не тяните карту.',
-      'Когда кольцо закроется — шафл.',
-    ],
-    shuffle: 'Шафл',
-    shuffling: 'Тасуем',
-    draw: 'Вытянуть карту',
-    again: 'Спросить снова',
-    you_asked: 'Вы спросили',
+  lore: {
+    threshold:
+      'Каждая карта хранит больше, чем видно с первого взгляда. «Посвящение» ведёт вглубь — от историй, которые она рассказывает, через смыслы, которые в них скрыты, к тайнам, которые Магистр открывает не каждому.',
+    enter: 'Играть',
+    resume: 'Продолжить',
+    begin: 'Начать',
+    again: 'Сыграть снова',
+    levels: {
+      Story: 'Истории',
+      Context: 'Смыслы',
+      Nuances: 'Тайны',
+    },
+    level_blurbs: {
+      Story: 'Карта не таится: сначала она просто рассказывает, что случилось.',
+      Context: 'Дальше сложнее: за каждым сюжетом стоит причина, мотив, чья-то воля.',
+      Nuances: 'И только немногим она открывает последнее — деталь, после которой всё прочитанное раньше выглядит иначе.',
+    },
+    level_title: 'Уровень {n}: {name}',
+    next_level: 'Следующий уровень',
+    pass_title: 'Вы завершили уровень «{name}».',
+    tally: 'Угадано: {hits}. Ошибок: {misses}.',
+    fail_note: 'Слишком много ошибок. Пройдите уровень снова.',
+    done_title: 'Вы прошли Посвящение.',
+    done_note: 'Теперь вы знакомы с мифологией Магистра.',
+    locked: 'Сначала пройдите предыдущий уровень.',
+    seen: ['Верно.', 'Да, ты прав.', 'Все верно.'],
+    missed: ['Не совсем.', 'Не в этот раз.', 'Присмотрись.'],
   },
   locked: {
     to_learn: 'Узнать колоду',
@@ -596,9 +620,8 @@ const be: GamesCopy = {
     birth_title: 'Карта лёсу',
     birth_blurb: 'У кожнага дня нараджэння ёсць свая карта. Увядзіце дату і знайдзіце карту, якая ідзе за вамі ад самага нараджэння.',
     birth_lock: 'Адкрыецца, калі раскласці калоду за пяць хвілін або хутчэй.',
-    destiny_title: 'Аракул',
-    destiny_blurb: 'Калі шанцы роўныя, спытайце калоду. Падумайце пра тое, што трывожыць. Выцягніце адну карту. Няхай Magister адкажа.',
-    destiny_lock: 'Адкрыецца пасля карты нараджэння.',
+    lore_title: 'Пасвячэнне',
+    lore_blurb: 'Кожная карта хавае больш, чым відаць з першага погляду. Ад гісторый — да сэнсаў і таямніц.',
   },
   learn: {
     threshold:
@@ -700,7 +723,7 @@ const be: GamesCopy = {
     day: 'Дзень',
     show: 'Паказаць карту',
     another: 'Іншая дата',
-    open_destiny: 'Карта лёсу',
+    open_lore: 'Пасвячэнне',
     joker_title: '31 снежня — джокер',
     joker_body:
       'Гэты дзень даводзіць лік да 365. У Кэмпа ён стаіць паміж тузам чэрваў і каралём пік. Абедзве карціны адкрыты ніжэй.',
@@ -713,23 +736,33 @@ const be: GamesCopy = {
       spades: 'Зіма — праца, унутраны рост, выпрабаванні, воля, мудрасць.',
     },
   },
-  destiny: {
-    title: 'Карта лёсу',
-    prompt_label: 'Пра што вы хочаце падказку?',
-    prompt_placeholder: 'Адно пытанне. Яно застанецца на гэтай старонцы.',
-    hold: 'Трымаць пытанне',
-    hints: [
-      'Пра што вы хочаце падказку?',
-      'Адно пытанне, не спіс.',
-      'Няхай карціна адкажа збоку.',
-      'Пакуль не цягніце карту.',
-      'Калі колца замкнецца — шафл.',
-    ],
-    shuffle: 'Шафл',
-    shuffling: 'Тасуем',
-    draw: 'Выцягнуць карту',
-    again: 'Спытаць зноў',
-    you_asked: 'Вы спыталі',
+  lore: {
+    threshold:
+      'Кожная карта хавае больш, чым відаць з першага погляду. «Пасвячэнне» вядзе ўглыб — ад гісторый, якія яна расказвае, праз сэнсы, схаваныя ў іх, да таямніц, якія Магістр адкрывае не кожнаму.',
+    enter: 'Гуляць',
+    resume: 'Працягнуць',
+    begin: 'Пачаць',
+    again: 'Згуляць зноў',
+    levels: {
+      Story: 'Гісторыі',
+      Context: 'Сэнсы',
+      Nuances: 'Таямніцы',
+    },
+    level_blurbs: {
+      Story: 'Карта не хаваецца: спачатку яна проста расказвае, што здарылася.',
+      Context: 'Далей складаней: за кожным сюжэтам стаіць прычына, матыў, чыясьці воля.',
+      Nuances: 'І толькі нямногім яна адкрывае апошняе — дэталь, пасля якой усё прачытанае раней выглядае інакш.',
+    },
+    level_title: 'Узровень {n}: {name}',
+    next_level: 'Наступны ўзровень',
+    pass_title: 'Вы завяршылі ўзровень «{name}».',
+    tally: 'Угадана: {hits}. Памылак: {misses}.',
+    fail_note: 'Занадта шмат памылак. Прайдзіце ўзровень зноў.',
+    done_title: 'Вы прайшлі Пасвячэнне.',
+    done_note: 'Цяпер вы знаёмыя з міфалогіяй Магістра.',
+    locked: 'Спачатку прайдзіце папярэдні ўзровень.',
+    seen: ['Дакладна.', 'Так, ты маеш рацыю.', 'Усё дакладна.'],
+    missed: ['Не зусім.', 'Не гэтым разам.', 'Прыгледзься.'],
   },
   locked: {
     to_learn: 'Даведацца калоду',
@@ -810,9 +843,8 @@ const zh: GamesCopy = {
     birth_title: '命运之牌',
     birth_blurb: '每个生日都有自己的牌。输入出生日，找出从你出生那天起就跟着你的那一张。',
     birth_lock: '在五分钟内排完牌组后开启。',
-    destiny_title: '神谕',
-    destiny_blurb: '胜负难分时，去问这副牌。想着困扰你的事。抽一张。让 Magister 回答。',
-    destiny_lock: '打开命运之牌之后开启。',
+    lore_title: '授礼',
+    lore_blurb: '每张牌藏着第一眼看不见的东西。从故事到深意，再到隐秘。',
   },
   learn: {
     threshold: '每张牌上的花色与数字都不是装饰。它们是写进 Magister 四个世界里的密码。看着面前这些面孔。学会看见它们。',
@@ -913,7 +945,7 @@ const zh: GamesCopy = {
     day: '日',
     show: '出示我的牌',
     another: '另一个日期',
-    open_destiny: '命运牌',
+    open_lore: '授礼',
     joker_title: '12 月 31 日 — 鬼牌',
     joker_body: '这一天把计数补成 365。坎普把它放在红桃 A 与黑桃 K 之间。两幅画都在下面。',
     missing: '这一天是{suit}{rank}。这幅画还没有收入牌组。',
@@ -925,23 +957,33 @@ const zh: GamesCopy = {
       spades: '冬 — 工作、内在成长、考验、意志、智慧。',
     },
   },
-  destiny: {
-    title: '命运牌',
-    prompt_label: '你想要关于什么的提示？',
-    prompt_placeholder: '一个问题。它只留在这个页面上。',
-    hold: '握住这个问题',
-    hints: [
-      '你想要关于什么的提示？',
-      '一个问题，不要一串。',
-      '让画面从侧面回答。',
-      '先不要抽牌。',
-      '环合上之后，再洗牌。',
-    ],
-    shuffle: '洗牌',
-    shuffling: '正在洗牌',
-    draw: '抽一张',
-    again: '再问一次',
-    you_asked: '你问的是',
+  lore: {
+    threshold:
+      '每张牌藏着第一眼看不见的东西。「授礼」带你往深处走——从它讲述的故事，到藏在故事里的深意，再到Magister不对每个人敞开的隐秘。',
+    enter: '开始',
+    resume: '继续',
+    begin: '开始本关',
+    again: '再玩一次',
+    levels: {
+      Story: '故事',
+      Context: '深意',
+      Nuances: '隐秘',
+    },
+    level_blurbs: {
+      Story: '牌并不隐瞒：它先只是讲述发生了什么。',
+      Context: '然后更难：每个情节背后都有原因、动机、某人的意志。',
+      Nuances: '只有少数人能看见最后一层——那一点细节会让先前读过的一切改观。',
+    },
+    level_title: '第 {n} 关：{name}',
+    next_level: '下一关',
+    pass_title: '你完成了「{name}」关。',
+    tally: '猜对：{hits}。失误：{misses}。',
+    fail_note: '错得太多。请重来这一关。',
+    done_title: '你已完成授礼。',
+    done_note: '你已熟悉 Magister 的神话。',
+    locked: '请先通过上一关。',
+    seen: ['对。', '是的，你看对了。', '完全正确。'],
+    missed: ['不完全是。', '这一次不是。', '再看仔细。'],
   },
   locked: {
     to_learn: '认识牌组',

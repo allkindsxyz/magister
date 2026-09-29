@@ -1,4 +1,5 @@
 import type { GamesCopy, SuitName } from '../i18n/gamesCopy';
+import type { DeepDiveCard, DeepDiveLevel, DeepDiveQuestion } from '../content/deep-dive/types';
 import { birthCard, daysInMonth } from '../lib/birthCard';
 import { shuffle } from '../utils/shuffle';
 
@@ -21,12 +22,14 @@ type PlayData = {
   suitLabels: Record<Suit, string>;
   symbols: Record<Suit, string>;
   cards: PlayCard[];
+  lore: DeepDiveCard[];
 };
 
 type Save = {
   birthday: boolean;
   destiny: boolean;
   bestMs: number | null;
+  lore: { pack: string; cleared: number };
 };
 
 type TrialKind = 'pip' | 'court' | 'card';
@@ -38,7 +41,9 @@ const FIVE_MS = 5 * 60 * 1000;
 const BOARD_GATE = 52;
 const COURT = ['A', 'J', 'Q', 'K'];
 const PIPS = ['2', '3', '4', '5', '6', '7', '8', '9', '10'];
-const RITUAL_MS = 30_000;
+const LORE_LEVELS: DeepDiveLevel[] = ['Story', 'Context', 'Nuances'];
+const LORE_PACK = 'full';
+const LORE_MAX_MISS = 5;
 const SUITS: Suit[] = ['hearts', 'diamonds', 'clubs', 'spades'];
 const SUIT_FACE: Record<Suit, string> = {
   hearts: 'jack-hearts',
@@ -48,7 +53,20 @@ const SUIT_FACE: Record<Suit, string> = {
 };
 const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
-const EMPTY_SAVE: Save = { birthday: false, destiny: false, bestMs: null };
+function emptySave(): Save {
+  return { birthday: false, destiny: false, bestMs: null, lore: { pack: LORE_PACK, cleared: 0 } };
+}
+
+function parseLoreSave(raw: unknown): Save['lore'] {
+  if (!raw || typeof raw !== 'object') return { pack: LORE_PACK, cleared: 0 };
+  const lore = raw as { pack?: unknown; cleared?: unknown };
+  if (lore.pack !== LORE_PACK) return { pack: LORE_PACK, cleared: 0 };
+  const cleared =
+    typeof lore.cleared === 'number' && Number.isInteger(lore.cleared)
+      ? Math.min(LORE_LEVELS.length, Math.max(0, lore.cleared))
+      : 0;
+  return { pack: LORE_PACK, cleared };
+}
 
 function fill(template: string, vars: Record<string, string | number>): string {
   return template.replace(/\{(\w+)\}/g, (_, key: string) => String(vars[key] ?? ''));
@@ -90,15 +108,16 @@ function cleanName(raw: string): string | null {
 function loadSave(): Save {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
-    if (!raw) return { ...EMPTY_SAVE };
+    if (!raw) return emptySave();
     const data = JSON.parse(raw) as Partial<Save>;
     return {
       birthday: data.birthday === true,
       destiny: data.destiny === true,
       bestMs: typeof data.bestMs === 'number' && Number.isFinite(data.bestMs) && data.bestMs > 0 ? data.bestMs : null,
+      lore: parseLoreSave((data as { lore?: unknown }).lore),
     };
   } catch {
-    return { ...EMPTY_SAVE };
+    return emptySave();
   }
 }
 
@@ -111,6 +130,12 @@ export function mountPlayGames(): void {
   const data = JSON.parse(dataEl.textContent) as PlayData;
   const { copy, cards, suitLabels, symbols, worlds } = data;
   const byId = new Map(cards.map((card) => [card.id, card]));
+  const lorePacks = data.lore ?? [];
+  const loreById = new Map(lorePacks.map((pack) => [pack.card_id, pack]));
+  const loreDeck = lorePacks.flatMap((pack) => {
+    const card = byId.get(pack.card_id);
+    return card ? [card] : [];
+  });
 
   const stage = must(root, '#play-stage');
   const scrim = must(root, '.play-scrim');
@@ -181,6 +206,28 @@ export function mountPlayGames(): void {
   const trialFull = must(root, '#fw-trial-full');
   const trialNext = must<HTMLButtonElement>(root, '#fw-trial-next');
   const meetScreen = must(root, '[data-screen="fw-meet"]');
+  const loreScreen = must(root, '[data-screen="lore-meet"]');
+  const loreCard = must(root, '#lore-card');
+  const loreImg = must<HTMLImageElement>(root, '#lore-img');
+  const loreKicker = must(root, '#lore-kicker');
+  const loreRank = must(root, '#lore-rank');
+  const loreSymbol = must(root, '#lore-symbol');
+  const loreTitle = must(root, '#lore-title');
+  const loreAsk = must(root, '#lore-ask');
+  const loreOptions = must(root, '#lore-options');
+  const loreFeedback = must(root, '#lore-feedback');
+  const loreLine = must(root, '#lore-line');
+  const loreFull = must(root, '#lore-full');
+  const loreNext = must<HTMLButtonElement>(root, '#lore-next');
+  const loreResult = must(root, '#lore-result');
+  const loreResultTitle = must(root, '#lore-result-title');
+  const loreResultLead = must(root, '#lore-result-lead');
+  const loreResultStats = must(root, '#lore-result-stats');
+  const loreResultBegin = must<HTMLButtonElement>(root, '#lore-result-begin');
+  const loreResultRetry = must<HTMLButtonElement>(root, '#lore-result-retry');
+  const loreResultOnward = must<HTMLButtonElement>(root, '#lore-result-onward');
+  const loreResultAgain = must<HTMLButtonElement>(root, '#lore-result-again');
+  const loreResume = must<HTMLButtonElement>(root, '#lore-resume');
   const trialScreen = must(root, '[data-screen="fw-trial"]');
   const spreadCard = must(root, '#fw-spread-card');
   const spreadCount = must(root, '#fw-spread-count');
@@ -216,26 +263,10 @@ export function mountPlayGames(): void {
   const birthCards = must(root, '#play-birth-cards');
   const readingTemplate = must<HTMLTemplateElement>(root, '#play-reading-template');
 
-  const questionEl = must<HTMLTextAreaElement>(root, '#play-question');
-  const questionEcho = must(root, '#play-question-echo');
-  const ringValue = root.querySelector<SVGCircleElement>('#play-ring-value');
-  const ringNum = must(root, '#play-ring-num');
-  const hintEl = must(root, '#play-hint');
-  const fan = must(root, '#play-fan');
-  const shuffleBtn = must<HTMLButtonElement>(root, '#play-shuffle');
-  const drawBtn = must<HTMLButtonElement>(root, '#play-draw');
-  const asked = must(root, '#play-asked');
-  const flip = must(root, '#play-flip');
-  const destinyImg = must<HTMLImageElement>(root, '#play-destiny-img');
-  const destinyReading = must(root, '#play-destiny-reading');
-
   const stageName = must(root, '#play-stage-title');
   const zoom = must(root, '#play-zoom');
   const zoomImg = must<HTMLImageElement>(root, '#play-zoom-img');
   const zoomClose = must<HTMLButtonElement>(root, '#play-zoom-close');
-
-  const ringLength = ringValue ? 2 * Math.PI * ringValue.r.baseVal.value : 0;
-  if (ringValue) ringValue.style.strokeDasharray = String(ringLength);
 
   let save = loadSave();
   let screen = '';
@@ -256,6 +287,18 @@ export function mountPlayGames(): void {
   const MEET_GATE = 5;
   const TASKS = 5;
 
+  let loreLevel = 0;
+  let loreQueue: PlayCard[] = [];
+  let loreAt = 0;
+  let loreHits = 0;
+  let loreMisses = 0;
+  let loreHitsTotal = 0;
+  let loreMissesTotal = 0;
+  let loreLocked = false;
+  let loreHitAt = 0;
+  let loreMissAt = 0;
+  let loreOverlay: 'off' | 'intro' | 'fail' | 'pass' | 'done' = 'off';
+
   let trial: TrialKind = 'pip';
   let trialCards: PlayCard[] = [];
   let trialAt = 0;
@@ -272,12 +315,6 @@ export function mountPlayGames(): void {
   let spreadMisses = 0;
   let sessionId: string | null = null;
   let startInflight: Promise<void> | null = null;
-
-  let ritualTimer = 0;
-  let shuffleTimer = 0;
-  let shuffling = false;
-  let heldQuestion = '';
-  let lastDestinyId = '';
 
   buildRankPads();
   fillMonths();
@@ -426,7 +463,10 @@ export function mountPlayGames(): void {
     const pressed = root?.querySelector<HTMLElement>('.play-menu [aria-pressed="true"]');
     const game = pressed?.dataset.game;
     if (game === 'birthday') return copy.menu.birth_title;
-    if (game === 'destiny') return copy.menu.destiny_title;
+    if (game === 'lore') {
+      if (screen === 'lore-meet') return `${copy.menu.lore_title}: ${copy.lore.levels[loreKind()]}`;
+      return copy.menu.lore_title;
+    }
     return copy.menu.learn_title;
   }
 
@@ -436,18 +476,12 @@ export function mountPlayGames(): void {
 
   function updateLocks(): void {
     const birthLock = root?.querySelector<HTMLElement>('[data-lock-for="birthday"]');
-    const destinyLock = root?.querySelector<HTMLElement>('[data-lock-for="destiny"]');
     const note = `${copy.soon.title} ${copy.soon.body}`;
     if (birthLock) {
       birthLock.hidden = false;
       birthLock.textContent = note;
     }
-    if (destinyLock) {
-      destinyLock.hidden = false;
-      destinyLock.textContent = note;
-    }
     menuButton('birthday')?.classList.remove('is-locked');
-    menuButton('destiny')?.classList.remove('is-locked');
     if (save.bestMs == null) {
       recordsBest.hidden = true;
       recordsBest.textContent = '';
@@ -475,10 +509,11 @@ export function mountPlayGames(): void {
 
   function show(next: string): void {
     const leavingSpread = screen === 'fw-spread' && next !== 'fw-spread';
-    const leavingRitual = screen.startsWith('destiny') && !next.startsWith('destiny');
     if (leavingSpread) abandonSort();
-    if (leavingRitual) abandonRitual();
-    if (screen.startsWith('fw-') && next.startsWith('fw-') && screen !== next && !reduceMotion) {
+    const sameFamily =
+      (screen.startsWith('fw-') && next.startsWith('fw-')) ||
+      (screen.startsWith('lore-') && next.startsWith('lore-'));
+    if (sameFamily && screen !== next && !reduceMotion) {
       stage.classList.remove('is-turn');
       void stage.offsetWidth;
       stage.classList.add('is-turn');
@@ -489,13 +524,14 @@ export function mountPlayGames(): void {
     stage.hidden = false;
     scrim.hidden = false;
     recordSheet.hidden = true;
-    const titleScreen = next === 'fw-threshold';
+    const titleScreen = next === 'fw-threshold' || next === 'lore-threshold';
     const soonScreen = next === 'soon';
     const worldsScreen = next === 'fw-worlds';
     const suitScreen = next === 'fw-suit';
     const meetScreen = next === 'fw-meet';
+    const loreMeet = next === 'lore-meet';
     const board = next === 'fw-count' || next === 'fw-count-court' || next === 'fw-trial' || next === 'fw-spread';
-    const cover = titleScreen || soonScreen || worldsScreen || suitScreen || meetScreen || board;
+    const cover = titleScreen || soonScreen || worldsScreen || suitScreen || meetScreen || loreMeet || board;
     stage.classList.toggle('is-title', titleScreen);
     stage.classList.toggle('is-cover', cover);
     recordBtn.hidden = !next.startsWith('fw-') || (cover && !titleScreen);
@@ -504,6 +540,7 @@ export function mountPlayGames(): void {
     if (worldsScreen) backBtn.dataset.action = 'fw-back';
     else if (suitScreen) backBtn.dataset.action = 'fw-back-worlds';
     else if (meetScreen) backBtn.dataset.action = 'fw-back-suit';
+    else if (next === 'lore-meet') backBtn.dataset.action = 'lore-back';
     else if (next === 'fw-count') backBtn.dataset.action = 'fw-back-suit';
     else if (next === 'fw-count-court') backBtn.dataset.action = 'fw-count';
     else if (next === 'fw-trial' && trial === 'court') backBtn.dataset.action = 'fw-count-court';
@@ -522,7 +559,9 @@ export function mountPlayGames(): void {
     closeZoom();
     hideLoupe();
     resultEl.hidden = true;
+    hideLoreOverlay();
     if (next === 'fw-spread-intro') paintSpreadBest();
+    if (next === 'lore-threshold') paintLoreResume();
     stageName.textContent = gameTitle();
     document.documentElement.classList.add('play-lock');
     const focusable = root?.querySelector<HTMLElement>(`[data-screen="${next}"] [tabindex="-1"]`);
@@ -532,10 +571,10 @@ export function mountPlayGames(): void {
   function closeStage(): void {
     if (stage.hidden || stage.classList.contains('is-leaving')) return;
     if (screen === 'fw-spread') abandonSort();
-    abandonRitual();
     closeZoom();
     hideLoupe();
     resultEl.hidden = true;
+    hideLoreOverlay();
     window.clearTimeout(igniteTimer);
     enterToken += 1;
     const finish = (): void => {
@@ -583,7 +622,12 @@ export function mountPlayGames(): void {
       show('fw-threshold');
       return;
     }
-    if (game === 'birthday' || game === 'destiny') {
+    if (game === 'lore') {
+      setPressed('lore');
+      show('lore-threshold');
+      return;
+    }
+    if (game === 'birthday') {
       setPressed(game);
       show('soon');
     }
@@ -871,6 +915,243 @@ export function mountPlayGames(): void {
       return;
     }
     showCount();
+  }
+
+  function loreKind(): DeepDiveLevel {
+    return LORE_LEVELS[loreLevel] ?? 'Story';
+  }
+
+  function loreQuestion(card: PlayCard): DeepDiveQuestion | null {
+    const pack = loreById.get(card.id);
+    const kind = loreKind();
+    return pack?.questions.find((item) => item.level === kind) ?? null;
+  }
+
+  function loreCleared(): number {
+    return save.lore.pack === LORE_PACK ? save.lore.cleared : 0;
+  }
+
+  function markLoreCleared(): void {
+    if (save.lore.pack !== LORE_PACK) save.lore = { pack: LORE_PACK, cleared: 0 };
+    const next = loreLevel + 1;
+    if (next > save.lore.cleared) {
+      save.lore.cleared = next;
+      persist();
+    }
+  }
+
+  function paintLoreResume(): void {
+    const cleared = loreCleared();
+    loreResume.hidden = cleared <= 0 || cleared >= LORE_LEVELS.length;
+  }
+
+  function resumeLore(): void {
+    const cleared = loreCleared();
+    if (cleared <= 0 || cleared >= LORE_LEVELS.length) return;
+    enterLore(cleared);
+  }
+
+  function enterLore(index: number): void {
+    const level = Math.trunc(index);
+    if (!Number.isFinite(level) || level < 0 || level >= LORE_LEVELS.length) return;
+    if (level > loreCleared()) return;
+    loreLevel = level;
+    loreHitAt = 0;
+    loreMissAt = 0;
+    loreHitsTotal = 0;
+    loreMissesTotal = 0;
+    setPressed('lore');
+    if (screen !== 'lore-threshold') show('lore-threshold');
+    openLoreIntro();
+  }
+
+  function beginLoreLevel(): void {
+    loreQueue = shuffle(loreDeck);
+    loreAt = 0;
+    loreHits = 0;
+    loreMisses = 0;
+    if (!loreQueue.length) return;
+    paintLore();
+    show('lore-meet');
+    setPressed('lore');
+  }
+
+  function loreAnswerBody(answer: string, seen: boolean): string {
+    const text = answer.trim();
+    if (!seen) return text;
+    const stripped = text.replace(/^(Да — |Да - |Yes — |Yes - )/, '');
+    if (stripped === text) return text;
+    return stripped.replace(/^\p{L}/u, (ch) => ch.toUpperCase());
+  }
+
+  function loreVerdict(seen: boolean, answer: string): string {
+    const pool = seen ? copy.lore.seen : copy.lore.missed;
+    const at = seen ? loreHitAt : loreMissAt;
+    if (seen) loreHitAt += 1;
+    else loreMissAt += 1;
+    const prefix = pool[at % pool.length] ?? pool[0] ?? '';
+    const body = loreAnswerBody(answer, seen);
+    return `${prefix} ${body}`.replace(/\s+/g, ' ').trim();
+  }
+
+  function loreShouldSettle(): boolean {
+    return loreMisses > LORE_MAX_MISS || loreAt + 1 >= loreQueue.length;
+  }
+
+  function loreTally(hits: number, misses: number): string {
+    return fill(copy.lore.tally, { hits, misses });
+  }
+
+  function hideLoreOverlay(): void {
+    loreOverlay = 'off';
+    loreResult.hidden = true;
+  }
+
+  function paintLoreOverlay(mode: 'intro' | 'fail' | 'pass' | 'done'): void {
+    loreOverlay = mode;
+    loreResultBegin.hidden = mode !== 'intro';
+    loreResultRetry.hidden = mode !== 'fail' && mode !== 'pass';
+    loreResultOnward.hidden = mode !== 'pass';
+    loreResultAgain.hidden = mode !== 'done';
+    loreResult.hidden = false;
+    loreResultTitle.focus({ preventScroll: true });
+    say([loreResultTitle.textContent, loreResultLead.textContent, loreResultStats.textContent].filter(Boolean).join(' '));
+  }
+
+  function openLoreIntro(): void {
+    loreResultTitle.textContent = fill(copy.lore.level_title, {
+      n: loreLevel + 1,
+      name: copy.lore.levels[loreKind()],
+    });
+    loreResultLead.textContent = copy.lore.level_blurbs[loreKind()];
+    loreResultStats.textContent = '';
+    paintLoreOverlay('intro');
+  }
+
+  function openLoreStory(card: PlayCard): void {
+    if (!fillStory(loreFull, card)) {
+      loreFull.hidden = true;
+      return;
+    }
+    loreFull.hidden = false;
+  }
+
+  function paintLore(): void {
+    const card = loreQueue[loreAt];
+    const question = card ? loreQuestion(card) : null;
+    if (!card || !question) return;
+    loreLocked = false;
+    loreScreen.classList.remove('is-answered');
+    loreImg.src = card.image;
+    loreImg.alt = copy.card_alt;
+    loreKicker.dataset.suit = card.suit;
+    loreRank.textContent = card.value;
+    loreSymbol.textContent = symbols[card.suit];
+    loreSymbol.dataset.suit = card.suit;
+    loreTitle.textContent = card.title;
+    loreAsk.textContent = question.question;
+    loreFeedback.classList.remove('is-hit', 'is-miss');
+    loreFeedback.hidden = true;
+    loreLine.textContent = '';
+    loreFull.hidden = true;
+    loreFull.replaceChildren();
+    loreNext.hidden = true;
+    hideLoreOverlay();
+    pulse(loreCard, 'set');
+    loreOptions.replaceChildren();
+    for (const option of shuffle(question.options)) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.action = 'lore-who';
+      button.dataset.id = option.id;
+      button.textContent = option.text;
+      loreOptions.append(button);
+    }
+  }
+
+  function answerLore(id: string): void {
+    if (loreLocked || screen !== 'lore-meet' || loreOverlay !== 'off') return;
+    const card = loreQueue[loreAt];
+    const question = card ? loreQuestion(card) : null;
+    if (!card || !question) return;
+    loreLocked = true;
+    loreScreen.classList.add('is-answered');
+    const seen = id === question.correct_answer;
+    if (seen) loreHits += 1;
+    else loreMisses += 1;
+    const feedback = seen ? question.feedback_correct : question.feedback_incorrect;
+    const line = loreVerdict(seen, feedback.answer);
+    loreFeedback.classList.toggle('is-hit', seen);
+    loreFeedback.classList.toggle('is-miss', !seen);
+    loreLine.textContent = line;
+    loreImg.alt = card.title;
+    openLoreStory(card);
+    loreFeedback.hidden = false;
+    loreNext.hidden = false;
+    pulse(loreCard, seen ? 'true' : 'dim');
+    loreOptions.querySelectorAll('button').forEach((button) => {
+      button.toggleAttribute('disabled', true);
+      if (button.dataset.id === id) button.classList.add(seen ? 'is-hit' : 'is-miss');
+    });
+    say(line);
+  }
+
+  function nextLore(): void {
+    if (!loreLocked || loreOverlay !== 'off') return;
+    if (loreShouldSettle()) {
+      openLoreResult();
+      return;
+    }
+    loreAt += 1;
+    paintLore();
+  }
+
+  function openLoreResult(): void {
+    const failed = loreMisses > LORE_MAX_MISS;
+    const hasNext = !failed && loreLevel + 1 < LORE_LEVELS.length;
+    const name = copy.lore.levels[loreKind()];
+    if (failed) {
+      loreResultTitle.textContent = copy.lore.fail_note;
+      loreResultLead.textContent = '';
+      loreResultStats.textContent = '';
+      paintLoreOverlay('fail');
+      return;
+    }
+    if (hasNext) {
+      markLoreCleared();
+      loreResultTitle.textContent = fill(copy.lore.pass_title, { name });
+      loreResultLead.textContent = '';
+      loreResultStats.textContent = loreTally(loreHits, loreMisses);
+      paintLoreOverlay('pass');
+      return;
+    }
+    loreHitsTotal += loreHits;
+    loreMissesTotal += loreMisses;
+    markLoreCleared();
+    loreResultTitle.textContent = copy.lore.done_title;
+    loreResultLead.textContent = copy.lore.done_note;
+    loreResultStats.textContent = loreTally(loreHitsTotal, loreMissesTotal);
+    paintLoreOverlay('done');
+  }
+
+  function retryLore(): void {
+    if (loreOverlay !== 'fail' && loreOverlay !== 'pass') return;
+    beginLoreLevel();
+  }
+
+  function onwardLore(): void {
+    if (loreOverlay !== 'pass') return;
+    if (loreLevel + 1 >= LORE_LEVELS.length) return;
+    loreHitsTotal += loreHits;
+    loreMissesTotal += loreMisses;
+    loreLevel += 1;
+    if (screen === 'lore-meet') stageName.textContent = gameTitle();
+    openLoreIntro();
+  }
+
+  function beginLoreFromIntro(): void {
+    if (loreOverlay !== 'intro') return;
+    beginLoreLevel();
   }
 
   function showLessonCard(
@@ -1381,130 +1662,6 @@ export function mountPlayGames(): void {
     say(birthDate.textContent);
   }
 
-  function setAsked(node: HTMLElement): void {
-    node.replaceChildren();
-    if (!heldQuestion) {
-      node.hidden = true;
-      return;
-    }
-    const kicker = document.createElement('span');
-    kicker.className = 'play-kicker';
-    kicker.textContent = copy.destiny.you_asked;
-    const question = document.createElement('span');
-    question.textContent = heldQuestion;
-    node.append(kicker, question);
-    node.hidden = false;
-  }
-
-  function abandonRitual(): void {
-    window.clearInterval(ritualTimer);
-    window.clearInterval(shuffleTimer);
-    ritualTimer = 0;
-    shuffleTimer = 0;
-    shuffling = false;
-  }
-
-  function holdQuestion(): void {
-    heldQuestion = questionEl.value.trim().slice(0, 140);
-    abandonRitual();
-    shuffleBtn.hidden = true;
-    drawBtn.hidden = true;
-    fan.hidden = true;
-    setAsked(questionEcho);
-    const ends = Date.now() + RITUAL_MS;
-    let hintIndex = -1;
-    show('destiny-wait');
-    setPressed('destiny');
-    const tick = (): void => {
-      const left = ends - Date.now();
-      const elapsed = RITUAL_MS - Math.max(left, 0);
-      const progress = Math.min(1, elapsed / RITUAL_MS);
-      if (ringValue) ringValue.style.strokeDashoffset = String(ringLength * progress);
-      ringNum.textContent = String(Math.max(0, Math.ceil(left / 1000)));
-      const index = Math.min(copy.destiny.hints.length - 1, Math.floor(elapsed / 6000));
-      if (index !== hintIndex) {
-        hintIndex = index;
-        hintEl.textContent = copy.destiny.hints[index] ?? '';
-      }
-      if (left <= 0) {
-        window.clearInterval(ritualTimer);
-        ritualTimer = 0;
-        ringNum.textContent = '0';
-        shuffleBtn.hidden = false;
-        hintEl.textContent = copy.destiny.hints[copy.destiny.hints.length - 1] ?? '';
-      }
-    };
-    tick();
-    ritualTimer = window.setInterval(tick, 100);
-  }
-
-  function doShuffle(): void {
-    if (shuffling) return;
-    shuffling = true;
-    shuffleBtn.hidden = true;
-    drawBtn.hidden = true;
-    hintEl.textContent = copy.destiny.shuffling;
-    const images = fan.querySelectorAll<HTMLImageElement>('img');
-    images.forEach((img) => {
-      const card = cards[Math.floor(Math.random() * cards.length)];
-      if (!card) return;
-      img.src = card.image;
-      img.alt = '';
-    });
-    fan.hidden = false;
-    const started = Date.now();
-    shuffleTimer = window.setInterval(() => {
-      images.forEach((img) => {
-        const card = cards[Math.floor(Math.random() * cards.length)];
-        if (!card) return;
-        img.src = card.image;
-        img.alt = '';
-      });
-      if (Date.now() - started >= 1800) {
-        window.clearInterval(shuffleTimer);
-        shuffleTimer = 0;
-        shuffling = false;
-        fan.hidden = true;
-        drawBtn.hidden = false;
-      }
-    }, 120);
-  }
-
-  function doDraw(): void {
-    if (shuffling || cards.length === 0) return;
-    drawBtn.hidden = true;
-    let card = cards[Math.floor(Math.random() * cards.length)] as PlayCard;
-    let guard = 0;
-    while (cards.length > 1 && card.id === lastDestinyId && guard < 8) {
-      card = cards[Math.floor(Math.random() * cards.length)] as PlayCard;
-      guard += 1;
-    }
-    lastDestinyId = card.id;
-    destinyImg.src = card.image;
-    destinyImg.alt = card.title;
-    const article = renderReading(card, false);
-    article.querySelector('.play-reading-frame')?.remove();
-    article.classList.add('play-reading--text');
-    destinyReading.replaceChildren(article);
-    setAsked(asked);
-    flip.classList.add('is-down');
-    show('destiny-result');
-    setPressed('destiny');
-    const reveal = (): void => flip.classList.remove('is-down');
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) reveal();
-    else window.setTimeout(reveal, 48);
-    say(card.title);
-  }
-
-  function resetDestiny(): void {
-    abandonRitual();
-    flip.classList.add('is-down');
-    destinyReading.replaceChildren();
-    asked.hidden = true;
-    show('destiny');
-    setPressed('destiny');
-  }
-
   function readEntry(value: unknown): BoardEntry[] {
     if (!value || typeof value !== 'object') return [];
     const entry = value as { name?: unknown; ms?: unknown; errors?: unknown };
@@ -1640,10 +1797,18 @@ export function mountPlayGames(): void {
     else if (action === 'fw-dismiss-save') {
       claimForm.hidden = true;
       saveAsk.hidden = true;
-    } else if (action === 'destiny-hold') holdQuestion();
-    else if (action === 'destiny-shuffle') doShuffle();
-    else if (action === 'destiny-draw') doDraw();
-    else if (action === 'destiny-reset') resetDestiny();
+    } else if (action === 'lore-enter') enterLore(Number(el.dataset.level ?? '0'));
+    else if (action === 'lore-resume') resumeLore();
+    else if (action === 'lore-back') show('lore-threshold');
+    else if (action === 'lore-who') answerLore(el.dataset.id ?? '');
+    else if (action === 'lore-next') nextLore();
+    else if (action === 'lore-begin') beginLoreFromIntro();
+    else if (action === 'lore-retry') retryLore();
+    else if (action === 'lore-onward') onwardLore();
+    else if (action === 'lore-again') {
+      setPressed('lore');
+      show('lore-threshold');
+    }
     else if (action === 'zoom') {
       const shot = el.closest('.play-shot');
       const img = shot?.querySelector('img');

@@ -3,6 +3,7 @@ import type { Lang } from '../i18n/utils';
 import { pickLocalized, useTranslations } from '../i18n/utils';
 import { gamesCopy } from '../i18n/gamesCopy';
 import { getCollection } from 'astro:content';
+import { deepDiveDeck } from '../content/deep-dive';
 import MagisterLogo from './MagisterLogo.astro';
 
 interface Props {
@@ -59,6 +60,7 @@ const payload = {
   },
   symbols,
   cards,
+  lore: deepDiveDeck,
 };
 
 const art = (id: string) => byId.get(id)?.image ?? '';
@@ -69,10 +71,6 @@ const aceArt: Record<(typeof lessonSuits)[number], string> = {
   clubs: art('ace-clubs'),
   spades: art('ace-spades'),
 };
-const destinyGround = art('ace-diamonds');
-const destinySlip = art('4-hearts');
-const oracleArt = art('king-spades');
-const fanSrc = cards[0]?.image ?? '';
 const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
 ---
 
@@ -88,35 +86,32 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
       <button class="poster" type="button" data-action="open" data-game="learn" aria-pressed="false">
         <span class="poster-title">{copy.menu.learn_title}</span>
         <span class="poster-stage">
-          <span class="poster-art poster-art--worlds" aria-hidden="true">
-            {worldsArt.map((src) => <img src={src} alt="" />)}
+          <span class="poster-art poster-art--print" aria-hidden="true">
+            <img src="/media/poster-four-worlds.webp" alt="" width="669" height="1024" />
           </span>
         </span>
         <span class="poster-body">{copy.menu.learn_blurb}</span>
         <span class="poster-play">{copy.cta}</span>
       </button>
+      <button class="poster" type="button" data-action="open" data-game="lore" aria-pressed="false">
+        <span class="poster-title">{copy.menu.lore_title}</span>
+        <span class="poster-stage">
+          <span class="poster-art poster-art--print" aria-hidden="true">
+            <img src="/media/poster-initiation.webp" alt="" width="656" height="1024" />
+          </span>
+        </span>
+        <span class="poster-body">{copy.menu.lore_blurb}</span>
+        <span class="poster-play">{copy.cta}</span>
+      </button>
       <button class="poster" type="button" data-action="open" data-game="birthday" aria-pressed="false">
         <span class="poster-title">{copy.menu.birth_title}</span>
         <span class="poster-stage">
-          <span class="poster-art poster-art--destiny" aria-hidden="true">
-            <img src={destinyGround} alt="" />
-            <img src={destinySlip} alt="" />
+          <span class="poster-art poster-art--print" aria-hidden="true">
+            <img src="/media/poster-destiny.webp" alt="" width="669" height="1024" />
           </span>
         </span>
         <span class="poster-body">{copy.menu.birth_blurb}</span>
         <span class="play-lock" data-lock-for="birthday">{copy.soon.title} {copy.soon.body}</span>
-        <span class="poster-play">{copy.cta}</span>
-      </button>
-      <button class="poster" type="button" data-action="open" data-game="destiny" aria-pressed="false">
-        <span class="poster-title">{copy.menu.destiny_title}</span>
-        <span class="poster-stage">
-          <span class="poster-art poster-art--oracle" aria-hidden="true">
-            <img src={oracleArt} alt="" />
-            <span class="poster-candle"></span>
-          </span>
-        </span>
-        <span class="poster-body">{copy.menu.destiny_blurb}</span>
-        <span class="play-lock" data-lock-for="destiny">{copy.soon.title} {copy.soon.body}</span>
         <span class="poster-play">{copy.cta}</span>
       </button>
     </div>
@@ -176,6 +171,17 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
         <div class="fw-title-actions">
           <button class="btn btn-accent" type="button" data-action="fw-enter">{copy.learn.enter}</button>
           <button class="btn fw-title-timed" type="button" data-action="fw-timed">{copy.learn.timed}</button>
+        </div>
+      </div>
+
+      <div data-screen="lore-threshold" hidden>
+        <MagisterLogo class="fw-title-logo" level width={112} height={49} />
+        <h3 class="fw-title-name" tabindex="-1">{copy.menu.lore_title}</h3>
+        <span class="fw-title-rule" aria-hidden="true"></span>
+        <p class="fw-title-lead">{copy.lore.threshold}</p>
+        <div class="fw-title-actions">
+          <button class="btn btn-accent" type="button" data-action="lore-enter" data-level="0">{copy.lore.enter}</button>
+          <button class="btn fw-title-timed" type="button" id="lore-resume" data-action="lore-resume" hidden>{copy.lore.resume}</button>
         </div>
       </div>
 
@@ -260,6 +266,31 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
                 <button class="btn fw-meet-more" type="button" data-action="fw-meet-more">{copy.learn.study_more}</button>
                 <button class="btn btn-accent" type="button" data-action="fw-meet-onward">{copy.learn.continue}</button>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-screen="lore-meet" hidden>
+        <div class="fw-portrait">
+          <figure class="fw-portrait-card" id="lore-card">
+            <img id="lore-img" alt={copy.card_alt} width="280" height="400" decoding="async" />
+          </figure>
+          <div class="fw-portrait-copy fw-meet-copy">
+            <div class="fw-card-id lore-card-id">
+              <p class="lb-suit-val" id="lore-kicker"><span class="lb-suit-rank" id="lore-rank"></span><span class="lb-suit-symbol" id="lore-symbol" aria-hidden="true"></span></p>
+              <p class="fw-suit-title" id="lore-title"></p>
+            </div>
+            <p class="fw-suit-blurb" id="lore-ask" tabindex="-1"></p>
+            <div class="fw-options" id="lore-options"></div>
+            <div class="fw-meet-body">
+              <div class="fw-meet-reply" id="lore-feedback" hidden>
+                <p class="fw-meet-verdict" id="lore-line"></p>
+                <div class="fw-meet-full" id="lore-full" hidden></div>
+              </div>
+            </div>
+            <div class="fw-title-actions fw-meet-dock">
+              <button class="btn btn-accent" type="button" id="lore-next" data-action="lore-next" hidden>{copy.learn.continue}</button>
             </div>
           </div>
         </div>
@@ -378,6 +409,19 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
         </div>
       </div>
 
+      <div class="fw-result" id="lore-result" hidden>
+        <div class="fw-result-card" role="dialog" aria-modal="true" aria-labelledby="lore-result-title">
+          <h3 class="fw-result-title" id="lore-result-title" tabindex="-1"></h3>
+          <p class="fw-result-lead" id="lore-result-lead"></p>
+          <p class="fw-result-line" id="lore-result-stats"></p>
+          <span class="fw-result-rule" aria-hidden="true"></span>
+          <button class="btn fw-result-again" type="button" id="lore-result-begin" data-action="lore-begin">{copy.lore.begin}</button>
+          <button class="btn fw-result-again" type="button" id="lore-result-retry" data-action="lore-retry">{copy.retry}</button>
+          <button class="btn btn-accent" type="button" id="lore-result-onward" data-action="lore-onward">{copy.lore.next_level}</button>
+          <button class="btn fw-result-again" type="button" id="lore-result-again" data-action="lore-again">{copy.lore.again}</button>
+        </div>
+      </div>
+
       <div class="fw-result" id="fw-result" hidden>
         <div class="fw-result-card" role="dialog" aria-modal="true" aria-labelledby="fw-result-title">
           <h3 class="fw-result-title" id="fw-result-title" tabindex="-1"></h3>
@@ -444,55 +488,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
         <div id="play-birth-cards"></div>
         <div class="play-actions">
           <button class="btn" type="button" data-action="goto" data-goto="birthday">{copy.birthday.another}</button>
-          <button class="btn btn-accent" type="button" data-action="open" data-game="destiny">{copy.birthday.open_destiny}</button>
-        </div>
-      </div>
-
-      <div data-screen="destiny" hidden>
-        <h3 tabindex="-1">{copy.destiny.title}</h3>
-        <label class="play-field">
-          {copy.destiny.prompt_label}
-          <textarea id="play-question" maxlength="140" placeholder={copy.destiny.prompt_placeholder} autocomplete="off"></textarea>
-        </label>
-        <div class="play-actions">
-          <button class="btn btn-accent" type="button" data-action="destiny-hold">{copy.destiny.hold}</button>
-        </div>
-      </div>
-
-      <div data-screen="destiny-wait" hidden>
-        <p id="play-question-echo" class="play-asked" hidden></p>
-        <div class="play-ring-wrap">
-          <svg class="play-ring" viewBox="0 0 120 120" aria-hidden="true">
-            <circle class="play-ring-track" cx="60" cy="60" r="52"></circle>
-            <circle class="play-ring-value" id="play-ring-value" cx="60" cy="60" r="52"></circle>
-          </svg>
-          <span id="play-ring-num" class="play-ring-num" tabindex="-1">30</span>
-        </div>
-        <p id="play-hint" class="play-hint"></p>
-        <div class="play-fan" id="play-fan" hidden>
-          {Array.from({ length: 5 }, () => (
-            <img src={fanSrc} alt="" width="92" height="132" decoding="async" />
-          ))}
-        </div>
-        <div class="play-actions play-actions--center">
-          <button class="btn btn-accent" type="button" id="play-shuffle" data-action="destiny-shuffle" hidden>{copy.destiny.shuffle}</button>
-          <button class="btn btn-accent" type="button" id="play-draw" data-action="destiny-draw" hidden>{copy.destiny.draw}</button>
-        </div>
-      </div>
-
-      <div data-screen="destiny-result" hidden>
-        <p id="play-asked" class="play-asked" hidden></p>
-        <div class="play-flip is-down" id="play-flip">
-          <div class="play-flip-inner">
-            <div class="play-flip-face play-flip-back" aria-hidden="true"><span>Magister</span></div>
-            <div class="play-flip-face play-flip-front">
-              <img id="play-destiny-img" alt="" width="280" height="400" decoding="async" />
-            </div>
-          </div>
-        </div>
-        <div id="play-destiny-reading"></div>
-        <div class="play-actions">
-          <button class="btn" type="button" data-action="destiny-reset">{copy.destiny.again}</button>
+          <button class="btn btn-accent" type="button" data-action="open" data-game="lore">{copy.birthday.open_lore}</button>
         </div>
       </div>
 
@@ -594,6 +590,13 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     margin-top: clamp(1.5rem, 3vw, 2.4rem);
   }
 
+  @media (min-width: 860px) {
+    .play-posters {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-items: stretch;
+    }
+  }
+
   .poster {
     display: flex;
     flex-direction: column;
@@ -613,85 +616,41 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
 
   .poster-stage {
     position: relative;
-    display: block;
-    aspect-ratio: 4 / 3;
-    flex: 1 1 auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex: none;
     min-height: 0;
-    overflow: hidden;
-    background: var(--play-ground);
+    overflow: visible;
+    background: transparent;
   }
 
   .poster:hover .poster-art img,
   .poster[aria-pressed='true'] .poster-art img {
-    transform: scale(1.03);
-  }
-
-  .poster:hover .poster-art--destiny img:last-child,
-  .poster[aria-pressed='true'] .poster-art--destiny img:last-child {
-    transform: rotate(7deg) scale(1.03);
+    transform: scale(1.02);
   }
 
   .poster.is-locked .poster-art {
     filter: saturate(0.7) brightness(0.78);
   }
 
-  .poster-art,
-  .poster-shade {
-    position: absolute;
-    inset: 0;
+  .poster-art {
+    display: block;
+    width: 78%;
+    margin: 0 auto;
   }
 
   .poster-art img {
-    position: absolute;
-    object-fit: cover;
-    filter: saturate(0.78) contrast(1.04);
+    display: block;
+    width: 100%;
+    height: auto;
     transition: transform 700ms ease;
   }
 
-  .poster-art--worlds img {
-    width: 48%;
-    height: 38%;
-    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.45);
-  }
-
-  .poster-art--worlds img:nth-child(1) { top: 16%; left: 5%; }
-  .poster-art--worlds img:nth-child(2) { top: 18%; right: 5%; left: auto; }
-  .poster-art--worlds img:nth-child(3) { top: 42%; left: 14%; width: 44%; }
-  .poster-art--worlds img:nth-child(4) { top: 38%; right: 7%; left: auto; width: 42%; }
-
-  .poster-art--destiny img:first-child {
-    inset: 0;
+  .poster-art--print img {
     width: 100%;
-    height: 100%;
-    object-position: center 30%;
-  }
-
-  .poster-art--destiny img:last-child {
-    top: 14%;
-    right: -12%;
-    width: 46%;
-    height: 42%;
-    object-position: left top;
-    transform: rotate(7deg);
-    box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.55);
-  }
-
-  .poster-art--oracle img {
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-position: center 22%;
-  }
-
-  .poster-candle {
-    position: absolute;
-    top: 4%;
-    left: 28%;
-    width: 44%;
-    height: 36%;
-    background: radial-gradient(circle, rgba(212, 181, 109, 0.42), transparent 68%);
-    mix-blend-mode: screen;
-    pointer-events: none;
+    height: auto;
+    object-fit: contain;
   }
 
   .poster-title {
@@ -736,13 +695,8 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
 
   @media (max-width: 859px) {
     .poster {
-      max-height: 100svh;
       gap: 0.4rem;
       padding: 0.4rem;
-    }
-
-    .poster-stage {
-      max-height: 34svh;
     }
 
     .poster-title {
@@ -1277,7 +1231,8 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     }
   }
 
-  .play-stage.is-title > [data-screen='fw-threshold'] {
+  .play-stage.is-title > [data-screen='fw-threshold'],
+  .play-stage.is-title > [data-screen='lore-threshold'] {
     align-items: center;
     text-align: center;
   }
@@ -1345,6 +1300,11 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     gap: 0.8rem;
     width: min(100%, 18.5rem);
     margin: 1.15rem 0 0.85rem;
+  }
+
+  #lore-result .fw-result-lead {
+    max-width: 28rem;
+    line-height: 1.4;
   }
 
   .fw-title-actions .btn {
@@ -2308,6 +2268,14 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     margin-top: 1lh;
   }
 
+  [data-screen='lore-meet'] .lore-card-id {
+    margin-top: 0;
+  }
+
+  [data-screen='lore-meet'] .fw-meet-copy > .fw-suit-blurb {
+    margin-top: 0.85rem;
+  }
+
   .fw-meet-body {
     display: flex;
     flex: 1 1 auto;
@@ -2337,6 +2305,14 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     width: 100%;
   }
 
+  #lore-line {
+    margin: 0;
+    font-family: 'Spectral', 'Noto Serif SC', Georgia, serif;
+    font-size: clamp(1.2rem, 1.7vw, 1.45rem);
+    font-weight: 500;
+    line-height: 1.6;
+  }
+
   .fw-portrait-copy .fw-options {
     margin-top: 1.15rem;
   }
@@ -2352,21 +2328,29 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
   @media (max-width: 859px) {
     .play-stage:has(> [data-screen='fw-suit']:not([hidden])),
     .play-stage:has(> [data-screen='fw-meet']:not([hidden])),
+    .play-stage:has(> [data-screen='lore-meet']:not([hidden])),
     .play-stage:has(> .fw-board:not([hidden])) {
       padding-right: 0.45rem;
       padding-left: 0.45rem;
     }
 
-    [data-screen='fw-meet'] .fw-portrait {
+    [data-screen='fw-meet'] .fw-portrait,
+    [data-screen='lore-meet'] .fw-portrait {
       gap: 0.4rem;
     }
 
-    [data-screen='fw-meet'] .fw-suit-blurb {
+    [data-screen='fw-meet'] .fw-suit-blurb,
+    [data-screen='lore-meet'] .fw-suit-blurb {
       margin-top: 1lh;
+    }
+
+    [data-screen='lore-meet'] .fw-meet-copy > .fw-suit-blurb {
+      margin-top: 0.55rem;
     }
 
     .play-stage > [data-screen='fw-suit']:not([hidden]),
     .play-stage > [data-screen='fw-meet']:not([hidden]),
+    .play-stage > [data-screen='lore-meet']:not([hidden]),
     .play-stage > .fw-board:not([hidden]) {
       overflow: auto;
     }
@@ -2413,6 +2397,8 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     [data-screen='fw-meet'].is-answered .fw-suit-name,
     [data-screen='fw-meet'].is-answered #fw-meet-ask,
     [data-screen='fw-meet'].is-answered .fw-options,
+    [data-screen='lore-meet'].is-answered #lore-ask,
+    [data-screen='lore-meet'].is-answered .fw-options,
     [data-screen='fw-trial'].is-answered #fw-trial-kicker,
     [data-screen='fw-trial'].is-answered .fw-options,
     [data-screen='fw-trial'].is-answered .fw-dial,
@@ -2421,6 +2407,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     }
 
     [data-screen='fw-meet'].is-answered .fw-meet-dock,
+    [data-screen='lore-meet'].is-answered .fw-meet-dock,
     [data-screen='fw-trial'].is-answered .fw-title-actions {
       position: fixed;
       right: 0;
@@ -2435,6 +2422,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     }
 
     [data-screen='fw-meet'].is-answered,
+    [data-screen='lore-meet'].is-answered,
     [data-screen='fw-trial'].is-answered {
       padding-bottom: calc(5.4rem + env(safe-area-inset-bottom));
     }
@@ -2443,6 +2431,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
   @media (min-width: 860px) {
     .play-stage > [data-screen='fw-suit']:not([hidden]),
     .play-stage > [data-screen='fw-meet']:not([hidden]),
+    .play-stage > [data-screen='lore-meet']:not([hidden]),
     .play-stage > .fw-board:not([hidden]) {
       overflow: hidden;
     }
@@ -2468,6 +2457,10 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
       max-height: 100%;
       min-height: 0;
       overflow: visible;
+    }
+
+    [data-screen='lore-meet'] .fw-portrait-card {
+      align-self: start;
     }
 
     .fw-portrait-card img {
@@ -2642,6 +2635,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
 
   .fw-card.is-set img,
   #fw-meet-card.is-set img,
+  #lore-card.is-set img,
   #fw-trial-card.is-set img,
   #fw-spread-card.is-set img {
     animation: fw-set 300ms cubic-bezier(0.2, 1.35, 0.4, 1);
@@ -2649,6 +2643,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
 
   .fw-card.is-true img,
   #fw-meet-card.is-true img,
+  #lore-card.is-true img,
   #fw-trial-card.is-true img,
   #fw-spread-card.is-true img {
     animation: fw-glow 600ms ease;
@@ -2656,6 +2651,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
 
   .fw-card.is-dim img,
   #fw-meet-card.is-dim img,
+  #lore-card.is-dim img,
   #fw-trial-card.is-dim img,
   #fw-spread-card.is-dim img {
     animation: fw-gutter 420ms ease;
@@ -2776,12 +2772,14 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
   }
 
   .fw-meet-reply.is-hit #fw-meet-line,
-  .fw-meet-reply.is-hit #fw-trial-line {
+  .fw-meet-reply.is-hit #fw-trial-line,
+  .fw-meet-reply.is-hit .fw-meet-verdict {
     color: #3cba78;
   }
 
   .fw-meet-reply.is-miss #fw-meet-line,
-  .fw-meet-reply.is-miss #fw-trial-line {
+  .fw-meet-reply.is-miss #fw-trial-line,
+  .fw-meet-reply.is-miss .fw-meet-verdict {
     color: #c45656;
   }
 
@@ -3263,6 +3261,18 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
   .fw-claim-text:hover,
   .fw-claim-text:focus-visible {
     color: #d4b56d;
+  }
+
+  #lore-result-onward,
+  #lore-result-again {
+    width: 100%;
+    margin-top: 0.65rem;
+    min-height: 2.85rem;
+  }
+
+  .fw-result-lead:empty,
+  #lore-result-stats:empty {
+    display: none;
   }
 
   .fw-result-again {
