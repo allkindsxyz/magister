@@ -20,6 +20,7 @@ const authors = [
     image: authorPhotoSrc('alexander-zhilchik'),
     profile: null,
     photoPosition: 'center 10%',
+    quote: true,
   },
 ];
 ---
@@ -52,33 +53,45 @@ const authors = [
     </header>
 
     <div class="authors-list">
-      {authors.map((author) => (
-        <article class="author reveal">
-          {author.image && (
-            <img
-              class="author-photo"
-              src={author.image}
-              alt={t(`authors.${author.key}.photo_alt`)}
-              width="704"
-              height="880"
-              loading="lazy"
-              decoding="async"
-              style={'photoPosition' in author && author.photoPosition
-                ? `object-position: ${author.photoPosition}`
-                : undefined}
-            />
-          )}
-          <h3>{t(`authors.${author.key}.name`)}</h3>
-          <p class="author-role">{t(`authors.${author.key}.role`)}</p>
-          <p class="author-bio">{t(`authors.${author.key}.bio`)}</p>
-          <p class="author-bio">{t(`authors.${author.key}.bio_2`)}</p>
-          {author.profile && (
-            <a class="author-link" href={author.profile} target="_blank" rel="noopener noreferrer">
-              {t('authors.pochitsky.link')} ↗
-            </a>
-          )}
-        </article>
-      ))}
+      {authors.map((author) => {
+        const bio = t(`authors.${author.key}.bio`);
+        const bio2 = t(`authors.${author.key}.bio_2`);
+        return (
+          <article class="author reveal">
+            {author.image && (
+              <img
+                class="author-photo"
+                src={author.image}
+                alt={t(`authors.${author.key}.photo_alt`)}
+                width="704"
+                height="880"
+                loading="lazy"
+                decoding="async"
+                style={'photoPosition' in author && author.photoPosition
+                  ? `object-position: ${author.photoPosition}`
+                  : undefined}
+              />
+            )}
+            <h3>{t(`authors.${author.key}.name`)}</h3>
+            <p class="author-role">{t(`authors.${author.key}.role`)}</p>
+            {'quote' in author && author.quote && bio ? (
+              <blockquote class="author-quote">
+                <p>{bio}</p>
+              </blockquote>
+            ) : (
+              <>
+                {bio ? <p class="author-bio">{bio}</p> : null}
+                {bio2 ? <p class="author-bio">{bio2}</p> : null}
+              </>
+            )}
+            {author.profile && (
+              <a class="author-link" href={author.profile} target="_blank" rel="noopener noreferrer">
+                {t('authors.pochitsky.link')} ↗
+              </a>
+            )}
+          </article>
+        );
+      })}
     </div>
   </div>
 </section>
@@ -215,6 +228,23 @@ const authors = [
 
   .author-bio + .author-bio {
     margin-top: 0.65rem;
+  }
+
+  .author-quote {
+    margin: 0.9rem 0 0;
+    padding: 0 0 0 0.95rem;
+    border-left: 2px solid var(--accent);
+  }
+
+  .author-quote p {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--display);
+    font-size: 1.05rem;
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.45;
   }
 
   .author-link {
