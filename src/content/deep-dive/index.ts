@@ -52,7 +52,8 @@ import { kingHearts } from './king-hearts';
 import { kingSpades } from './king-spades';
 import type { DeepDiveCard } from './types';
 
-export type { DeepDiveCard, DeepDiveLevel, DeepDiveQuestion } from './types';
+export type { DeepDiveCard, DeepDiveLevel, DeepDiveQuestion, DeepDiveResolved } from './types';
+export { resolveDeepDive } from './types';
 
 /** Full 52-card lore deck, grouped by world then rank. */
 export const deepDiveDeck: DeepDiveCard[] = [

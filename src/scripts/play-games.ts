@@ -1,5 +1,5 @@
 import type { GamesCopy, SuitName } from '../i18n/gamesCopy';
-import type { DeepDiveCard, DeepDiveLevel, DeepDiveQuestion } from '../content/deep-dive/types';
+import type { DeepDiveResolved, DeepDiveLevel, DeepDiveQuestion } from '../content/deep-dive/types';
 import { birthCard, daysInMonth } from '../lib/birthCard';
 import { shuffle } from '../utils/shuffle';
 
@@ -22,7 +22,7 @@ type PlayData = {
   suitLabels: Record<Suit, string>;
   symbols: Record<Suit, string>;
   cards: PlayCard[];
-  lore: DeepDiveCard[];
+  lore: DeepDiveResolved[];
 };
 
 type Save = {
@@ -979,7 +979,10 @@ export function mountPlayGames(): void {
   function loreAnswerBody(answer: string, seen: boolean): string {
     const text = answer.trim();
     if (!seen) return text;
-    const stripped = text.replace(/^(Да — |Да - |Yes — |Yes - )/, '');
+    const stripped = text.replace(
+      /^(Да — |Да - |Так — |Так - |Yes — |Yes - |是的 — |是的 - )/,
+      '',
+    );
     if (stripped === text) return text;
     return stripped.replace(/^\p{L}/u, (ch) => ch.toUpperCase());
   }

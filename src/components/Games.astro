@@ -3,7 +3,7 @@ import type { Lang } from '../i18n/utils';
 import { pickLocalized, useTranslations } from '../i18n/utils';
 import { gamesCopy } from '../i18n/gamesCopy';
 import { getCollection } from 'astro:content';
-import { deepDiveDeck } from '../content/deep-dive';
+import { deepDiveDeck, resolveDeepDive } from '../content/deep-dive';
 import MagisterLogo from './MagisterLogo.astro';
 
 interface Props {
@@ -60,7 +60,7 @@ const payload = {
   },
   symbols,
   cards,
-  lore: deepDiveDeck,
+  lore: deepDiveDeck.map((card) => resolveDeepDive(card, lang)),
 };
 
 const art = (id: string) => byId.get(id)?.image ?? '';
