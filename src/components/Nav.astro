@@ -15,16 +15,15 @@ const externalBooking = BOOKING_URL.startsWith('http');
 ---
 
 <nav id="main-nav" aria-label={t('nav.aria_label')}>
-  <a href={getLocalizedPath('/', lang)} class="nav-logo" aria-label="Magister Cards">
-    <MagisterLogo class="nav-logo-img" level />
+  <a href="#deck" class="nav-logo" aria-label="Magister Cards">
+    <MagisterLogo class="nav-logo-img" />
   </a>
 
   <ul class="nav-links">
-    <li><a href="#deck">{t('nav.deck')}</a></li>
     <li><a href="#worlds">{t('nav.worlds')}</a></li>
     <li><a href="#fifty-four">{t('nav.cards')}</a></li>
+    <li><a href="#artifacts">{t('nav.next')}</a></li>
     <li><a href="#authors">{t('nav.authors')}</a></li>
-    <li><a href="#partnership">{t('nav.next')}</a></li>
     <li>
       <a href="#spiel" class="nav-event" aria-label={t('nav.spiel_aria')}>
         <SpielLogo class="nav-spiel-logo" width={112} height={49} />
@@ -87,11 +86,10 @@ const externalBooking = BOOKING_URL.startsWith('http');
 <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
   <div class="mobile-menu-inner">
     <ul>
-      <li><a href="#deck" class="mobile-link">{t('nav.deck')}</a></li>
       <li><a href="#worlds" class="mobile-link">{t('nav.worlds')}</a></li>
       <li><a href="#fifty-four" class="mobile-link">{t('nav.cards')}</a></li>
+      <li><a href="#artifacts" class="mobile-link">{t('nav.next')}</a></li>
       <li><a href="#authors" class="mobile-link">{t('nav.authors')}</a></li>
-      <li><a href="#partnership" class="mobile-link">{t('nav.next')}</a></li>
       <li>
         <a href="#spiel" class="mobile-link nav-event" aria-label={t('nav.spiel_aria')}>
           <SpielLogo class="nav-spiel-logo nav-spiel-logo--mobile" width={160} height={70} />

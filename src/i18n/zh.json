@@ -5,7 +5,7 @@
     "worlds": "四界",
     "cards": "浏览牌组",
     "authors": "作者",
-    "next": "合作",
+    "next": "Magister 藏品",
     "spiel": "2026",
     "spiel_aria": "SPIEL Essen 2026",
     "language_label": "语言",
@@ -101,13 +101,37 @@
     }
   },
   "next": {
-    "label": "合作",
-    "body_1": "Magister Cards 是围绕另类神话构建的原创视觉 IP，拥有独立角色、故事与 54 幅原作。",
-    "body_2": "我们正在寻找商业伙伴，将这一 IP 开发为可上市产品并推向市场。",
-    "areas": "出版 · 生产 · 发行",
-    "closing": "未来产品形态开放讨论。",
-    "cta": "SPIEL 2026 见",
-    "image_alt": "包装中的 Magister Cards 实体版。"
+    "label": "Magister 藏品",
+    "title": "可触的 Magister 世界。",
+    "lead": "Magister 的世界凝结为实体——从原创牌组到艺术版画、服饰与艺术画册。",
+    "deck": {
+      "title": "牌组",
+      "lead": "54 幅原作。四个世界。一副牌组。",
+      "body": "由瓦西里·波奇茨基与亚历山大·日尔奇克创作的 54 张原创牌组。画作、角色与故事汇于一副可供探索与游玩的牌中。",
+      "cta": "探索牌组",
+      "image_alt": "正面印有原作的 Magister Cards 牌盒。"
+    },
+    "apparel": {
+      "title": "服饰",
+      "lead": "穿上 Magister 的一角。",
+      "body": "印有 Magister 原作的服饰，带有私人化细节，让每一件都成为你的专属。",
+      "cta": "查看服饰",
+      "image_alt": "印有 Magister 高跷人物图案的黑色连帽衫。"
+    },
+    "prints": {
+      "title": "艺术版画",
+      "lead": "牌面之外的 Magister 艺术。",
+      "body": "瓦西里·波奇茨基原作的高品质版画，保留作品原本的呈现形式。",
+      "cta": "查看版画",
+      "image_alt": "作为艺术版画呈现的 Magister 原作。"
+    },
+    "album": {
+      "title": "艺术画册",
+      "lead": "152 页里的 Magister 世界。",
+      "body": "穿越牌组背后的原作、角色与故事的视觉旅程。一本献给 Magister 艺术与创作的画册。",
+      "cta": "查看画册",
+      "image_alt": "Magister 艺术画册封面。"
+    }
   },
   "essen": {
     "headline": "SPIEL Essen 2026 见",

@@ -5,7 +5,7 @@
     "worlds": "The Worlds",
     "cards": "Explore the deck",
     "authors": "Authors",
-    "next": "Partnership",
+    "next": "Magister Artifacts",
     "spiel": "2026",
     "spiel_aria": "SPIEL Essen 2026",
     "language_label": "Language",
@@ -101,13 +101,37 @@
     }
   },
   "next": {
-    "label": "Partnership",
-    "body_1": "Magister Cards is an original visual IP built around an alternative mythology, with its own characters, stories and 54 original artworks.",
-    "body_2": "We are looking for commercial partners to develop this IP into a marketable product and bring it to market.",
-    "areas": "Publishing · Production · Distribution",
-    "closing": "The future product format is open for discussion.",
-    "cta": "Meet at SPIEL 2026",
-    "image_alt": "Magister Cards physical edition in packaging."
+    "label": "Magister Artifacts",
+    "title": "The World of Magister, Made Tangible.",
+    "lead": "The world of Magister takes shape in physical objects — from the original deck to art prints, apparel and the art album.",
+    "deck": {
+      "title": "The Deck",
+      "lead": "54 original artworks. Four worlds. One deck.",
+      "body": "An original deck of 54 cards created by Vasily Pochitsky and Alexander Zhilchik. Artworks, characters and stories come together in a deck made to be explored and played.",
+      "cta": "Explore the Deck",
+      "image_alt": "Magister Cards tuck box with original artwork on the front."
+    },
+    "apparel": {
+      "title": "Apparel",
+      "lead": "Wear a piece of Magister.",
+      "body": "Clothing featuring original Magister artwork, with a personal touch that makes each piece uniquely yours.",
+      "cta": "Explore Apparel",
+      "image_alt": "Black hoodie printed with Magister stilts artwork."
+    },
+    "prints": {
+      "title": "Art Prints",
+      "lead": "The art of Magister, beyond the cards.",
+      "body": "High-quality prints of Vasily Pochitsky’s original paintings, preserving the artwork in its original format.",
+      "cta": "Explore Art Prints",
+      "image_alt": "Original Magister painting prepared as an art print."
+    },
+    "album": {
+      "title": "Art Album",
+      "lead": "The world of Magister in 152 pages.",
+      "body": "A visual journey through the original artworks, characters and stories behind the cards. An album dedicated to the art and creation of Magister.",
+      "cta": "Explore the Album",
+      "image_alt": "Cover of the Magister art album."
+    }
   },
   "essen": {
     "headline": "Let's meet at SPIEL Essen 2026",
