@@ -4,6 +4,7 @@
     "deck": "The Deck",
     "worlds": "The Worlds",
     "cards": "Explore the deck",
+    "play": "Games",
     "authors": "Authors",
     "next": "Magister Artifacts",
     "spiel": "2026",
@@ -107,7 +108,7 @@
     "deck": {
       "title": "The Deck",
       "lead": "54 original artworks. Four worlds. One deck.",
-      "body": "An original deck of 54 cards created by Vasily Pochitsky and Alexander Zhilchik. Artworks, characters and stories come together in a deck made to be explored and played.",
+      "body": "An original deck of 54 cards in regular and XL size. Artworks, characters and stories come together in a deck made to be explored and played.",
       "cta": "Explore the Deck",
       "image_alt": "Magister Cards tuck box with original artwork on the front."
     },
