@@ -392,8 +392,10 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
             <img id="play-sort-img" alt={copy.card_alt} width="280" height="400" decoding="async" />
           </figure>
           <div class="fw-portrait-copy">
-            <h3 class="fw-spread-clock" id="play-timer" tabindex="-1">5:00.0</h3>
-            <p class="fw-spread-count" id="fw-spread-count"></p>
+            <div class="fw-spread-chrome">
+              <h3 class="fw-spread-clock" id="play-timer" tabindex="-1">5:00.0</h3>
+              <p class="fw-spread-count" id="fw-spread-count"></p>
+            </div>
             <div class="fw-options" id="play-sort-suits">
               {lessonSuits.map((suit) => (
                 <button class="fw-trial-suit" type="button" data-action="fw-spread-suit" data-suit={suit}>
@@ -2896,6 +2898,13 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     color: #c45656;
   }
 
+  .fw-spread-chrome {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
   .play-stage h3.fw-spread-clock {
     margin: 0;
     padding-top: 0.08em;
@@ -2906,17 +2915,6 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     font-variant-numeric: tabular-nums;
     letter-spacing: -0.03em;
     line-height: 1.08;
-  }
-
-  @media (max-width: 859px) {
-    .play-stage h3.fw-spread-clock {
-      font-size: 2.45rem;
-      line-height: 1.05;
-    }
-
-    [data-screen='fw-spread'] .fw-spread-count {
-      margin-top: 0.35rem;
-    }
   }
 
   .fw-spread-count {
@@ -2935,10 +2933,89 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
   }
 
   @media (max-width: 859px) {
-    [data-screen='fw-spread'] .fw-options,
+    /* One-screen budget: card fills leftover height, chrome+answers stay fixed. */
+    .play-stage > [data-screen='fw-spread']:not([hidden]) {
+      overflow: hidden;
+    }
+
+    [data-screen='fw-spread'] .fw-portrait {
+      flex: 1 1 auto;
+      min-height: 0;
+      gap: 0.5rem;
+    }
+
+    [data-screen='fw-spread'] .fw-portrait-card {
+      flex: 1 1 0;
+      min-height: 0;
+      align-items: center;
+      justify-content: center;
+    }
+
+    [data-screen='fw-spread'] .fw-portrait-card img {
+      width: auto;
+      max-width: 100%;
+      height: auto;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    [data-screen='fw-spread'] .fw-portrait-copy {
+      flex: none;
+    }
+
+    [data-screen='fw-spread'] .fw-spread-chrome {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.65rem;
+      width: 100%;
+    }
+
+    .play-stage h3.fw-spread-clock {
+      flex: none;
+      font-size: 1.85rem;
+      line-height: 1.05;
+    }
+
+    [data-screen='fw-spread'] .fw-spread-count {
+      flex: 1 1 auto;
+      margin: 0;
+      text-align: right;
+      font-size: 0.98rem;
+      line-height: 1.25;
+    }
+
+    [data-screen='fw-spread'] .fw-options {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4rem;
+      margin-top: 0.55rem;
+    }
+
+    [data-screen='fw-spread'] .fw-options button {
+      min-height: 2.75rem;
+      padding: 0.4rem 0.55rem;
+      font-size: 1.05rem;
+    }
+
     [data-screen='fw-spread'] .fw-dial,
     [data-screen='fw-spread'] .fw-court {
-      margin-top: 0.75rem;
+      margin-top: 0.55rem;
+    }
+
+    [data-screen='fw-spread'] .fw-spread-back {
+      margin-top: 0.4rem;
+    }
+
+    /* Keep pip dial on one row so rank step stays shorter than the 2×2 suits. */
+    [data-screen='fw-spread'] .fw-portrait-copy .fw-dial {
+      display: grid;
+      grid-template-columns: repeat(9, minmax(0, 1fr));
+      gap: 0.3rem;
+    }
+
+    [data-screen='fw-spread'] .fw-portrait-copy .fw-dial button {
+      min-height: 2.55rem;
+      font-size: 1.2rem;
     }
   }
 
