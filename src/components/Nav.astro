@@ -12,21 +12,22 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const externalBooking = BOOKING_URL.startsWith('http');
+const home = getLocalizedPath('/', lang);
 ---
 
 <nav id="main-nav" aria-label={t('nav.aria_label')}>
-  <a href="#deck" class="nav-logo" aria-label="Magister Cards">
+  <a href={`${home}#deck`} class="nav-logo" aria-label="Magister Cards">
     <MagisterLogo class="nav-logo-img" />
   </a>
 
   <ul class="nav-links">
-    <li><a href="#worlds">{t('nav.worlds')}</a></li>
-    <li><a href="#fifty-four">{t('nav.cards')}</a></li>
-    <li><a href="#play">{t('nav.play')}</a></li>
-    <li><a href="#artifacts">{t('nav.next')}</a></li>
-    <li><a href="#authors">{t('nav.authors')}</a></li>
+    <li><a href={`${home}#worlds`}>{t('nav.worlds')}</a></li>
+    <li><a href={`${home}#fifty-four`}>{t('nav.cards')}</a></li>
+    <li><a href={`${home}#play`}>{t('nav.play')}</a></li>
+    <li><a href={`${home}#artifacts`}>{t('nav.next')}</a></li>
+    <li><a href={`${home}#authors`}>{t('nav.authors')}</a></li>
     <li>
-      <a href="#spiel" class="nav-event" aria-label={t('nav.spiel_aria')}>
+      <a href={`${home}#spiel`} class="nav-event" aria-label={t('nav.spiel_aria')}>
         <SpielLogo class="nav-spiel-logo" width={112} height={49} />
       </a>
     </li>
@@ -87,13 +88,13 @@ const externalBooking = BOOKING_URL.startsWith('http');
 <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
   <div class="mobile-menu-inner">
     <ul>
-      <li><a href="#worlds" class="mobile-link">{t('nav.worlds')}</a></li>
-      <li><a href="#fifty-four" class="mobile-link">{t('nav.cards')}</a></li>
-      <li><a href="#play" class="mobile-link">{t('nav.play')}</a></li>
-      <li><a href="#artifacts" class="mobile-link">{t('nav.next')}</a></li>
-      <li><a href="#authors" class="mobile-link">{t('nav.authors')}</a></li>
+      <li><a href={`${home}#worlds`} class="mobile-link">{t('nav.worlds')}</a></li>
+      <li><a href={`${home}#fifty-four`} class="mobile-link">{t('nav.cards')}</a></li>
+      <li><a href={`${home}#play`} class="mobile-link">{t('nav.play')}</a></li>
+      <li><a href={`${home}#artifacts`} class="mobile-link">{t('nav.next')}</a></li>
+      <li><a href={`${home}#authors`} class="mobile-link">{t('nav.authors')}</a></li>
       <li>
-        <a href="#spiel" class="mobile-link nav-event" aria-label={t('nav.spiel_aria')}>
+        <a href={`${home}#spiel`} class="mobile-link nav-event" aria-label={t('nav.spiel_aria')}>
           <SpielLogo class="nav-spiel-logo nav-spiel-logo--mobile" width={160} height={70} />
         </a>
       </li>

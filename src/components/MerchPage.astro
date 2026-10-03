@@ -1,0 +1,1008 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations, pickLocalized, getLocalizedPath } from '../i18n/utils';
+import { getCollection } from 'astro:content';
+import { productCopy, productHasCardPick, type ProductKind } from '../i18n/merchCopy';
+import { ARTIFACT_MEDIA, ARTIFACT_STAGE_MEDIA } from '../lib/artifacts';
+import Nav from './Nav.astro';
+import Footer from './Footer.astro';
+
+interface Props {
+  lang: Lang;
+  kind?: ProductKind;
+}
+
+const { lang, kind = 'apparel' } = Astro.props;
+const t = useTranslations(lang);
+const copy = productCopy[kind][lang];
+const isApparel = kind === 'apparel';
+const isPrints = kind === 'prints';
+const isDeck = kind === 'deck';
+const isAlbum = kind === 'album';
+const hasCardPick = productHasCardPick(kind);
+const heroMedia = ARTIFACT_MEDIA[kind];
+const stageMedia = ARTIFACT_STAGE_MEDIA[kind];
+const heroAltKey = `next.${kind}.image_alt`;
+const backHref = `${getLocalizedPath('/', lang)}#artifacts`;
+const galleryHref = `${getLocalizedPath('/', lang)}#fifty-four`;
+
+const symbols: Record<string, string> = { hearts: '♥', diamonds: '♦', clubs: '♣', spades: '♠' };
+const allCards = hasCardPick ? await getCollection('cards') : [];
+const cards = allCards
+  .filter((card) => !card.data.back && card.data.suit && card.data.value)
+  .map((card) => {
+    const suit = card.data.suit as 'hearts' | 'diamonds' | 'clubs' | 'spades';
+    return {
+      id: card.data.id,
+      title: pickLocalized(card.data.title, lang),
+      summary: pickLocalized(card.data.summary, lang),
+      description: pickLocalized(card.data.description, lang),
+      suit,
+      value: card.data.value ?? '',
+      image: card.data.image,
+      world: t(`worlds.${suit}.name`),
+      suitSymbol: symbols[suit],
+    };
+  });
+
+const suits = [
+  { id: '', label: copy.picker.all },
+  { id: 'hearts', label: t('worlds.hearts.name') },
+  { id: 'diamonds', label: t('worlds.diamonds.name') },
+  { id: 'clubs', label: t('worlds.clubs.name') },
+  { id: 'spades', label: t('worlds.spades.name') },
+] as const;
+
+const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'] as const;
+const defaultCard = cards.find((c) => c.id === 'ace-hearts') ?? cards[0];
+const stageSrc = isAlbum
+  ? (stageMedia?.image ?? heroMedia.image)
+  : isDeck
+    ? heroMedia.image
+    : isPrints
+      ? (defaultCard?.image ?? heroMedia.image)
+      : '/media/merch-hoodie-black.jpg?v=2';
+const stageWidth = isAlbum
+  ? (stageMedia?.width ?? heroMedia.width)
+  : isDeck
+    ? heroMedia.width
+    : isPrints
+      ? 600
+      : 764;
+const stageHeight = isAlbum
+  ? (stageMedia?.height ?? heroMedia.height)
+  : isDeck
+    ? heroMedia.height
+    : isPrints
+      ? 400
+      : 1024;
+const stageLabel =
+  isDeck || isPrints || isAlbum ? (copy.config.format || copy.label) : copy.config.product_hoodie;
+const previewProductImage = heroMedia.image;
+const cardsJson = JSON.stringify(cards).replace(/</g, '\\u003c');
+const uiJson = JSON.stringify({
+  no_card: copy.config.no_card,
+  preview_created: copy.config.preview_created,
+  preview_locked: copy.config.preview_locked,
+  preview_pin_prompt: copy.config.preview_pin_prompt,
+  birth_joker: copy.config.birth_joker,
+  read_more: copy.config.read_more,
+  read_less: copy.config.read_less,
+  format: copy.config.format,
+  product_title: copy.label,
+  product_lead: copy.hero.sub,
+  product_desc: copy.hero.body[0] || '',
+}).replace(/</g, '\\u003c');
+---
+
+<Nav lang={lang} />
+<main id="main-content" class="merch" data-merch data-kind={kind}>
+  <section class="merch-hero page-shell" id="merch-hero">
+    <a class="text-link merch-back" href={backHref}>← {copy.back}</a>
+    <div class="merch-hero__copy">
+      <p class="section-label">{copy.label}</p>
+      <h1 class="merch-hero__title">{copy.hero.title}</h1>
+      <p class="merch-hero__sub">{copy.hero.sub}</p>
+      <div class="merch-hero__concept">
+        {copy.hero.body.map((p) => <p class="merch-prose">{p}</p>)}
+      </div>
+      <div class="merch-hero__actions">
+        <button class="btn btn-accent" type="button" data-action="scroll-config">{copy.hero.cta_create}</button>
+      </div>
+    </div>
+    <figure class="merch-hero__visual">
+      <img
+        src={heroMedia.image}
+        alt={t(heroAltKey)}
+        width={heroMedia.width}
+        height={heroMedia.height}
+        loading="eager"
+        decoding="async"
+      />
+    </figure>
+  </section>
+
+  <section class="merch-config editorial-section" id="merch-config">
+    <div class="page-shell">
+      <header class="merch-section-header reveal">
+        <h2 class="section-title merch-section-title">{copy.config.title}</h2>
+        <p class="merch-prose">{copy.config.body}</p>
+      </header>
+
+      <div class="merch-config__layout">
+        <div class="merch-config__steps">
+          {isApparel && (
+            <div class="merch-step reveal">
+              <h3>{copy.config.step1}</h3>
+              <div class="merch-choice-row">
+                <button class="merch-chip" type="button" data-product="hoodie" aria-pressed="true">{copy.config.product_hoodie}</button>
+                <button class="merch-chip" type="button" data-product="tee" aria-pressed="false">{copy.config.product_tee}</button>
+              </div>
+            </div>
+          )}
+
+          {hasCardPick && (
+            <div class="merch-step reveal">
+              <h3>{copy.config.step2}</h3>
+              <div class="merch-choice-row" role="tablist" aria-label={copy.config.step2}>
+                <button class="merch-chip is-active" type="button" data-card-method="browse" aria-pressed="true">{copy.config.card_tab_browse}</button>
+                <button class="merch-chip" type="button" data-card-method="date" aria-pressed="false">{copy.config.card_tab_date}</button>
+              </div>
+
+              <div id="merch-card-browse" data-card-panel="browse">
+                <div id="merch-selected-empty" class="merch-selected-empty">
+                  <p class="merch-muted">{copy.config.no_card}</p>
+                  <button class="btn" type="button" data-action="open-picker">{copy.config.browse_cards}</button>
+                </div>
+                <div id="merch-selected-card" class="merch-selected" hidden>
+                  <img id="merch-selected-art" src="" alt="" width="180" height="257" />
+                  <div>
+                    <p class="merch-suit-val" id="merch-selected-suit"></p>
+                    <h4 id="merch-selected-title"></h4>
+                    <p class="merch-world-line" id="merch-selected-world"></p>
+                    <button class="text-link" type="button" data-action="open-picker">{copy.config.change_card} →</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="merch-card-date" data-card-panel="date" hidden>
+                <div class="merch-birth-form">
+                  <label>
+                    <span>{copy.config.birth_month}</span>
+                    <select id="merch-month">
+                      {copy.months.map((name, index) => (
+                        <option value={index + 1} selected={index === 0}>{name}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    <span>{copy.config.birth_day}</span>
+                    <select id="merch-day"></select>
+                  </label>
+                  <button class="btn btn-accent" type="button" data-action="birth-submit">{copy.config.birth_cta}</button>
+                </div>
+                <span id="merch-birth-choose-label" hidden>{copy.config.birth_choose}</span>
+                <div id="merch-birth-result" class="merch-birth__result" hidden></div>
+              </div>
+            </div>
+          )}
+
+          {isApparel && (
+            <div class="merch-step reveal">
+              <h3>{copy.config.step3}</h3>
+              <p class="merch-field-label">{copy.config.color}</p>
+              <div class="merch-choice-row">
+                <button class="merch-chip" type="button" data-color="inspired" aria-pressed="false">{copy.config.color_inspired}</button>
+                <button class="merch-chip" type="button" data-color="black" aria-pressed="true">{copy.config.color_black}</button>
+              </div>
+              <p class="merch-field-label">{copy.config.size}</p>
+              <div class="merch-choice-row merch-choice-row--wrap">
+                {sizes.map((size) => (
+                  <button class="merch-chip" type="button" data-size={size} aria-pressed={size === 'M' ? 'true' : 'false'}>{size}</button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div class="merch-step reveal">
+            <h3>{copy.config.step4}</h3>
+            <p class="merch-field-label">{copy.config.for_whom}</p>
+            <div class="merch-choice-row">
+              <button class="merch-chip" type="button" data-audience="self" aria-pressed="true">{copy.config.for_self}</button>
+              <button class="merch-chip" type="button" data-audience="gift" aria-pressed="false">{copy.config.for_gift}</button>
+            </div>
+            <div id="merch-gift-fields" class="merch-fields" hidden>
+              <label>
+                <span>{copy.config.recipient}</span>
+                <input id="merch-recipient" type="text" autocomplete="name" maxlength="48" />
+              </label>
+              <label>
+                <span>{copy.config.sender}</span>
+                <input id="merch-sender" type="text" autocomplete="name" maxlength="48" />
+              </label>
+            </div>
+            <label>
+              <span
+                id="merch-message-label"
+                data-optional={copy.config.message_optional}
+                data-required={copy.config.message}
+              >{copy.config.message_optional}</span>
+              <textarea id="merch-message" rows="4" maxlength="400"></textarea>
+            </label>
+            <p class="merch-field-label">{copy.config.visibility}</p>
+            <div class="merch-choice-row">
+              <button class="merch-chip" type="button" data-visibility="public" aria-pressed="true">{copy.config.visibility_public}</button>
+              <button class="merch-chip" type="button" data-visibility="private" aria-pressed="false">{copy.config.visibility_private}</button>
+            </div>
+            <p class="merch-note">{copy.config.visibility_note}</p>
+            <div id="merch-pin-block" class="merch-pin" hidden>
+              <p class="merch-field-label">{copy.config.pin_label}</p>
+              <div class="merch-pin__row">
+                <strong id="merch-pin-value"></strong>
+                <button class="text-link" type="button" data-action="regen-pin">{copy.config.pin_regen}</button>
+              </div>
+              <p class="merch-note">{copy.config.pin_note}</p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="merch-config__stage reveal">
+          <figure
+            class:list={[
+              'merch-garment',
+              {
+                'merch-garment--print': isPrints,
+                'merch-garment--deck': isDeck,
+                'merch-garment--album': isAlbum,
+              },
+            ]}
+            id="merch-garment"
+            data-product={isApparel ? 'hoodie' : isDeck ? 'deck' : isAlbum ? 'album' : 'print'}
+            data-color={isApparel ? 'black' : undefined}
+            data-photo-hoodie-black="/media/merch-hoodie-black.jpg?v=2"
+            data-photo-hoodie-inspired="/media/merch-hoodie-inspired.jpg?v=2"
+            data-photo-tee-black="/media/merch-tee-black.jpg?v=2"
+            data-photo-tee-inspired="/media/merch-tee-inspired.jpg?v=2"
+            data-photo-placeholder={previewProductImage}
+            data-photo-stage={stageMedia?.image}
+          >
+            <img
+              id="merch-garment-photo"
+              class="merch-garment__photo"
+              src={stageSrc}
+              alt={
+                isPrints
+                  ? (defaultCard?.title ?? '')
+                  : isDeck || isAlbum
+                    ? t(heroAltKey)
+                    : ''
+              }
+              width={stageWidth}
+              height={stageHeight}
+              decoding="async"
+            />
+            <figcaption class="merch-garment__label" id="merch-garment-label">
+              {stageLabel}
+            </figcaption>
+          </figure>
+
+          <div class="merch-preview" id="merch-preview">
+            <p class="merch-preview__badge">{copy.config.preview_badge}</p>
+            <h3>{copy.config.preview_title}</h3>
+            <p class="merch-note">{copy.config.preview_note}</p>
+            <div class="merch-preview__phone">
+              <img id="merch-preview-art" src="" alt="" width="220" height="314" />
+              <p class="merch-suit-val merch-suit-val--preview" id="merch-preview-suit"></p>
+              <h4 id="merch-preview-title"></h4>
+              <p id="merch-preview-world" class="merch-world-line"></p>
+              <p id="merch-preview-desc" class="merch-preview__desc"></p>
+              <button class="text-link" type="button" data-action="toggle-desc" id="merch-preview-more" hidden>
+                {copy.config.read_more}
+              </button>
+              <p id="merch-preview-created" class="merch-preview__meta"></p>
+              <p id="merch-preview-people" class="merch-preview__meta" hidden></p>
+              <p id="merch-preview-message" class="merch-preview__message" hidden></p>
+              <div id="merch-preview-locked" class="merch-preview__locked" hidden>
+                <p>{copy.config.preview_locked}</p>
+                <label>
+                  <span>{copy.config.preview_pin_prompt}</span>
+                  <input id="merch-preview-pin" type="text" inputmode="numeric" maxlength="4" autocomplete="one-time-code" />
+                </label>
+              </div>
+              <div class="merch-preview__qr">
+                <canvas id="merch-qr" width="128" height="128" aria-hidden="true"></canvas>
+                <p>{copy.config.preview_qr}</p>
+              </div>
+            </div>
+            <p class="merch-ready">{copy.config.ready}</p>
+            <button class="btn btn-accent" type="button" disabled>{copy.config.coming_soon}</button>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="merch-outro editorial-section" id="merch-outro">
+    <div class="page-shell merch-outro__inner reveal">
+      <p class="merch-outro__line">{copy.outro.line}</p>
+      <a class="text-link" href={galleryHref}>{copy.outro.secondary} →</a>
+    </div>
+  </section>
+
+  {hasCardPick && (
+    <div class="merch-picker" id="merch-picker" role="dialog" aria-modal="true" aria-labelledby="merch-picker-title" aria-hidden="true" hidden>
+      <div class="merch-picker__panel">
+        <div class="merch-picker__bar">
+          <h2 id="merch-picker-title">{copy.picker.title}</h2>
+          <button class="text-link" type="button" data-action="close-picker">{copy.picker.close}</button>
+        </div>
+        <div class="merch-picker__suits">
+          {suits.map((suit) => (
+            <button class:list={['merch-chip', { 'is-active': suit.id === '' }]} type="button" data-picker-suit={suit.id}>
+              {suit.label}
+            </button>
+          ))}
+        </div>
+        <div class="merch-picker__grid" id="merch-picker-grid"></div>
+      </div>
+    </div>
+  )}
+
+  <script id="merch-cards" type="application/json" set:html={cardsJson} />
+  <script id="merch-ui" type="application/json" set:html={uiJson} />
+</main>
+<Footer lang={lang} />
+
+<script>
+  import { mountMerch } from '../scripts/merch';
+  const root = document.querySelector<HTMLElement>('[data-merch]');
+  if (root) mountMerch(root);
+</script>
+
+<style>
+  .merch {
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .merch [hidden] {
+    display: none !important;
+  }
+
+  .merch-back {
+    display: inline-flex;
+    grid-area: back;
+    justify-self: start;
+  }
+
+  .merch-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    grid-template-areas:
+      'back back'
+      'copy visual';
+    column-gap: clamp(1.5rem, 4vw, 3rem);
+    row-gap: 1rem;
+    align-items: start;
+    padding-top: clamp(5.25rem, 11vw, 6.75rem);
+    padding-bottom: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .merch-hero__copy {
+    grid-area: copy;
+    align-self: start;
+    margin: 0;
+    padding: 0;
+  }
+
+  .merch-hero__copy .section-label {
+    margin: 0;
+  }
+
+  .merch-hero__visual {
+    grid-area: visual;
+    align-self: start;
+    margin: 0;
+  }
+
+  .merch-hero__title {
+    margin: 0.85rem 0 0;
+    font-family: var(--display);
+    font-size: clamp(2.6rem, 6vw, 5.2rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+  }
+
+  .merch-hero__sub {
+    margin: 1.1rem 0 0;
+    max-width: 28rem;
+    font-family: var(--display);
+    font-size: clamp(1.2rem, 2vw, 1.65rem);
+    line-height: 1.25;
+  }
+
+  .merch-hero__concept {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.15rem;
+    max-width: 34rem;
+  }
+
+  .merch-hero__concept .merch-prose {
+    margin: 0;
+  }
+
+  .merch-prose {
+    margin: 1rem 0 0;
+    max-width: 38rem;
+    color: var(--muted);
+    font-size: clamp(1rem, 1.3vw, 1.12rem);
+    line-height: 1.7;
+  }
+
+  .merch-suit-val {
+    margin: 0;
+    padding-top: 0.08em;
+    color: var(--ink);
+    font-family: var(--display);
+    font-size: clamp(1.55rem, 2.4vw, 2rem);
+    line-height: 1.25;
+  }
+
+  .merch-suit-val[data-suit='hearts'],
+  .merch-suit-val[data-suit='diamonds'] {
+    color: var(--accent);
+  }
+
+  .merch-suit-val :global(.merch-suit-symbol) {
+    display: inline-block;
+    padding-top: 0.1em;
+    line-height: 1;
+    vertical-align: -0.06em;
+  }
+
+  .merch-suit-val :global(.merch-suit-rank) {
+    margin-left: 0.12em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .merch-suit-val--preview {
+    font-size: 1.45rem;
+  }
+
+  .merch-world-line {
+    margin: 0;
+    color: var(--muted);
+    font: 600 0.62rem/1.7 var(--sans);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .merch-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 1.6rem;
+  }
+
+  .merch-hero__visual {
+    margin: 0;
+  }
+
+  .merch-hero__visual img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .merch-section-title {
+    max-width: none;
+    white-space: normal;
+    font-size: clamp(2rem, 4.4vw, 3.8rem);
+    line-height: 1;
+  }
+
+  .merch-section-header {
+    max-width: 42rem;
+    margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+  }
+
+  .merch-config {
+    background: var(--paper-deep);
+  }
+
+  .merch-config__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(1.5rem, 3.5vw, 2.75rem);
+    align-items: start;
+  }
+
+  .merch-config__steps {
+    display: grid;
+    gap: 1.35rem;
+  }
+
+  .merch-step {
+    display: grid;
+    gap: 0.75rem;
+    padding: clamp(1.1rem, 2.4vw, 1.5rem);
+    border: 1px solid var(--line);
+    background: var(--white);
+  }
+
+  .merch-step h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 400;
+  }
+
+  .merch-choice-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .merch-chip {
+    min-height: 2.55rem;
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    font: 500 0.82rem/1 var(--sans);
+    letter-spacing: 0.04em;
+  }
+
+  .merch-chip.is-active,
+  .merch-chip[aria-pressed='true'] {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .merch-birth-form,
+  .merch-fields label,
+  .merch-step > label {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .merch-birth-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    align-items: end;
+  }
+
+  .merch-birth-form .btn {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .merch-birth-form span,
+  .merch-fields label span,
+  .merch-step > label > span {
+    color: var(--muted);
+    font: 600 0.68rem/1.4 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .merch-birth-form select,
+  .merch-fields input,
+  .merch-step textarea,
+  .merch-preview__locked input {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  .merch-step textarea {
+    resize: vertical;
+    min-height: 6.5rem;
+  }
+
+  .merch-birth__result {
+    display: grid;
+    gap: 1rem;
+    margin-top: 0.35rem;
+  }
+
+  .merch-birth__card {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: start;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .merch-birth__card img,
+  .merch-selected img {
+    width: 100%;
+    height: auto;
+  }
+
+  .merch-birth__card h4,
+  .merch-selected h4 {
+    margin: 0.2rem 0 0;
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 400;
+  }
+
+  .merch-selected .merch-world-line,
+  .merch-birth__card .merch-world-line {
+    margin-top: 0.15rem;
+  }
+
+  .merch-preview__phone .text-link {
+    margin-top: 0.15rem;
+  }
+
+  .merch-birth__summary {
+    font-size: 0.95rem;
+  }
+
+  .merch-selected-empty {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+  }
+
+  .merch-selected {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: center;
+  }
+
+  .merch-field-label {
+    margin: 0.35rem 0 0;
+    color: var(--ink);
+    font: 600 0.68rem/1.4 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .merch-fields {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .merch-note,
+  .merch-muted {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .merch-pin__row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .merch-pin strong {
+    font-family: var(--display);
+    font-size: 1.8rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+  }
+
+  .merch-config__stage {
+    display: grid;
+    gap: 1.25rem;
+    position: sticky;
+    top: 5.5rem;
+  }
+
+  .merch-garment {
+    position: relative;
+    margin: 0;
+    border: 1px solid var(--line);
+    background: #8a8a86;
+    overflow: hidden;
+  }
+
+  .merch-garment__photo {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    object-position: center center;
+    background: #8a8a86;
+  }
+
+  .merch-garment--print {
+    background: #efece4;
+  }
+
+  .merch-garment--print .merch-garment__photo {
+    aspect-ratio: 5 / 7;
+    object-fit: contain;
+    object-position: center center;
+    background: #efece4;
+  }
+
+  .merch-garment--deck,
+  .merch-garment--album {
+    background: transparent;
+    border: 0;
+  }
+
+  .merch-garment--deck .merch-garment__photo {
+    aspect-ratio: 3 / 2;
+    object-fit: contain;
+    object-position: center center;
+    background: transparent;
+  }
+
+  .merch-garment--album .merch-garment__photo {
+    aspect-ratio: 1024 / 724;
+    object-fit: contain;
+    object-position: center center;
+    background: transparent;
+  }
+
+  .merch[data-kind='deck'] .merch-hero__visual img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: contain;
+  }
+
+  .merch[data-kind='album'] .merch-hero__visual img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 724 / 1024;
+    object-fit: contain;
+  }
+
+  .merch[data-kind='deck'] #merch-preview-art {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: contain;
+  }
+
+  .merch[data-kind='album'] #merch-preview-art {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 724 / 1024;
+    object-fit: contain;
+  }
+
+  .merch-garment__label {
+    position: absolute;
+    top: 0.85rem;
+    left: 0.85rem;
+    z-index: 2;
+    padding: 0.3rem 0.5rem;
+    background: rgba(23, 23, 20, 0.55);
+    color: rgba(243, 240, 232, 0.92);
+    font: 600 0.68rem/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .merch-preview {
+    display: grid;
+    gap: 0.85rem;
+    padding: 1.15rem;
+    border: 1px solid var(--line);
+    background: var(--white);
+  }
+
+  .merch-preview__badge {
+    margin: 0;
+    color: var(--accent);
+    font: 600 0.68rem/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .merch-preview h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 1.55rem;
+    font-weight: 400;
+  }
+
+  .merch-preview__phone {
+    display: grid;
+    gap: 0.55rem;
+    justify-items: center;
+    padding: 1.1rem 1rem 1.25rem;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    text-align: center;
+  }
+
+  .merch-preview__phone img {
+    width: min(100%, 9.5rem);
+    height: auto;
+  }
+
+  .merch-preview__phone h4 {
+    margin: 0.35rem 0 0;
+    font-family: var(--display);
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+
+  .merch-preview__world,
+  .merch-preview__meta {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .merch-preview__desc,
+  .merch-preview__message {
+    margin: 0;
+    color: var(--ink);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
+  .merch-preview__locked {
+    display: grid;
+    gap: 0.45rem;
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px dashed var(--line);
+  }
+
+  .merch-preview__qr {
+    display: grid;
+    gap: 0.4rem;
+    justify-items: center;
+    margin-top: 0.35rem;
+  }
+
+  .merch-preview__qr p,
+  .merch-ready {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.82rem;
+  }
+
+  .merch-outro {
+    padding-block: clamp(2.5rem, 5vw, 3.75rem);
+  }
+
+  .merch-outro__inner {
+    display: grid;
+    gap: 0.85rem;
+    justify-items: start;
+  }
+
+  .merch-outro__line {
+    margin: 0;
+    font-family: var(--display);
+    font-size: clamp(1.45rem, 3vw, 2.1rem);
+    font-weight: 400;
+    line-height: 1.2;
+  }
+
+  .merch-picker {
+    position: fixed;
+    inset: 0;
+    z-index: 240;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgba(23, 23, 20, 0.72);
+  }
+
+  .merch-picker__panel {
+    display: grid;
+    grid-template-rows: auto auto minmax(0, 1fr);
+    gap: 0.85rem;
+    width: min(100%, 56rem);
+    max-height: min(88dvh, 48rem);
+    padding: 1rem;
+    border: 1px solid var(--line);
+    background: var(--paper);
+  }
+
+  .merch-picker__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .merch-picker__bar h2 {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 1.6rem;
+    font-weight: 400;
+  }
+
+  .merch-picker__suits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .merch-picker__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+    gap: 0.65rem;
+    overflow: auto;
+    min-height: 0;
+    padding-right: 0.2rem;
+  }
+
+  .merch-picker__card {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .merch-picker__card img {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--line);
+  }
+
+  .merch-picker__card span {
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+
+  .merch-picker__card.is-selected,
+  .merch-picker__card:hover,
+  .merch-picker__card:focus-visible {
+    border-color: var(--ink);
+  }
+
+  .merch button.text-link {
+    justify-self: start;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--accent);
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+  }
+
+  @media (max-width: 900px) {
+    .merch-hero {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'back'
+        'visual'
+        'copy';
+    }
+
+    .merch-config__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .merch-config__stage {
+      position: static;
+    }
+
+    .merch-birth-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,134 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations, getLocalizedPath } from '../i18n/utils';
+import type { ArtifactSlug } from '../lib/artifacts';
+import { ARTIFACT_MEDIA } from '../lib/artifacts';
+import Nav from './Nav.astro';
+import Footer from './Footer.astro';
+import MerchPage from './MerchPage.astro';
+
+interface Props {
+  lang: Lang;
+  slug: ArtifactSlug;
+}
+
+const { lang, slug } = Astro.props;
+const t = useTranslations(lang);
+const media = ARTIFACT_MEDIA[slug];
+const backHref = `${getLocalizedPath('/', lang)}#artifacts`;
+---
+
+{slug === 'apparel' || slug === 'prints' || slug === 'deck' || slug === 'album' ? (
+  <MerchPage lang={lang} kind={slug} />
+) : (
+  <>
+    <Nav lang={lang} />
+    <main id="main-content" class="artifact-detail">
+      <div class="page-shell artifact-detail__shell">
+        <a class="text-link artifact-detail__back" href={backHref}>← {t('next.page.back')}</a>
+
+        <header class="artifact-detail__header reveal">
+          <p class="section-label">{t('next.label')}</p>
+          <h1 class="artifact-detail__title">{t(`next.${slug}.title`)}</h1>
+          <p class="artifact-detail__lead">{t(`next.${slug}.lead`)}</p>
+        </header>
+
+        <figure class="artifact-detail__media reveal">
+          <img
+            src={media.image}
+            alt={t(`next.${slug}.image_alt`)}
+            width={media.width}
+            height={media.height}
+            loading="eager"
+            decoding="async"
+          />
+        </figure>
+
+        <div class="artifact-detail__body reveal">
+          <p>{t(`next.${slug}.body`)}</p>
+          <p class="artifact-detail__stub">{t('next.page.stub')}</p>
+        </div>
+      </div>
+    </main>
+    <Footer lang={lang} />
+  </>
+)}
+
+<style>
+  .artifact-detail {
+    padding-block: clamp(5.5rem, 12vw, 7.5rem) clamp(3rem, 6vw, 5rem);
+    background: var(--paper);
+  }
+
+  .artifact-detail__shell {
+    display: grid;
+    gap: clamp(1.25rem, 3vw, 2rem);
+    max-width: min(100%, 52rem);
+  }
+
+  .artifact-detail__back {
+    justify-self: start;
+  }
+
+  .artifact-detail__header {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .artifact-detail__title {
+    margin: 0;
+    font-family: var(--display);
+    font-size: clamp(2.2rem, 5vw, 3.75rem);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  .artifact-detail__lead {
+    margin: 0;
+    max-width: 34rem;
+    font-family: var(--display);
+    font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  .artifact-detail__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 28rem;
+    margin: 0;
+  }
+
+  .artifact-detail__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .artifact-detail__body {
+    display: grid;
+    gap: 1rem;
+    max-width: 38rem;
+    color: var(--muted);
+    font-size: clamp(1rem, 1.25vw, 1.12rem);
+    line-height: 1.7;
+  }
+
+  .artifact-detail__body p {
+    margin: 0;
+  }
+
+  .artifact-detail__stub {
+    padding-top: 0.35rem;
+    border-top: 1px solid var(--line);
+    color: var(--accent);
+    font: 600 0.72rem/1.4 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+</style>

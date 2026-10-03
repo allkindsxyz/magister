@@ -1,0 +1,36 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import ArtifactDetail from '../../../components/ArtifactDetail.astro';
+import type { Lang } from '../../../i18n/utils';
+import { useTranslations } from '../../../i18n/utils';
+import { productCopy, type ProductKind } from '../../../i18n/merchCopy';
+import { ARTIFACT_SLUGS, isArtifactSlug } from '../../../lib/artifacts';
+
+export function getStaticPaths() {
+  const langs: Lang[] = ['en', 'ru', 'be', 'zh'];
+  return langs.flatMap((lang) =>
+    ARTIFACT_SLUGS.map((slug) => ({
+      params: { lang, slug },
+    }))
+  );
+}
+
+const { lang: langParam, slug: slugParam } = Astro.params;
+
+if (!langParam || !['en', 'ru', 'be', 'zh'].includes(langParam) || !slugParam || !isArtifactSlug(slugParam)) {
+  return Astro.redirect('/en/');
+}
+
+const lang = langParam as Lang;
+const slug = slugParam;
+const t = useTranslations(lang);
+const productKind: ProductKind | null =
+  slug === 'apparel' || slug === 'prints' || slug === 'deck' || slug === 'album' ? slug : null;
+const product = productKind ? productCopy[productKind][lang] : null;
+const title = product ? product.meta_title : `${t(`next.${slug}.title`)} — Magister Cards`;
+const description = product ? product.meta_description : t(`next.${slug}.lead`);
+---
+
+<Layout lang={lang} title={title} description={description}>
+  <ArtifactDetail lang={lang} slug={slug} />
+</Layout>

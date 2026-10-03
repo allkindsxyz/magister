@@ -1,7 +1,7 @@
 ---
 import type { Lang } from '../i18n/utils';
-import { useTranslations } from '../i18n/utils';
-import { PARTNERSHIP_EMAIL } from '../lib/site';
+import { useTranslations, getLocalizedPath } from '../i18n/utils';
+import { ARTIFACT_SLUGS, ARTIFACT_MEDIA } from '../lib/artifacts';
 
 interface Props {
   lang: Lang;
@@ -10,36 +10,11 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const items = [
-  {
-    key: 'deck',
-    image: '/media/pack.png',
-    width: 1536,
-    height: 1024,
-    href: '#fifty-four',
-  },
-  {
-    key: 'apparel',
-    image: '/media/partner-apparel.jpg',
-    width: 764,
-    height: 1024,
-    href: `mailto:${PARTNERSHIP_EMAIL}?subject=${encodeURIComponent('Magister Apparel')}`,
-  },
-  {
-    key: 'prints',
-    image: '/media/partner-print.jpg',
-    width: 713,
-    height: 1024,
-    href: `mailto:${PARTNERSHIP_EMAIL}?subject=${encodeURIComponent('Magister Art Prints')}`,
-  },
-  {
-    key: 'album',
-    image: '/media/partner-album.jpg',
-    width: 1024,
-    height: 724,
-    href: `mailto:${PARTNERSHIP_EMAIL}?subject=${encodeURIComponent('Magister Art Album')}`,
-  },
-] as const;
+const items = ARTIFACT_SLUGS.map((key) => ({
+  key,
+  ...ARTIFACT_MEDIA[key],
+  href: getLocalizedPath(`/artifacts/${key}`, lang),
+}));
 ---
 
 <section class="artifacts editorial-section" id="artifacts" aria-labelledby="artifacts-title">

@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/utils';
-import { useTranslations } from '../i18n/utils';
+import { useTranslations, getLocalizedPath } from '../i18n/utils';
 import { CONTACT_EMAIL } from '../lib/site';
 import MagisterLogo from './MagisterLogo.astro';
 
@@ -10,6 +10,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const home = getLocalizedPath('/', lang);
 ---
 
 <footer id="contact">
@@ -27,7 +28,7 @@ const t = useTranslations(lang);
 
     <div class="footer-bottom">
       <p>© 2026 Magister Cards</p>
-      <a href="#deck">{t('footer.back_to_top')} ↑</a>
+      <a href={`${home}#deck`}>{t('footer.back_to_top')} ↑</a>
     </div>
   </div>
 </footer>
