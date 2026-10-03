@@ -14,6 +14,8 @@ export type MerchCopy = {
   meta_description: string;
   back: string;
   label: string;
+  /** Detail hero alt; falls back to next.*.image_alt when empty. */
+  hero_image_alt: string;
   hero: {
     title: string;
     sub: string;
@@ -89,6 +91,8 @@ const en: MerchCopy = {
     'Wearable Magister art with a personal digital story. Choose a card, make it yours, and give it a memory that stays.',
   back: 'Back to Artifacts',
   label: 'Magister Merch',
+  hero_image_alt:
+    'Black Magister hoodie with a QR neck label and a phone showing the personal digital story.',
   hero: {
     title: 'A Card. A Story. A Memory.',
     sub: 'Wearable art with a story of its own.',
@@ -183,6 +187,8 @@ const ru: MerchCopy = {
   meta_description:
     'Носимое искусство Magister с личной цифровой историей. Выберите карту, сделайте её своей и сохраните память.',
   back: 'Назад к артефактам',
+  hero_image_alt:
+    'Чёрное худи Magister с QR-биркой и телефон с личной цифровой историей.',
   hero: {
     title: 'Карта. История. Память.',
     sub: 'Носимое искусство со своей историей.',
@@ -278,6 +284,8 @@ const be: MerchCopy = {
   meta_description:
     'Носнае мастацтва Magister з асабістай лічбавай гісторыяй. Абярыце карту, зрабіце яе сваёй і захавайце памяць.',
   back: 'Назад да артэфактаў',
+  hero_image_alt:
+    'Чорнае худзі Magister з QR-біркай і тэлефон з асабістай лічбавай гісторыяй.',
   hero: {
     title: 'Карта. Гісторыя. Памяць.',
     sub: 'Носнае мастацтва са сваёй гісторыяй.',
@@ -346,6 +354,7 @@ const zh: MerchCopy = {
   meta_title: 'Magister Merch — 一张牌。一个故事。一份记忆。',
   meta_description: '可穿戴的 Magister 艺术，附带个人数字故事。选择一张牌，让它成为你的，留下一份记忆。',
   back: '返回藏品',
+  hero_image_alt: '带有 QR 领标的黑色 Magister 连帽衫，手机上显示个人数字故事。',
   hero: {
     title: '一张牌。一个故事。一份记忆。',
     sub: '自带故事的可穿戴艺术。',
@@ -424,12 +433,13 @@ export const merchCopy: Record<Lang, MerchCopy> = { en, ru, be, zh };
 
 const printsEn: MerchCopy = {
   ...en,
-  meta_title: 'Magister Art Prints — The Painting. The Print. The Memory.',
+  meta_title: 'Magister Art Prints — A World. On Your Wall.',
   meta_description:
     'Museum-quality Magister art prints in the original 60 × 40 cm format, with a personal digital story.',
   label: 'Art Prints',
+  hero_image_alt: '',
   hero: {
-    title: 'The Painting. The Print. The Memory.',
+    title: 'A World. On Your Wall.',
     sub: 'A true copy in the original format.',
     body: [
       'Each Magister print is a faithful copy of Vasily Pochitsky’s original painting, produced in its original size: 60 × 40 cm.',
@@ -460,12 +470,13 @@ const printsEn: MerchCopy = {
 
 const printsRu: MerchCopy = {
   ...ru,
-  meta_title: 'Magister Art Prints — Картина. Принт. Память.',
+  meta_title: 'Magister Art Prints — Мир. На вашей стене.',
   meta_description:
     'Художественные принты Magister в оригинальном формате 60 × 40 см с личной цифровой историей.',
   label: 'Арт-принты',
+  hero_image_alt: '',
   hero: {
-    title: 'Картина. Принт. Память.',
+    title: 'Мир. На вашей стене.',
     sub: 'Точная копия в оригинальном формате.',
     body: [
       'Каждый принт Magister — точная копия оригинальной картины Василия Почицкого в её исходном размере: 60 × 40 см.',
@@ -496,12 +507,13 @@ const printsRu: MerchCopy = {
 
 const printsBe: MerchCopy = {
   ...be,
-  meta_title: 'Magister Art Prints — Карціна. Прынт. Памяць.',
+  meta_title: 'Magister Art Prints — Свет. На вашай сцяне.',
   meta_description:
     'Мастацкія прынта Magister у арыгінальным фармаце 60 × 40 см з асабістай лічбавай гісторыяй.',
   label: 'Арт-прынта',
+  hero_image_alt: '',
   hero: {
-    title: 'Карціна. Прынт. Памяць.',
+    title: 'Свет. На вашай сцяне.',
     sub: 'Дакладная копія ў арыгінальным фармаце.',
     body: [
       'Кожны прынт Magister — дакладная копія арыгінальнай карціны Васіля Пачыцкага ў яе зыходным памеры: 60 × 40 см.',
@@ -532,11 +544,12 @@ const printsBe: MerchCopy = {
 
 const printsZh: MerchCopy = {
   ...zh,
-  meta_title: 'Magister Art Prints — 画作。版画。记忆。',
+  meta_title: 'Magister Art Prints — 一个世界。挂在你的墙上。',
   meta_description: 'Magister 艺术版画，原作尺寸 60 × 40 cm，附带个人数字故事。',
   label: '艺术版画',
+  hero_image_alt: '',
   hero: {
-    title: '画作。版画。记忆。',
+    title: '一个世界。挂在你的墙上。',
     sub: '原作尺寸的忠实复制。',
     body: [
       '每一幅 Magister 版画，都是 Vasily Pochitsky 原作的忠实复制，尺寸与原画一致：60 × 40 cm。',
@@ -573,12 +586,13 @@ export const printsCopy: Record<Lang, MerchCopy> = {
 
 const deckEn: MerchCopy = {
   ...en,
-  meta_title: 'Magister Deck — 54 Cards. Four Worlds. One Deck.',
+  meta_title: 'Magister Deck — 54 Cards. 4 Worlds. One Universe.',
   meta_description:
     'An original Magister deck of 54 cards — with a personal digital story attached to your copy.',
   label: 'The Deck',
+  hero_image_alt: '',
   hero: {
-    title: '54 Cards. Four Worlds. One Deck.',
+    title: '54 Cards. 4 Worlds. One Universe.',
     sub: 'An original deck made to be explored and played.',
     body: [
       'An original deck of 54 cards in regular and XL size. Artworks, characters and stories come together in a deck made to be explored and played.',
@@ -607,12 +621,13 @@ const deckEn: MerchCopy = {
 
 const deckRu: MerchCopy = {
   ...ru,
-  meta_title: 'Magister Deck — 54 карты. Четыре мира. Одна колода.',
+  meta_title: 'Magister Deck — 54 карты. 4 мира. Одна вселенная.',
   meta_description:
     'Оригинальная колода Magister из 54 карт — с личной цифровой историей для вашего экземпляра.',
   label: 'Колода',
+  hero_image_alt: '',
   hero: {
-    title: '54 карты. Четыре мира. Одна колода.',
+    title: '54 карты. 4 мира. Одна вселенная.',
     sub: 'Оригинальная колода, которую хочется изучать и разыгрывать.',
     body: [
       'Оригинальная колода из 54 карт — обычный и XL размер. Картины, персонажи и истории сходятся в колоде, которую хочется изучать и разыгрывать.',
@@ -641,12 +656,13 @@ const deckRu: MerchCopy = {
 
 const deckBe: MerchCopy = {
   ...be,
-  meta_title: 'Magister Deck — 54 карты. Чатыры светы. Адна калода.',
+  meta_title: 'Magister Deck — 54 карты. 4 светы. Адзін сусвет.',
   meta_description:
     'Арыгінальная калода Magister з 54 карт — з асабістай лічбавай гісторыяй для вашага асобніка.',
   label: 'Калода',
+  hero_image_alt: '',
   hero: {
-    title: '54 карты. Чатыры светы. Адна калода.',
+    title: '54 карты. 4 светы. Адзін сусвет.',
     sub: 'Арыгінальная калода, якую хочацца вывучаць і разыгрываць.',
     body: [
       'Арыгінальная калода з 54 карт — звычайны і XL памер. Карціны, персанажы і гісторыі сыходзяцца ў калодзе, якую хочацца вывучаць і разыгрываць.',
@@ -675,11 +691,12 @@ const deckBe: MerchCopy = {
 
 const deckZh: MerchCopy = {
   ...zh,
-  meta_title: 'Magister Deck — 54 张牌。四个世界。一副牌组。',
+  meta_title: 'Magister Deck — 54 张牌。4 个世界。一个宇宙。',
   meta_description: '原作 Magister 54 张牌组——可为你的那一副附上个人数字故事。',
   label: '牌组',
+  hero_image_alt: '',
   hero: {
-    title: '54 张牌。四个世界。一副牌组。',
+    title: '54 张牌。4 个世界。一个宇宙。',
     sub: '一副值得探索与对局的原作牌组。',
     body: [
       '原作 54 张牌组，提供常规与 XL 尺寸。画作、角色与故事汇于一副可探索、可对局的牌中。',
@@ -715,12 +732,13 @@ export const deckCopy: Record<Lang, MerchCopy> = {
 
 const albumEn: MerchCopy = {
   ...en,
-  meta_title: 'Magister Art Album — Four Worlds. Fifty-Four Cards. One Universe.',
+  meta_title: 'Magister Art Album — The Cards. The Stories. The Universe.',
   meta_description:
     'The Magister art album — 152 pages through the original artworks, characters and stories, with a personal digital message.',
   label: 'Art Album',
+  hero_image_alt: '',
   hero: {
-    title: 'Four Worlds. Fifty-Four Cards. One Universe.',
+    title: 'The Cards. The Stories. The Universe.',
     sub: 'The world of Magister in 152 pages.',
     body: [
       'A visual journey through the original artworks, characters and stories behind the cards. An album dedicated to the art and creation of Magister.',
@@ -749,12 +767,13 @@ const albumEn: MerchCopy = {
 
 const albumRu: MerchCopy = {
   ...ru,
-  meta_title: 'Magister Art Album — Четыре мира. Пятьдесят четыре карты. Одна вселенная.',
+  meta_title: 'Magister Art Album — Карты. Истории. Вселенная.',
   meta_description:
     'Арт-альбом Magister — 152 страницы оригинальных работ, персонажей и историй с личным цифровым посланием.',
   label: 'Арт-альбом',
+  hero_image_alt: '',
   hero: {
-    title: 'Четыре мира. Пятьдесят четыре карты. Одна вселенная.',
+    title: 'Карты. Истории. Вселенная.',
     sub: 'Мир Magister на 152 страницах.',
     body: [
       'Визуальное путешествие по оригинальным работам, персонажам и историям за картами. Альбом об искусстве и создании Magister.',
@@ -783,12 +802,13 @@ const albumRu: MerchCopy = {
 
 const albumBe: MerchCopy = {
   ...be,
-  meta_title: 'Magister Art Album — Чатыры светы. Пяцьдзясят чатыры карты. Адзін сусвет.',
+  meta_title: 'Magister Art Album — Карты. Гісторыі. Сусвет.',
   meta_description:
     'Арт-альбом Magister — 152 старонкі арыгінальных прац, персанажаў і гісторый з асабістым лічбавым пасланнем.',
   label: 'Арт-альбом',
+  hero_image_alt: '',
   hero: {
-    title: 'Чатыры светы. Пяцьдзясят чатыры карты. Адзін сусвет.',
+    title: 'Карты. Гісторыі. Сусвет.',
     sub: 'Свет Magister на 152 старонках.',
     body: [
       'Візуальнае падарожжа па арыгінальных працах, персанажах і гісторыях за картамі. Альбом пра мастацтва і стварэнне Magister.',
@@ -817,11 +837,12 @@ const albumBe: MerchCopy = {
 
 const albumZh: MerchCopy = {
   ...zh,
-  meta_title: 'Magister Art Album — 四个世界。五十四张牌。一个宇宙。',
+  meta_title: 'Magister Art Album — 牌。故事。宇宙。',
   meta_description: 'Magister 艺术画册——152 页原作、角色与故事，并可附上个人数字留言。',
   label: '艺术画册',
+  hero_image_alt: '',
   hero: {
-    title: '四个世界。五十四张牌。一个宇宙。',
+    title: '牌。故事。宇宙。',
     sub: '152 页中的 Magister 世界。',
     body: [
       '一次穿越原作、角色与牌背故事的视觉旅程。一本献给 Magister 艺术与创作的画册。',

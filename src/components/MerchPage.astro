@@ -3,7 +3,7 @@ import type { Lang } from '../i18n/utils';
 import { useTranslations, pickLocalized, getLocalizedPath } from '../i18n/utils';
 import { getCollection } from 'astro:content';
 import { productCopy, productHasCardPick, type ProductKind } from '../i18n/merchCopy';
-import { ARTIFACT_MEDIA, ARTIFACT_STAGE_MEDIA } from '../lib/artifacts';
+import { ARTIFACT_MEDIA, ARTIFACT_DETAIL_HERO, ARTIFACT_STAGE_MEDIA } from '../lib/artifacts';
 import Nav from './Nav.astro';
 import Footer from './Footer.astro';
 
@@ -20,9 +20,9 @@ const isPrints = kind === 'prints';
 const isDeck = kind === 'deck';
 const isAlbum = kind === 'album';
 const hasCardPick = productHasCardPick(kind);
-const heroMedia = ARTIFACT_MEDIA[kind];
+const heroMedia = ARTIFACT_DETAIL_HERO[kind] ?? ARTIFACT_MEDIA[kind];
 const stageMedia = ARTIFACT_STAGE_MEDIA[kind];
-const heroAltKey = `next.${kind}.image_alt`;
+const heroAlt = copy.hero_image_alt || t(`next.${kind}.image_alt`);
 const backHref = `${getLocalizedPath('/', lang)}#artifacts`;
 const galleryHref = `${getLocalizedPath('/', lang)}#fifty-four`;
 
@@ -113,7 +113,7 @@ const uiJson = JSON.stringify({
     <figure class="merch-hero__visual">
       <img
         src={heroMedia.image}
-        alt={t(heroAltKey)}
+        alt={heroAlt}
         width={heroMedia.width}
         height={heroMedia.height}
         loading="eager"
@@ -274,7 +274,7 @@ const uiJson = JSON.stringify({
                 isPrints
                   ? (defaultCard?.title ?? '')
                   : isDeck || isAlbum
-                    ? t(heroAltKey)
+                    ? heroAlt
                     : ''
               }
               width={stageWidth}
