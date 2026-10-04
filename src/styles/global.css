@@ -258,6 +258,8 @@ select {
 
   #artifacts .artifacts-header .section-title {
     font-size: clamp(1.55rem, 6.2vw, 2.4rem);
+    white-space: pre-line;
+    line-height: 1.05;
   }
 }
 

@@ -103,7 +103,7 @@
   },
   "next": {
     "label": "Magister Artifacts",
-    "title": "The World of Magister, Made Tangible.",
+    "title": "The World of Magister,\nMade Tangible.",
     "lead": "The world of Magister takes shape in physical objects — from the original deck to art prints, apparel and the art album.",
     "page": {
       "back": "Back to Artifacts",
@@ -128,7 +128,7 @@
       "lead": "The art of Magister, beyond the cards.",
       "body": "High-quality prints of Vasily Pochitsky’s original paintings, preserving the artwork in its original format.",
       "cta": "Explore Art Prints",
-      "image_alt": "Original Magister painting prepared as an art print."
+      "image_alt": "Framed Magister art print hanging on a wall above a shelf."
     },
     "album": {
       "title": "Art Album",

@@ -437,7 +437,7 @@ const printsEn: MerchCopy = {
   meta_description:
     'Museum-quality Magister art prints in the original 60 × 40 cm format, with a personal digital story.',
   label: 'Art Prints',
-  hero_image_alt: '',
+  hero_image_alt: 'Original Magister painting prepared as an art print.',
   hero: {
     title: 'A World. On Your Wall.',
     sub: 'A true copy in the original format.',
@@ -474,7 +474,7 @@ const printsRu: MerchCopy = {
   meta_description:
     'Художественные принты Magister в оригинальном формате 60 × 40 см с личной цифровой историей.',
   label: 'Арт-принты',
-  hero_image_alt: '',
+  hero_image_alt: 'Оригинальная картина Magister как арт-принт.',
   hero: {
     title: 'Мир. На вашей стене.',
     sub: 'Точная копия в оригинальном формате.',
@@ -511,7 +511,7 @@ const printsBe: MerchCopy = {
   meta_description:
     'Мастацкія прынта Magister у арыгінальным фармаце 60 × 40 см з асабістай лічбавай гісторыяй.',
   label: 'Арт-прынта',
-  hero_image_alt: '',
+  hero_image_alt: 'Арыгінальная карціна Magister як арт-прынт.',
   hero: {
     title: 'Свет. На вашай сцяне.',
     sub: 'Дакладная копія ў арыгінальным фармаце.',
@@ -547,7 +547,7 @@ const printsZh: MerchCopy = {
   meta_title: 'Magister Art Prints — 一个世界。挂在你的墙上。',
   meta_description: 'Magister 艺术版画，原作尺寸 60 × 40 cm，附带个人数字故事。',
   label: '艺术版画',
-  hero_image_alt: '',
+  hero_image_alt: '作为艺术版画呈现的 Magister 原作。',
   hero: {
     title: '一个世界。挂在你的墙上。',
     sub: '原作尺寸的忠实复制。',
