@@ -320,15 +320,10 @@ export function mountMerch(root: HTMLElement): void {
       previewWorld.textContent = '';
       const summary = (ui.product_lead || '').trim();
       const full = (ui.product_desc || '').trim();
-      const hasFull = !isAlbum && Boolean(full && full !== summary);
-      previewDesc.textContent = isAlbum
-        ? summary || full
-        : descExpanded && hasFull
-          ? full
-          : summary || full;
-      previewMore.hidden = !hasFull;
-      previewMore.textContent = descExpanded ? ui.read_less : ui.read_more;
-      previewMore.setAttribute('aria-expanded', String(descExpanded && hasFull));
+      // Deck/album: no expand toggle; deck shows full copy immediately.
+      previewDesc.textContent = isDeck ? full || summary : summary || full;
+      previewMore.hidden = true;
+      previewMore.removeAttribute('aria-expanded');
     } else {
       paintSuit(previewSuit, null);
       previewTitle.textContent = ui.no_card;
