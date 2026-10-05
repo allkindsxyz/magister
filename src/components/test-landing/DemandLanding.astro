@@ -1,0 +1,1797 @@
+---
+import { getCollection } from 'astro:content';
+import MagisterLogo from '../MagisterLogo.astro';
+import { pickLocalized } from '../../i18n/utils';
+import { BOOKING_URL, CONTACT_EMAIL } from '../../lib/site';
+
+const lang = 'en' as const;
+
+const allCards = await getCollection('cards');
+const faceCards = allCards
+  .filter((c) => !c.data.back && c.data.suit && c.data.value)
+  .map((c) => ({
+    id: c.data.id as string,
+    suit: c.data.suit as string,
+    value: c.data.value as string,
+    title: pickLocalized(c.data.title, lang),
+    summary: pickLocalized(c.data.summary, lang),
+    image: c.data.image as string,
+    featured: Boolean(c.data.featured),
+  }));
+
+const byId = Object.fromEntries(faceCards.map((c) => [c.id, c]));
+
+const suitOrder = ['hearts', 'diamonds', 'clubs', 'spades'] as const;
+const worlds = {
+  hearts: {
+    name: 'Olympic Gods',
+    blurb: 'Desire, metamorphosis, oracle and flame.',
+    example: 'queen-hearts',
+  },
+  diamonds: {
+    name: 'Bearers of Secrets',
+    blurb: 'Alchemy, hidden orders, knowledge that travels in whispers.',
+    example: 'ace-diamonds',
+  },
+  clubs: {
+    name: 'Templars',
+    blurb: 'Devotion, intrigue, and the long shadow of the order.',
+    example: 'queen-clubs',
+  },
+  spades: {
+    name: 'Modern Myths',
+    blurb: 'Public faces reframed as lasting emblems.',
+    example: 'jack-spades',
+  },
+} as const;
+
+const suitSymbols: Record<(typeof suitOrder)[number], string> = {
+  hearts: '♥',
+  diamonds: '♦',
+  clubs: '♣',
+  spades: '♠',
+};
+
+const galleryStrip = [
+  'queen-hearts',
+  'ace-diamonds',
+  'queen-clubs',
+  'jack-spades',
+  'king-hearts',
+  'ace-spades',
+  '10-clubs',
+  'ace-hearts',
+]
+  .map((id) => byId[id])
+  .filter(Boolean);
+
+/** Ordered loop for hero crossfade — full face deck. */
+const heroImages = faceCards.map((c) => c.image);
+const heroFirst = heroImages[0] ?? '/media/selected-work.webp';
+
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+const cardsPayload = JSON.stringify(
+  Object.fromEntries(
+    faceCards.map((c) => [
+      c.id,
+      { id: c.id, title: c.title, summary: c.summary, image: c.image, suit: c.suit, value: c.value },
+    ]),
+  ),
+).replace(/</g, '\\u003c');
+
+const jokerPair = {
+  ace: byId['ace-hearts'],
+  king: byId['king-spades'],
+};
+---
+
+<div class="proto-banner" role="status">
+  <div class="page-shell proto-banner__inner">
+    <span>Prototype landing — demand-first</span>
+    <div class="proto-banner__links">
+      <button type="button" class="proto-banner__reset" id="proto-reset-sheet">
+        Reset destiny prompt
+      </button>
+      <a href="/en/">← Current live site</a>
+    </div>
+  </div>
+</div>
+
+<nav class="proto-nav" aria-label="Prototype navigation">
+  <div class="page-shell proto-nav__inner">
+    <a href="#deck" class="proto-nav__logo" aria-label="Magister Cards">
+      <MagisterLogo class="proto-nav__mark" width={220} height={102} />
+    </a>
+    <div class="proto-nav__links">
+      <a href="#birth">Your card</a>
+      <a href="#worlds">Worlds</a>
+      <a href="#deck-sku">The deck</a>
+      <a href="#waitlist" class="proto-nav__cta">Join the list</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main-content">
+  <!-- 1. Hero: brand + one lead + one body + CTAs + full-bleed art -->
+  <section class="proto-hero" id="deck" aria-labelledby="proto-hero-title">
+    <div class="proto-hero__media" aria-hidden="true" data-hero-media>
+      <img
+        class="proto-hero__stage is-front is-in"
+        data-hero-a
+        src={heroFirst}
+        alt=""
+        width="1200"
+        height="1680"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <img
+        class="proto-hero__stage"
+        data-hero-b
+        src={heroFirst}
+        alt=""
+        width="1200"
+        height="1680"
+        loading="eager"
+        decoding="async"
+      />
+    </div>
+    <div class="proto-hero__veil" aria-hidden="true"></div>
+    <div class="page-shell proto-hero__copy">
+      <p class="proto-hero__meta">54 paintings · 4 worlds · one card that may be yours</p>
+      <h1 id="proto-hero-title" class="proto-hero__title" aria-label="Magister Cards">
+        <span class="proto-hero__wordmark" aria-hidden="true">
+          <MagisterLogo width={880} height={407} />
+        </span>
+      </h1>
+      <p class="proto-hero__lead">
+        An original myth deck — art you can play, gift, and read as a sign.
+      </p>
+      <p class="proto-hero__body">
+        Each card is a finished painting with its own story. Find the card tied to your birth
+        date — or choose one that stays with someone you love.
+      </p>
+      <div class="proto-hero__actions">
+        <a class="btn btn-accent" href="#birth">Discover your birthday card</a>
+        <a class="btn proto-btn-light" href="#waitlist">Join the first printing</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Birth card lead magnet -->
+  <section class="proto-birth editorial-section" id="birth" aria-labelledby="birth-title">
+    <div class="page-shell proto-birth__grid">
+      <header class="proto-birth__intro reveal">
+        <p class="section-label">Your card</p>
+        <h2 class="section-title" id="birth-title">One painting already belongs to you</h2>
+        <p class="body-copy">
+          Your birthday is tied to a single card in the Magister deck. Enter the day you were born —
+          and see the artwork that has been waiting for you.
+        </p>
+      </header>
+
+      <div class="proto-birth__panel reveal" data-birth-root>
+        <form class="proto-birth__form" id="proto-birth-form">
+          <label class="proto-field">
+            <span>Month</span>
+            <select name="month" id="proto-month" required>
+              {
+                months.map((name, i) => (
+                  <option value={i + 1}>{name}</option>
+                ))
+              }
+            </select>
+          </label>
+          <label class="proto-field">
+            <span>Day</span>
+            <select name="day" id="proto-day" required></select>
+          </label>
+          <button class="btn btn-accent" type="submit">Reveal my card</button>
+        </form>
+
+        <div class="proto-birth__result" id="proto-birth-result" hidden>
+          <div class="proto-birth__card" id="proto-birth-card"></div>
+          <p class="proto-birth__note" id="proto-birth-note" hidden></p>
+          <div class="proto-birth__follow">
+            <a class="btn btn-accent" href="#waitlist">Notify me when the deck ships</a>
+            <button class="text-link" type="button" id="proto-birth-again">Try another date</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Worlds — short -->
+  <section class="proto-worlds editorial-section" id="worlds" aria-labelledby="worlds-title">
+    <div class="page-shell">
+      <header class="proto-worlds__header reveal">
+        <p class="section-label">Four worlds</p>
+        <h2 class="section-title" id="worlds-title">One deck. Four mythic realms.</h2>
+        <p class="body-copy">
+          Fifty-four original paintings by Vasily Pochitsky — gods, secret-bearers, Templars, and
+          modern myths — woven into a classic suit system.
+        </p>
+      </header>
+
+      <div class="proto-worlds__grid">
+        {
+          suitOrder.map((suit, index) => {
+            const world = worlds[suit];
+            const card = byId[world.example];
+            return (
+              <article class="proto-world reveal" style={`--delay:${index * 60}ms`}>
+                {card && (
+                  <img
+                    src={card.image}
+                    alt={`${world.name} — ${card.title}`}
+                    width="280"
+                    height="392"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+                <p class="proto-world__suit">
+                  <span aria-hidden="true">{suitSymbols[suit]}</span>
+                  {suit}
+                </p>
+                <h3>{world.name}</h3>
+                <p>{world.blurb}</p>
+              </article>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Gallery strip -->
+  <section class="proto-strip editorial-section" id="gallery" aria-labelledby="strip-title">
+    <div class="page-shell">
+      <header class="proto-strip__header reveal">
+        <p class="section-label">The collection</p>
+        <h2 class="section-title" id="strip-title">Paintings first. Cards second.</h2>
+        <p class="body-copy">
+          Long before they were a deck, these were finished works — each with characters, history,
+          and a story you can keep reading.
+        </p>
+      </header>
+    </div>
+    <div class="proto-strip__rail" tabindex="0" aria-label="Sample cards from the deck">
+      {
+        galleryStrip.map((card) => (
+          <figure class="proto-strip__card">
+            <img src={card.image} alt={card.title} width="240" height="336" loading="lazy" />
+            <figcaption>{card.title}</figcaption>
+          </figure>
+        ))
+      }
+    </div>
+    <div class="page-shell proto-strip__more">
+      <a class="text-link" href="/en/#fifty-four">Browse all 54 on the live site →</a>
+    </div>
+  </section>
+
+  <!-- 5. Deck SKU + personalization teaser -->
+  <section class="proto-sku editorial-section" id="deck-sku" aria-labelledby="sku-title">
+    <div class="page-shell proto-sku__grid">
+      <header class="proto-sku__heading reveal">
+        <p class="section-label">Core product</p>
+        <h2 class="section-title" id="sku-title">The Deck</h2>
+      </header>
+      <figure class="proto-sku__media reveal">
+        <img
+          src="/media/deck-lifestyle.jpg"
+          alt="Magister Cards deck lying on a wooden desk"
+          width="1024"
+          height="672"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+      <div class="proto-sku__deck reveal">
+        <p class="lead">54 original artworks. Four worlds. One deck.</p>
+        <p class="body-copy">
+          Play it as cards. Read it as myth. Gift the card that belongs to someone’s birthday —
+          with a story that stays.
+        </p>
+        <ul class="proto-sku__points">
+          <li>Regular &amp; XL sizes planned for first printing</li>
+          <li>EU &amp; US shipping</li>
+          <li>Each card: painting + lore</li>
+        </ul>
+        <a class="btn btn-accent" href="#waitlist">Join the first printing list</a>
+      </div>
+    </div>
+
+    <div class="proto-sku__gift reveal">
+      <div class="proto-sku__gift-copy">
+        <p class="section-label">Personal story</p>
+        <h3 class="proto-sku__gift-title">A Card. A Story. A Memory.</h3>
+        <p class="body-copy">
+          Apparel and prints carry a unique QR — a private or public message tied to the card you
+          chose. The deck comes first; personalization is how Magister stays with someone.
+        </p>
+        <a class="text-link" href="/en/artifacts/apparel">See the merch prototype →</a>
+      </div>
+      <img
+        class="proto-sku__gift-img"
+        src="/media/merch-apparel-hero.jpg"
+        alt="Magister hoodie with personal digital story"
+        width="704"
+        height="1024"
+        loading="lazy"
+      />
+    </div>
+  </section>
+
+  <!-- 6. Games teaser -->
+  <section class="proto-play editorial-section" id="play" aria-labelledby="play-title">
+    <div class="page-shell proto-play__inner reveal">
+      <p class="section-label">Already playable</p>
+      <h2 class="section-title" id="play-title">Enter the world online</h2>
+      <p class="body-copy">
+        Learn the four worlds, dig into card lore, and try Card of Destiny — live on the current
+        site while the physical printing is prepared.
+      </p>
+      <a class="btn" href="/en/#play">Play the games →</a>
+    </div>
+  </section>
+
+  <!-- 7. Authors compact -->
+  <section class="proto-authors editorial-section" id="authors" aria-labelledby="authors-title">
+    <div class="page-shell proto-authors__grid">
+      <figure class="proto-authors__media reveal">
+        <img
+          src="/media/authors-together.jpg"
+          alt="Vasily Pochitsky and Alexander Zhilchik"
+          width="692"
+          height="620"
+          loading="lazy"
+        />
+      </figure>
+      <div class="proto-authors__copy reveal">
+        <p class="section-label">Authors</p>
+        <h2 class="section-title" id="authors-title">Before they became cards</h2>
+        <p class="body-copy">
+          Vasily Pochitsky painted the cycle. Alexander Zhilchik shaped the world. Fifty-four
+          canvases — not illustrations made for a product, but a finished artistic universe that
+          became a deck.
+        </p>
+        <a class="text-link" href="/en/#authors">Full author story on live site →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Waitlist -->
+  <section class="proto-wait editorial-section" id="waitlist" aria-labelledby="wait-title">
+    <div class="page-shell proto-wait__inner reveal">
+      <p class="section-label">First printing</p>
+      <h2 class="section-title" id="wait-title">Get on the list</h2>
+      <p class="body-copy">
+        Early access to the first EU &amp; US shipping run. No spam — print news and launch only.
+      </p>
+      <form class="proto-wait__form" id="proto-wait-form">
+        <label class="visually-hidden" for="proto-email">Email</label>
+        <input
+          id="proto-email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          placeholder="you@email.com"
+        />
+        <button class="btn btn-accent" type="submit">Join the list</button>
+      </form>
+      <p class="proto-wait__ok" id="proto-wait-ok" hidden>
+        You’re on the prototype list. (UI only — wire to ESP when ready.)
+      </p>
+      <p class="proto-wait__alt">
+        Or write <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- 9. Essen secondary -->
+  <section class="proto-essen editorial-section" id="spiel" aria-labelledby="essen-title">
+    <div class="page-shell proto-essen__inner reveal">
+      <p class="section-label">Publishers &amp; partners</p>
+      <h2 class="section-title" id="essen-title">SPIEL Essen 2026</h2>
+      <p class="body-copy">
+        22–25 October, Essen. Meeting publishers and producers — IP stays with the authors.
+      </p>
+      <div class="proto-essen__actions">
+        <a class="btn" href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
+          Book a partner meeting
+        </a>
+        <a class="text-link" href="mailto:partnership@magister.cards">partnership@magister.cards</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Mobile-only first-visit destiny sheet -->
+<div
+  class="proto-sheet"
+  id="proto-destiny-sheet"
+  hidden
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="proto-sheet-title"
+>
+  <button class="proto-sheet__backdrop" type="button" aria-label="Dismiss" data-sheet-dismiss></button>
+  <div class="proto-sheet__panel">
+    <div class="proto-sheet__handle" aria-hidden="true"></div>
+
+    <div class="proto-sheet__step" data-sheet-step="invite">
+      <p class="proto-sheet__kicker">Your card</p>
+      <h2 class="proto-sheet__title" id="proto-sheet-title">One painting already belongs to you</h2>
+      <p class="proto-sheet__body">
+        Your birthday is tied to a single card in the Magister deck. Enter the day you were born —
+        and see the artwork that has been waiting for you.
+      </p>
+      <div class="proto-sheet__actions">
+        <button class="btn btn-accent" type="button" data-sheet-enter>Show me mine</button>
+        <button class="btn proto-sheet__skip" type="button" data-sheet-dismiss>Not now</button>
+      </div>
+    </div>
+
+    <div class="proto-sheet__step" data-sheet-step="form" hidden>
+      <p class="proto-sheet__kicker">Your birthday</p>
+      <h2 class="proto-sheet__title">When were you born?</h2>
+      <form class="proto-sheet__form" id="proto-sheet-form">
+        <label class="proto-field">
+          <span>Month</span>
+          <select name="month" id="proto-sheet-month" required>
+            {
+              months.map((name, i) => (
+                <option value={i + 1}>{name}</option>
+              ))
+            }
+          </select>
+        </label>
+        <label class="proto-field">
+          <span>Day</span>
+          <select name="day" id="proto-sheet-day" required></select>
+        </label>
+        <button class="btn btn-accent" type="submit">Reveal my card</button>
+        <button class="text-link" type="button" data-sheet-dismiss>Skip</button>
+      </form>
+    </div>
+
+    <div class="proto-sheet__step" data-sheet-step="result" hidden>
+      <p class="proto-sheet__kicker">This one is yours</p>
+      <div id="proto-sheet-card"></div>
+      <p class="proto-sheet__note" id="proto-sheet-note" hidden></p>
+      <div class="proto-sheet__actions">
+        <a class="btn btn-accent" href="#waitlist" data-sheet-done>Keep me close to this deck</a>
+        <button class="text-link" type="button" data-sheet-dismiss>Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="proto-footer">
+  <div class="page-shell proto-footer__inner">
+    <p class="proto-footer__brand" aria-label="Magister Cards">
+      <MagisterLogo width={320} height={148} />
+    </p>
+    <p class="proto-footer__line">First printing list open. The art is finished.</p>
+    <a href="#waitlist">Join the list ↑</a>
+    <p class="proto-footer__copy">© 2026 Magister Cards · Prototype</p>
+  </div>
+</footer>
+
+<script define:vars={{ cardsPayload, jokerAce: jokerPair.ace ?? null, jokerKing: jokerPair.king ?? null, heroImages }}>
+  const cards = JSON.parse(cardsPayload);
+  const SHEET_KEY = 'magister.proto.destinyPrompt.v1';
+  const MOBILE_MQ = '(max-width: 720px)';
+  /** Hero beat: 3s fade-in → 8s slow drift → 3s fade-out → next. */
+  const HERO_FADE_MS = 3000;
+  const HERO_HOLD_MS = 8000;
+  const SHEET_DELAY_MS = 5200;
+
+  /** @param {number} month */
+  function daysInMonth(month) {
+    return [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1] ?? 0;
+  }
+
+  /**
+   * Camp birth-card formula (same as src/lib/birthCard.ts)
+   * @param {number} month
+   * @param {number} day
+   */
+  function birthCard(month, day) {
+    if (!Number.isInteger(month) || !Number.isInteger(day)) return null;
+    if (month < 1 || month > 12) return null;
+    if (day < 1 || day > daysInMonth(month)) return null;
+    const n = 2 * month + day - 55;
+    if (n === 0) return { kind: 'joker' };
+    if (n > 0 || n < -52) return null;
+    const number = -n;
+    const suits = ['hearts', 'clubs', 'diamonds', 'spades'];
+    const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+    const slugs = {
+      A: 'ace',
+      '2': '2',
+      '3': '3',
+      '4': '4',
+      '5': '5',
+      '6': '6',
+      '7': '7',
+      '8': '8',
+      '9': '9',
+      '10': '10',
+      J: 'jack',
+      Q: 'queen',
+      K: 'king',
+    };
+    const suit = suits[Math.floor((number - 1) / 13)];
+    const value = ranks[(number - 1) % 13];
+    return { kind: 'card', id: `${slugs[value]}-${suit}`, suit, value, number };
+  }
+
+  /** @param {{ id: string, title: string, summary: string, image: string, value: string }} card */
+  function cardHtml(card) {
+    return `
+      <img src="${card.image}" alt="${card.title}" width="320" height="448" />
+      <div class="proto-birth__meta">
+        <p class="proto-birth__rank">${card.value}</p>
+        <h3>${card.title}</h3>
+        <p>${card.summary}</p>
+      </div>
+    `;
+  }
+
+  /**
+   * @param {HTMLSelectElement | null} monthSelect
+   * @param {HTMLSelectElement | null} daySelect
+   */
+  function fillDaysFor(monthSelect, daySelect) {
+    if (!(monthSelect instanceof HTMLSelectElement) || !(daySelect instanceof HTMLSelectElement)) return;
+    const month = Number(monthSelect.value);
+    const max = daysInMonth(month);
+    const prev = Number(daySelect.value) || 1;
+    daySelect.replaceChildren();
+    for (let d = 1; d <= max; d++) {
+      const opt = document.createElement('option');
+      opt.value = String(d);
+      opt.textContent = String(d);
+      daySelect.append(opt);
+    }
+    daySelect.value = String(Math.min(prev, max));
+  }
+
+  /**
+   * @param {number} month
+   * @param {number} day
+   * @param {HTMLElement} cardMount
+   * @param {HTMLElement} note
+   */
+  function renderBirthResult(month, day, cardMount, note) {
+    const found = birthCard(month, day);
+    if (!found) return false;
+    note.hidden = true;
+    cardMount.replaceChildren();
+
+    if (found.kind === 'joker') {
+      note.hidden = false;
+      note.textContent =
+        '31 December is the Joker — between the Ace of Hearts and the King of Spades. Choose the painting that speaks to you.';
+      const wrap = document.createElement('div');
+      wrap.className = 'proto-birth__joker-pair';
+      if (jokerAce) wrap.insertAdjacentHTML('beforeend', cardHtml(jokerAce));
+      if (jokerKing) wrap.insertAdjacentHTML('beforeend', cardHtml(jokerKing));
+      cardMount.append(wrap);
+      return true;
+    }
+
+    const card = cards[found.id];
+    if (!card) {
+      note.hidden = false;
+      note.textContent = 'Card data missing for this date.';
+      return true;
+    }
+    cardMount.insertAdjacentHTML('beforeend', cardHtml(card));
+    return true;
+  }
+
+  /* —— Page birth form —— */
+  const monthSelect = document.getElementById('proto-month');
+  const daySelect = document.getElementById('proto-day');
+  const form = document.getElementById('proto-birth-form');
+  const result = document.getElementById('proto-birth-result');
+  const cardMount = document.getElementById('proto-birth-card');
+  const note = document.getElementById('proto-birth-note');
+  const again = document.getElementById('proto-birth-again');
+
+  fillDaysFor(
+    monthSelect instanceof HTMLSelectElement ? monthSelect : null,
+    daySelect instanceof HTMLSelectElement ? daySelect : null,
+  );
+  monthSelect?.addEventListener('change', () =>
+    fillDaysFor(
+      monthSelect instanceof HTMLSelectElement ? monthSelect : null,
+      daySelect instanceof HTMLSelectElement ? daySelect : null,
+    ),
+  );
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!(monthSelect instanceof HTMLSelectElement) || !(daySelect instanceof HTMLSelectElement)) return;
+    if (!cardMount || !result || !note) return;
+    const ok = renderBirthResult(Number(monthSelect.value), Number(daySelect.value), cardMount, note);
+    if (!ok) return;
+    form.hidden = true;
+    result.hidden = false;
+  });
+
+  again?.addEventListener('click', () => {
+    if (!form || !result) return;
+    result.hidden = true;
+    form.hidden = false;
+  });
+
+  const waitForm = document.getElementById('proto-wait-form');
+  const waitOk = document.getElementById('proto-wait-ok');
+  waitForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (waitOk) waitOk.hidden = false;
+    if (waitForm instanceof HTMLFormElement) waitForm.reset();
+  });
+
+  /* —— Hero: fade-in 3s → drift 8s → dual crossfade 3s → next —— */
+  const heroUrls = Array.isArray(heroImages) ? heroImages.filter(Boolean) : [];
+  const heroA = document.querySelector('[data-hero-a]');
+  const heroB = document.querySelector('[data-hero-b]');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /** @param {number} ms */
+  function wait(ms) {
+    return new Promise((resolve) => window.setTimeout(resolve, ms));
+  }
+
+  /**
+   * @param {string} url
+   * @returns {Promise<void>}
+   */
+  function preloadHero(url) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve();
+      img.onerror = () => resolve();
+      img.src = url;
+    });
+  }
+
+  /**
+   * @param {HTMLImageElement} el
+   */
+  function clearHeroMotion(el) {
+    el.getAnimations().forEach((a) => a.cancel());
+    el.classList.remove('is-in', 'is-drift', 'is-front');
+    el.style.transition = 'none';
+    el.style.transform = '';
+  }
+
+  /**
+   * Slow random ken-burns: half zoom, half speed vs prior 8s / +0.08 scale.
+   * @param {HTMLImageElement} el
+   */
+  function startDrift(el) {
+    el.getAnimations().forEach((a) => a.cancel());
+    el.style.transform = 'scale(1.02) translate3d(0, 0, 0)';
+    const xDir = Math.random() < 0.5 ? -1 : 1;
+    const yDir = Math.random() < 0.5 ? -1 : 1;
+    const x = xDir * (0.55 + Math.random() * 0.55); // ~0.55–1.1%
+    const y = yDir * (0.4 + Math.random() * 0.5); // ~0.4–0.9%
+    el.classList.add('is-drift');
+    el.animate(
+      [
+        { transform: 'scale(1.02) translate3d(0, 0, 0)' },
+        { transform: `scale(1.06) translate3d(${x}%, ${y}%, 0)` },
+      ],
+      { duration: 16000, easing: 'linear', fill: 'forwards' },
+    );
+  }
+
+  /**
+   * @param {HTMLImageElement} el
+   */
+  function freezeDrift(el) {
+    const endTransform = getComputedStyle(el).transform;
+    el.getAnimations().forEach((a) => a.cancel());
+    el.classList.remove('is-drift');
+    el.style.transform = endTransform === 'none' ? 'scale(1.04)' : endTransform;
+  }
+
+  if (heroA instanceof HTMLImageElement && heroB instanceof HTMLImageElement) {
+    if (reduceMotion || heroUrls.length === 0) {
+      heroA.classList.add('is-in', 'is-front');
+    } else {
+      let index = 0;
+      /** @type {HTMLImageElement} */
+      let front = heroA;
+      /** @type {HTMLImageElement} */
+      let back = heroB;
+
+      const boot = async () => {
+        front.src = heroUrls[0];
+        clearHeroMotion(front);
+        clearHeroMotion(back);
+        front.classList.add('is-front');
+        void front.offsetWidth;
+
+        requestAnimationFrame(() => {
+          front.style.transition = 'opacity 3s linear';
+          requestAnimationFrame(() => {
+            front.classList.add('is-in');
+            startDrift(front);
+          });
+        });
+        await wait(HERO_HOLD_MS);
+        await crossfade();
+        loop();
+      };
+
+      const crossfade = async () => {
+        const nextIndex = (index + 1) % heroUrls.length;
+        const nextUrl = heroUrls[nextIndex];
+        await preloadHero(nextUrl);
+
+        freezeDrift(front);
+
+        clearHeroMotion(back);
+        back.src = nextUrl;
+        back.style.transform = 'scale(1.02)';
+        back.classList.add('is-front');
+        front.classList.remove('is-front');
+        void back.offsetWidth;
+
+        requestAnimationFrame(() => {
+          front.style.transition = 'opacity 3s linear';
+          back.style.transition = 'opacity 3s linear';
+          requestAnimationFrame(() => {
+            back.classList.add('is-in');
+            front.classList.remove('is-in');
+          });
+        });
+        await wait(HERO_FADE_MS);
+
+        clearHeroMotion(front);
+        const prev = front;
+        front = back;
+        back = prev;
+        front.style.transition = 'none';
+        front.style.transform = '';
+        front.getAnimations().forEach((a) => a.cancel());
+        front.classList.add('is-in', 'is-front');
+        index = nextIndex;
+      };
+
+      const loop = async () => {
+        preloadHero(heroUrls[(index + 1) % heroUrls.length]);
+        startDrift(front);
+        await wait(HERO_HOLD_MS);
+        await crossfade();
+        loop();
+      };
+
+      boot();
+    }
+  }
+
+  /* —— Mobile destiny sheet —— */
+  const sheet = document.getElementById('proto-destiny-sheet');
+  const sheetMonth = document.getElementById('proto-sheet-month');
+  const sheetDay = document.getElementById('proto-sheet-day');
+  const sheetForm = document.getElementById('proto-sheet-form');
+  const sheetCard = document.getElementById('proto-sheet-card');
+  const sheetNote = document.getElementById('proto-sheet-note');
+  const resetBtn = document.getElementById('proto-reset-sheet');
+
+  fillDaysFor(
+    sheetMonth instanceof HTMLSelectElement ? sheetMonth : null,
+    sheetDay instanceof HTMLSelectElement ? sheetDay : null,
+  );
+  sheetMonth?.addEventListener('change', () =>
+    fillDaysFor(
+      sheetMonth instanceof HTMLSelectElement ? sheetMonth : null,
+      sheetDay instanceof HTMLSelectElement ? sheetDay : null,
+    ),
+  );
+
+  /** @param {'invite' | 'form' | 'result'} name */
+  function showSheetStep(name) {
+    sheet?.querySelectorAll('[data-sheet-step]').forEach((el) => {
+      if (!(el instanceof HTMLElement)) return;
+      el.hidden = el.getAttribute('data-sheet-step') !== name;
+    });
+  }
+
+  function markSheetSeen() {
+    try {
+      localStorage.setItem(SHEET_KEY, 'seen');
+    } catch {
+      /* private mode */
+    }
+  }
+
+  function openSheet() {
+    if (!sheet) return;
+    showSheetStep('invite');
+    sheet.hidden = false;
+    sheet.classList.remove('is-open');
+    document.body.classList.add('proto-sheet-open');
+    // Double rAF so the off-screen transform paints before sliding up
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => sheet.classList.add('is-open'));
+    });
+  }
+
+  function closeSheet() {
+    if (!sheet || !sheet.classList.contains('is-open')) {
+      if (sheet) sheet.hidden = true;
+      document.body.classList.remove('proto-sheet-open');
+      markSheetSeen();
+      return;
+    }
+    sheet.classList.remove('is-open');
+    document.body.classList.remove('proto-sheet-open');
+    markSheetSeen();
+    window.setTimeout(() => {
+      sheet.hidden = true;
+      showSheetStep('invite');
+    }, 520);
+  }
+
+  function shouldOfferSheet() {
+    if (!window.matchMedia(MOBILE_MQ).matches) return false;
+    try {
+      if (localStorage.getItem(SHEET_KEY)) return false;
+    } catch {
+      return false;
+    }
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('sheet') === '0') return false;
+    return true;
+  }
+
+  function forceSheet() {
+    try {
+      localStorage.removeItem(SHEET_KEY);
+    } catch {
+      /* ignore */
+    }
+    openSheet();
+  }
+
+  let sheetArmed = false;
+  function armSheet() {
+    if (sheetArmed || !shouldOfferSheet()) return;
+    sheetArmed = true;
+    let opened = false;
+    const openOnce = () => {
+      if (opened) return;
+      opened = true;
+      openSheet();
+    };
+    window.setTimeout(openOnce, SHEET_DELAY_MS);
+    const onScroll = () => {
+      if (window.scrollY > 48) openOnce();
+    };
+    window.addEventListener('scroll', onScroll, { passive: true, once: true });
+  }
+
+  sheet?.addEventListener('click', (e) => {
+    const t = e.target;
+    if (!(t instanceof Element)) return;
+    if (t.closest('[data-sheet-dismiss]')) {
+      closeSheet();
+      return;
+    }
+    if (t.closest('[data-sheet-enter]')) {
+      showSheetStep('form');
+      sheetMonth instanceof HTMLSelectElement && sheetMonth.focus();
+      return;
+    }
+    if (t.closest('[data-sheet-done]')) {
+      markSheetSeen();
+      closeSheet();
+    }
+  });
+
+  sheetForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!(sheetMonth instanceof HTMLSelectElement) || !(sheetDay instanceof HTMLSelectElement)) return;
+    if (!sheetCard || !sheetNote) return;
+    const ok = renderBirthResult(Number(sheetMonth.value), Number(sheetDay.value), sheetCard, sheetNote);
+    if (!ok) return;
+    showSheetStep('result');
+    try {
+      localStorage.setItem(SHEET_KEY, 'done');
+    } catch {
+      /* ignore */
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sheet && !sheet.hidden) closeSheet();
+  });
+
+  resetBtn?.addEventListener('click', forceSheet);
+
+  if (new URLSearchParams(window.location.search).get('sheet') === '1') {
+    forceSheet();
+  } else {
+    armSheet();
+  }
+</script>
+
+<style>
+  .proto-banner {
+    position: relative;
+    z-index: 40;
+    background: var(--ink);
+    color: var(--paper);
+    font: 500 0.72rem/1.4 var(--sans);
+    letter-spacing: 0.06em;
+  }
+
+  .proto-banner__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 0.55rem;
+  }
+
+  .proto-banner a {
+    color: var(--paper);
+    text-underline-offset: 0.2em;
+  }
+
+  .proto-banner__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+  }
+
+  .proto-banner__reset {
+    border: 0;
+    background: none;
+    color: color-mix(in srgb, var(--paper) 70%, transparent);
+    font: inherit;
+    letter-spacing: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    cursor: pointer;
+  }
+
+  .proto-nav {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  .proto-nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.75rem;
+  }
+
+  .proto-nav__mark {
+    display: block;
+    width: auto;
+    height: 2.4rem;
+    max-width: none;
+  }
+
+  .proto-nav__logo :global(.magister-logo) {
+    height: 2.4rem;
+    max-width: none;
+    width: auto;
+  }
+
+  .proto-nav__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.85rem 1.15rem;
+    font: 600 0.68rem/1 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .proto-nav__links a {
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .proto-nav__cta {
+    padding: 0.55rem 0.85rem;
+    background: var(--accent);
+    color: var(--white) !important;
+  }
+
+  @media (max-width: 720px) {
+    .proto-nav__links a:not(.proto-nav__cta) {
+      display: none;
+    }
+  }
+
+  /* —— Hero —— */
+  .proto-hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    align-items: end;
+    overflow: clip;
+    color: var(--white);
+  }
+
+  .proto-hero__media {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: #1a140c;
+  }
+
+  .proto-hero__stage {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 18%;
+    opacity: 0;
+    transform: scale(1.02);
+    transform-origin: 50% 28%;
+    transition: opacity 3s linear;
+    will-change: opacity, transform;
+  }
+
+  .proto-hero__stage.is-front {
+    z-index: 1;
+  }
+
+  .proto-hero__stage.is-in {
+    opacity: 1;
+  }
+
+  .proto-hero__veil {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+      linear-gradient(90deg, rgba(12, 10, 6, 0.58) 0%, rgba(12, 10, 6, 0.22) 38%, transparent 70%),
+      linear-gradient(0deg, rgba(12, 10, 6, 0.42) 0%, transparent 40%);
+    pointer-events: none;
+  }
+
+  .proto-hero__copy {
+    position: relative;
+    z-index: 3;
+    padding-block: clamp(7rem, 14vw, 10rem) clamp(4rem, 8vw, 6.5rem);
+    max-width: 42rem;
+    margin-inline: 0;
+    animation: proto-copy-in 900ms ease both;
+  }
+
+  @keyframes proto-copy-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.25rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .proto-hero__meta {
+    color: color-mix(in srgb, var(--white) 78%, #c8973a);
+    font: 600 0.68rem/1.3 var(--sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .proto-hero__title {
+    margin-top: 1.35rem;
+    max-width: 22rem;
+  }
+
+  .proto-hero__wordmark {
+    display: block;
+    line-height: 0;
+    filter: drop-shadow(0 0.45rem 1.1rem rgba(0, 0, 0, 0.45));
+  }
+
+  .proto-hero__wordmark :global(.magister-logo) {
+    width: min(100%, 20rem);
+    height: auto;
+    max-width: none;
+  }
+
+  .proto-hero__lead {
+    margin-top: 1.75rem;
+    font-family: var(--display);
+    font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+    line-height: 1.28;
+    max-width: 28rem;
+  }
+
+  .proto-hero__body {
+    margin-top: 1rem;
+    max-width: 28rem;
+    color: color-mix(in srgb, var(--white) 78%, transparent);
+    line-height: 1.7;
+  }
+
+  .proto-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.25rem;
+  }
+
+  .proto-btn-light {
+    border-color: color-mix(in srgb, var(--white) 70%, transparent);
+    color: var(--white);
+  }
+
+  .proto-btn-light:hover {
+    background: var(--white);
+    color: var(--ink);
+  }
+
+  .proto-hero .btn-accent {
+    border-color: var(--accent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .proto-hero__stage,
+    .proto-hero__copy {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .proto-hero__stage {
+      opacity: 1;
+      transform: scale(1.02);
+    }
+  }
+
+  /* —— Destiny sheet (auto: mobile; force: Reset / ?sheet=1) —— */
+  .proto-sheet {
+    display: none;
+  }
+
+  .proto-sheet:not([hidden]) {
+    display: block;
+  }
+
+  .proto-sheet__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    border: 0;
+    background: rgba(12, 10, 6, 0.45);
+    opacity: 0;
+    transition: opacity 480ms ease;
+    cursor: pointer;
+  }
+
+  .proto-sheet__panel {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    bottom: 0;
+    z-index: 61;
+    width: min(100%, 28rem);
+    max-height: min(88svh, 40rem);
+    overflow: auto;
+    padding: 0.65rem 1.25rem calc(1.35rem + env(safe-area-inset-bottom, 0px));
+    border-radius: 1.15rem 1.15rem 0 0;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 -18px 50px rgba(12, 10, 6, 0.22);
+    transform: translate3d(-50%, calc(100% + 1.5rem), 0);
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  .proto-sheet.is-open .proto-sheet__backdrop {
+    opacity: 1;
+  }
+
+  .proto-sheet.is-open .proto-sheet__panel {
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .proto-sheet__backdrop,
+    .proto-sheet__panel {
+      transition: none;
+    }
+  }
+
+  .proto-sheet__handle {
+    width: 2.75rem;
+    height: 0.28rem;
+    margin: 0.15rem auto 1.1rem;
+    border-radius: 999px;
+    background: var(--line);
+  }
+
+  .proto-sheet__kicker {
+    color: var(--accent);
+    font: 600 0.68rem/1.2 var(--sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .proto-sheet__title {
+    margin-top: 0.55rem;
+    font-family: var(--display);
+    font-size: clamp(1.65rem, 7vw, 2.15rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .proto-sheet__body {
+    margin-top: 0.7rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .proto-sheet__actions {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 1.35rem;
+  }
+
+  .proto-sheet__skip {
+    border-color: var(--line);
+  }
+
+  .proto-sheet__form {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1.1rem;
+  }
+
+  .proto-sheet__form .text-link {
+    justify-self: center;
+    margin-top: 0.25rem;
+  }
+
+  .proto-sheet__step[hidden],
+  .proto-sheet__note[hidden],
+  .proto-sheet[hidden] {
+    display: none !important;
+  }
+
+  #proto-sheet-card {
+    margin-top: 0.85rem;
+  }
+
+  #proto-sheet-card img {
+    width: min(100%, 14rem);
+    margin-inline: auto;
+    border-radius: var(--card-radius);
+  }
+
+  #proto-sheet-card .proto-birth__meta {
+    margin-top: 0.85rem;
+  }
+
+  .proto-sheet__note {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  body.proto-sheet-open {
+    overflow: hidden;
+  }
+
+  /* —— Birth —— */
+  .proto-birth {
+    background: var(--white);
+  }
+
+  .proto-birth__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  .proto-birth__panel {
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border: 1px solid var(--line);
+    background: var(--paper);
+  }
+
+  .proto-birth__form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .proto-birth__form[hidden],
+  .proto-birth__result[hidden],
+  .proto-birth__note[hidden],
+  .proto-wait__ok[hidden] {
+    display: none !important;
+  }
+
+  .proto-field {
+    display: grid;
+    gap: 0.4rem;
+    font: 600 0.68rem/1.2 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .proto-field select {
+    min-height: 48px;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--white);
+    color: var(--ink);
+  }
+
+  .proto-birth__result {
+    animation: proto-copy-in 450ms ease both;
+  }
+
+  .proto-birth__card {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .proto-birth__card img,
+  .proto-birth__joker-pair img {
+    width: min(100%, 16rem);
+    border-radius: var(--card-radius);
+  }
+
+  .proto-birth__joker-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .proto-birth__rank {
+    color: var(--accent);
+    font: 600 0.68rem/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .proto-birth__meta h3 {
+    margin-top: 0.45rem;
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+
+  .proto-birth__meta p:last-child {
+    margin-top: 0.65rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .proto-birth__note {
+    margin-bottom: 1rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .proto-birth__follow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  @media (max-width: 860px) {
+    .proto-birth__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* —— Worlds —— */
+  .proto-worlds {
+    background: var(--paper-deep);
+  }
+
+  .proto-worlds__header {
+    max-width: 40rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .proto-worlds__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+  }
+
+  .proto-world img {
+    width: 100%;
+    aspect-ratio: 5 / 7;
+    object-fit: cover;
+    border-radius: var(--card-radius);
+  }
+
+  .proto-world__suit {
+    margin-top: 0.85rem;
+    color: var(--accent);
+    font: 600 0.65rem/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .proto-world h3 {
+    margin-top: 0.45rem;
+    font-family: var(--display);
+    font-size: clamp(1.25rem, 1.8vw, 1.55rem);
+    font-weight: 400;
+  }
+
+  .proto-world p:last-child {
+    margin-top: 0.4rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 900px) {
+    .proto-worlds__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* —— Strip —— */
+  .proto-strip {
+    background: var(--paper);
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+  }
+
+  .proto-strip__header {
+    max-width: 40rem;
+    margin-bottom: 2rem;
+  }
+
+  .proto-strip__rail {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 0.25rem var(--page-pad) 1rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .proto-strip__card {
+    flex: 0 0 auto;
+    width: min(42vw, 11.5rem);
+    margin: 0;
+    scroll-snap-align: start;
+  }
+
+  .proto-strip__card img {
+    width: 100%;
+    border-radius: var(--card-radius);
+    transition: transform 320ms ease;
+  }
+
+  .proto-strip__card:hover img {
+    transform: translateY(-0.35rem);
+  }
+
+  .proto-strip__card figcaption {
+    margin-top: 0.55rem;
+    font-family: var(--display);
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .proto-strip__more {
+    margin-top: 0.5rem;
+  }
+
+  /* —— SKU —— */
+  .proto-sku {
+    background: var(--white);
+  }
+
+  .proto-sku__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    grid-template-areas:
+      'heading media'
+      'body media';
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+  }
+
+  .proto-sku__heading {
+    grid-area: heading;
+  }
+
+  .proto-sku__heading .section-title {
+    margin-top: 0.85rem;
+  }
+
+  .proto-sku__deck {
+    grid-area: body;
+  }
+
+  .proto-sku__deck .lead {
+    margin-top: 0;
+  }
+
+  .proto-sku__points {
+    margin: 1.25rem 0 1.75rem;
+    padding-left: 1.1rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .proto-sku__media {
+    grid-area: media;
+    margin: 0;
+    align-self: center;
+  }
+
+  .proto-sku__media img {
+    width: 100%;
+  }
+
+  .proto-sku__gift {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.55fr);
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+    align-items: center;
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding-top: clamp(2rem, 4vw, 3rem);
+    border-top: 1px solid var(--line);
+    width: min(100%, var(--max-width));
+    margin-inline: auto;
+    padding-inline: var(--page-pad);
+  }
+
+  .proto-sku__gift-title {
+    margin-top: 0.85rem;
+    font-family: var(--display);
+    font-size: clamp(1.75rem, 3vw, 2.6rem);
+    font-weight: 400;
+    line-height: 1.1;
+  }
+
+  .proto-sku__gift-copy {
+    padding-inline: 0;
+  }
+
+  .proto-sku__gift-copy .body-copy {
+    margin-top: 0.85rem;
+  }
+
+  .proto-sku__gift-copy .text-link {
+    display: inline-block;
+    margin-top: 1rem;
+  }
+
+  .proto-sku__gift-img {
+    width: 100%;
+    max-width: 16rem;
+    justify-self: end;
+  }
+
+  @media (max-width: 860px) {
+    .proto-sku__grid {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'heading'
+        'media'
+        'body';
+      gap: 1.35rem;
+    }
+
+    .proto-sku__deck .lead {
+      margin-top: 0.35rem;
+    }
+
+    .proto-sku__gift {
+      grid-template-columns: 1fr;
+      width: 100%;
+      max-width: none;
+      padding-inline: 0;
+      gap: 1.5rem;
+    }
+
+    .proto-sku__gift-copy {
+      padding-inline: var(--page-pad);
+    }
+
+    .proto-sku__gift-img {
+      justify-self: stretch;
+      width: 100%;
+      max-width: none;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+    }
+  }
+
+  /* —— Play / Authors / Wait / Essen —— */
+  .proto-play {
+    background: var(--paper-deep);
+  }
+
+  .proto-play__inner,
+  .proto-wait__inner,
+  .proto-essen__inner {
+    max-width: 40rem;
+  }
+
+  .proto-play .btn,
+  .proto-essen .btn {
+    margin-top: 1.5rem;
+  }
+
+  .proto-authors__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+  }
+
+  .proto-authors__media {
+    margin: 0;
+  }
+
+  @media (max-width: 800px) {
+    .proto-authors__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .proto-wait {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: transparent;
+  }
+
+  .proto-wait .section-label {
+    color: color-mix(in srgb, var(--paper) 55%, #c8973a);
+  }
+
+  .proto-wait .body-copy {
+    color: color-mix(in srgb, var(--paper) 72%, transparent);
+  }
+
+  .proto-wait__form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+
+  .proto-wait__form input {
+    flex: 1 1 14rem;
+    min-height: 48px;
+    padding: 0.75rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--paper) 35%, transparent);
+    background: transparent;
+    color: var(--paper);
+  }
+
+  .proto-wait__form input::placeholder {
+    color: color-mix(in srgb, var(--paper) 45%, transparent);
+  }
+
+  .proto-wait__ok {
+    margin-top: 1rem;
+    color: color-mix(in srgb, var(--paper) 80%, #c8973a);
+  }
+
+  .proto-wait__alt {
+    margin-top: 1.25rem;
+    color: color-mix(in srgb, var(--paper) 55%, transparent);
+    font-size: 0.95rem;
+  }
+
+  .proto-wait__alt a {
+    color: var(--paper);
+  }
+
+  .proto-essen {
+    background: var(--paper);
+  }
+
+  .proto-essen__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .proto-footer {
+    padding-block: 3rem calc(2rem + env(safe-area-inset-bottom, 0px));
+    background: var(--white);
+    text-align: center;
+  }
+
+  .proto-footer__inner {
+    display: grid;
+    gap: 0.85rem;
+    justify-items: center;
+  }
+
+  .proto-footer__brand :global(.magister-logo) {
+    width: min(100%, 11rem);
+    height: auto;
+  }
+
+  .proto-footer__line {
+    color: var(--muted);
+  }
+
+  .proto-footer__copy {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  #birth,
+  #worlds,
+  #gallery,
+  #deck-sku,
+  #play,
+  #authors,
+  #waitlist,
+  #spiel {
+    scroll-margin-top: 6.5rem;
+  }
+</style>

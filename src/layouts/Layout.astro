@@ -7,12 +7,15 @@ interface Props {
   description?: string;
   lang: 'en' | 'ru' | 'be' | 'zh';
   canonicalURL?: string;
+  /** Hide from search engines (prototypes, internal previews). */
+  noindex?: boolean;
 }
 
 const {
   title = 'Magister Cards — 54 cards. 4 worlds. 1 alternative universe.',
   description = 'Magister Cards is a physical collectible art card deck built around an original alternative mythology.',
   lang,
+  noindex = false,
 } = Astro.props;
 
 const pathAfterLocale = Astro.url.pathname.replace(new RegExp(`^/${lang}`), '') || '/';
@@ -29,6 +32,7 @@ const skipLabel =
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  {noindex && <meta name="robots" content="noindex, nofollow" />}
   <meta name="theme-color" content="#f3f0e8" />
   <link rel="canonical" href={canonicalURL} />
   <script is:inline>document.documentElement.classList.add('js');</script>
