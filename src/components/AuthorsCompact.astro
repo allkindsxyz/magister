@@ -1,0 +1,75 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations, getLocalizedPath } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const fullStoryHref = `${getLocalizedPath('/old_landing/', lang)}#authors`;
+---
+
+<section class="authors-compact editorial-section" id="authors" aria-labelledby="authors-title">
+  <div class="page-shell authors-compact__grid">
+    <figure class="authors-compact__media reveal">
+      <img
+        src="/media/authors-together.jpg"
+        alt={t('authors.preface_image_alt')}
+        width="692"
+        height="620"
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
+    <div class="authors-compact__copy reveal">
+      <p class="section-label">{t('authors.label')}</p>
+      <h2 class="section-title" id="authors-title">{t('authors.preface_title')}</h2>
+      <p class="body-copy">{t('authors.compact_body')}</p>
+      <a class="text-link" href={fullStoryHref}>{t('authors.compact_more')}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .authors-compact {
+    background: var(--paper);
+  }
+
+  .authors-compact__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+  }
+
+  .authors-compact__media {
+    margin: 0;
+  }
+
+  .authors-compact__media img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .authors-compact__copy .section-title {
+    margin-top: 0.35rem;
+  }
+
+  .authors-compact__copy .body-copy {
+    margin-top: 1rem;
+    max-width: 36rem;
+  }
+
+  .authors-compact__copy .text-link {
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 800px) {
+    .authors-compact__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

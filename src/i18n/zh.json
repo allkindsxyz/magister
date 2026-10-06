@@ -13,19 +13,46 @@
     "book": "SPIEL '26 会面",
     "book_aria": "预约 SPIEL Essen 2026 会面",
     "menu_open": "打开菜单",
-    "menu_close": "关闭菜单"
+    "menu_close": "关闭菜单",
+    "order": "订购",
+    "order_aria": "订购牌组",
+    "cart_aria": "购物车 — 订购牌组",
+    "partners": "合作伙伴",
+    "partners_aria": "出版商与合作伙伴",
+    "shop": "商店"
+  },
+  "destiny": {
+    "kicker": "你的牌",
+    "title": "已有一幅画属于你",
+    "body": "你的生日对应 Magister 牌组中的一张牌。输入出生日期，看看那幅一直在等你的画作。",
+    "enter": "看看我的",
+    "not_now": "暂不",
+    "form_kicker": "你的生日",
+    "form_title": "你何时出生？",
+    "month": "月",
+    "day": "日",
+    "reveal": "揭晓我的牌",
+    "skip": "跳过",
+    "result_kicker": "这张是你的",
+    "order": "订购牌组",
+    "close": "关闭",
+    "dismiss": "关闭",
+    "joker_note": "12 月 31 日是小丑牌——位于红心 A 与黑桃 K 之间。选择触动你的那幅画。",
+    "missing_note": "此日期缺少牌面数据。"
   },
   "hero": {
-    "meta": "54 张牌 · 4 个世界 · 1 个平行宇宙",
-    "lead_before": "一套可收藏的",
-    "lead_mark": "艺术卡牌",
-    "lead_after": "，开启通往另类神话的大门——炼金术、历史与现代在此交织。",
-    "body": "每一张牌都是这个世界的一个片段——一幅画、一个角色、一段可供探索、解读与演绎的故事。",
+    "meta": "54 幅画作 · 4 个世界 · 首批现货",
+    "lead_before": "一副原创",
+    "lead_mark": "神话牌组",
+    "lead_after": "——可以玩、可以送、可以收藏的艺术。",
+    "body": "瓦西里·波奇茨基的五十四幅完成画作，组成可玩的牌组。现在订购——或先试玩游戏，在牌组寄到之前进入这个世界。",
     "explore": "浏览牌组",
     "meet": "SPIEL 2026 见",
     "meet_aria": "在 SPIEL Essen 2026 与我们见面",
     "deck_next": "显示牌组中的下一张牌",
-    "pack_alt": "Magister Cards 卡盒"
+    "pack_alt": "Magister Cards 卡盒",
+    "buy": "购买牌组",
+    "play_cta": "试玩游戏"
   },
   "worlds_section": {
     "label": "牌组神话",
@@ -99,7 +126,9 @@
       "bio": "「我有幸与一位天才为友……那就是瓦夏·波奇茨基。」",
       "bio_2": "",
       "photo_alt": "亚历山大·日尔奇克肖像。"
-    }
+    },
+    "compact_body": "瓦西里·波奇茨基绘成这一系列。亚历山大·日尔奇克塑造了世界。五十四幅画布——不是为产品画的插图，而是一套完成的艺术宇宙，后来成为牌组。",
+    "compact_more": "完整作者故事 →"
   },
   "next": {
     "label": "Magister 藏品",
@@ -113,28 +142,28 @@
       "title": "牌组",
       "lead": "54 幅原作。四个世界。一副牌组。",
       "body": "一副 54 张原创牌组，提供常规与 XL 两种尺寸。画作、角色与故事汇于一副可供探索与游玩的牌中。",
-      "cta": "探索牌组",
+      "cta": "订购牌组",
       "image_alt": "正面印有原作的 Magister Cards 牌盒。"
     },
     "apparel": {
       "title": "服饰",
       "lead": "穿上 Magister 的一角。",
       "body": "印有 Magister 原作的服饰，带有私人化细节，让每一件都成为你的专属。",
-      "cta": "查看服饰",
+      "cta": "订购服装",
       "image_alt": "印有 Magister 高跷人物图案的黑色连帽衫。"
     },
     "prints": {
       "title": "艺术版画",
       "lead": "牌面之外的 Magister 艺术。",
       "body": "瓦西里·波奇茨基原作的高品质版画，保留作品原本的呈现形式。",
-      "cta": "查看版画",
+      "cta": "订购版画",
       "image_alt": "装框的 Magister 艺术版画挂在墙上的架子上方。"
     },
     "album": {
       "title": "艺术画册",
       "lead": "152 页里的 Magister 世界。",
       "body": "穿越牌组背后的原作、角色与故事的视觉旅程。一本献给 Magister 艺术与创作的画册。",
-      "cta": "查看画册",
+      "cta": "即将推出",
       "image_alt": "Magister 艺术画册封面。"
     }
   },
@@ -162,6 +191,59 @@
   "footer": {
     "tagline": "54 张牌 · 4 个世界 · 1 个平行宇宙",
     "closing": "艺术已完成。可能性敞开——欢迎洽谈。",
-    "back_to_top": "返回顶部"
+    "back_to_top": "返回顶部",
+    "ready_title": "牌组已就绪",
+    "ready_line": "首批现货。常规与 XL。发往欧盟与美国。",
+    "order": "订购牌组",
+    "apparel": "服装",
+    "prints": "版画",
+    "play": "玩游戏",
+    "shop_aria": "商店",
+    "mail_lead": "画册与补货通知",
+    "notify": "通知我",
+    "on_list": "已加入名单。",
+    "publishers": "出版商"
+  },
+  "deck_sku": {
+    "title": "牌组",
+    "lead": "54 件原创作品。四个世界。一副牌。",
+    "body": "当牌来玩。当神话来读。把一张会留下故事的牌送给重要的人。",
+    "point_1": "首批已印制——现货",
+    "point_2": "常规与 XL 尺寸",
+    "point_3": "欧盟与美国发货",
+    "point_4": "每张牌：画作 + 故事",
+    "cta": "加入购物车",
+    "shop_link": "服装与版画",
+    "image_alt": "木桌上的 Magister Cards 牌组"
+  },
+  "opportunity": {
+    "label": "合作",
+    "title": "寻找合适的伙伴",
+    "lead": "Magister 是原创艺术卡牌 IP。我们保留作者权，寻求生产与分销伙伴。",
+    "looking_for": "我们正在寻找",
+    "publishing": "出版",
+    "production": "生产",
+    "distribution": "分销",
+    "development": "产品后续开发",
+    "body_1": "艺术系列已经完成——五十四幅画、四个世界、一副可玩的牌。我们需要能推进实体产品、却不拿走 IP 的伙伴。",
+    "body_2": "SPIEL Essen 2026 是我们想见你的地方。带着对话来；牌组我们带。",
+    "owner_label": "IP 持有人",
+    "deck_cta": "申请合作样牌",
+    "cta": "在 SPIEL 见面"
+  },
+  "legacy": {
+    "hero_meta": "54 张牌 · 4 个世界 · 1 个平行宇宙",
+    "hero_lead_before": "一副收藏级",
+    "hero_lead_mark": "艺术卡牌",
+    "hero_lead_after": "，通向另类神话世界——炼金术、历史与现代交织其中。",
+    "hero_body": "每张牌都是这个世界的一片：一件艺术作品、一个角色、一个可以探索、解读与游玩的故事。",
+    "hero_explore": "探索牌组",
+    "hero_meet": "SPIEL 2026 见面",
+    "hero_meet_aria": "在 SPIEL Essen 2026 与我们见面"
+  },
+  "shop": {
+    "title": "把世界的一部分带回家",
+    "lead": "牌组为主。服装与版画现可订购。艺术画册即将推出。",
+    "soon": "即将推出"
   }
 }

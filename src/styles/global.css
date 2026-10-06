@@ -137,11 +137,13 @@ select {
 }
 
 #deck,
+#deck-sku,
 #worlds,
 #fifty-four,
 #play,
 #authors,
 #artifacts,
+#updates,
 #spiel {
   scroll-margin-top: 5.5rem;
 }

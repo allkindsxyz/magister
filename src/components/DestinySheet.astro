@@ -1,0 +1,540 @@
+---
+import { getCollection } from 'astro:content';
+import type { Lang } from '../i18n/utils';
+import { useTranslations, pickLocalized, getLocalizedPath } from '../i18n/utils';
+import { gamesCopy } from '../i18n/gamesCopy';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const months = gamesCopy[lang].months;
+const deckHref = getLocalizedPath('/artifacts/deck', lang);
+
+const allCards = await getCollection('cards');
+const faceCards = allCards
+  .filter((c) => !c.data.back && c.data.suit && c.data.value)
+  .map((c) => ({
+    id: c.data.id as string,
+    title: pickLocalized(c.data.title, lang),
+    summary: pickLocalized(c.data.summary, lang),
+    image: c.data.image as string,
+    value: c.data.value as string,
+  }));
+
+const byId = Object.fromEntries(faceCards.map((c) => [c.id, c]));
+const jokerAce = byId['ace-hearts'] ?? null;
+const jokerKing = byId['king-spades'] ?? null;
+
+const cardsPayload = JSON.stringify(
+  Object.fromEntries(
+    faceCards.map((c) => [
+      c.id,
+      { id: c.id, title: c.title, summary: c.summary, image: c.image, value: c.value },
+    ]),
+  ),
+).replace(/</g, '\\u003c');
+
+const jokerNote = t('destiny.joker_note');
+const missingNote = t('destiny.missing_note');
+---
+
+<div
+  class="destiny-sheet"
+  id="destiny-sheet"
+  hidden
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="destiny-sheet-title"
+>
+  <button class="destiny-sheet__backdrop" type="button" aria-label={t('destiny.dismiss')} data-sheet-dismiss
+  ></button>
+  <div class="destiny-sheet__panel">
+    <div class="destiny-sheet__handle" aria-hidden="true"></div>
+
+    <div class="destiny-sheet__step" data-sheet-step="invite">
+      <p class="destiny-sheet__kicker">{t('destiny.kicker')}</p>
+      <h2 class="destiny-sheet__title" id="destiny-sheet-title">{t('destiny.title')}</h2>
+      <p class="destiny-sheet__body">{t('destiny.body')}</p>
+      <div class="destiny-sheet__actions">
+        <button class="btn btn-accent" type="button" data-sheet-enter>{t('destiny.enter')}</button>
+        <button class="btn destiny-sheet__skip" type="button" data-sheet-dismiss>{t('destiny.not_now')}</button>
+      </div>
+    </div>
+
+    <div class="destiny-sheet__step" data-sheet-step="form" hidden>
+      <p class="destiny-sheet__kicker">{t('destiny.form_kicker')}</p>
+      <h2 class="destiny-sheet__title">{t('destiny.form_title')}</h2>
+      <form class="destiny-sheet__form" id="destiny-sheet-form">
+        <label class="destiny-field">
+          <span>{t('destiny.month')}</span>
+          <select name="month" id="destiny-sheet-month" required>
+            {months.map((name, i) => <option value={i + 1}>{name}</option>)}
+          </select>
+        </label>
+        <label class="destiny-field">
+          <span>{t('destiny.day')}</span>
+          <select name="day" id="destiny-sheet-day" required></select>
+        </label>
+        <button class="btn btn-accent" type="submit">{t('destiny.reveal')}</button>
+        <button class="text-link" type="button" data-sheet-dismiss>{t('destiny.skip')}</button>
+      </form>
+    </div>
+
+    <div class="destiny-sheet__step" data-sheet-step="result" hidden>
+      <p class="destiny-sheet__kicker">{t('destiny.result_kicker')}</p>
+      <div id="destiny-sheet-card"></div>
+      <p class="destiny-sheet__note" id="destiny-sheet-note" hidden></p>
+      <div class="destiny-sheet__actions">
+        <a class="btn btn-accent" href={deckHref} data-sheet-done>{t('destiny.order')}</a>
+        <button class="text-link" type="button" data-sheet-dismiss>{t('destiny.close')}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script
+  define:vars={{
+    cardsPayload,
+    jokerAce,
+    jokerKing,
+    jokerNote,
+    missingNote,
+  }}
+>
+  const cards = JSON.parse(cardsPayload);
+  const SHEET_KEY = 'magister.destinyPrompt.v1';
+  const MOBILE_MQ = '(max-width: 720px)';
+  const SHEET_DELAY_MS = 5200;
+
+  /** @param {number} month */
+  function daysInMonth(month) {
+    return [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1] ?? 0;
+  }
+
+  /**
+   * @param {number} month
+   * @param {number} day
+   */
+  function birthCard(month, day) {
+    if (!Number.isInteger(month) || !Number.isInteger(day)) return null;
+    if (month < 1 || month > 12) return null;
+    if (day < 1 || day > daysInMonth(month)) return null;
+    const n = 2 * month + day - 55;
+    if (n === 0) return { kind: 'joker' };
+    if (n > 0 || n < -52) return null;
+    const number = -n;
+    const suits = ['hearts', 'clubs', 'diamonds', 'spades'];
+    const ranks = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+    const slugs = {
+      A: 'ace',
+      '2': '2',
+      '3': '3',
+      '4': '4',
+      '5': '5',
+      '6': '6',
+      '7': '7',
+      '8': '8',
+      '9': '9',
+      '10': '10',
+      J: 'jack',
+      Q: 'queen',
+      K: 'king',
+    };
+    const suit = suits[Math.floor((number - 1) / 13)];
+    const value = ranks[(number - 1) % 13];
+    return { kind: 'card', id: `${slugs[value]}-${suit}`, suit, value, number };
+  }
+
+  /** @param {{ id: string, title: string, summary: string, image: string, value: string }} card */
+  function cardHtml(card) {
+    const title = String(card.title).replace(/"/g, '&quot;');
+    return `
+      <img src="${card.image}" alt="${title}" width="320" height="448" />
+      <div class="destiny-birth__meta">
+        <p class="destiny-birth__rank">${card.value}</p>
+        <h3>${card.title}</h3>
+        <p>${card.summary}</p>
+      </div>
+    `;
+  }
+
+  /**
+   * @param {HTMLSelectElement | null} monthSelect
+   * @param {HTMLSelectElement | null} daySelect
+   */
+  function fillDaysFor(monthSelect, daySelect) {
+    if (!(monthSelect instanceof HTMLSelectElement) || !(daySelect instanceof HTMLSelectElement)) return;
+    const month = Number(monthSelect.value);
+    const max = daysInMonth(month);
+    const prev = Number(daySelect.value) || 1;
+    daySelect.replaceChildren();
+    for (let d = 1; d <= max; d++) {
+      const opt = document.createElement('option');
+      opt.value = String(d);
+      opt.textContent = String(d);
+      daySelect.append(opt);
+    }
+    daySelect.value = String(Math.min(prev, max));
+  }
+
+  /**
+   * @param {number} month
+   * @param {number} day
+   * @param {HTMLElement} cardMount
+   * @param {HTMLElement} note
+   */
+  function renderBirthResult(month, day, cardMount, note) {
+    const found = birthCard(month, day);
+    if (!found) return false;
+    note.hidden = true;
+    cardMount.replaceChildren();
+
+    if (found.kind === 'joker') {
+      note.hidden = false;
+      note.textContent = jokerNote;
+      const wrap = document.createElement('div');
+      wrap.className = 'destiny-birth__joker-pair';
+      if (jokerAce) wrap.insertAdjacentHTML('beforeend', cardHtml(jokerAce));
+      if (jokerKing) wrap.insertAdjacentHTML('beforeend', cardHtml(jokerKing));
+      cardMount.append(wrap);
+      return true;
+    }
+
+    const card = cards[found.id];
+    if (!card) {
+      note.hidden = false;
+      note.textContent = missingNote;
+      return true;
+    }
+    cardMount.insertAdjacentHTML('beforeend', cardHtml(card));
+    return true;
+  }
+
+  const sheet = document.getElementById('destiny-sheet');
+  const sheetMonth = document.getElementById('destiny-sheet-month');
+  const sheetDay = document.getElementById('destiny-sheet-day');
+  const sheetForm = document.getElementById('destiny-sheet-form');
+  const sheetCard = document.getElementById('destiny-sheet-card');
+  const sheetNote = document.getElementById('destiny-sheet-note');
+
+  fillDaysFor(
+    sheetMonth instanceof HTMLSelectElement ? sheetMonth : null,
+    sheetDay instanceof HTMLSelectElement ? sheetDay : null,
+  );
+  sheetMonth?.addEventListener('change', () =>
+    fillDaysFor(
+      sheetMonth instanceof HTMLSelectElement ? sheetMonth : null,
+      sheetDay instanceof HTMLSelectElement ? sheetDay : null,
+    ),
+  );
+
+  /** @param {'invite' | 'form' | 'result'} name */
+  function showSheetStep(name) {
+    sheet?.querySelectorAll('[data-sheet-step]').forEach((el) => {
+      if (!(el instanceof HTMLElement)) return;
+      el.hidden = el.getAttribute('data-sheet-step') !== name;
+    });
+  }
+
+  function markSheetSeen() {
+    try {
+      localStorage.setItem(SHEET_KEY, 'seen');
+    } catch {
+      /* private mode */
+    }
+  }
+
+  function openSheet() {
+    if (!sheet) return;
+    showSheetStep('invite');
+    sheet.hidden = false;
+    sheet.classList.remove('is-open');
+    document.body.classList.add('destiny-sheet-open');
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => sheet.classList.add('is-open'));
+    });
+  }
+
+  function closeSheet() {
+    if (!sheet || !sheet.classList.contains('is-open')) {
+      if (sheet) sheet.hidden = true;
+      document.body.classList.remove('destiny-sheet-open');
+      markSheetSeen();
+      return;
+    }
+    sheet.classList.remove('is-open');
+    document.body.classList.remove('destiny-sheet-open');
+    markSheetSeen();
+    window.setTimeout(() => {
+      sheet.hidden = true;
+      showSheetStep('invite');
+    }, 520);
+  }
+
+  function shouldOfferSheet() {
+    if (!window.matchMedia(MOBILE_MQ).matches) return false;
+    try {
+      if (localStorage.getItem(SHEET_KEY)) return false;
+    } catch {
+      return false;
+    }
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('sheet') === '0') return false;
+    return true;
+  }
+
+  function forceSheet() {
+    try {
+      localStorage.removeItem(SHEET_KEY);
+    } catch {
+      /* ignore */
+    }
+    openSheet();
+  }
+
+  let sheetArmed = false;
+  function armSheet() {
+    if (sheetArmed || !shouldOfferSheet()) return;
+    sheetArmed = true;
+    let opened = false;
+    const openOnce = () => {
+      if (opened) return;
+      opened = true;
+      openSheet();
+    };
+    window.setTimeout(openOnce, SHEET_DELAY_MS);
+    const onScroll = () => {
+      if (window.scrollY > 48) openOnce();
+    };
+    window.addEventListener('scroll', onScroll, { passive: true, once: true });
+  }
+
+  sheet?.addEventListener('click', (e) => {
+    const target = e.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest('[data-sheet-dismiss]')) {
+      closeSheet();
+      return;
+    }
+    if (target.closest('[data-sheet-enter]')) {
+      showSheetStep('form');
+      if (sheetMonth instanceof HTMLSelectElement) sheetMonth.focus();
+      return;
+    }
+    if (target.closest('[data-sheet-done]')) {
+      markSheetSeen();
+      closeSheet();
+    }
+  });
+
+  sheetForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (!(sheetMonth instanceof HTMLSelectElement) || !(sheetDay instanceof HTMLSelectElement)) return;
+    if (!sheetCard || !sheetNote) return;
+    const ok = renderBirthResult(Number(sheetMonth.value), Number(sheetDay.value), sheetCard, sheetNote);
+    if (!ok) return;
+    showSheetStep('result');
+    try {
+      localStorage.setItem(SHEET_KEY, 'done');
+    } catch {
+      /* ignore */
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && sheet && !sheet.hidden) closeSheet();
+  });
+
+  if (new URLSearchParams(window.location.search).get('sheet') === '1') {
+    forceSheet();
+  } else {
+    armSheet();
+  }
+</script>
+
+<style>
+  .destiny-sheet {
+    display: none;
+  }
+
+  .destiny-sheet:not([hidden]) {
+    display: block;
+  }
+
+  .destiny-sheet__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 120;
+    border: 0;
+    background: rgba(12, 10, 6, 0.45);
+    opacity: 0;
+    transition: opacity 480ms ease;
+    cursor: pointer;
+  }
+
+  .destiny-sheet__panel {
+    position: fixed;
+    left: 50%;
+    right: auto;
+    bottom: 0;
+    z-index: 121;
+    width: min(100%, 28rem);
+    max-height: min(88svh, 40rem);
+    overflow: auto;
+    padding: 0.65rem 1.25rem calc(1.35rem + env(safe-area-inset-bottom, 0px));
+    border-radius: 1.15rem 1.15rem 0 0;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 -18px 50px rgba(12, 10, 6, 0.22);
+    transform: translate3d(-50%, calc(100% + 1.5rem), 0);
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: transform;
+  }
+
+  .destiny-sheet.is-open .destiny-sheet__backdrop {
+    opacity: 1;
+  }
+
+  .destiny-sheet.is-open .destiny-sheet__panel {
+    transform: translate3d(-50%, 0, 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .destiny-sheet__backdrop,
+    .destiny-sheet__panel {
+      transition: none;
+    }
+  }
+
+  .destiny-sheet__handle {
+    width: 2.75rem;
+    height: 0.28rem;
+    margin: 0.15rem auto 1.1rem;
+    border-radius: 999px;
+    background: var(--line);
+  }
+
+  .destiny-sheet__kicker {
+    color: var(--accent);
+    font: 600 0.68rem/1.2 var(--sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .destiny-sheet__title {
+    margin-top: 0.55rem;
+    font-family: var(--display);
+    font-size: clamp(1.65rem, 7vw, 2.15rem);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  .destiny-sheet__body {
+    margin-top: 0.7rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .destiny-sheet__actions {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 1.35rem;
+  }
+
+  .destiny-sheet__skip {
+    border-color: var(--line);
+  }
+
+  .destiny-sheet__form {
+    display: grid;
+    gap: 0.85rem;
+    margin-top: 1.1rem;
+  }
+
+  .destiny-sheet__form .text-link {
+    justify-self: center;
+    margin-top: 0.25rem;
+  }
+
+  .destiny-sheet__step[hidden],
+  .destiny-sheet__note[hidden],
+  .destiny-sheet[hidden] {
+    display: none !important;
+  }
+
+  #destiny-sheet-card {
+    margin-top: 0.85rem;
+  }
+
+  #destiny-sheet-card img {
+    width: min(100%, 14rem);
+    margin-inline: auto;
+    border-radius: var(--card-radius);
+  }
+
+  #destiny-sheet-card :global(.destiny-birth__meta) {
+    margin-top: 0.85rem;
+  }
+
+  #destiny-sheet-card :global(.destiny-birth__rank) {
+    color: var(--accent);
+    font: 600 0.68rem/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  #destiny-sheet-card :global(.destiny-birth__meta h3) {
+    margin-top: 0.45rem;
+    font-family: var(--display);
+    font-size: clamp(1.35rem, 4vw, 1.75rem);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+
+  #destiny-sheet-card :global(.destiny-birth__meta p:last-child) {
+    margin-top: 0.65rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  #destiny-sheet-card :global(.destiny-birth__joker-pair) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+  }
+
+  #destiny-sheet-card :global(.destiny-birth__joker-pair img) {
+    width: 100%;
+  }
+
+  .destiny-sheet__note {
+    margin-top: 0.75rem;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .destiny-field {
+    display: grid;
+    gap: 0.4rem;
+    font: 600 0.68rem/1.2 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .destiny-field select {
+    min-height: 48px;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--white);
+    color: var(--ink);
+  }
+
+  :global(body.destiny-sheet-open) {
+    overflow: hidden;
+  }
+</style>

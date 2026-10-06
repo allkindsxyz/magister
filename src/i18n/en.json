@@ -13,19 +13,46 @@
     "book": "Meet at SPIEL '26",
     "book_aria": "Book a meeting at SPIEL Essen 2026",
     "menu_open": "Open menu",
-    "menu_close": "Close menu"
+    "menu_close": "Close menu",
+    "order": "Order",
+    "order_aria": "Order the deck",
+    "cart_aria": "Open cart — order the deck",
+    "partners": "Partners",
+    "partners_aria": "Publishers and partners",
+    "shop": "Shop"
+  },
+  "destiny": {
+    "kicker": "Your card",
+    "title": "One painting already belongs to you",
+    "body": "Your birthday is tied to a single card in the Magister deck. Enter the day you were born — and see the artwork that has been waiting for you.",
+    "enter": "Show me mine",
+    "not_now": "Not now",
+    "form_kicker": "Your birthday",
+    "form_title": "When were you born?",
+    "month": "Month",
+    "day": "Day",
+    "reveal": "Reveal my card",
+    "skip": "Skip",
+    "result_kicker": "This one is yours",
+    "order": "Order the deck",
+    "close": "Close",
+    "dismiss": "Dismiss",
+    "joker_note": "31 December is the Joker — between the Ace of Hearts and the King of Spades. Choose the painting that speaks to you.",
+    "missing_note": "Card data missing for this date."
   },
   "hero": {
-    "meta": "54 cards · 4 worlds · 1 alternative universe",
-    "lead_before": "A collectible ",
-    "lead_mark": "art card deck",
-    "lead_after": " opening a gateway into an alternative mythology where alchemy, history and modernity intertwine.",
-    "body": "Each card is a fragment of this world — an artwork, a character and a story to explore, interpret and play with.",
+    "meta": "54 paintings · 4 worlds · first batch in stock",
+    "lead_before": "An original ",
+    "lead_mark": "myth deck",
+    "lead_after": " — art you can play, gift, and keep.",
+    "body": "Fifty-four finished paintings by Vasily Pochitsky, shaped into a playable deck. Order now — or try the games and meet the world before it arrives at your door.",
     "explore": "Explore the deck",
     "meet": "Meet us at SPIEL 2026",
     "meet_aria": "Meet us at SPIEL Essen 2026",
     "deck_next": "Show the next card in the deck",
-    "pack_alt": "Magister Cards box"
+    "pack_alt": "Magister Cards box",
+    "buy": "Buy the deck",
+    "play_cta": "Try the games"
   },
   "worlds_section": {
     "label": "The Deck's Mythology",
@@ -99,7 +126,9 @@
       "bio": "“I was lucky to be friends with a genius… and that was Vasya Pochitsky.”",
       "bio_2": "",
       "photo_alt": "Portrait of Alexander Zhilchik."
-    }
+    },
+    "compact_body": "Vasily Pochitsky painted the cycle. Alexander Zhilchik shaped the world. Fifty-four canvases — not illustrations made for a product, but a finished artistic universe that became a deck.",
+    "compact_more": "Full author story →"
   },
   "next": {
     "label": "Magister Artifacts",
@@ -113,28 +142,28 @@
       "title": "The Deck",
       "lead": "54 original artworks. Four worlds. One deck.",
       "body": "An original deck of 54 cards in regular and XL size. Artworks, characters and stories come together in a deck made to be explored and played.",
-      "cta": "Explore the Deck",
+      "cta": "Order the deck",
       "image_alt": "Magister Cards tuck box with original artwork on the front."
     },
     "apparel": {
       "title": "Apparel",
       "lead": "Wear a piece of Magister.",
       "body": "Clothing featuring original Magister artwork, with a personal touch that makes each piece uniquely yours.",
-      "cta": "Explore Apparel",
+      "cta": "Order apparel",
       "image_alt": "Black hoodie printed with Magister stilts artwork."
     },
     "prints": {
       "title": "Art Prints",
       "lead": "The art of Magister, beyond the cards.",
       "body": "High-quality prints of Vasily Pochitsky’s original paintings, preserving the artwork in its original format.",
-      "cta": "Explore Art Prints",
+      "cta": "Order a print",
       "image_alt": "Framed Magister art print hanging on a wall above a shelf."
     },
     "album": {
       "title": "Art Album",
       "lead": "The world of Magister in 152 pages.",
       "body": "A visual journey through the original artworks, characters and stories behind the cards. An album dedicated to the art and creation of Magister.",
-      "cta": "Explore the Album",
+      "cta": "Coming soon",
       "image_alt": "Cover of the Magister art album."
     }
   },
@@ -162,6 +191,59 @@
   "footer": {
     "tagline": "54 cards · 4 worlds · 1 alternative universe",
     "closing": "The art is finished. The possibilities are open — let's talk.",
-    "back_to_top": "Back to top"
+    "back_to_top": "Back to top",
+    "ready_title": "The deck is ready",
+    "ready_line": "First batch in stock. Regular & XL. Ships to the EU & US.",
+    "order": "Order the deck",
+    "apparel": "Apparel",
+    "prints": "Prints",
+    "play": "Play the games",
+    "shop_aria": "Shop",
+    "mail_lead": "Album & restock updates",
+    "notify": "Notify me",
+    "on_list": "You’re on the list.",
+    "publishers": "Publishers"
+  },
+  "deck_sku": {
+    "title": "The Deck",
+    "lead": "54 original artworks. Four worlds. One deck.",
+    "body": "Play it as cards. Read it as myth. Gift a card that stays with someone — with a story attached.",
+    "point_1": "First batch printed — in stock",
+    "point_2": "Regular & XL sizes",
+    "point_3": "EU & US shipping",
+    "point_4": "Each card: painting + lore",
+    "cta": "Add to cart",
+    "shop_link": "Shop apparel & prints",
+    "image_alt": "Magister Cards deck lying on a wooden desk"
+  },
+  "opportunity": {
+    "label": "Partnership",
+    "title": "Looking for the right partner",
+    "lead": "Magister is an original art-card IP. We keep authorship and seek partners for production and distribution.",
+    "looking_for": "We’re looking for",
+    "publishing": "Publishing",
+    "production": "Production",
+    "distribution": "Distribution",
+    "development": "Further product development",
+    "body_1": "The art cycle is finished — fifty-four paintings, four worlds, a playable deck. We want a partner who can take the physical product further without taking the IP.",
+    "body_2": "SPIEL Essen 2026 is where we’d like to meet. Bring a conversation; we’ll bring the deck.",
+    "owner_label": "IP owner",
+    "deck_cta": "Request a partner deck",
+    "cta": "Meet at SPIEL"
+  },
+  "legacy": {
+    "hero_meta": "54 cards · 4 worlds · 1 alternative universe",
+    "hero_lead_before": "A collectible ",
+    "hero_lead_mark": "art card deck",
+    "hero_lead_after": " opening a gateway into an alternative mythology where alchemy, history and modernity intertwine.",
+    "hero_body": "Each card is a fragment of this world — an artwork, a character and a story to explore, interpret and play with.",
+    "hero_explore": "Explore the deck",
+    "hero_meet": "Meet us at SPIEL 2026",
+    "hero_meet_aria": "Meet us at SPIEL Essen 2026"
+  },
+  "shop": {
+    "title": "Take a piece of the world home",
+    "lead": "The deck leads. Apparel and prints ship now. The art album is next.",
+    "soon": "Coming soon"
   }
 }

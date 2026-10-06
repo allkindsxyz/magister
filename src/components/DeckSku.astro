@@ -1,0 +1,116 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations, getLocalizedPath } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const deckHref = getLocalizedPath('/artifacts/deck', lang);
+const shopHref = `${getLocalizedPath('/', lang)}#artifacts`;
+---
+
+<section class="deck-sku editorial-section" id="deck-sku" aria-labelledby="deck-sku-title">
+  <div class="page-shell deck-sku__grid">
+    <header class="deck-sku__heading reveal">
+      <h2 class="section-title" id="deck-sku-title">{t('deck_sku.title')}</h2>
+    </header>
+    <figure class="deck-sku__media reveal">
+      <img
+        src="/media/deck-lifestyle.jpg"
+        alt={t('deck_sku.image_alt')}
+        width="1024"
+        height="672"
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
+    <div class="deck-sku__body reveal">
+      <p class="lead">{t('deck_sku.lead')}</p>
+      <p class="body-copy">{t('deck_sku.body')}</p>
+      <ul class="deck-sku__points">
+        <li>{t('deck_sku.point_1')}</li>
+        <li>{t('deck_sku.point_2')}</li>
+        <li>{t('deck_sku.point_3')}</li>
+        <li>{t('deck_sku.point_4')}</li>
+      </ul>
+      <div class="deck-sku__actions">
+        <a class="btn btn-accent" href={deckHref}>{t('deck_sku.cta')}</a>
+        <a class="text-link" href={shopHref}>{t('deck_sku.shop_link')}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .deck-sku {
+    background: var(--white);
+  }
+
+  .deck-sku__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    grid-template-areas:
+      'heading media'
+      'body media';
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+  }
+
+  .deck-sku__heading {
+    grid-area: heading;
+  }
+
+  .deck-sku__heading .section-title {
+    margin-top: 0;
+  }
+
+  .deck-sku__body {
+    grid-area: body;
+  }
+
+  .deck-sku__body .lead {
+    margin-top: 0;
+  }
+
+  .deck-sku__points {
+    margin: 1.25rem 0 1.75rem;
+    padding-left: 1.1rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .deck-sku__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+  }
+
+  .deck-sku__media {
+    grid-area: media;
+    margin: 0;
+    align-self: center;
+  }
+
+  .deck-sku__media img {
+    width: 100%;
+  }
+
+  @media (max-width: 860px) {
+    .deck-sku__grid {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'heading'
+        'media'
+        'body';
+      gap: 1.35rem;
+    }
+
+    .deck-sku__body .lead {
+      margin-top: 0.35rem;
+    }
+  }
+</style>

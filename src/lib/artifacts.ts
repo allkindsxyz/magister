@@ -10,7 +10,7 @@ export type ArtifactMedia = { image: string; width: number; height: number };
 
 /** Homepage / artifacts grid thumbs. */
 export const ARTIFACT_MEDIA: Record<ArtifactSlug, ArtifactMedia> = {
-  deck: { image: '/media/pack.png', width: 1536, height: 1024 },
+  deck: { image: '/media/deck-lifestyle.jpg', width: 1024, height: 672 },
   apparel: { image: '/media/partner-apparel.jpg', width: 764, height: 1024 },
   prints: { image: '/media/partner-print.jpg', width: 704, height: 1024 },
   album: { image: '/media/album-cover.jpg', width: 724, height: 1024 },

@@ -1,0 +1,145 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations, getLocalizedPath } from '../i18n/utils';
+import { CONTACT_EMAIL } from '../lib/site';
+import MagisterLogo from './MagisterLogo.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const home = getLocalizedPath('/', lang);
+---
+
+<footer id="contact">
+  <div class="page-shell footer-grid">
+    <div class="footer-main">
+      <p class="footer-brand" aria-label="Magister Cards">
+        <span class="footer-brand__wordmark" aria-hidden="true">
+          <MagisterLogo width={880} height={407} />
+        </span>
+        <span class="footer-brand__cards" aria-hidden="true">Cards</span>
+      </p>
+      <p class="footer-closing">{t('footer.closing')}</p>
+      <a class="footer-email" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 Magister Cards</p>
+      <a href={`${home}#deck`}>{t('footer.back_to_top')} ↑</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    padding-block: clamp(3rem, 7vw, 6rem) calc(2rem + env(safe-area-inset-bottom, 0px));
+    background: var(--white);
+  }
+
+  .footer-grid {
+    display: grid;
+    gap: 3rem;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .footer-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 52rem;
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.18rem;
+    width: 100%;
+    margin: 0;
+  }
+
+  .footer-brand__wordmark {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .footer-brand__wordmark :global(.magister-logo) {
+    width: min(100%, 16rem);
+    height: auto;
+    max-width: none;
+    margin-inline: auto;
+    transform: translateX(0.2rem);
+    filter: drop-shadow(0 0.3rem 0.7rem rgba(42, 68, 132, 0.12));
+  }
+
+  .footer-brand__cards {
+    display: block;
+    margin: 0;
+    color: var(--brand-blue);
+    font-family: 'Bebas Neue', var(--sans);
+    font-size: clamp(1.45rem, 3.5vw, 2.05rem);
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .footer-closing {
+    margin-top: clamp(1.1rem, 2vw, 1.5rem);
+    max-width: 38rem;
+    color: var(--muted);
+    font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+    line-height: 1.6;
+  }
+
+  .footer-email {
+    display: inline-block;
+    width: fit-content;
+    margin-top: 1rem;
+    color: var(--accent);
+    font: 500 0.92rem/1.5 var(--sans);
+    letter-spacing: 0.01em;
+    text-decoration: underline;
+    text-underline-offset: 0.25rem;
+  }
+
+  .footer-email:hover {
+    color: var(--accent-dark);
+  }
+
+  .footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem 2rem;
+    width: 100%;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font: 500 0.62rem/1.4 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .footer-bottom a {
+    text-decoration: none;
+  }
+
+  @media (max-width: 560px) {
+    .footer-brand__wordmark :global(.magister-logo) {
+      width: min(100%, 13.5rem);
+      transform: translateX(0.15rem);
+    }
+
+    .footer-brand__cards {
+      font-size: clamp(1.25rem, 6.5vw, 1.65rem);
+      letter-spacing: 0.14em;
+    }
+  }
+
+</style>

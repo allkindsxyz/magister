@@ -1,0 +1,164 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations, getLocalizedPath } from '../i18n/utils';
+import { ARTIFACT_SLUGS, ARTIFACT_MEDIA } from '../lib/artifacts';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const items = ARTIFACT_SLUGS.map((key) => {
+  const soon = key === 'album';
+  return {
+    key,
+    ...ARTIFACT_MEDIA[key],
+    href: soon ? `${getLocalizedPath('/', lang)}#updates` : getLocalizedPath(`/artifacts/${key}`, lang),
+    soon,
+  };
+});
+---
+
+<section class="shop editorial-section" id="artifacts" aria-labelledby="shop-title">
+  <div class="page-shell">
+    <header class="shop__header reveal">
+      <h2 class="section-title" id="shop-title">{t('shop.title')}</h2>
+      <p class="body-copy">{t('shop.lead')}</p>
+    </header>
+
+    <div class="shop__grid">
+      {
+        items.map((item, index) => (
+          <article
+            class:list={['shop__item', 'reveal', item.soon && 'is-soon']}
+            style={`--delay:${index * 50}ms`}
+          >
+            <a class="shop__media" href={item.href} aria-label={t(`next.${item.key}.title`)}>
+              <img
+                src={item.image}
+                alt=""
+                width={item.width}
+                height={item.height}
+                loading="lazy"
+                decoding="async"
+              />
+              {item.soon && <span class="shop__badge">{t('shop.soon')}</span>}
+            </a>
+            <h3>{t(`next.${item.key}.title`)}</h3>
+            <p>{t(`next.${item.key}.lead`)}</p>
+            <a
+              class:list={['btn', item.soon ? 'shop__soon-btn' : 'btn-accent']}
+              href={item.href}
+            >
+              {t(`next.${item.key}.cta`)}
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .shop {
+    background: var(--white);
+  }
+
+  .shop__header {
+    max-width: 40rem;
+    margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+  }
+
+  .shop__header .section-title {
+    margin-top: 0;
+  }
+
+  .shop__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1.25rem, 3vw, 2rem);
+    align-items: stretch;
+  }
+
+  .shop__item {
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 0.75rem;
+    height: 100%;
+  }
+
+  .shop__item h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-size: clamp(1.35rem, 2vw, 1.7rem);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+
+  .shop__item > p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .shop__media {
+    position: relative;
+    display: block;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .shop__media img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    transition: transform 420ms ease;
+  }
+
+  .shop__item:hover .shop__media img {
+    transform: scale(1.03);
+  }
+
+  .shop__badge {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.35rem 0.55rem;
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    color: var(--ink);
+    font: 600 0.68rem/1 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .shop__item .btn {
+    justify-self: start;
+    align-self: end;
+    margin-top: 0;
+  }
+
+  .shop__soon-btn {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+
+  .shop__item.is-soon .shop__media img {
+    filter: saturate(0.85);
+  }
+
+  @media (max-width: 980px) {
+    .shop__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .shop__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

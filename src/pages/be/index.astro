@@ -2,29 +2,31 @@
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
+import DeckSku from '../../components/DeckSku.astro';
 import Worlds from '../../components/Worlds.astro';
 import Games from '../../components/Games.astro';
-import Artist from '../../components/Artist.astro';
-import NextChapter from '../../components/NextChapter.astro';
-import Essen from '../../components/Essen.astro';
-import Footer from '../../components/Footer.astro';
+import Shop from '../../components/Shop.astro';
+import AuthorsCompact from '../../components/AuthorsCompact.astro';
+import BuyerFooter from '../../components/BuyerFooter.astro';
+import DestinySheet from '../../components/DestinySheet.astro';
 
 const lang = 'be';
 ---
 
 <Layout
   lang={lang}
-  title="Magister Cards — 54 карты. 4 светы. 1 альтэрнатыўны сусвет."
-  description="Magister Cards — фізічная калекцыйная арт-калода з арыгінальнай альтэрнатыўнай міфалогіяй."
+  title="Magister Cards — Заказаць калоду"
+  description="Арыгінальная міфалагічная калода ў наяўнасці — закажыце калоду, адзенне і арт-прынты. Даследуйце 54 карціны і гуляйце."
 >
   <Nav lang={lang} />
   <main id="main-content">
     <Hero lang={lang} />
+    <DeckSku lang={lang} />
     <Worlds lang={lang} />
     <Games lang={lang} />
-    <NextChapter lang={lang} />
-    <Artist lang={lang} />
-    <Essen lang={lang} />
+    <Shop lang={lang} />
+    <AuthorsCompact lang={lang} />
   </main>
-  <Footer lang={lang} />
+  <BuyerFooter lang={lang} />
+  <DestinySheet lang={lang} />
 </Layout>

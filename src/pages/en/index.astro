@@ -2,29 +2,31 @@
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
+import DeckSku from '../../components/DeckSku.astro';
 import Worlds from '../../components/Worlds.astro';
 import Games from '../../components/Games.astro';
-import Artist from '../../components/Artist.astro';
-import NextChapter from '../../components/NextChapter.astro';
-import Essen from '../../components/Essen.astro';
-import Footer from '../../components/Footer.astro';
+import Shop from '../../components/Shop.astro';
+import AuthorsCompact from '../../components/AuthorsCompact.astro';
+import BuyerFooter from '../../components/BuyerFooter.astro';
+import DestinySheet from '../../components/DestinySheet.astro';
 
 const lang = 'en';
 ---
 
 <Layout
   lang={lang}
-  title="Magister Cards — 54 cards. 4 worlds. 1 alternative universe."
-  description="Magister Cards is a physical collectible art card deck built around an original alternative mythology."
+  title="Magister Cards — Order the deck"
+  description="Original myth deck in stock — order the deck, apparel, and art prints. Explore 54 paintings and play the games."
 >
   <Nav lang={lang} />
   <main id="main-content">
     <Hero lang={lang} />
+    <DeckSku lang={lang} />
     <Worlds lang={lang} />
     <Games lang={lang} />
-    <NextChapter lang={lang} />
-    <Artist lang={lang} />
-    <Essen lang={lang} />
+    <Shop lang={lang} />
+    <AuthorsCompact lang={lang} />
   </main>
-  <Footer lang={lang} />
+  <BuyerFooter lang={lang} />
+  <DestinySheet lang={lang} />
 </Layout>

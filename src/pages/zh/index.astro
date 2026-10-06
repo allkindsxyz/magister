@@ -2,29 +2,31 @@
 import Layout from '../../layouts/Layout.astro';
 import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
+import DeckSku from '../../components/DeckSku.astro';
 import Worlds from '../../components/Worlds.astro';
 import Games from '../../components/Games.astro';
-import Artist from '../../components/Artist.astro';
-import NextChapter from '../../components/NextChapter.astro';
-import Essen from '../../components/Essen.astro';
-import Footer from '../../components/Footer.astro';
+import Shop from '../../components/Shop.astro';
+import AuthorsCompact from '../../components/AuthorsCompact.astro';
+import BuyerFooter from '../../components/BuyerFooter.astro';
+import DestinySheet from '../../components/DestinySheet.astro';
 
 const lang = 'zh';
 ---
 
 <Layout
   lang={lang}
-  title="Magister Cards — 54 张牌 · 4 个世界 · 1 个平行宇宙"
-  description="Magister Cards 是一副围绕原创另类神话打造的实体收藏艺术卡牌。"
+  title="Magister Cards — 订购牌组"
+  description="原创神话牌组现货——订购牌组、服装与艺术版画。探索 54 幅画作并试玩游戏。"
 >
   <Nav lang={lang} />
   <main id="main-content">
     <Hero lang={lang} />
+    <DeckSku lang={lang} />
     <Worlds lang={lang} />
     <Games lang={lang} />
-    <NextChapter lang={lang} />
-    <Artist lang={lang} />
-    <Essen lang={lang} />
+    <Shop lang={lang} />
+    <AuthorsCompact lang={lang} />
   </main>
-  <Footer lang={lang} />
+  <BuyerFooter lang={lang} />
+  <DestinySheet lang={lang} />
 </Layout>

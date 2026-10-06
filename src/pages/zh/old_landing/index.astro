@@ -1,0 +1,30 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import LegacyHero from '../../../components/LegacyHero.astro';
+import Worlds from '../../../components/Worlds.astro';
+import Games from '../../../components/Games.astro';
+import Artist from '../../../components/Artist.astro';
+import NextChapter from '../../../components/NextChapter.astro';
+import Essen from '../../../components/Essen.astro';
+import LegacyFooter from '../../../components/LegacyFooter.astro';
+
+const lang = 'zh' as const;
+---
+
+<Layout
+  lang={lang}
+  title="Magister Cards — 54 张牌 · 4 个世界 · 1 个平行宇宙"
+  description="Magister Cards 是一副围绕原创另类神话打造的实体收藏艺术卡牌。"
+>
+  <Nav lang={lang} legacy />
+  <main id="main-content">
+    <LegacyHero lang={lang} />
+    <Worlds lang={lang} />
+    <Games lang={lang} />
+    <NextChapter lang={lang} />
+    <Artist lang={lang} />
+    <Essen lang={lang} />
+  </main>
+  <LegacyFooter lang={lang} />
+</Layout>
