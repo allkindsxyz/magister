@@ -41,18 +41,24 @@
     "missing_note": "未找到该日期对应的牌。"
   },
   "hero": {
-    "meta": "首版 · 600 副 · 发货至欧盟与美国",
+    "meta": "54 幅画 · 4 个世界 · 没有一个花色符号",
     "lead_before": "一副扑克牌，",
     "lead_mark": "花色与点数藏在画里",
     "lead_after": "。",
-    "body": "瓦西里·波奇茨基的 54 幅作品，横跨四个世界——从奥林匹斯诸神到当代名流。牌面没有花色符号与角标：每一张都要从画面中读出，解读的钥匙就在盒中。已印好，10–14 天送达。",
+    "body": "瓦西里·波奇茨基的 54 幅作品，横跨四个世界——从奥林匹斯诸神到当代名流。牌面没有花色符号与角标：每一张都要从画面中读出，解读的钥匙就在盒中。",
     "explore": "浏览牌组",
     "meet": "SPIEL 2026 见",
     "meet_aria": "在 SPIEL Essen 2026 与我们见面",
     "deck_next": "显示牌组中的下一张牌",
     "pack_alt": "Magister 牌盒",
-    "buy": "购买牌组 · {standard} 起",
-    "play_cta": "在线试玩"
+    "buy": "购买牌组",
+    "play_cta": "如何读懂",
+    "quiz_question": "这张牌是什么花色？",
+    "quiz_hint": "提示：每种花色都是一个世界。",
+    "quiz_right": "答对了：{symbol} {world}。「{title}」。",
+    "quiz_wrong": "不对——这是 {symbol} {world}。「{title}」。",
+    "quiz_next": "下一张",
+    "quiz_aria": "猜一猜屏幕上这张牌的花色"
   },
   "worlds_section": {
     "label": "如何读懂这副牌",

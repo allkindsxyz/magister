@@ -41,18 +41,24 @@
     "missing_note": "No card found for this date."
   },
   "hero": {
-    "meta": "First edition of 600 · EU & US shipping",
+    "meta": "54 paintings · 4 worlds · no suit marks",
     "lead_before": "A deck of playing cards where ",
     "lead_mark": "every suit and rank hides inside a painting",
     "lead_after": ".",
-    "body": "54 works by Vasily Pochitsky across four worlds — from the gods of Olympus to the celebrities of our time. There are no pips or corner marks: you read each card from its scene, with the key in the box. Printed and delivered in 10–14 days.",
+    "body": "54 works by Vasily Pochitsky across four worlds — from the gods of Olympus to the celebrities of our time. There are no pips or corner marks: you read each card from its scene, and the key comes in the box.",
     "explore": "Explore the deck",
     "meet": "Meet us at SPIEL 2026",
     "meet_aria": "Meet us at SPIEL Essen 2026",
     "deck_next": "Show the next card in the deck",
     "pack_alt": "Magister deck box",
-    "buy": "Buy the deck · from {standard}",
-    "play_cta": "Play online"
+    "buy": "Get the deck",
+    "play_cta": "How to read it",
+    "quiz_question": "What suit is this card?",
+    "quiz_hint": "Hint: every suit is its own world.",
+    "quiz_right": "Right: {symbol} {world}. “{title}”.",
+    "quiz_wrong": "Not quite — it’s {symbol} {world}. “{title}”.",
+    "quiz_next": "Next card",
+    "quiz_aria": "Guess the suit of the card on screen"
   },
   "worlds_section": {
     "label": "How to read the deck",
