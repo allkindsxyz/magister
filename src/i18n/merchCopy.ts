@@ -1,5 +1,5 @@
 import type { Lang } from './utils';
-import { PRICES, formatPrice } from '../lib/pricing';
+import { PRICES, SHIPPING, formatPrice } from '../lib/pricing';
 
 const price = (key: keyof typeof PRICES, lang: Lang): string => formatPrice(PRICES[key], lang);
 
@@ -911,6 +911,65 @@ export const albumCopy: Record<Lang, MerchCopy> = {
   ru: albumRu,
   be: albumBe,
   zh: albumZh,
+};
+
+export type DeckBoxCopy = {
+  title: string;
+  rows: ReadonlyArray<{ label: string; value: string }>;
+  note: string;
+};
+
+const ship = (key: keyof typeof SHIPPING, lang: Lang): string => formatPrice(SHIPPING[key], lang);
+
+export const deckBoxCopy: Record<Lang, DeckBoxCopy> = {
+  en: {
+    title: 'What’s in the box',
+    rows: [
+      { label: 'Cards', value: '54 cards, each one a painting by Vasily Pochitsky' },
+      { label: 'Key', value: 'A booklet that explains the symbols of every suit and rank' },
+      { label: 'XL', value: `70 × 120 mm · edition of 500 · ${price('xl', 'en')}` },
+      { label: 'Standard', value: `50 × 80 mm · edition of 100 · ${price('standard', 'en')}` },
+      { label: 'Shipping', value: `EU ${ship('eu', 'en')}, US ${ship('us', 'en')}, free from ${ship('free_from', 'en')}` },
+      { label: 'Timing', value: '10–14 days from order to your door' },
+    ],
+    note: 'The edition is already printed — this is not a pre-order.',
+  },
+  ru: {
+    title: 'Что в коробке',
+    rows: [
+      { label: 'Карты', value: '54 карты — каждая картина Василия Почицкого' },
+      { label: 'Ключ', value: 'Буклет с расшифровкой символов каждой масти и ранга' },
+      { label: 'XL', value: `70 × 120 мм · тираж 500 · ${price('xl', 'ru')}` },
+      { label: 'Стандартная', value: `50 × 80 мм · тираж 100 · ${price('standard', 'ru')}` },
+      { label: 'Доставка', value: `EU — ${ship('eu', 'ru')}, США — ${ship('us', 'ru')}, бесплатно от ${ship('free_from', 'ru')}` },
+      { label: 'Сроки', value: '10–14 дней от заказа до двери' },
+    ],
+    note: 'Тираж уже напечатан — это не предзаказ.',
+  },
+  be: {
+    title: 'Што ў каробцы',
+    rows: [
+      { label: 'Карты', value: '54 карты — кожная карціна Васіля Пачыцкага' },
+      { label: 'Ключ', value: 'Буклет з расшыфроўкай сімвалаў кожнай масці і рангу' },
+      { label: 'XL', value: `70 × 120 мм · наклад 500 · ${price('xl', 'be')}` },
+      { label: 'Стандартная', value: `50 × 80 мм · наклад 100 · ${price('standard', 'be')}` },
+      { label: 'Дастаўка', value: `EU — ${ship('eu', 'be')}, ЗША — ${ship('us', 'be')}, бясплатна ад ${ship('free_from', 'be')}` },
+      { label: 'Тэрміны', value: '10–14 дзён ад замовы да дзвярэй' },
+    ],
+    note: 'Наклад ужо надрукаваны — гэта не перадзамова.',
+  },
+  zh: {
+    title: '盒中有什么',
+    rows: [
+      { label: '牌', value: '54 张牌，每一张都是瓦西里·波奇茨基的画作' },
+      { label: '解读', value: '一本手册，解释每种花色与点数的符号' },
+      { label: 'XL', value: `70 × 120 毫米 · 限量 500 副 · ${price('xl', 'zh')}` },
+      { label: '标准版', value: `50 × 80 毫米 · 限量 100 副 · ${price('standard', 'zh')}` },
+      { label: '配送', value: `欧盟 ${ship('eu', 'zh')}，美国 ${ship('us', 'zh')}，满 ${ship('free_from', 'zh')} 包邮` },
+      { label: '时效', value: '下单至送达 10–14 天' },
+    ],
+    note: '首版已印制完成——并非预售。',
+  },
 };
 
 export const productCopy: Record<ProductKind, Record<Lang, MerchCopy>> = {

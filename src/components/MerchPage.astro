@@ -2,7 +2,7 @@
 import type { Lang } from '../i18n/utils';
 import { useTranslations, pickLocalized, getLocalizedPath } from '../i18n/utils';
 import { getCollection } from 'astro:content';
-import { productCopy, productHasCardPick, type ProductKind } from '../i18n/merchCopy';
+import { productCopy, productHasCardPick, deckBoxCopy, type ProductKind } from '../i18n/merchCopy';
 import { ARTIFACT_MEDIA, ARTIFACT_DETAIL_HERO, ARTIFACT_STAGE_MEDIA } from '../lib/artifacts';
 import Nav from './Nav.astro';
 import BuyerFooter from './BuyerFooter.astro';
@@ -81,6 +81,7 @@ const stageHeight = isAlbum
 const stageLabel =
   isDeck || isPrints || isAlbum ? (copy.config.format || copy.label) : copy.config.product_hoodie;
 const previewProductImage = heroMedia.image;
+const deckBox = isDeck ? deckBoxCopy[lang] : null;
 const deckJsonLd = isDeck
   ? deckProductJsonLd({
       url: localizedAbsoluteUrl(lang, '/artifacts/deck'),
@@ -132,6 +133,23 @@ const uiJson = JSON.stringify({
       />
     </figure>
   </section>
+
+  {
+    deckBox && (
+      <section class="merch-box page-shell" aria-labelledby="merch-box-title">
+        <h2 class="merch-box__title" id="merch-box-title">{deckBox.title}</h2>
+        <dl class="merch-box__list">
+          {deckBox.rows.map((row) => (
+            <div class="merch-box__row">
+              <dt>{row.label}</dt>
+              <dd>{row.value}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="merch-box__note">{deckBox.note}</p>
+      </section>
+    )
+  }
 
   <section class="merch-config editorial-section" id="merch-config">
     <div class="page-shell">
@@ -514,6 +532,60 @@ const uiJson = JSON.stringify({
     white-space: normal;
     font-size: clamp(2rem, 4.4vw, 3.8rem);
     line-height: 1;
+  }
+
+  .merch-box {
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .merch-box__title {
+    margin: 0 0 1.25rem;
+    font-family: var(--display);
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 400;
+  }
+
+  .merch-box__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 clamp(1.5rem, 4vw, 3rem);
+    margin: 0;
+  }
+
+  .merch-box__row {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .merch-box__row dt {
+    color: var(--muted);
+    font: 600 0.68rem/1.6 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .merch-box__row dd {
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .merch-box__note {
+    margin: 1.25rem 0 0;
+    color: var(--muted);
+  }
+
+  @media (max-width: 760px) {
+    .merch-box__list {
+      grid-template-columns: 1fr;
+    }
+
+    .merch-box__row {
+      grid-template-columns: 7rem minmax(0, 1fr);
+    }
   }
 
   .merch-section-header {
