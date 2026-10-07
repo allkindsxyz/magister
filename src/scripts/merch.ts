@@ -290,7 +290,7 @@ export function mountMerch(root: HTMLElement): void {
     const card = currentCard();
     const created = new Date();
     created.setDate(created.getDate() - 3);
-    previewCreated.textContent = `${ui.preview_created} ${created.toLocaleDateString(undefined, {
+    previewCreated.textContent = `${ui.preview_created} ${created.toLocaleDateString(document.documentElement.lang || undefined, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

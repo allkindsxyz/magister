@@ -5,7 +5,7 @@ import { getCollection } from 'astro:content';
 import { productCopy, productHasCardPick, type ProductKind } from '../i18n/merchCopy';
 import { ARTIFACT_MEDIA, ARTIFACT_DETAIL_HERO, ARTIFACT_STAGE_MEDIA } from '../lib/artifacts';
 import Nav from './Nav.astro';
-import Footer from './Footer.astro';
+import BuyerFooter from './BuyerFooter.astro';
 
 interface Props {
   lang: Lang;
@@ -351,7 +351,7 @@ const uiJson = JSON.stringify({
   <script id="merch-cards" type="application/json" set:html={cardsJson} />
   <script id="merch-ui" type="application/json" set:html={uiJson} />
 </main>
-<Footer lang={lang} />
+<BuyerFooter lang={lang} />
 
 <script>
   import { mountMerch } from '../scripts/merch';
