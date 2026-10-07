@@ -45,7 +45,7 @@
     "lead_before": "A deck of playing cards where ",
     "lead_mark": "every suit and rank hides inside a painting",
     "lead_after": ".",
-    "body": "54 works by Vasily Pochitsky across four worlds — from the gods of Olympus to the celebrities of our time. There are no pips or corner marks: you read each card from its scene. The first edition is printed and ready to ship.",
+    "body": "54 works by Vasily Pochitsky across four worlds — from the gods of Olympus to the celebrities of our time. There are no pips or corner marks: you read each card from its scene, with the key in the box. Printed and delivered in 10–14 days.",
     "explore": "Explore the deck",
     "meet": "Meet us at SPIEL 2026",
     "meet_aria": "Meet us at SPIEL Essen 2026",
@@ -58,7 +58,7 @@
     "label": "How to read the deck",
     "title": "Four worlds, four suits",
     "lead": "A classic 54-card deck — with scenes instead of pips. Ancient myth, the Middle Ages and modern culture, sorted into four suits.",
-    "mechanic": "Suit and rank aren’t printed on the cards; they’re encoded in the details of each painting. Below is the key that unlocks every card."
+    "mechanic": "Suit and rank aren’t printed on the cards; they’re encoded in the details of each painting. Below is the key — the same one you’ll find in the booklet in the box."
   },
   "worlds": {
     "hearts": {
@@ -127,7 +127,7 @@
       "bio_2": "",
       "photo_alt": "Portrait of Alexander Zhilchik."
     },
-    "compact_body": "Vasily Pochitsky — Belarusian painter, illustrator and musician from Rechitsa. His work has been exhibited from Moscow to New York, ran in the national press for nearly a decade, and illustrated books and records. Magister is his largest cycle: 54 paintings of a world he invented with his friend Alexander Zhilchik. Only later did that world become a deck.",
+    "compact_body": "Vasily Pochitsky was a Belarusian painter, illustrator and musician from Rechitsa. His work was exhibited from Moscow to New York, ran in the national press for nearly a decade, and illustrated books and records. Magister is his largest cycle: 54 paintings of a world he invented with his friend Alexander Zhilchik. Vasily is gone. His world remains — in the paintings and in this deck.",
     "compact_more": "More about the authors →",
     "compact_title": "First, There Were Paintings",
     "compact_quote": "“I was lucky to be friends with a genius… and that was Vasya Pochitsky.”",
@@ -196,7 +196,7 @@
     "closing": "The art is finished. The possibilities are open — let's talk.",
     "back_to_top": "Back to top",
     "ready_title": "First edition — 600 decks",
-    "ready_line": "500 XL and 100 in classic size. Shipping to the EU and the US.",
+    "ready_line": "500 XL (70 × 120 mm) and 100 standard-size decks. EU & US delivery in 10–14 days.",
     "order": "Buy the deck",
     "apparel": "Apparel",
     "prints": "Prints",
@@ -210,11 +210,11 @@
   "deck_sku": {
     "title": "First Edition",
     "lead": "54 paintings. 4 worlds. 600 copies.",
-    "body": "It’s a real deck: learn the symbols and play the card games you already know. Or simply look — every card is its own scene with its own story.",
-    "point_1": "Printed and ready to ship — no pre-order, no waiting",
-    "point_2": "XL: 500 decks · Classic size: 100",
-    "point_3": "Shipping to the EU and the US",
-    "point_4": "The story behind every card — online and in the games",
+    "body": "It’s a real deck: the key to the symbols is in the booklet inside the box. Learn it and play the card games you already know. Or simply look — every card is its own scene with its own story, and every one of them is online too.",
+    "point_1": "Printed and in stock — not a pre-order",
+    "point_2": "XL 70 × 120 mm: 500 decks · Standard size: 100",
+    "point_3": "EU & US delivery in 10–14 days",
+    "point_4": "Booklet with the key to the symbols included",
     "cta": "Buy the deck",
     "shop_link": "Apparel & prints →",
     "image_alt": "Magister deck on a wooden desk"

@@ -99,6 +99,7 @@ const en: MerchCopy = {
     body: [
       'Pick any painting from the deck, or let your date of birth choose it for you.',
       'A unique QR code on the label opens the story of the card and your personal message. That’s what turns a hoodie into a gift that means something.',
+      'Made to order and delivered to the EU and the US in 10–14 days.',
     ],
     cta_create: 'Design yours',
   },
@@ -193,6 +194,7 @@ const ru: MerchCopy = {
     body: [
       'Выберите любую картину колоды — или доверьте выбор дате своего рождения.',
       'QR-код на бирке открывает историю карты и ваше личное послание. Так худи становится подарком со смыслом.',
+      'Изготовим под заказ и доставим в EU и США за 10–14 дней.',
     ],
     cta_create: 'Собрать свою вещь',
   },
@@ -287,6 +289,7 @@ const be: MerchCopy = {
     body: [
       'Абярыце любую карціну калоды — або даверце выбар даце свайго нараджэння.',
       'QR-код на бірцы адкрывае гісторыю карты і ваша асабістае пасланне. Так худзі становіцца падарункам з сэнсам.',
+      'Вырабім пад заказ і даставім у EU і ЗША за 10–14 дзён.',
     ],
     cta_create: 'Сабраць сваю рэч',
   },
@@ -381,6 +384,7 @@ const zh: MerchCopy = {
     body: [
       '从牌组中任选一幅画，或让你的出生日期替你选择。',
       '领标上独一无二的二维码，会打开这张牌的故事与你的个人留言。一件连帽衫，就此成为有意义的礼物。',
+      '按单制作，10–14 天送达欧盟与美国。',
     ],
     cta_create: '设计你的单品',
   },
@@ -462,7 +466,7 @@ const printsEn: MerchCopy = {
     body: [
       'Each print reproduces Vasily Pochitsky’s painting at its true size. Details you can barely see on a card come through in full.',
       'Choose the painting yourself — or by date of birth, for a gift with personal meaning.',
-      'A unique QR code opens the painting’s story and your message.',
+      'A unique QR code opens the painting’s story and your message. Printed to order and delivered in 10–14 days.',
     ],
     cta_create: 'Choose a painting',
   },
@@ -500,7 +504,7 @@ const printsRu: MerchCopy = {
     body: [
       'Каждый принт повторяет картину Василия Почицкого в её настоящем размере. Детали, которые на карте едва различимы, здесь видны целиком.',
       'Выберите картину сами — или по дате рождения: так получается подарок с личным смыслом.',
-      'Уникальный QR-код откроет историю картины и ваше послание.',
+      'Уникальный QR-код откроет историю картины и ваше послание. Напечатаем под заказ и доставим за 10–14 дней.',
     ],
     cta_create: 'Выбрать картину',
   },
@@ -538,7 +542,7 @@ const printsBe: MerchCopy = {
     body: [
       'Кожны прынт паўтарае карціну Васіля Пачыцкага ў яе сапраўдным памеры. Дэталі, якія на карце ледзь бачныя, тут відаць цалкам.',
       'Абярыце карціну самі — або па даце нараджэння: так атрымліваецца падарунак з асабістым сэнсам.',
-      'Унікальны QR-код адкрые гісторыю карціны і ваша пасланне.',
+      'Унікальны QR-код адкрые гісторыю карціны і ваша пасланне. Надрукуем пад заказ і даставім за 10–14 дзён.',
     ],
     cta_create: 'Абраць карціну',
   },
@@ -575,7 +579,7 @@ const printsZh: MerchCopy = {
     body: [
       '每一幅版画都按真实尺寸复制瓦西里·波奇茨基的原作。牌面上几乎看不清的细节，在这里一览无余。',
       '自己挑选画作——或按出生日期选择，成为一份有个人意义的礼物。',
-      '独一无二的二维码会打开这幅画的故事与你的留言。',
+      '独一无二的二维码会打开这幅画的故事与你的留言。按单印制，10–14 天送达。',
     ],
     cta_create: '选择画作',
   },
@@ -610,15 +614,15 @@ const deckEn: MerchCopy = {
   ...en,
   meta_title: 'Magister Deck — 54 Paintings by Vasily Pochitsky | First Edition',
   meta_description:
-    'An art deck of 54 cards where suit and rank hide inside each painting. First edition: 500 XL and 100 classic-size decks. Ships to the EU & US.',
+    'An art deck of 54 cards where suit and rank hide inside each painting. First edition: 500 XL (70 × 120 mm) and 100 standard decks, with a key booklet. EU & US delivery in 10–14 days.',
   label: 'The Deck',
   hero_image_alt: '',
   hero: {
     title: 'A Deck You Decode First',
     sub: '54 paintings by Vasily Pochitsky. The suit and rank of every card hide inside its scene.',
     body: [
-      'Hearts are the Olympic Gods, Diamonds the Bearers of Secrets, Clubs the Templars, Spades the Celebrities. The key to the symbols is online and in the Four Worlds game.',
-      'Two formats: XL for looking at the paintings, classic size for playing. First edition: 500 XL and 100 classic decks.',
+      'Hearts are the Olympic Gods, Diamonds the Bearers of Secrets, Clubs the Templars, Spades the Celebrities. The key to the symbols is in the booklet inside the box — and every card is online too.',
+      'Two formats: XL (70 × 120 mm) for looking at the paintings, standard size for playing. First edition: 500 XL and 100 standard decks. Delivery to the EU and the US takes 10–14 days.',
       'Giving it as a gift? Add a personal message — it opens from the QR code on your copy.',
     ],
     cta_create: 'Add a message',
@@ -631,7 +635,7 @@ const deckEn: MerchCopy = {
     step2: '',
     step3: '',
     step4: '1. Message',
-    format: 'XL · Classic',
+    format: 'XL 70 × 120 mm · Standard',
     preview_title: 'Your Deck’s Story Page',
     preview_note: 'This is what the QR code on your copy will open.',
     ready: 'This is how your deck’s page will look.',
@@ -646,15 +650,15 @@ const deckRu: MerchCopy = {
   ...ru,
   meta_title: 'Колода Magister — 54 картины Василия Почицкого | Первый тираж',
   meta_description:
-    'Арт-колода из 54 карт: масть и ранг спрятаны в сюжете картины. Первый тираж — 500 XL и 100 классических колод. Доставка в EU и US.',
+    'Арт-колода из 54 карт: масть и ранг спрятаны в сюжете картины. Первый тираж — 500 XL (70 × 120 мм) и 100 стандартных колод, буклет-ключ в коробке. Доставка в EU и US за 10–14 дней.',
   label: 'Колода',
   hero_image_alt: '',
   hero: {
     title: 'Колода, которую сначала разгадывают',
     sub: '54 картины Василия Почицкого. Масть и ранг каждой карты спрятаны в сюжете.',
     body: [
-      'Червы — олимпийские боги, бубны — носители тайн, трефы — тамплиеры, пики — знаменитости. Ключ к символам — на сайте и в игре «Четыре мира».',
-      'Два формата: XL — чтобы рассматривать картины, классический — чтобы играть. Первый тираж: 500 XL и 100 классических колод.',
+      'Червы — олимпийские боги, бубны — носители тайн, трефы — тамплиеры, пики — знаменитости. Ключ к символам — в буклете внутри коробки, а все карты можно рассмотреть на сайте.',
+      'Два формата: XL (70 × 120 мм) — чтобы рассматривать картины, стандартный — чтобы играть. Первый тираж: 500 XL и 100 стандартных колод. Доставка в EU и США — 10–14 дней.',
       'Колода в подарок? Добавьте личное послание — оно откроется по QR-коду на вашем экземпляре.',
     ],
     cta_create: 'Добавить послание',
@@ -667,7 +671,7 @@ const deckRu: MerchCopy = {
     step2: '',
     step3: '',
     step4: '1. Послание',
-    format: 'XL · классический',
+    format: 'XL 70 × 120 мм · стандартный',
     preview_title: 'Страница вашей колоды',
     preview_note: 'Её откроет QR-код на вашем экземпляре.',
     ready: 'Так будет выглядеть страница вашей колоды.',
@@ -682,15 +686,15 @@ const deckBe: MerchCopy = {
   ...be,
   meta_title: 'Калода Magister — 54 карціны Васіля Пачыцкага | Першы наклад',
   meta_description:
-    'Арт-калода з 54 карт: масць і ранг схаваныя ў сюжэце карціны. Першы наклад — 500 XL і 100 класічных калод. Дастаўка ў EU і US.',
+    'Арт-калода з 54 карт: масць і ранг схаваныя ў сюжэце карціны. Першы наклад — 500 XL (70 × 120 мм) і 100 стандартных калод, буклет-ключ у каробцы. Дастаўка ў EU і US за 10–14 дзён.',
   label: 'Калода',
   hero_image_alt: '',
   hero: {
     title: 'Калода, якую спачатку разгадваюць',
     sub: '54 карціны Васіля Пачыцкага. Масць і ранг кожнай карты схаваныя ў сюжэце.',
     body: [
-      'Чэрвы — алімпійскія багі, бубны — носьбіты таямніц, трэфы — тампліеры, пікі — знакамітасці. Ключ да сімвалаў — на сайце і ў гульні «Чатыры светы».',
-      'Два фарматы: XL — каб разглядаць карціны, класічны — каб гуляць. Першы наклад: 500 XL і 100 класічных калод.',
+      'Чэрвы — алімпійскія багі, бубны — носьбіты таямніц, трэфы — тампліеры, пікі — знакамітасці. Ключ да сімвалаў — у буклеце ўнутры каробкі, а ўсе карты можна разгледзець на сайце.',
+      'Два фарматы: XL (70 × 120 мм) — каб разглядаць карціны, стандартны — каб гуляць. Першы наклад: 500 XL і 100 стандартных калод. Дастаўка ў EU і ЗША — 10–14 дзён.',
       'Калода ў падарунак? Дадайце асабістае пасланне — яно адкрыецца па QR-кодзе на вашым асобніку.',
     ],
     cta_create: 'Дадаць пасланне',
@@ -703,7 +707,7 @@ const deckBe: MerchCopy = {
     step2: '',
     step3: '',
     step4: '1. Пасланне',
-    format: 'XL · класічны',
+    format: 'XL 70 × 120 мм · стандартны',
     preview_title: 'Старонка вашай калоды',
     preview_note: 'Яе адкрые QR-код на вашым асобніку.',
     ready: 'Так будзе выглядаць старонка вашай калоды.',
@@ -717,15 +721,15 @@ const deckBe: MerchCopy = {
 const deckZh: MerchCopy = {
   ...zh,
   meta_title: 'Magister 牌组 — 瓦西里·波奇茨基的 54 幅画作 | 首版',
-  meta_description: '一副 54 张的艺术扑克牌，花色与点数藏在每幅画里。首版：XL 500 副，标准尺寸 100 副。发货至欧盟与美国。',
+  meta_description: '一副 54 张的艺术扑克牌，花色与点数藏在每幅画里。首版：XL（70 × 120 mm）500 副，标准尺寸 100 副，盒内附解读小册子。发货至欧盟与美国，10–14 天送达。',
   label: '牌组',
   hero_image_alt: '',
   hero: {
     title: '一副要先解读的牌',
     sub: '瓦西里·波奇茨基的 54 幅画。每张牌的花色与点数都藏在画面里。',
     body: [
-      '红心是奥林匹斯诸神，方块是秘密承载者，梅花是圣殿骑士，黑桃是名流。解读符号的钥匙在网站上，也在「四个世界」游戏里。',
-      '两种尺寸：XL 适合细看画作，标准尺寸适合打牌。首版：XL 500 副，标准尺寸 100 副。',
+      '红心是奥林匹斯诸神，方块是秘密承载者，梅花是圣殿骑士，黑桃是名流。解读符号的钥匙在盒内的小册子里，所有牌也都能在网站上细看。',
+      '两种尺寸：XL（70 × 120 mm）适合细看画作，标准尺寸适合打牌。首版：XL 500 副，标准尺寸 100 副。发货至欧盟与美国，10–14 天送达。',
       '要送人？加一段个人留言——扫描你这副牌上的二维码即可打开。',
     ],
     cta_create: '添加留言',
@@ -738,7 +742,7 @@ const deckZh: MerchCopy = {
     step2: '',
     step3: '',
     step4: '1. 留言',
-    format: 'XL · 标准',
+    format: 'XL 70 × 120 mm · 标准',
     preview_title: '你的牌组故事页',
     preview_note: '你这副牌上的二维码将打开这一页。',
     ready: '你的牌组页面将是这个样子。',
