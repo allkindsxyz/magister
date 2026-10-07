@@ -13,9 +13,31 @@ const t = useTranslations(lang);
 const deckHref = getLocalizedPath('/artifacts/deck', lang);
 const shopHref = `${getLocalizedPath('/', lang)}#artifacts`;
 
-const priceRows = [
-  { label: t('deck_sku.price_xl'), amount: PRICES.xl },
-  { label: t('deck_sku.price_standard'), amount: PRICES.standard },
+/** Physical sizes drive the on-screen scale, so the two formats compare truthfully. */
+const formats = [
+  {
+    key: 'xl',
+    image: '/cards/queen-hearts.webp',
+    widthMm: 70,
+    heightMm: 120,
+    name: t('deck_sku.xl_name'),
+    purpose: t('deck_sku.xl_purpose'),
+    spec: t('deck_sku.xl_spec'),
+    price: formatPrice(PRICES.xl, lang),
+  },
+  {
+    key: 'standard',
+    image: '/cards/king-clubs.webp',
+    widthMm: 50,
+    heightMm: 80,
+    name: t('deck_sku.standard_name'),
+    purpose: t('deck_sku.standard_purpose'),
+    spec: t('deck_sku.standard_spec'),
+    price: formatPrice(PRICES.standard, lang),
+  },
+];
+
+const extraRows = [
   { label: t('deck_sku.price_set'), amount: PRICES.set },
   { label: t('deck_sku.price_two_xl'), amount: PRICES.two_xl },
 ];
@@ -31,73 +53,116 @@ const productJsonLd = deckProductJsonLd({
 
 <section class="deck-sku editorial-section" id="deck-sku" aria-labelledby="deck-sku-title">
   <div class="page-shell deck-sku__grid">
-    <header class="deck-sku__heading reveal">
+    <div class="deck-sku__copy reveal">
       <h2 class="section-title" id="deck-sku-title">{t('deck_sku.title')}</h2>
-    </header>
-    <figure class="deck-sku__media reveal">
-      <img
-        src="/media/deck-lifestyle.jpg"
-        alt={t('deck_sku.image_alt')}
-        width="1024"
-        height="672"
-        loading="lazy"
-        decoding="async"
-      />
-    </figure>
-    <div class="deck-sku__body reveal">
       <p class="lead">{t('deck_sku.lead')}</p>
       <p class="body-copy">{t('deck_sku.body')}</p>
-      <ul class="deck-sku__points">
-        <li>{t('deck_sku.point_1')}</li>
-        <li>{t('deck_sku.point_2')}</li>
-        <li>{t('deck_sku.point_3')}</li>
-        <li>{t('deck_sku.point_4')}</li>
-      </ul>
-      <div class="deck-sku__prices">
-        <h3 class="deck-sku__prices-title">{t('deck_sku.price_title')}</h3>
+
+      <details class="deck-sku__more">
+        <summary>{t('deck_sku.more_title')}</summary>
         <dl>
           {
-            priceRows.map((row) => (
-              <div class="deck-sku__price-row">
+            extraRows.map((row) => (
+              <div class="deck-sku__row">
                 <dt>{row.label}</dt>
                 <dd>{formatPrice(row.amount, lang)}</dd>
               </div>
             ))
           }
         </dl>
-        <p class="deck-sku__shipping">{t('deck_sku.shipping')}</p>
-      </div>
+        <p>{t('deck_sku.shipping')}</p>
+        <p>{t('deck_sku.delivery')}</p>
+      </details>
+
       <div class="deck-sku__actions">
         <a class="btn btn-accent" href={deckHref}>{t('deck_sku.cta')}</a>
         <a class="text-link" href={shopHref}>{t('deck_sku.shop_link')}</a>
       </div>
     </div>
+
+    <ul class="deck-sku__formats reveal" aria-label={t('deck_sku.formats_aria')}>
+      {
+        formats.map((format) => (
+          <li class="deck-format" style={`--w: ${format.widthMm}; --h: ${format.heightMm};`}>
+            <img
+              class="deck-format__card"
+              src={format.image}
+              alt=""
+              width="1200"
+              height="1680"
+              loading="lazy"
+              decoding="async"
+            />
+            <p class="deck-format__name">
+              {format.name}
+              <span class="deck-format__purpose">{format.purpose}</span>
+            </p>
+            <p class="deck-format__spec">{format.spec}</p>
+            <p class="deck-format__price">{format.price}</p>
+          </li>
+        ))
+      }
+    </ul>
   </div>
   <script type="application/ld+json" set:html={productJsonLd} />
 </section>
 
 <style>
-  .deck-sku__prices {
-    margin: 0 0 1.75rem;
-    padding: 1rem 0 0;
-    border-top: 1px solid var(--line);
+  .deck-sku {
+    background: var(--white);
   }
 
-  .deck-sku__prices-title {
-    margin: 0 0 0.5rem;
-    color: var(--muted);
-    font: 600 0.68rem/1.4 var(--sans);
+  .deck-sku__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: end;
+  }
+
+  .deck-sku__copy .section-title {
+    margin-top: 0;
+  }
+
+  .deck-sku__more {
+    margin: 1.5rem 0 1.75rem;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .deck-sku__more summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 2.75rem;
+    color: var(--ink);
+    cursor: pointer;
+    font: 600 0.7rem/1.4 var(--sans);
     letter-spacing: 0.12em;
+    list-style: none;
     text-transform: uppercase;
   }
 
-  .deck-sku__prices dl {
+  .deck-sku__more summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .deck-sku__more summary::after {
+    content: '+';
+    font: 400 1.2rem/1 var(--sans);
+    transition: transform 180ms ease;
+  }
+
+  .deck-sku__more[open] summary::after {
+    transform: rotate(45deg);
+  }
+
+  .deck-sku__more dl {
     display: grid;
     gap: 0.35rem;
     margin: 0;
   }
 
-  .deck-sku__price-row {
+  .deck-sku__row {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
@@ -106,59 +171,21 @@ const productJsonLd = deckProductJsonLd({
     border-bottom: 1px dashed var(--line);
   }
 
-  .deck-sku__price-row dt {
-    color: var(--ink);
-  }
-
-  .deck-sku__price-row dd {
+  .deck-sku__row dd {
     margin: 0;
     font-family: var(--display);
-    font-size: 1.25rem;
-    color: var(--ink);
+    font-size: 1.1rem;
     white-space: nowrap;
   }
 
-  .deck-sku__shipping {
-    margin: 0.75rem 0 0;
+  .deck-sku__more p {
+    margin: 0.6rem 0 0;
     color: var(--muted);
     font-size: 0.9rem;
   }
 
-  .deck-sku {
-    background: var(--white);
-  }
-
-  .deck-sku__grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    grid-template-areas:
-      'heading media'
-      'body media';
-    gap: clamp(1.5rem, 4vw, 3rem);
-    align-items: start;
-  }
-
-  .deck-sku__heading {
-    grid-area: heading;
-  }
-
-  .deck-sku__heading .section-title {
-    margin-top: 0;
-  }
-
-  .deck-sku__body {
-    grid-area: body;
-  }
-
-  .deck-sku__body .lead {
-    margin-top: 0;
-  }
-
-  .deck-sku__points {
-    margin: 1.25rem 0 1.75rem;
-    padding-left: 1.1rem;
-    color: var(--muted);
-    line-height: 1.7;
+  .deck-sku__more p:last-child {
+    margin-bottom: 1rem;
   }
 
   .deck-sku__actions {
@@ -168,28 +195,64 @@ const productJsonLd = deckProductJsonLd({
     gap: 1rem 1.5rem;
   }
 
-  .deck-sku__media {
-    grid-area: media;
+  .deck-sku__formats {
+    /* One millimetre of card, in screen pixels. */
+    --mm: clamp(2.2px, 0.62vw, 3.2px);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: clamp(1.25rem, 3vw, 2.5rem);
     margin: 0;
-    align-self: center;
+    padding: 0;
+    list-style: none;
   }
 
-  .deck-sku__media img {
+  .deck-format {
+    width: calc(var(--w) * var(--mm));
+  }
+
+  .deck-format__card {
+    display: block;
     width: 100%;
+    height: calc(var(--h) * var(--mm));
+    object-fit: cover;
+    border-radius: calc(3 * var(--mm));
+    box-shadow:
+      0 1px 2px rgba(23, 23, 20, 0.18),
+      0 18px 36px -14px rgba(23, 23, 20, 0.45);
+  }
+
+  .deck-format__name {
+    margin: 1rem 0 0;
+    font-family: var(--display);
+    font-size: 1.15rem;
+    line-height: 1.25;
+  }
+
+  .deck-format__purpose {
+    display: block;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .deck-format__spec,
+  .deck-format__price {
+    margin: 0.2rem 0 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .deck-format__price {
+    color: var(--ink);
   }
 
   @media (max-width: 860px) {
     .deck-sku__grid {
       grid-template-columns: 1fr;
-      grid-template-areas:
-        'heading'
-        'media'
-        'body';
-      gap: 1.35rem;
     }
 
-    .deck-sku__body .lead {
-      margin-top: 0.35rem;
+    .deck-sku__formats {
+      justify-content: flex-start;
     }
   }
 </style>
