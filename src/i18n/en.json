@@ -3,7 +3,7 @@
     "aria_label": "Primary navigation",
     "deck": "The Deck",
     "worlds": "The Worlds",
-    "cards": "Explore the deck",
+    "cards": "Gallery",
     "play": "Games",
     "authors": "Authors",
     "next": "Magister Artifacts",
@@ -14,68 +14,68 @@
     "book_aria": "Book a meeting at SPIEL Essen 2026",
     "menu_open": "Open menu",
     "menu_close": "Close menu",
-    "order": "Order",
-    "order_aria": "Order the deck",
-    "cart_aria": "Open cart — order the deck",
+    "order": "Buy",
+    "order_aria": "Buy the deck",
+    "cart_aria": "Buy the deck",
     "partners": "Partners",
     "partners_aria": "Publishers and partners",
     "shop": "Shop"
   },
   "destiny": {
-    "kicker": "Your card",
-    "title": "One painting already belongs to you",
-    "body": "Your birthday is tied to a single card in the Magister deck. Enter the day you were born — and see the artwork that has been waiting for you.",
-    "enter": "Show me mine",
-    "not_now": "Not now",
-    "form_kicker": "Your birthday",
-    "form_title": "When were you born?",
+    "kicker": "Your birth card",
+    "title": "One of the 54 paintings is yours",
+    "body": "Every day of the year belongs to a card in the deck. Enter your birthday and we’ll show you which painting is yours.",
+    "enter": "Find my card",
+    "not_now": "Later",
+    "form_kicker": "Your birth card",
+    "form_title": "When is your birthday?",
     "month": "Month",
     "day": "Day",
-    "reveal": "Reveal my card",
+    "reveal": "Show my card",
     "skip": "Skip",
-    "result_kicker": "This one is yours",
-    "order": "Order the deck",
+    "result_kicker": "Your card",
+    "order": "Buy the deck",
     "close": "Close",
     "dismiss": "Dismiss",
-    "joker_note": "31 December is the Joker — between the Ace of Hearts and the King of Spades. Choose the painting that speaks to you.",
-    "missing_note": "Card data missing for this date."
+    "joker_note": "31 December belongs to the Joker, who sits between the Ace of Hearts and the King of Spades. Pick whichever of the two paintings feels like yours.",
+    "missing_note": "No card found for this date."
   },
   "hero": {
-    "meta": "54 paintings · 4 worlds · first batch in stock",
-    "lead_before": "An original ",
-    "lead_mark": "myth deck",
-    "lead_after": " — art you can play, gift, and keep.",
-    "body": "Fifty-four finished paintings by Vasily Pochitsky, shaped into a playable deck. Order now — or try the games and meet the world before it arrives at your door.",
+    "meta": "First edition · 600 decks · ships to the EU & US",
+    "lead_before": "A deck of playing cards where ",
+    "lead_mark": "every suit and rank hides inside a painting",
+    "lead_after": ".",
+    "body": "54 works by Vasily Pochitsky across four worlds — from the gods of Olympus to the celebrities of our time. There are no pips or corner marks: you read each card from its scene. The first edition is printed and ready to ship.",
     "explore": "Explore the deck",
     "meet": "Meet us at SPIEL 2026",
     "meet_aria": "Meet us at SPIEL Essen 2026",
     "deck_next": "Show the next card in the deck",
-    "pack_alt": "Magister Cards box",
+    "pack_alt": "Magister deck box",
     "buy": "Buy the deck",
-    "play_cta": "Try the games"
+    "play_cta": "Play online"
   },
   "worlds_section": {
-    "label": "The Deck's Mythology",
-    "title": "4 worlds in 54 paintings",
-    "lead": "Magister is a unique custom 54-card deck, based on the classic four-suit system that incorporates symbols from Ancient mythology, the Middle Ages, and modern culture.",
-    "mechanic": "Images and scenes on each card encode its suit and rank. But as the suits and ranks aren't marked on the cards, they all must be determined using the following symbol system."
+    "label": "How to read the deck",
+    "title": "Four worlds, four suits",
+    "lead": "A classic 54-card deck — with scenes instead of pips. Ancient myth, the Middle Ages and modern culture, sorted into four suits.",
+    "mechanic": "Suit and rank aren’t printed on the cards; they’re encoded in the details of each painting. Below is the key that unlocks every card."
   },
   "worlds": {
     "hearts": {
       "name": "Olympic Gods",
-      "blurb": "The classical pantheon in motion: desire, metamorphosis, oracle and flame. Hearts carry mythic episodes where mortals and immortals negotiate fate."
+      "blurb": "Desire, metamorphosis, prophecy and fire. Hearts are the ancient myths in which mortals argue with gods over their fate."
     },
     "diamonds": {
       "name": "Bearers of Secrets",
-      "blurb": "Alchemical emissaries, hidden orders, and whispers behind crowns. Diamonds track those who traffic in knowledge that should not travel in plain sight."
+      "blurb": "Alchemists, messengers and secret orders. Diamonds belong to those who hold knowledge that is never spoken aloud."
     },
     "clubs": {
       "name": "Templars",
-      "blurb": "Crusade steel, lost treasure-maps, and the long shadow of the order. Clubs anchor the deck in medieval intrigue and the arc from devotion to legend."
+      "blurb": "Crusader steel, treasure maps and the long shadow of the Order. Clubs carry medieval intrigue from vow to legend."
     },
     "spades": {
       "name": "Celebrities",
-      "blurb": "Modern myth-making: faces the world thought it knew, reframed as archetypes. Spades ask what happens when public masks become permanent emblems."
+      "blurb": "The myths of our own time. Faces everyone knows, turned into archetypes: Spades ask what happens when a public mask never comes off."
     }
   },
   "suits": {
@@ -85,11 +85,11 @@
     "clubs": "Clubs"
   },
   "gallery": {
-    "label": "The Collection",
-    "title": "Explore the deck",
-    "hint": "Click any card to open",
+    "label": "Gallery",
+    "title": "See every card up close",
+    "hint": "Tap a card to open it full size",
     "open": "Open",
-    "open_btn": "Open figure →",
+    "open_btn": "Open card →",
     "close": "Close",
     "zoom": "Enlarge",
     "share": "Share",
@@ -127,8 +127,11 @@
       "bio_2": "",
       "photo_alt": "Portrait of Alexander Zhilchik."
     },
-    "compact_body": "Vasily Pochitsky painted the cycle. Alexander Zhilchik shaped the world. Fifty-four canvases — not illustrations made for a product, but a finished artistic universe that became a deck.",
-    "compact_more": "Full author story →"
+    "compact_body": "Vasily Pochitsky — Belarusian painter, illustrator and musician from Rechitsa. His work has been exhibited from Moscow to New York, ran in the national press for nearly a decade, and illustrated books and records. Magister is his largest cycle: 54 paintings of a world he invented with his friend Alexander Zhilchik. Only later did that world become a deck.",
+    "compact_more": "More about the authors →",
+    "compact_title": "First, There Were Paintings",
+    "compact_quote": "“I was lucky to be friends with a genius… and that was Vasya Pochitsky.”",
+    "compact_quote_author": "Alexander Zhilchik, creator of the concept"
   },
   "next": {
     "label": "Magister Artifacts",
@@ -140,28 +143,28 @@
     },
     "deck": {
       "title": "The Deck",
-      "lead": "54 original artworks. Four worlds. One deck.",
+      "lead": "54 paintings, 4 worlds, first edition.",
       "body": "An original deck of 54 cards in regular and XL size. Artworks, characters and stories come together in a deck made to be explored and played.",
-      "cta": "Order the deck",
+      "cta": "Buy the deck",
       "image_alt": "Magister Cards tuck box with original artwork on the front."
     },
     "apparel": {
       "title": "Apparel",
-      "lead": "Wear a piece of Magister.",
+      "lead": "Hoodies and tees with the painting you choose.",
       "body": "Clothing featuring original Magister artwork, with a personal touch that makes each piece uniquely yours.",
-      "cta": "Order apparel",
+      "cta": "Choose a design",
       "image_alt": "Black hoodie printed with Magister stilts artwork."
     },
     "prints": {
-      "title": "Art Prints",
-      "lead": "The art of Magister, beyond the cards.",
+      "title": "Prints",
+      "lead": "A painting from the deck at original size — 60 × 40 cm.",
       "body": "High-quality prints of Vasily Pochitsky’s original paintings, preserving the artwork in its original format.",
-      "cta": "Order a print",
+      "cta": "Choose a painting",
       "image_alt": "Framed Magister art print hanging on a wall above a shelf."
     },
     "album": {
       "title": "Art Album",
-      "lead": "The world of Magister in 152 pages.",
+      "lead": "152 pages on the paintings and the world of Magister.",
       "body": "A visual journey through the original artworks, characters and stories behind the cards. An album dedicated to the art and creation of Magister.",
       "cta": "Coming soon",
       "image_alt": "Cover of the Magister art album."
@@ -192,29 +195,29 @@
     "tagline": "54 cards · 4 worlds · 1 alternative universe",
     "closing": "The art is finished. The possibilities are open — let's talk.",
     "back_to_top": "Back to top",
-    "ready_title": "The deck is ready",
-    "ready_line": "First batch in stock. Regular & XL. Ships to the EU & US.",
-    "order": "Order the deck",
+    "ready_title": "First edition — 600 decks",
+    "ready_line": "500 XL and 100 in classic size. Shipping to the EU and the US.",
+    "order": "Buy the deck",
     "apparel": "Apparel",
     "prints": "Prints",
-    "play": "Play the games",
+    "play": "Games",
     "shop_aria": "Shop",
-    "mail_lead": "Album & restock updates",
-    "notify": "Notify me",
-    "on_list": "You’re on the list.",
-    "publishers": "Publishers"
+    "mail_lead": "We’ll email you when the art album is out. News worth reading only.",
+    "notify": "Subscribe",
+    "on_list": "Done — you’re on the list.",
+    "publishers": "Publishers & partners"
   },
   "deck_sku": {
-    "title": "The Deck",
-    "lead": "54 original artworks. Four worlds. One deck.",
-    "body": "Play it as cards. Read it as myth. Gift a card that stays with someone — with a story attached.",
-    "point_1": "First batch printed — in stock",
-    "point_2": "Regular & XL sizes",
-    "point_3": "EU & US shipping",
-    "point_4": "Each card: painting + lore",
-    "cta": "Add to cart",
-    "shop_link": "Shop apparel & prints",
-    "image_alt": "Magister Cards deck lying on a wooden desk"
+    "title": "First Edition",
+    "lead": "54 paintings. 4 worlds. 600 copies.",
+    "body": "It’s a real deck: learn the symbols and play the card games you already know. Or simply look — every card is its own scene with its own story.",
+    "point_1": "Printed and ready to ship — no pre-order, no waiting",
+    "point_2": "XL: 500 decks · Classic size: 100",
+    "point_3": "Shipping to the EU and the US",
+    "point_4": "The story behind every card — online and in the games",
+    "cta": "Buy the deck",
+    "shop_link": "Apparel & prints →",
+    "image_alt": "Magister deck on a wooden desk"
   },
   "opportunity": {
     "label": "Partnership",
@@ -242,8 +245,8 @@
     "hero_meet_aria": "Meet us at SPIEL Essen 2026"
   },
   "shop": {
-    "title": "Take a piece of the world home",
-    "lead": "The deck leads. Apparel and prints ship now. The art album is next.",
+    "title": "Shop",
+    "lead": "The deck comes first. Alongside it: apparel and prints featuring its paintings. The art album is on its way.",
     "soon": "Coming soon"
   }
 }

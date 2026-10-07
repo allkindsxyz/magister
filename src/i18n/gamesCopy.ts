@@ -156,8 +156,8 @@ export type GamesCopy = {
 };
 
 const en: GamesCopy = {
-  kicker: 'Play',
-  title: 'Enter the world of Magister.',
+  kicker: 'Play online',
+  title: 'Learn to Read the Deck',
   lead: 'Three games. One deck.',
   cta: 'Play',
   back: 'Back',
@@ -170,12 +170,12 @@ const en: GamesCopy = {
   zoom_close: 'Close',
   menu: {
     learn_title: 'The Four Worlds',
-    learn_blurb: 'Four suits — four worlds. Study the cards inside each world, find the links between heroes and events, and open the hidden stories of Magister.',
+    learn_blurb: 'Meet the heroes of each suit and learn to tell a card by its scene. Includes a timed mode.',
     birth_title: 'Card of Destiny',
-    birth_blurb: 'Every birthday has its card. Enter your date of birth and find the card that has followed you since the day you were born.',
+    birth_blurb: 'Every day of the year has its card. Enter your birthday and discover yours.',
     birth_lock: 'Opens if you lay the deck out in five minutes or less.',
     lore_title: 'Initiation',
-    lore_blurb: 'Each card holds more than first glance reveals. Go from its stories to meanings and secrets.',
+    lore_blurb: 'Questions on every card in the deck, from the scene to its hidden meaning. Find out how closely you really look.',
   },
   learn: {
     threshold:
@@ -323,8 +323,8 @@ const en: GamesCopy = {
     to_birthday: 'Open the birthday card',
   },
   soon: {
-    title: 'Magic in progress.',
-    body: 'Stay tuned',
+    title: 'Opening soon.',
+    body: 'We’re finishing this game.',
   },
   board: {
     title: 'Records',
@@ -379,8 +379,8 @@ const en: GamesCopy = {
 };
 
 const ru: GamesCopy = {
-  kicker: 'Игра',
-  title: 'Войдите в мир Magister.',
+  kicker: 'Игры онлайн',
+  title: 'Научитесь читать колоду',
   lead: 'Три игры. Одна колода.',
   cta: 'Играть',
   back: 'Назад',
@@ -393,12 +393,12 @@ const ru: GamesCopy = {
   zoom_close: 'Закрыть',
   menu: {
     learn_title: 'Четыре мира',
-    learn_blurb: 'Четыре масти — четыре мира. Изучайте карты внутри каждого мира, находите связи между героями и событиями и открывайте скрытые истории Magister.',
+    learn_blurb: 'Познакомьтесь с героями каждой масти и научитесь узнавать карту по сюжету. Есть режим на время.',
     birth_title: 'Карта судьбы',
-    birth_blurb: 'У каждого дня рождения есть своя карта. Введите дату и найдите карту, которая идёт за вами с самого рождения.',
+    birth_blurb: 'Каждому дню года соответствует карта. Введите дату рождения — и узнайте свою.',
     birth_lock: 'Откроется, если разложить колоду за пять минут или быстрее.',
     lore_title: 'Посвящение',
-    lore_blurb: 'Каждая карта хранит больше, чем видно с первого взгляда. От историй — к смыслам и тайнам.',
+    lore_blurb: 'Вопросы по каждой карте колоды: от сюжета — к скрытым смыслам. Проверьте, насколько внимательно вы смотрите.',
   },
   learn: {
     threshold:
@@ -546,8 +546,8 @@ const ru: GamesCopy = {
     to_birthday: 'Открыть карту рождения',
   },
   soon: {
-    title: 'Волшебство происходит,',
-    body: 'игра скоро выйдет.',
+    title: 'Скоро откроется.',
+    body: 'Мы заканчиваем эту игру.',
   },
   board: {
     title: 'Рекорды',
@@ -602,8 +602,8 @@ const ru: GamesCopy = {
 };
 
 const be: GamesCopy = {
-  kicker: 'Гульня',
-  title: 'Увайдзіце ў свет Magister.',
+  kicker: 'Гульні онлайн',
+  title: 'Навучыцеся чытаць калоду',
   lead: 'Тры гульні. Адна калода.',
   cta: 'Гуляць',
   back: 'Назад',
@@ -616,12 +616,12 @@ const be: GamesCopy = {
   zoom_close: 'Закрыць',
   menu: {
     learn_title: 'Чатыры светы',
-    learn_blurb: 'Чатыры масці — чатыры светы. Вывучайце карты ўнутры кожнага свету, знаходзьце сувязі паміж героямі і падзеямі і адкрывайце схаваныя гісторыі Magister.',
+    learn_blurb: 'Пазнаёмцеся з героямі кожнай масці і навучыцеся пазнаваць карту па сюжэце. Ёсць рэжым на час.',
     birth_title: 'Карта лёсу',
-    birth_blurb: 'У кожнага дня нараджэння ёсць свая карта. Увядзіце дату і знайдзіце карту, якая ідзе за вамі ад самага нараджэння.',
+    birth_blurb: 'Кожнаму дню года адпавядае карта. Увядзіце дату нараджэння — і даведайцеся сваю.',
     birth_lock: 'Адкрыецца, калі раскласці калоду за пяць хвілін або хутчэй.',
     lore_title: 'Пасвячэнне',
-    lore_blurb: 'Кожная карта хавае больш, чым відаць з першага погляду. Ад гісторый — да сэнсаў і таямніц.',
+    lore_blurb: 'Пытанні па кожнай карце калоды: ад сюжэта — да схаваных сэнсаў. Праверце, наколькі ўважліва вы глядзіце.',
   },
   learn: {
     threshold:
@@ -769,8 +769,8 @@ const be: GamesCopy = {
     to_birthday: 'Адкрыць карту нараджэння',
   },
   soon: {
-    title: 'Чараўніцтва адбываецца,',
-    body: 'гульня хутка выйдзе.',
+    title: 'Хутка адкрыецца.',
+    body: 'Мы заканчваем гэту гульню.',
   },
   board: {
     title: 'Рэкорды',
@@ -825,8 +825,8 @@ const be: GamesCopy = {
 };
 
 const zh: GamesCopy = {
-  kicker: '试玩',
-  title: '进入 Magister 的世界。',
+  kicker: '在线游戏',
+  title: '学会读懂这副牌',
   lead: '三场游戏。一副牌。',
   cta: '开始',
   back: '返回',
@@ -839,12 +839,12 @@ const zh: GamesCopy = {
   zoom_close: '关闭',
   menu: {
     learn_title: '四个世界',
-    learn_blurb: '四种花色——四个世界。研究每个世界里的牌，找出英雄与事件之间的联系，打开 Magister 隐藏的故事。',
+    learn_blurb: '认识每种花色的主角，学会从画面认出一张牌。附限时模式。',
     birth_title: '命运之牌',
-    birth_blurb: '每个生日都有自己的牌。输入出生日，找出从你出生那天起就跟着你的那一张。',
+    birth_blurb: '一年中的每一天都有它的牌。输入生日，找到属于你的那一张。',
     birth_lock: '在五分钟内排完牌组后开启。',
     lore_title: '授礼',
-    lore_blurb: '每张牌藏着第一眼看不见的东西。从故事到深意，再到隐秘。',
+    lore_blurb: '关于每一张牌的问题：从画面到隐藏的含义。看看你观察得有多仔细。',
   },
   learn: {
     threshold: '每张牌上的花色与数字都不是装饰。它们是写进 Magister 四个世界里的密码。看着面前这些面孔。学会看见它们。',
@@ -990,8 +990,8 @@ const zh: GamesCopy = {
     to_birthday: '打开生日牌',
   },
   soon: {
-    title: '魔法正在发生。',
-    body: '敬请期待',
+    title: '即将开放。',
+    body: '我们正在完成这款游戏。',
   },
   board: {
     title: '排行榜',
