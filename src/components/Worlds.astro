@@ -3,6 +3,7 @@ import type { Lang } from '../i18n/utils';
 import { useTranslations, pickLocalized } from '../i18n/utils';
 import { getCollection } from 'astro:content';
 import Gallery from './Gallery.astro';
+import SuitCheck, { type SuitCheckCard } from './SuitCheck.astro';
 
 interface Props {
   lang: Lang;
@@ -45,6 +46,17 @@ const examples = Object.fromEntries(suitOrder.map((suit) => [suit, exampleForSui
   Suit,
   { src: string; caption: string | null }
 >;
+
+const exampleImages = new Set(suitOrder.map((suit) => examples[suit].src));
+const checkCards: SuitCheckCard[] = allCards
+  .filter((card) => !card.data.back && card.data.suit && card.data.value && !exampleImages.has(card.data.image))
+  .map((card) => ({
+    image: card.data.image as string,
+    suit: card.data.suit as Suit,
+    title: pickLocalized(card.data.title, lang),
+  }));
+const checkStart = Math.floor(Math.random() * checkCards.length);
+const checkPool = [...checkCards.slice(checkStart), ...checkCards.slice(0, checkStart)];
 ---
 
 <section class="worlds editorial-section" id="worlds" aria-labelledby="worlds-title">
@@ -85,6 +97,8 @@ const examples = Object.fromEntries(suitOrder.map((suit) => [suit, exampleForSui
         );
       })}
     </div>
+
+    <SuitCheck lang={lang} cards={checkPool} />
   </div>
 
   <Gallery lang={lang} />

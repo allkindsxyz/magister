@@ -52,19 +52,26 @@
     "deck_next": "显示牌组中的下一张牌",
     "pack_alt": "Magister 牌盒",
     "buy": "购买牌组",
-    "play_cta": "如何读懂",
-    "quiz_question": "这张牌是什么花色？",
-    "quiz_hint": "提示：每种花色都是一个世界。",
-    "quiz_right": "答对了：{symbol} {world}。「{title}」。",
-    "quiz_wrong": "不对——这是 {symbol} {world}。「{title}」。",
-    "quiz_next": "下一张",
-    "quiz_aria": "猜一猜屏幕上这张牌的花色"
+    "birth_cta": "你的生日牌"
   },
   "worlds_section": {
     "label": "如何读懂这副牌",
     "title": "四个世界，四种花色",
     "lead": "一副经典的 54 张牌——只是用场景代替了花色符号。古代神话、中世纪与当代文化，分入四种花色。",
     "mechanic": "花色与点数并未印在牌上，而是藏在每幅画的细节里。下面就是解读的钥匙——与盒内小册子中的相同。"
+  },
+  "worlds_check": {
+    "label": "试试看",
+    "question": "这张牌来自哪个世界？",
+    "progress": "第 {n} 张，共 {total} 张",
+    "right": "答对了：{symbol} {world}。「{title}」。",
+    "wrong": "不对——这是 {symbol} {world}。「{title}」。",
+    "next": "下一张",
+    "score": "你认出了 {score} / {total} 张。",
+    "score_body": "花色只是开始——完整游戏还要读出点数。",
+    "play": "玩完整游戏",
+    "again": "再来一次",
+    "image_alt": "牌组中的一张牌——猜猜它属于哪个世界"
   },
   "worlds": {
     "hearts": {

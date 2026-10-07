@@ -1,0 +1,396 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations } from '../i18n/utils';
+
+export type SuitCheckCard = { image: string; suit: 'hearts' | 'diamonds' | 'clubs' | 'spades'; title: string };
+
+interface Props {
+  lang: Lang;
+  /** Pool to draw from; should exclude cards already captioned with their world on the page. */
+  cards: SuitCheckCard[];
+}
+
+const { lang, cards } = Astro.props;
+const t = useTranslations(lang);
+
+const SUITS = ['hearts', 'diamonds', 'clubs', 'spades'] as const;
+const SYMBOLS = { hearts: '♥', diamonds: '♦', clubs: '♣', spades: '♠' } as const;
+const ROUNDS = 3;
+
+const worlds = Object.fromEntries(
+  SUITS.map((suit) => [suit, { name: t(`worlds.${suit}.name`), symbol: SYMBOLS[suit] }]),
+);
+const ui = {
+  right: t('worlds_check.right'),
+  wrong: t('worlds_check.wrong'),
+  progress: t('worlds_check.progress'),
+  score: t('worlds_check.score'),
+};
+const first = cards[0];
+---
+
+{
+  first && (
+    <div class="suit-check reveal" data-suit-check role="group" aria-labelledby="suit-check-title">
+      <figure class="suit-check__card">
+        <img
+          data-check-image
+          src={first.image}
+          alt={t('worlds_check.image_alt')}
+          width="1200"
+          height="1680"
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+
+      <header class="suit-check__head">
+        <p class="section-label">{t('worlds_check.label')}</p>
+        <h3 class="suit-check__title" id="suit-check-title">{t('worlds_check.question')}</h3>
+        <p class="suit-check__progress" data-check-progress />
+      </header>
+
+      <div class="suit-check__body">
+
+        <div data-check-play>
+          <div class="suit-check__options" role="group" aria-labelledby="suit-check-title">
+            {SUITS.map((suit) => (
+              <button class="suit-check__option" type="button" data-check-suit={suit}>
+                <span class={`suit-check__symbol suit-check__symbol--${suit}`} aria-hidden="true">
+                  {SYMBOLS[suit]}
+                </span>
+                <span>{worlds[suit].name}</span>
+              </button>
+            ))}
+          </div>
+          <p class="suit-check__result" data-check-result aria-live="polite" hidden />
+          <button class="btn suit-check__next" type="button" data-check-next hidden>
+            {t('worlds_check.next')}
+          </button>
+        </div>
+
+        <div class="suit-check__done" data-check-done hidden>
+          <p class="suit-check__score" data-check-score aria-live="polite" />
+          <p class="suit-check__score-body">{t('worlds_check.score_body')}</p>
+          <div class="suit-check__actions">
+            <a class="btn btn-accent" href="#play" data-check-play-full>
+              {t('worlds_check.play')}
+            </a>
+            <button class="text-link" type="button" data-check-again>
+              {t('worlds_check.again')}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+<script define:vars={{ pool: cards, worlds, ui, ROUNDS }}>
+  const root = document.querySelector('[data-suit-check]');
+  if (root instanceof HTMLElement && Array.isArray(pool) && pool.length > 0) {
+    const image = root.querySelector('[data-check-image]');
+    const progress = root.querySelector('[data-check-progress]');
+    const play = root.querySelector('[data-check-play]');
+    const result = root.querySelector('[data-check-result]');
+    const next = root.querySelector('[data-check-next]');
+    const done = root.querySelector('[data-check-done]');
+    const score = root.querySelector('[data-check-score]');
+    const options = Array.from(root.querySelectorAll('[data-check-suit]'));
+    const total = Math.min(ROUNDS, pool.length);
+
+    /** @type {Array<{ image: string, suit: string, title: string }>} */
+    let round = [];
+    let step = 0;
+    let correct = 0;
+
+    /** @param {string} template @param {Record<string, string | number>} vars */
+    function fill(template, vars) {
+      return template.replace(/\{(\w+)\}/g, (match, key) => (key in vars ? String(vars[key]) : match));
+    }
+
+    /** First round keeps the server-rendered card so the image doesn't swap on load. */
+    function draw(keepFirst) {
+      const rest = keepFirst ? pool.slice(1) : pool.slice();
+      for (let i = rest.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [rest[i], rest[j]] = [rest[j], rest[i]];
+      }
+      return (keepFirst ? [pool[0], ...rest] : rest).slice(0, total);
+    }
+
+    /** @param {string} url */
+    function preload(url) {
+      const img = new Image();
+      img.src = url;
+    }
+
+    function showCard() {
+      const card = round[step];
+      if (image instanceof HTMLImageElement) image.src = card.image;
+      if (progress) progress.textContent = fill(ui.progress, { n: step + 1, total });
+      options.forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.disabled = false;
+        button.classList.remove('is-correct', 'is-wrong');
+      });
+      if (result instanceof HTMLElement) {
+        result.hidden = true;
+        result.textContent = '';
+      }
+      if (next instanceof HTMLElement) next.hidden = true;
+      if (round[step + 1]) preload(round[step + 1].image);
+    }
+
+    /** @param {boolean} keepFirst */
+    function start(keepFirst) {
+      round = draw(keepFirst);
+      step = 0;
+      correct = 0;
+      if (play instanceof HTMLElement) play.hidden = false;
+      if (done instanceof HTMLElement) done.hidden = true;
+      showCard();
+    }
+
+    /** @param {string} suit */
+    function answer(suit) {
+      const card = round[step];
+      if (!card) return;
+      const isRight = card.suit === suit;
+      if (isRight) correct += 1;
+      options.forEach((button) => {
+        if (!(button instanceof HTMLButtonElement)) return;
+        button.disabled = true;
+        if (button.dataset.checkSuit === card.suit) button.classList.add('is-correct');
+        else if (button.dataset.checkSuit === suit) button.classList.add('is-wrong');
+      });
+      const world = worlds[card.suit];
+      if (result instanceof HTMLElement) {
+        result.textContent = fill(isRight ? ui.right : ui.wrong, {
+          symbol: world?.symbol ?? '',
+          world: world?.name ?? '',
+          title: card.title,
+        });
+        result.hidden = false;
+      }
+      if (next instanceof HTMLButtonElement) {
+        next.hidden = false;
+        next.focus({ preventScroll: true });
+      }
+    }
+
+    function advance() {
+      step += 1;
+      if (step < round.length) {
+        showCard();
+        return;
+      }
+      if (play instanceof HTMLElement) play.hidden = true;
+      if (progress) progress.textContent = '';
+      if (score) score.textContent = fill(ui.score, { score: correct, total });
+      if (done instanceof HTMLElement) {
+        done.hidden = false;
+        done.querySelector('[data-check-play-full]')?.focus({ preventScroll: true });
+      }
+    }
+
+    root.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const option = target.closest('[data-check-suit]');
+      if (option instanceof HTMLButtonElement && !option.disabled) {
+        answer(option.dataset.checkSuit ?? '');
+        return;
+      }
+      if (target.closest('[data-check-next]')) {
+        advance();
+        return;
+      }
+      if (target.closest('[data-check-again]')) {
+        start(false);
+        return;
+      }
+      if (target.closest('[data-check-play-full]')) {
+        const learn = document.querySelector('#play [data-action="open"][data-game="learn"]');
+        if (learn instanceof HTMLElement) window.setTimeout(() => learn.click(), 0);
+      }
+    });
+
+    start(true);
+  }
+</script>
+
+<style>
+  .suit-check {
+    display: grid;
+    grid-template-columns: minmax(9rem, 14rem) minmax(0, 1fr);
+    grid-template-areas:
+      'card head'
+      'card body';
+    grid-template-rows: auto 1fr;
+    gap: 0 clamp(1.5rem, 4vw, 3.5rem);
+    align-items: start;
+    margin-top: clamp(3rem, 5vw, 4.5rem);
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border: 1px solid var(--line);
+    background: var(--paper);
+  }
+
+  .suit-check__card {
+    grid-area: card;
+    align-self: center;
+    margin: 0;
+  }
+
+  .suit-check__head {
+    grid-area: head;
+    align-self: end;
+  }
+
+  .suit-check__body {
+    grid-area: body;
+  }
+
+  .suit-check__card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 920 / 1316;
+    object-fit: cover;
+    border-radius: var(--card-radius);
+    box-shadow: 0 16px 34px -16px rgba(23, 23, 20, 0.5);
+  }
+
+  .suit-check__title {
+    margin-top: 0.75rem;
+    font-family: var(--display);
+    font-size: clamp(1.5rem, 2.6vw, 2.2rem);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .suit-check__progress {
+    min-height: 1.2em;
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font: 600 0.66rem/1.2 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .suit-check__options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    max-width: 30rem;
+    margin-top: 1.25rem;
+  }
+
+  .suit-check__option {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 3rem;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--line);
+    background: var(--white);
+    color: var(--ink);
+    cursor: pointer;
+    font: 500 0.85rem/1.2 var(--sans);
+    text-align: left;
+    transition:
+      border-color 160ms ease,
+      background 160ms ease;
+  }
+
+  .suit-check__option:hover:not(:disabled),
+  .suit-check__option:focus-visible {
+    border-color: var(--ink);
+  }
+
+  .suit-check__option:disabled {
+    cursor: default;
+    opacity: 0.5;
+  }
+
+  .suit-check__option.is-correct {
+    opacity: 1;
+    border-color: #a87a24;
+    background: rgba(200, 151, 58, 0.16);
+  }
+
+  .suit-check__option.is-wrong {
+    opacity: 1;
+    border-color: var(--accent);
+    text-decoration: line-through;
+  }
+
+  .suit-check__symbol {
+    font-family: var(--display);
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .suit-check__symbol--hearts,
+  .suit-check__symbol--diamonds {
+    color: var(--accent);
+  }
+
+  .suit-check__result {
+    margin-top: 1rem;
+    max-width: 30rem;
+    line-height: 1.55;
+  }
+
+  .suit-check__next {
+    margin-top: 1rem;
+  }
+
+  .suit-check__score {
+    margin-top: 1rem;
+    font-family: var(--display);
+    font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  }
+
+  .suit-check__score-body {
+    max-width: 30rem;
+    margin-top: 0.5rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .suit-check__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    margin-top: 1.25rem;
+  }
+
+  .suit-check__actions .text-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+
+  .suit-check [hidden] {
+    display: none !important;
+  }
+
+  @media (max-width: 640px) {
+    .suit-check {
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        'head'
+        'card'
+        'body';
+      grid-template-rows: auto;
+      gap: 1rem;
+    }
+
+    .suit-check__card {
+      width: min(100%, 12rem);
+    }
+  }
+</style>
