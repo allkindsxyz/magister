@@ -1,4 +1,7 @@
 import type { Lang } from './utils';
+import { PRICES, formatPrice } from '../lib/pricing';
+
+const price = (key: keyof typeof PRICES, lang: Lang): string => formatPrice(PRICES[key], lang);
 
 /** Shop experiences. Card pick: apparel + prints. Personalization: all kinds. */
 export type ProductKind = 'apparel' | 'prints' | 'deck' | 'album';
@@ -614,7 +617,7 @@ const deckEn: MerchCopy = {
   ...en,
   meta_title: 'Magister Deck — 54 Paintings by Vasily Pochitsky | First Edition',
   meta_description:
-    'An art deck of 54 cards where suit and rank hide inside each painting. First edition: 500 XL (70 × 120 mm) and 100 standard decks, with a key booklet. EU & US delivery in 10–14 days.',
+    `An art deck of 54 cards where suit and rank hide inside each painting. XL 70 × 120 mm — ${price('xl', 'en')}, standard 50 × 80 mm — ${price('standard', 'en')}. Key booklet included. EU & US delivery in 10–14 days.`,
   label: 'The Deck',
   hero_image_alt: '',
   hero: {
@@ -622,7 +625,7 @@ const deckEn: MerchCopy = {
     sub: '54 paintings by Vasily Pochitsky. The suit and rank of every card hide inside its scene.',
     body: [
       'Hearts are the Olympic Gods, Diamonds the Bearers of Secrets, Clubs the Templars, Spades the Celebrities. The key to the symbols is in the booklet inside the box — and every card is online too.',
-      'Two formats: XL (70 × 120 mm) for looking at the paintings, standard size for playing. First edition: 500 XL and 100 standard decks. Delivery to the EU and the US takes 10–14 days.',
+      `Two formats: XL 70 × 120 mm (${price('xl', 'en')}) for looking at the paintings, standard 50 × 80 mm (${price('standard', 'en')}) for playing. First edition: 500 XL and 100 standard decks. Delivery to the EU and the US takes 10–14 days.`,
       'Giving it as a gift? Add a personal message — it opens from the QR code on your copy.',
     ],
     cta_create: 'Add a message',
@@ -635,7 +638,7 @@ const deckEn: MerchCopy = {
     step2: '',
     step3: '',
     step4: '1. Message',
-    format: 'XL 70 × 120 mm · Standard',
+    format: `XL ${price('xl', 'en')} · Standard ${price('standard', 'en')}`,
     preview_title: 'Your Deck’s Story Page',
     preview_note: 'This is what the QR code on your copy will open.',
     ready: 'This is how your deck’s page will look.',
@@ -650,7 +653,7 @@ const deckRu: MerchCopy = {
   ...ru,
   meta_title: 'Колода Magister — 54 картины Василия Почицкого | Первый тираж',
   meta_description:
-    'Арт-колода из 54 карт: масть и ранг спрятаны в сюжете картины. Первый тираж — 500 XL (70 × 120 мм) и 100 стандартных колод, буклет-ключ в коробке. Доставка в EU и US за 10–14 дней.',
+    `Арт-колода из 54 карт: масть и ранг спрятаны в сюжете картины. XL 70 × 120 мм — ${price('xl', 'ru')}, стандартная 50 × 80 мм — ${price('standard', 'ru')}. Буклет-ключ в коробке. Доставка в EU и US за 10–14 дней.`,
   label: 'Колода',
   hero_image_alt: '',
   hero: {
@@ -658,7 +661,7 @@ const deckRu: MerchCopy = {
     sub: '54 картины Василия Почицкого. Масть и ранг каждой карты спрятаны в сюжете.',
     body: [
       'Червы — олимпийские боги, бубны — носители тайн, трефы — тамплиеры, пики — знаменитости. Ключ к символам — в буклете внутри коробки, а все карты можно рассмотреть на сайте.',
-      'Два формата: XL (70 × 120 мм) — чтобы рассматривать картины, стандартный — чтобы играть. Первый тираж: 500 XL и 100 стандартных колод. Доставка в EU и США — 10–14 дней.',
+      `Два формата: XL 70 × 120 мм (${price('xl', 'ru')}) — чтобы рассматривать картины, стандартный 50 × 80 мм (${price('standard', 'ru')}) — чтобы играть. Первый тираж: 500 XL и 100 стандартных колод. Доставка в EU и США — 10–14 дней.`,
       'Колода в подарок? Добавьте личное послание — оно откроется по QR-коду на вашем экземпляре.',
     ],
     cta_create: 'Добавить послание',
@@ -671,7 +674,7 @@ const deckRu: MerchCopy = {
     step2: '',
     step3: '',
     step4: '1. Послание',
-    format: 'XL 70 × 120 мм · стандартный',
+    format: `XL ${price('xl', 'ru')} · стандартная ${price('standard', 'ru')}`,
     preview_title: 'Страница вашей колоды',
     preview_note: 'Её откроет QR-код на вашем экземпляре.',
     ready: 'Так будет выглядеть страница вашей колоды.',
@@ -686,7 +689,7 @@ const deckBe: MerchCopy = {
   ...be,
   meta_title: 'Калода Magister — 54 карціны Васіля Пачыцкага | Першы наклад',
   meta_description:
-    'Арт-калода з 54 карт: масць і ранг схаваныя ў сюжэце карціны. Першы наклад — 500 XL (70 × 120 мм) і 100 стандартных калод, буклет-ключ у каробцы. Дастаўка ў EU і US за 10–14 дзён.',
+    `Арт-калода з 54 карт: масць і ранг схаваныя ў сюжэце карціны. XL 70 × 120 мм — ${price('xl', 'be')}, стандартная 50 × 80 мм — ${price('standard', 'be')}. Буклет-ключ у каробцы. Дастаўка ў EU і US за 10–14 дзён.`,
   label: 'Калода',
   hero_image_alt: '',
   hero: {
@@ -694,7 +697,7 @@ const deckBe: MerchCopy = {
     sub: '54 карціны Васіля Пачыцкага. Масць і ранг кожнай карты схаваныя ў сюжэце.',
     body: [
       'Чэрвы — алімпійскія багі, бубны — носьбіты таямніц, трэфы — тампліеры, пікі — знакамітасці. Ключ да сімвалаў — у буклеце ўнутры каробкі, а ўсе карты можна разгледзець на сайце.',
-      'Два фарматы: XL (70 × 120 мм) — каб разглядаць карціны, стандартны — каб гуляць. Першы наклад: 500 XL і 100 стандартных калод. Дастаўка ў EU і ЗША — 10–14 дзён.',
+      `Два фарматы: XL 70 × 120 мм (${price('xl', 'be')}) — каб разглядаць карціны, стандартны 50 × 80 мм (${price('standard', 'be')}) — каб гуляць. Першы наклад: 500 XL і 100 стандартных калод. Дастаўка ў EU і ЗША — 10–14 дзён.`,
       'Калода ў падарунак? Дадайце асабістае пасланне — яно адкрыецца па QR-кодзе на вашым асобніку.',
     ],
     cta_create: 'Дадаць пасланне',
@@ -707,7 +710,7 @@ const deckBe: MerchCopy = {
     step2: '',
     step3: '',
     step4: '1. Пасланне',
-    format: 'XL 70 × 120 мм · стандартны',
+    format: `XL ${price('xl', 'be')} · стандартная ${price('standard', 'be')}`,
     preview_title: 'Старонка вашай калоды',
     preview_note: 'Яе адкрые QR-код на вашым асобніку.',
     ready: 'Так будзе выглядаць старонка вашай калоды.',
@@ -721,7 +724,7 @@ const deckBe: MerchCopy = {
 const deckZh: MerchCopy = {
   ...zh,
   meta_title: 'Magister 牌组 — 瓦西里·波奇茨基的 54 幅画作 | 首版',
-  meta_description: '一副 54 张的艺术扑克牌，花色与点数藏在每幅画里。首版：XL（70 × 120 mm）500 副，标准尺寸 100 副，盒内附解读小册子。发货至欧盟与美国，10–14 天送达。',
+  meta_description: `一副 54 张的艺术扑克牌，花色与点数藏在每幅画里。XL 70 × 120 mm ${price('xl', 'zh')}，标准 50 × 80 mm ${price('standard', 'zh')}。盒内附解读小册子。发货至欧盟与美国，10–14 天送达。`,
   label: '牌组',
   hero_image_alt: '',
   hero: {
@@ -729,7 +732,7 @@ const deckZh: MerchCopy = {
     sub: '瓦西里·波奇茨基的 54 幅画。每张牌的花色与点数都藏在画面里。',
     body: [
       '红心是奥林匹斯诸神，方块是秘密承载者，梅花是圣殿骑士，黑桃是名流。解读符号的钥匙在盒内的小册子里，所有牌也都能在网站上细看。',
-      '两种尺寸：XL（70 × 120 mm）适合细看画作，标准尺寸适合打牌。首版：XL 500 副，标准尺寸 100 副。发货至欧盟与美国，10–14 天送达。',
+      `两种尺寸：XL 70 × 120 mm（${price('xl', 'zh')}）适合细看画作，标准 50 × 80 mm（${price('standard', 'zh')}）适合打牌。首版：XL 500 副，标准尺寸 100 副。发货至欧盟与美国，10–14 天送达。`,
       '要送人？加一段个人留言——扫描你这副牌上的二维码即可打开。',
     ],
     cta_create: '添加留言',
@@ -742,7 +745,7 @@ const deckZh: MerchCopy = {
     step2: '',
     step3: '',
     step4: '1. 留言',
-    format: 'XL 70 × 120 mm · 标准',
+    format: `XL ${price('xl', 'zh')} · 标准 ${price('standard', 'zh')}`,
     preview_title: '你的牌组故事页',
     preview_note: '你这副牌上的二维码将打开这一页。',
     ready: '你的牌组页面将是这个样子。',

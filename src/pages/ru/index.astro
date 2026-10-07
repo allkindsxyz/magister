@@ -9,14 +9,16 @@ import Shop from '../../components/Shop.astro';
 import AuthorsCompact from '../../components/AuthorsCompact.astro';
 import BuyerFooter from '../../components/BuyerFooter.astro';
 import DestinySheet from '../../components/DestinySheet.astro';
+import { PRICES, formatPrice } from '../../lib/pricing';
 
 const lang = 'ru';
+const fromPrice = formatPrice(PRICES.standard, lang);
 ---
 
 <Layout
   lang={lang}
   title="Magister — арт-колода из 54 картин Василия Почицкого"
-  description="Игральная колода, где масть и ранг спрятаны в картине. 54 работы, 4 мира, первый тираж — 600 колод. Доставка в EU и US за 10–14 дней."
+  description={`Игральная колода, где масть и ранг спрятаны в картине. 54 работы, 4 мира, первый тираж — 600 колод. От ${fromPrice}, доставка в EU и US за 10–14 дней.`}
 >
   <Nav lang={lang} />
   <main id="main-content">

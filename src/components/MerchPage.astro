@@ -6,6 +6,8 @@ import { productCopy, productHasCardPick, type ProductKind } from '../i18n/merch
 import { ARTIFACT_MEDIA, ARTIFACT_DETAIL_HERO, ARTIFACT_STAGE_MEDIA } from '../lib/artifacts';
 import Nav from './Nav.astro';
 import BuyerFooter from './BuyerFooter.astro';
+import { deckProductJsonLd } from '../lib/pricing';
+import { absoluteUrl, localizedAbsoluteUrl } from '../lib/site';
 
 interface Props {
   lang: Lang;
@@ -79,6 +81,15 @@ const stageHeight = isAlbum
 const stageLabel =
   isDeck || isPrints || isAlbum ? (copy.config.format || copy.label) : copy.config.product_hoodie;
 const previewProductImage = heroMedia.image;
+const deckJsonLd = isDeck
+  ? deckProductJsonLd({
+      url: localizedAbsoluteUrl(lang, '/artifacts/deck'),
+      image: absoluteUrl(heroMedia.image),
+      description: copy.meta_description,
+      xlName: t('deck_sku.price_xl'),
+      standardName: t('deck_sku.price_standard'),
+    })
+  : null;
 const cardsJson = JSON.stringify(cards).replace(/</g, '\\u003c');
 const uiJson = JSON.stringify({
   no_card: copy.config.no_card,
@@ -350,6 +361,7 @@ const uiJson = JSON.stringify({
 
   <script id="merch-cards" type="application/json" set:html={cardsJson} />
   <script id="merch-ui" type="application/json" set:html={uiJson} />
+  {deckJsonLd && <script type="application/ld+json" set:html={deckJsonLd} />}
 </main>
 <BuyerFooter lang={lang} />
 

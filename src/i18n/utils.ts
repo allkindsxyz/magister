@@ -2,6 +2,7 @@ import en from './en.json';
 import ru from './ru.json';
 import be from './be.json';
 import zh from './zh.json';
+import { fillPrices } from '../lib/pricing';
 
 export type Lang = 'en' | 'ru' | 'be' | 'zh';
 export type Translations = typeof en;
@@ -40,14 +41,14 @@ export function useTranslations(lang: Lang) {
     for (const k of keys) {
       value = value?.[k];
     }
-    if (typeof value === 'string') return value;
+    if (typeof value === 'string') return fillPrices(value, lang);
     // Fallback to English
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let fallback: any = translations['en'];
     for (const k of keys) {
       fallback = fallback?.[k];
     }
-    return typeof fallback === 'string' ? fallback : key;
+    return typeof fallback === 'string' ? fillPrices(fallback, lang) : key;
   };
 }
 

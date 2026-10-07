@@ -1,6 +1,8 @@
 ---
 import type { Lang } from '../i18n/utils';
 import { useTranslations, getLocalizedPath } from '../i18n/utils';
+import { PRICES, formatPrice, deckProductJsonLd } from '../lib/pricing';
+import { absoluteUrl, localizedAbsoluteUrl } from '../lib/site';
 
 interface Props {
   lang: Lang;
@@ -10,6 +12,21 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const deckHref = getLocalizedPath('/artifacts/deck', lang);
 const shopHref = `${getLocalizedPath('/', lang)}#artifacts`;
+
+const priceRows = [
+  { label: t('deck_sku.price_xl'), amount: PRICES.xl },
+  { label: t('deck_sku.price_standard'), amount: PRICES.standard },
+  { label: t('deck_sku.price_set'), amount: PRICES.set },
+  { label: t('deck_sku.price_two_xl'), amount: PRICES.two_xl },
+];
+
+const productJsonLd = deckProductJsonLd({
+  url: localizedAbsoluteUrl(lang, '/artifacts/deck'),
+  image: absoluteUrl('/media/deck-lifestyle.jpg'),
+  description: t('deck_sku.body'),
+  xlName: t('deck_sku.price_xl'),
+  standardName: t('deck_sku.price_standard'),
+});
 ---
 
 <section class="deck-sku editorial-section" id="deck-sku" aria-labelledby="deck-sku-title">
@@ -36,15 +53,77 @@ const shopHref = `${getLocalizedPath('/', lang)}#artifacts`;
         <li>{t('deck_sku.point_3')}</li>
         <li>{t('deck_sku.point_4')}</li>
       </ul>
+      <div class="deck-sku__prices">
+        <h3 class="deck-sku__prices-title">{t('deck_sku.price_title')}</h3>
+        <dl>
+          {
+            priceRows.map((row) => (
+              <div class="deck-sku__price-row">
+                <dt>{row.label}</dt>
+                <dd>{formatPrice(row.amount, lang)}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <p class="deck-sku__shipping">{t('deck_sku.shipping')}</p>
+      </div>
       <div class="deck-sku__actions">
         <a class="btn btn-accent" href={deckHref}>{t('deck_sku.cta')}</a>
         <a class="text-link" href={shopHref}>{t('deck_sku.shop_link')}</a>
       </div>
     </div>
   </div>
+  <script type="application/ld+json" set:html={productJsonLd} />
 </section>
 
 <style>
+  .deck-sku__prices {
+    margin: 0 0 1.75rem;
+    padding: 1rem 0 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .deck-sku__prices-title {
+    margin: 0 0 0.5rem;
+    color: var(--muted);
+    font: 600 0.68rem/1.4 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .deck-sku__prices dl {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0;
+  }
+
+  .deck-sku__price-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px dashed var(--line);
+  }
+
+  .deck-sku__price-row dt {
+    color: var(--ink);
+  }
+
+  .deck-sku__price-row dd {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 1.25rem;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+
+  .deck-sku__shipping {
+    margin: 0.75rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
   .deck-sku {
     background: var(--white);
   }

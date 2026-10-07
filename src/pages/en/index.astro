@@ -9,14 +9,16 @@ import Shop from '../../components/Shop.astro';
 import AuthorsCompact from '../../components/AuthorsCompact.astro';
 import BuyerFooter from '../../components/BuyerFooter.astro';
 import DestinySheet from '../../components/DestinySheet.astro';
+import { PRICES, formatPrice } from '../../lib/pricing';
 
 const lang = 'en';
+const fromPrice = formatPrice(PRICES.standard, lang);
 ---
 
 <Layout
   lang={lang}
   title="Magister — Art Playing Cards by Vasily Pochitsky"
-  description="A deck of playing cards where every suit and rank hides inside a painting. 54 original works, first edition of 600. EU & US delivery in 10–14 days."
+  description={`A deck of playing cards where every suit and rank hides inside a painting. 54 original works, first edition of 600. From ${fromPrice}, EU & US delivery in 10–14 days.`}
 >
   <Nav lang={lang} />
   <main id="main-content">
