@@ -2,11 +2,11 @@
 import type { Lang } from '../i18n/utils';
 import { useTranslations, pickLocalized, getLocalizedPath } from '../i18n/utils';
 import { getCollection } from 'astro:content';
-import { productCopy, productHasCardPick, deckBoxCopy, type ProductKind } from '../i18n/merchCopy';
-import { ARTIFACT_MEDIA, ARTIFACT_DETAIL_HERO, ARTIFACT_STAGE_MEDIA } from '../lib/artifacts';
+import { productCopy, productHasCardPick, deckBoxCopy, pdpUi, type ProductKind } from '../i18n/merchCopy';
 import Nav from './Nav.astro';
 import BuyerFooter from './BuyerFooter.astro';
-import { deckProductJsonLd } from '../lib/pricing';
+import { deckProductJsonLd, productJsonLd, fillPrices, formatPrice, PRICES } from '../lib/pricing';
+import { APPAREL_SIZES, SKUS, bundleSaving, type SkuId } from '../lib/catalog';
 import { absoluteUrl, localizedAbsoluteUrl } from '../lib/site';
 
 interface Props {
@@ -16,17 +16,17 @@ interface Props {
 
 const { lang, kind = 'apparel' } = Astro.props;
 const t = useTranslations(lang);
+const ui = pdpUi[lang];
 const copy = productCopy[kind][lang];
 const isApparel = kind === 'apparel';
 const isPrints = kind === 'prints';
 const isDeck = kind === 'deck';
 const isAlbum = kind === 'album';
+const buyable = !isAlbum;
 const hasCardPick = productHasCardPick(kind);
-const heroMedia = ARTIFACT_DETAIL_HERO[kind] ?? ARTIFACT_MEDIA[kind];
-const stageMedia = ARTIFACT_STAGE_MEDIA[kind];
-const heroAlt = copy.hero_image_alt || t(`next.${kind}.image_alt`);
 const backHref = `${getLocalizedPath('/', lang)}#artifacts`;
 const galleryHref = `${getLocalizedPath('/', lang)}#fifty-four`;
+const money = (amount: number): string => formatPrice(amount, lang);
 
 const symbols: Record<string, string> = { hearts: '♥', diamonds: '♦', clubs: '♣', spades: '♠' };
 const allCards = hasCardPick ? await getCollection('cards') : [];
@@ -38,7 +38,6 @@ const cards = allCards
       id: card.data.id,
       title: pickLocalized(card.data.title, lang),
       summary: pickLocalized(card.data.summary, lang),
-      description: pickLocalized(card.data.description, lang),
       suit,
       value: card.data.value ?? '',
       image: card.data.image,
@@ -46,340 +45,583 @@ const cards = allCards
       suitSymbol: symbols[suit],
     };
   });
+const defaultCard = cards.find((c) => c.id === 'ace-hearts') ?? cards[0];
 
 const suits = [
-  { id: '', label: copy.picker.all },
+  { id: '', label: ui.picker_all },
   { id: 'hearts', label: t('worlds.hearts.name') },
   { id: 'diamonds', label: t('worlds.diamonds.name') },
   { id: 'clubs', label: t('worlds.clubs.name') },
   { id: 'spades', label: t('worlds.spades.name') },
 ] as const;
 
-const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'] as const;
-const defaultCard = cards.find((c) => c.id === 'ace-hearts') ?? cards[0];
-const stageSrc = isAlbum
-  ? (stageMedia?.image ?? heroMedia.image)
-  : isDeck
-    ? heroMedia.image
+type Slide = {
+  key: string;
+  type: 'img' | 'scale' | 'faces';
+  src: string;
+  width: number;
+  height: number;
+  fit: 'cover' | 'contain';
+  alt: string;
+  caption: string;
+  thumb: string;
+};
+
+const slideCopy = (key: string) => copy.slides[key] ?? { alt: '', caption: '' };
+const cardCaption = defaultCard ? `${defaultCard.title} · ${defaultCard.world}` : '';
+const cardSlide = (key: string): Slide => ({
+  key,
+  type: 'img',
+  src: defaultCard?.image ?? '',
+  width: 920,
+  height: 1320,
+  fit: 'contain',
+  alt: defaultCard?.title ?? '',
+  caption: cardCaption,
+  thumb: defaultCard?.image ?? '',
+});
+const img = (key: string, src: string, width: number, height: number, fit: Slide['fit'] = 'cover'): Slide => ({
+  key,
+  type: 'img',
+  src,
+  width,
+  height,
+  fit,
+  ...slideCopy(key),
+  thumb: src,
+});
+
+const garmentPhotos = {
+  'hoodie-black': '/media/merch-hoodie-black.jpg?v=2',
+  'hoodie-inspired': '/media/merch-hoodie-inspired.jpg?v=2',
+  'tee-black': '/media/merch-tee-black.jpg?v=2',
+  'tee-inspired': '/media/merch-tee-inspired.jpg?v=2',
+};
+
+const slides: Slide[] = isDeck
+  ? [
+      img('lifestyle', '/media/deck-lifestyle.jpg', 1024, 672),
+      img('pack', '/media/pack.webp', 1200, 800, 'contain'),
+      { ...img('scale', '/cards/queen-hearts.webp', 920, 1320), type: 'scale' },
+      { ...img('faces', '/cards/ace-spades.webp', 920, 1320), type: 'faces' },
+      img('back', '/media/card-back-600.webp', 600, 839, 'contain'),
+    ]
+  : isApparel
+    ? [
+        {
+          ...img('garment', garmentPhotos['hoodie-black'], 764, 1024),
+          alt: `${ui.hoodie} — ${ui.color_black}`,
+          caption: `${ui.hoodie} · ${ui.color_black}`,
+        },
+        cardSlide('card'),
+        img('label', '/media/merch-apparel-hero.jpg', 704, 1024),
+      ]
     : isPrints
-      ? (defaultCard?.image ?? heroMedia.image)
-      : '/media/merch-hoodie-black.jpg?v=2';
-const stageWidth = isAlbum
-  ? (stageMedia?.width ?? heroMedia.width)
-  : isDeck
-    ? heroMedia.width
-    : isPrints
-      ? 600
-      : 764;
-const stageHeight = isAlbum
-  ? (stageMedia?.height ?? heroMedia.height)
-  : isDeck
-    ? heroMedia.height
-    : isPrints
-      ? 400
-      : 1024;
-const stageLabel =
-  isDeck || isPrints || isAlbum ? (copy.config.format || copy.label) : copy.config.product_hoodie;
-const previewProductImage = heroMedia.image;
+      ? [
+          cardSlide('card'),
+          img('wall', '/media/partner-print.jpg', 704, 1024),
+          img('detail', '/media/prints-detail-hero.jpg', 713, 1024, 'contain'),
+        ]
+      : [
+          img('cover', '/media/album-cover.jpg', 724, 1024, 'contain'),
+          img('spread', '/media/album-spread.jpg', 1024, 724, 'contain'),
+        ];
+
+const galleryRatio = isDeck ? '5 / 4' : isAlbum ? '1 / 1' : isPrints ? '7 / 10' : '3 / 4';
+const fill = (template: string, values: Record<string, string | number>): string =>
+  template.replace(/\{(\w+)\}/g, (match, key: string) => (key in values ? String(values[key]) : match));
+
+type DeckOption = { sku: SkuId; name: string; spec: string; note: string; badges: string[] };
+const deckOptions: DeckOption[] = isDeck
+  ? [
+      { sku: 'deck_xl', name: t('deck_sku.xl_name'), spec: t('deck_sku.xl_spec'), note: t('deck_sku.xl_purpose'), badges: [] },
+      {
+        sku: 'deck_standard',
+        name: t('deck_sku.standard_name'),
+        spec: t('deck_sku.standard_spec'),
+        note: t('deck_sku.standard_purpose'),
+        badges: [],
+      },
+      {
+        sku: 'deck_set',
+        name: ui.set_name,
+        spec: ui.set_spec,
+        note: '',
+        badges: [fill(ui.save, { amount: money(bundleSaving('deck_set')) })],
+      },
+      {
+        sku: 'deck_two_xl',
+        name: ui.two_xl_name,
+        spec: ui.two_xl_spec,
+        note: '',
+        badges: [fill(ui.save, { amount: money(bundleSaving('deck_two_xl')) }), ui.free_shipping],
+      },
+    ]
+  : [];
+
+const defaultSku: SkuId | null = isDeck ? 'deck_xl' : isApparel ? 'hoodie' : isPrints ? 'print' : null;
+const initialPrice = defaultSku ? money(SKUS[defaultSku].price) : ui.coming_soon;
+const shippingLine = fillPrices(ui.shipping, lang);
 const deckBox = isDeck ? deckBoxCopy[lang] : null;
-const deckJsonLd = isDeck
+
+const pageUrl = localizedAbsoluteUrl(lang, `/artifacts/${kind}`);
+const jsonLdImages = slides.filter((s) => s.type === 'img').map((s) => absoluteUrl(s.src));
+const jsonLd = isDeck
   ? deckProductJsonLd({
-      url: localizedAbsoluteUrl(lang, '/artifacts/deck'),
-      image: absoluteUrl(heroMedia.image),
+      url: pageUrl,
+      image: jsonLdImages,
       description: copy.meta_description,
       xlName: t('deck_sku.price_xl'),
       standardName: t('deck_sku.price_standard'),
+      setName: t('deck_sku.price_set'),
+      twoXlName: t('deck_sku.price_two_xl'),
     })
-  : null;
+  : isApparel
+    ? productJsonLd({
+        name: copy.meta_title,
+        url: pageUrl,
+        image: jsonLdImages,
+        description: copy.meta_description,
+        offers: [
+          { name: ui.hoodie, price: PRICES.hoodie, sku: 'MAGISTER-HOODIE' },
+          { name: ui.tee, price: PRICES.tee, sku: 'MAGISTER-TEE' },
+        ],
+      })
+    : isPrints
+      ? productJsonLd({
+          name: copy.meta_title,
+          url: pageUrl,
+          image: jsonLdImages,
+          description: copy.meta_description,
+          offers: [{ name: t('cart.sku.print'), price: PRICES.print, sku: 'MAGISTER-PRINT' }],
+        })
+      : null;
+
 const cardsJson = JSON.stringify(cards).replace(/</g, '\\u003c');
 const uiJson = JSON.stringify({
-  no_card: copy.config.no_card,
-  preview_created: copy.config.preview_created,
-  preview_locked: copy.config.preview_locked,
-  preview_pin_prompt: copy.config.preview_pin_prompt,
-  birth_joker: copy.config.birth_joker,
-  read_more: copy.config.read_more,
-  read_less: copy.config.read_less,
-  format: copy.config.format,
-  product_title: copy.label,
-  product_lead: copy.hero.sub,
-  product_desc: copy.hero.body[0] || '',
+  thumb: ui.thumb,
+  add: ui.add,
+  added: ui.added,
+  hoodie: ui.hoodie,
+  tee: ui.tee,
+  color_black: ui.color_black,
+  color_inspired: ui.color_inspired,
+  birth_choose: ui.birth_choose,
+  birth_joker: ui.birth_joker,
+  garmentPhotos,
 }).replace(/</g, '\\u003c');
+
+const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_standard') };
 ---
 
-<Nav lang={lang} />
-<main id="main-content" class="merch" data-merch data-kind={kind}>
-  <section class="merch-hero page-shell" id="merch-hero">
-    <a class="text-link merch-back" href={backHref}>← {copy.back}</a>
-    <div class="merch-hero__copy">
-      <p class="section-label">{copy.label}</p>
-      <h1 class="merch-hero__title">{copy.hero.title}</h1>
-      <p class="merch-hero__sub">{copy.hero.sub}</p>
-      <div class="merch-hero__concept">
-        {copy.hero.body.map((p) => <p class="merch-prose">{p}</p>)}
-      </div>
-      <div class="merch-hero__actions">
-        <button class="btn btn-accent" type="button" data-action="scroll-config">{copy.hero.cta_create}</button>
-      </div>
-    </div>
-    <figure class="merch-hero__visual">
-      <img
-        src={heroMedia.image}
-        alt={heroAlt}
-        width={heroMedia.width}
-        height={heroMedia.height}
-        loading="eager"
-        decoding="async"
-      />
-    </figure>
-  </section>
+<Nav lang={lang} hideStickyCart={buyable} />
+<main id="main-content" class="pdp" data-merch data-kind={kind} data-lang={lang}>
+  <div class="page-shell pdp__shell">
+    <a class="text-link pdp__back" href={backHref}>← {ui.back}</a>
 
-  {
-    deckBox && (
-      <section class="merch-box page-shell" aria-labelledby="merch-box-title">
-        <h2 class="merch-box__title" id="merch-box-title">{deckBox.title}</h2>
-        <dl class="merch-box__list">
-          {deckBox.rows.map((row) => (
-            <div class="merch-box__row">
-              <dt>{row.label}</dt>
-              <dd>{row.value}</dd>
+    <div class="pdp__grid">
+      <section class="pdp__media" aria-label={ui.gallery_aria}>
+        <div class="pdp-gallery" data-gallery style={`--ratio: ${galleryRatio};`}>
+          <div class="pdp-gallery__track" data-gallery-track tabindex="0" aria-roledescription="carousel">
+            {
+              slides.map((slide, index) => (
+                <figure
+                  class:list={['pdp-gallery__slide', `pdp-gallery__slide--${slide.type}`]}
+                  data-slide={slide.key}
+                  data-caption={slide.caption}
+                  data-fit={slide.fit}
+                  aria-label={fill(ui.thumb, { n: index + 1, total: slides.length })}
+                >
+                  {slide.type === 'img' && (
+                    <img
+                      src={slide.src}
+                      alt={slide.alt}
+                      width={slide.width}
+                      height={slide.height}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                      fetchpriority={index === 0 ? 'high' : undefined}
+                      decoding="async"
+                      data-slide-img
+                    />
+                  )}
+                  {slide.type === 'scale' && (
+                    <div class="pdp-scale" data-scale-pick="xl" role="img" aria-label={slide.caption}>
+                      <div class="pdp-scale__card pdp-scale__card--xl" data-scale="xl">
+                        <img src="/cards/queen-hearts.webp" alt="" width="920" height="1320" loading="lazy" decoding="async" />
+                        <span>{scaleLabels.xl}</span>
+                      </div>
+                      <div class="pdp-scale__card pdp-scale__card--standard" data-scale="standard">
+                        <img src="/cards/king-clubs.webp" alt="" width="920" height="1320" loading="lazy" decoding="async" />
+                        <span>{scaleLabels.standard}</span>
+                      </div>
+                    </div>
+                  )}
+                  {slide.type === 'faces' && (
+                    <div class="pdp-faces" role="img" aria-label={slide.alt}>
+                      {['/cards/queen-hearts.webp', '/cards/ace-spades.webp', '/cards/jack-diamonds.webp'].map((src) => (
+                        <img src={src} alt="" width="920" height="1320" loading="lazy" decoding="async" />
+                      ))}
+                    </div>
+                  )}
+                </figure>
+              ))
+            }
+          </div>
+
+          {
+            slides.length > 1 && (
+              <div class="pdp-gallery__thumbs">
+                {slides.map((slide, index) => (
+                  <button
+                    class="pdp-gallery__thumb"
+                    type="button"
+                    data-thumb={slide.key}
+                    aria-label={fill(ui.thumb, { n: index + 1, total: slides.length })}
+                    aria-current={index === 0 ? 'true' : undefined}
+                  >
+                    <img src={slide.thumb} alt="" width="96" height="96" loading="lazy" decoding="async" data-thumb-img />
+                  </button>
+                ))}
+              </div>
+            )
+          }
+        </div>
+
+        <p class="pdp__caption" data-gallery-caption>{slides[0]?.caption}</p>
+
+        {
+          buyable && (
+            <div class="pdp-qr pdp-qr--media is-pending" data-qr hidden>
+              <a class="pdp-qr__code" data-qr-link target="_blank" rel="noopener" aria-label={ui.qr_open}>
+                <canvas width="1" height="1" data-qr-canvas aria-hidden="true"></canvas>
+              </a>
+              <div>
+                <p class="pdp-qr__caption">{ui.qr_caption}</p>
+                <p class="pdp-qr__lock" data-qr-lock hidden>{ui.qr_locked}</p>
+                <p class="pdp-qr__error" data-qr-error hidden>{ui.qr_error}</p>
+              </div>
             </div>
-          ))}
-        </dl>
-        <p class="merch-box__note">{deckBox.note}</p>
+          )
+        }
       </section>
-    )
-  }
 
-  <section class="merch-config editorial-section" id="merch-config">
-    <div class="page-shell">
-      <header class="merch-section-header reveal">
-        <h2 class="section-title merch-section-title">{copy.config.title}</h2>
-        <p class="merch-prose">{copy.config.body}</p>
-      </header>
+      <section class="pdp__buy" aria-labelledby="pdp-title">
+        <p class="section-label">{copy.label}</p>
+        <h1 class="pdp__title" id="pdp-title">{copy.title}</h1>
+        <p class="pdp__sub">{copy.sub}</p>
+        {isAlbum && <p class="pdp__price">{initialPrice}</p>}
 
-      <div class="merch-config__layout">
-        <div class="merch-config__steps">
-          {isApparel && (
-            <div class="merch-step reveal">
-              <h3>{copy.config.step1}</h3>
-              <div class="merch-choice-row">
-                <button class="merch-chip" type="button" data-product="hoodie" aria-pressed="true">{copy.config.product_hoodie}</button>
-                <button class="merch-chip" type="button" data-product="tee" aria-pressed="false">{copy.config.product_tee}</button>
-              </div>
-            </div>
-          )}
+        {
+          buyable && (
+            <form class="pdp-form" data-pdp-form novalidate>
+              {isPrints && <input type="hidden" name="sku" value="print" />}
 
-          {hasCardPick && (
-            <div class="merch-step reveal">
-              <h3>{copy.config.step2}</h3>
-              <div class="merch-choice-row" role="tablist" aria-label={copy.config.step2}>
-                <button class="merch-chip is-active" type="button" data-card-method="browse" aria-pressed="true">{copy.config.card_tab_browse}</button>
-                <button class="merch-chip" type="button" data-card-method="date" aria-pressed="false">{copy.config.card_tab_date}</button>
-              </div>
+              {isDeck && (
+                <fieldset class="pdp-field">
+                  <legend class="pdp-field__label">{ui.format}</legend>
+                  <div class="pdp-formats">
+                    {deckOptions.map((option) => (
+                      <label class="pdp-format">
+                        <input
+                          class="pdp-visually-hidden"
+                          type="radio"
+                          name="sku"
+                          value={option.sku}
+                          checked={option.sku === defaultSku}
+                        />
+                        <span class="pdp-format__box">
+                          <span class="pdp-format__head">
+                            <span class="pdp-format__name">{option.name}</span>
+                            <span class="pdp-format__price">{money(SKUS[option.sku].price)}</span>
+                          </span>
+                          <span class="pdp-format__spec">{option.spec}</span>
+                          {option.note && <span class="pdp-format__note">{option.note}</span>}
+                          {option.badges.length > 0 && (
+                            <span class="pdp-format__badges">
+                              {option.badges.map((badge) => (
+                                <span class="pdp-format__badge">{badge}</span>
+                              ))}
+                            </span>
+                          )}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              )}
 
-              <div id="merch-card-browse" data-card-panel="browse">
-                <div id="merch-selected-empty" class="merch-selected-empty">
-                  <p class="merch-muted">{copy.config.no_card}</p>
-                  <button class="btn" type="button" data-action="open-picker">{copy.config.browse_cards}</button>
+              {isApparel && (
+                <fieldset class="pdp-field">
+                  <legend class="pdp-field__label">{ui.piece}</legend>
+                  <div class="pdp-chips">
+                    {(['hoodie', 'tee'] as const).map((sku) => (
+                      <label class="pdp-chip">
+                        <input class="pdp-visually-hidden" type="radio" name="sku" value={sku} checked={sku === 'hoodie'} />
+                        <span>
+                          {ui[sku]} <span class="pdp-chip__price">{money(SKUS[sku].price)}</span>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              )}
+
+              {hasCardPick && defaultCard && (
+                <div class="pdp-field" role="group" aria-labelledby="pdp-card-label">
+                  <p class="pdp-field__label" id="pdp-card-label">{ui.card}</p>
+                  <div class="pdp-card">
+                    <img
+                      class="pdp-card__art"
+                      src={defaultCard.image}
+                      alt=""
+                      width="920"
+                      height="1320"
+                      decoding="async"
+                      data-card-art
+                    />
+                    <div class="pdp-card__text">
+                      <p class="pdp-card__suit" data-card-suit data-suit={defaultCard.suit}>
+                        <span aria-hidden="true">{defaultCard.suitSymbol}</span> {defaultCard.value}
+                      </p>
+                      <p class="pdp-card__title" data-card-title>{defaultCard.title}</p>
+                      <p class="pdp-card__world" data-card-world>{defaultCard.world}</p>
+                    </div>
+                    <div class="pdp-card__actions">
+                      <button class="pdp-link" type="button" data-action="open-picker">{ui.change_card}</button>
+                      <button
+                        class="pdp-link"
+                        type="button"
+                        data-action="toggle-birth"
+                        aria-expanded="false"
+                        aria-controls="pdp-birth"
+                      >
+                        {ui.by_birthday}
+                      </button>
+                    </div>
+                  </div>
+                  <div class="pdp-birth" id="pdp-birth" hidden>
+                    <div class="pdp-birth__form">
+                      <label>
+                        <span>{ui.birth_month}</span>
+                        <select data-birth-month>
+                          {ui.months.map((name, index) => (
+                            <option value={index + 1} selected={index === 0}>
+                              {name}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <label>
+                        <span>{ui.birth_day}</span>
+                        <select data-birth-day></select>
+                      </label>
+                      <button class="btn" type="button" data-action="birth-submit">
+                        {ui.birth_cta}
+                      </button>
+                    </div>
+                    <div class="pdp-birth__result" data-birth-result aria-live="polite"></div>
+                  </div>
                 </div>
-                <div id="merch-selected-card" class="merch-selected" hidden>
-                  <img id="merch-selected-art" src="" alt="" width="180" height="257" />
-                  <div>
-                    <p class="merch-suit-val" id="merch-selected-suit"></p>
-                    <h4 id="merch-selected-title"></h4>
-                    <p class="merch-world-line" id="merch-selected-world"></p>
-                    <button class="text-link" type="button" data-action="open-picker">{copy.config.change_card} →</button>
+              )}
+
+              {isApparel && (
+                <div class="pdp-field-row">
+                  <fieldset class="pdp-field">
+                    <legend class="pdp-field__label">{ui.color}</legend>
+                    <div class="pdp-chips">
+                      {(['black', 'inspired'] as const).map((color) => (
+                        <label class="pdp-chip">
+                          <input
+                            class="pdp-visually-hidden"
+                            type="radio"
+                            name="color"
+                            value={color}
+                            checked={color === 'black'}
+                          />
+                          <span>{color === 'black' ? ui.color_black : ui.color_inspired}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                  <fieldset class="pdp-field">
+                    <legend class="pdp-field__label">{ui.size}</legend>
+                    <div class="pdp-chips pdp-chips--tight">
+                      {APPAREL_SIZES.map((size) => (
+                        <label class="pdp-chip pdp-chip--size">
+                          <input class="pdp-visually-hidden" type="radio" name="size" value={size} checked={size === 'M'} />
+                          <span>{size}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                </div>
+              )}
+
+              <div class="pdp-msg">
+                <button
+                  class="pdp-msg__toggle"
+                  type="button"
+                  data-action="toggle-message"
+                  aria-expanded="false"
+                  aria-controls="pdp-msg-panel"
+                  data-label-add={ui.message_add}
+                  data-label-remove={ui.message_remove}
+                >
+                  <span class="pdp-msg__sign" aria-hidden="true">+</span>
+                  <span data-msg-toggle-label>{ui.message_add}</span>
+                  <span class="pdp-msg__free" data-msg-free>{ui.message_free}</span>
+                </button>
+                <div class="pdp-msg__panel" id="pdp-msg-panel" hidden>
+                  <p class="pdp-note">{copy.message_hint}</p>
+                  <div class="pdp-msg__names">
+                    <label class="pdp-input">
+                      <span>{ui.recipient}</span>
+                      <input name="recipient" type="text" autocomplete="off" maxlength="48" placeholder={ui.optional} />
+                    </label>
+                    <label class="pdp-input">
+                      <span>{ui.sender}</span>
+                      <input name="sender" type="text" autocomplete="name" maxlength="48" placeholder={ui.optional} />
+                    </label>
+                  </div>
+                  <label class="pdp-input">
+                    <span>
+                      {ui.message} <output class="pdp-msg__count" data-msg-count>0 / 400</output>
+                    </span>
+                    <textarea name="message" rows="3" maxlength="400" aria-label={ui.message}></textarea>
+                  </label>
+                  <label class="pdp-check">
+                    <input type="checkbox" name="private" />
+                    <span>{ui.private}</span>
+                  </label>
+                  <div class="pdp-pin" data-pin-block hidden>
+                    <p class="pdp-pin__row">
+                      <span class="pdp-field__label">{ui.pin_label}</span>
+                      <strong data-pin-value></strong>
+                      <button class="pdp-link" type="button" data-action="regen-pin">
+                        {ui.pin_regen}
+                      </button>
+                    </p>
+                    <p class="pdp-note">{ui.pin_note}</p>
+                  </div>
+                  <div class="pdp-qr pdp-qr--inline is-pending" data-qr>
+                    <a class="pdp-qr__code" data-qr-link target="_blank" rel="noopener" aria-label={ui.qr_open}>
+                      <canvas width="1" height="1" data-qr-canvas aria-hidden="true"></canvas>
+                    </a>
+                    <div>
+                      <p class="pdp-qr__caption">{ui.qr_caption}</p>
+                      <p class="pdp-qr__lock" data-qr-lock hidden>{ui.qr_locked}</p>
+                      <p class="pdp-qr__error" data-qr-error hidden>{ui.qr_error}</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div id="merch-card-date" data-card-panel="date" hidden>
-                <div class="merch-birth-form">
-                  <label>
-                    <span>{copy.config.birth_month}</span>
-                    <select id="merch-month">
-                      {copy.months.map((name, index) => (
-                        <option value={index + 1} selected={index === 0}>{name}</option>
-                      ))}
-                    </select>
-                  </label>
-                  <label>
-                    <span>{copy.config.birth_day}</span>
-                    <select id="merch-day"></select>
-                  </label>
-                  <button class="btn btn-accent" type="button" data-action="birth-submit">{copy.config.birth_cta}</button>
-                </div>
-                <span id="merch-birth-choose-label" hidden>{copy.config.birth_choose}</span>
-                <div id="merch-birth-result" class="merch-birth__result" hidden></div>
+              <div class="pdp-cta" data-cta>
+                <button class="btn btn-accent pdp-cta__btn" type="submit" data-add>
+                  <span data-add-label>{ui.add}</span>
+                  <span class="pdp-cta__sep" aria-hidden="true">·</span>
+                  <span data-price>{initialPrice}</span>
+                </button>
               </div>
-            </div>
-          )}
+            </form>
+          )
+        }
 
-          {isApparel && (
-            <div class="merch-step reveal">
-              <h3>{copy.config.step3}</h3>
-              <p class="merch-field-label">{copy.config.color}</p>
-              <div class="merch-choice-row">
-                <button class="merch-chip" type="button" data-color="inspired" aria-pressed="false">{copy.config.color_inspired}</button>
-                <button class="merch-chip" type="button" data-color="black" aria-pressed="true">{copy.config.color_black}</button>
-              </div>
-              <p class="merch-field-label">{copy.config.size}</p>
-              <div class="merch-choice-row merch-choice-row--wrap">
-                {sizes.map((size) => (
-                  <button class="merch-chip" type="button" data-size={size} aria-pressed={size === 'M' ? 'true' : 'false'}>{size}</button>
-                ))}
-              </div>
+        {
+          isAlbum && (
+            <div class="pdp-cta">
+              <a class="btn btn-accent pdp-cta__btn" href="#updates">
+                {ui.notify}
+              </a>
             </div>
-          )}
+          )
+        }
 
-          <div class="merch-step reveal">
-            <h3>{copy.config.step4}</h3>
-            <p class="merch-field-label">{copy.config.for_whom}</p>
-            <div class="merch-choice-row">
-              <button class="merch-chip" type="button" data-audience="self" aria-pressed="true">{copy.config.for_self}</button>
-              <button class="merch-chip" type="button" data-audience="gift" aria-pressed="false">{copy.config.for_gift}</button>
+        <p class="pdp-ships">
+          <strong>{copy.ships}</strong>
+          {buyable && <span>{shippingLine}</span>}
+        </p>
+
+        <div class="pdp-details">
+          <details class="pdp-acc">
+            <summary>{copy.about_title}</summary>
+            <div class="pdp-acc__body">
+              {copy.about.map((p) => <p>{p}</p>)}
             </div>
-            <div id="merch-gift-fields" class="merch-fields" hidden>
-              <label>
-                <span>{copy.config.recipient}</span>
-                <input id="merch-recipient" type="text" autocomplete="name" maxlength="48" />
-              </label>
-              <label>
-                <span>{copy.config.sender}</span>
-                <input id="merch-sender" type="text" autocomplete="name" maxlength="48" />
-              </label>
-            </div>
-            <label>
-              <span
-                id="merch-message-label"
-                data-optional={copy.config.message_optional}
-                data-required={copy.config.message}
-              >{copy.config.message_optional}</span>
-              <textarea id="merch-message" rows="4" maxlength="400"></textarea>
-            </label>
-            <p class="merch-field-label">{copy.config.visibility}</p>
-            <div class="merch-choice-row">
-              <button class="merch-chip" type="button" data-visibility="public" aria-pressed="true">{copy.config.visibility_public}</button>
-              <button class="merch-chip" type="button" data-visibility="private" aria-pressed="false">{copy.config.visibility_private}</button>
-            </div>
-            <p class="merch-note">{copy.config.visibility_note}</p>
-            <div id="merch-pin-block" class="merch-pin" hidden>
-              <p class="merch-field-label">{copy.config.pin_label}</p>
-              <div class="merch-pin__row">
-                <strong id="merch-pin-value"></strong>
-                <button class="text-link" type="button" data-action="regen-pin">{copy.config.pin_regen}</button>
-              </div>
-              <p class="merch-note">{copy.config.pin_note}</p>
-            </div>
-          </div>
+          </details>
+          {
+            deckBox && (
+              <details class="pdp-acc">
+                <summary>{ui.box_title}</summary>
+                <dl class="pdp-acc__body pdp-box">
+                  {deckBox.map((row) => (
+                    <div>
+                      <dt>{row.label}</dt>
+                      <dd>{row.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </details>
+            )
+          }
+          <a class="text-link pdp-details__link" href={galleryHref}>{ui.all_cards} →</a>
         </div>
+      </section>
+    </div>
+  </div>
 
-        <aside class="merch-config__stage reveal">
-          <figure
-            class:list={[
-              'merch-garment',
-              {
-                'merch-garment--print': isPrints,
-                'merch-garment--deck': isDeck,
-                'merch-garment--album': isAlbum,
-              },
-            ]}
-            id="merch-garment"
-            data-product={isApparel ? 'hoodie' : isDeck ? 'deck' : isAlbum ? 'album' : 'print'}
-            data-color={isApparel ? 'black' : undefined}
-            data-photo-hoodie-black="/media/merch-hoodie-black.jpg?v=2"
-            data-photo-hoodie-inspired="/media/merch-hoodie-inspired.jpg?v=2"
-            data-photo-tee-black="/media/merch-tee-black.jpg?v=2"
-            data-photo-tee-inspired="/media/merch-tee-inspired.jpg?v=2"
-            data-photo-placeholder={previewProductImage}
-            data-photo-stage={stageMedia?.image}
-          >
-            <img
-              id="merch-garment-photo"
-              class="merch-garment__photo"
-              src={stageSrc}
-              alt={
-                isPrints
-                  ? (defaultCard?.title ?? '')
-                  : isDeck || isAlbum
-                    ? heroAlt
-                    : ''
-              }
-              width={stageWidth}
-              height={stageHeight}
-              decoding="async"
-            />
-            <figcaption class="merch-garment__label" id="merch-garment-label">
-              {stageLabel}
-            </figcaption>
-          </figure>
-
-          <div class="merch-preview" id="merch-preview">
-            <p class="merch-preview__badge">{copy.config.preview_badge}</p>
-            <h3>{copy.config.preview_title}</h3>
-            <p class="merch-note">{copy.config.preview_note}</p>
-            <div class="merch-preview__phone">
-              <img id="merch-preview-art" src="" alt="" width="220" height="314" />
-              <p class="merch-suit-val merch-suit-val--preview" id="merch-preview-suit"></p>
-              <h4 id="merch-preview-title"></h4>
-              <p id="merch-preview-world" class="merch-world-line"></p>
-              <p id="merch-preview-desc" class="merch-preview__desc"></p>
-              <button class="text-link" type="button" data-action="toggle-desc" id="merch-preview-more" hidden>
-                {copy.config.read_more}
-              </button>
-              <p id="merch-preview-created" class="merch-preview__meta"></p>
-              <p id="merch-preview-people" class="merch-preview__meta" hidden></p>
-              <p id="merch-preview-message" class="merch-preview__message" hidden></p>
-              <div id="merch-preview-locked" class="merch-preview__locked" hidden>
-                <p>{copy.config.preview_locked}</p>
-                <label>
-                  <span>{copy.config.preview_pin_prompt}</span>
-                  <input id="merch-preview-pin" type="text" inputmode="numeric" maxlength="4" autocomplete="one-time-code" />
-                </label>
-              </div>
-              <div class="merch-preview__qr">
-                <canvas id="merch-qr" width="128" height="128" aria-hidden="true"></canvas>
-                <p>{copy.config.preview_qr}</p>
-              </div>
-            </div>
-            <p class="merch-ready">{copy.config.ready}</p>
-            <button class="btn btn-accent" type="button" disabled>{copy.config.coming_soon}</button>
-          </div>
-        </aside>
+  {
+    buyable && (
+      <div class="pdp-bar" data-bar hidden>
+        <div class="pdp-bar__text">
+          <span class="pdp-bar__label">{copy.label}</span>
+          <span class="pdp-bar__price" data-price>{initialPrice}</span>
+        </div>
+        <button class="btn btn-accent" type="button" data-action="bar-add">
+          {ui.add}
+        </button>
       </div>
-    </div>
-  </section>
+    )
+  }
 
-  <section class="merch-outro editorial-section" id="merch-outro">
-    <div class="page-shell merch-outro__inner reveal">
-      <p class="merch-outro__line">{copy.outro.line}</p>
-      <a class="text-link" href={galleryHref}>{copy.outro.secondary} →</a>
-    </div>
-  </section>
-
-  {hasCardPick && (
-    <div class="merch-picker" id="merch-picker" role="dialog" aria-modal="true" aria-labelledby="merch-picker-title" aria-hidden="true" hidden>
-      <div class="merch-picker__panel">
-        <div class="merch-picker__bar">
-          <h2 id="merch-picker-title">{copy.picker.title}</h2>
-          <button class="text-link" type="button" data-action="close-picker">{copy.picker.close}</button>
-        </div>
-        <div class="merch-picker__suits">
-          {suits.map((suit) => (
-            <button class:list={['merch-chip', { 'is-active': suit.id === '' }]} type="button" data-picker-suit={suit.id}>
-              {suit.label}
+  {
+    hasCardPick && (
+      <div
+        class="merch-picker"
+        id="merch-picker"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="merch-picker-title"
+        hidden
+      >
+        <div class="merch-picker__panel">
+          <div class="merch-picker__bar">
+            <h2 id="merch-picker-title">{ui.picker_title}</h2>
+            <button class="pdp-link" type="button" data-action="close-picker">
+              {ui.picker_close}
             </button>
-          ))}
+          </div>
+          <div class="merch-picker__suits">
+            {suits.map((suit) => (
+              <button
+                class:list={['pdp-suit', { 'is-active': suit.id === '' }]}
+                type="button"
+                data-picker-suit={suit.id}
+                aria-pressed={suit.id === '' ? 'true' : 'false'}
+              >
+                {suit.label}
+              </button>
+            ))}
+          </div>
+          <div class="merch-picker__grid" data-picker-grid></div>
         </div>
-        <div class="merch-picker__grid" id="merch-picker-grid"></div>
       </div>
-    </div>
-  )}
+    )
+  }
 
   <script id="merch-cards" type="application/json" set:html={cardsJson} />
   <script id="merch-ui" type="application/json" set:html={uiJson} />
-  {deckJsonLd && <script type="application/ld+json" set:html={deckJsonLd} />}
+  {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
 </main>
 <BuyerFooter lang={lang} />
 
@@ -390,595 +632,914 @@ const uiJson = JSON.stringify({
 </script>
 
 <style>
-  .merch {
+  .pdp {
     background: var(--paper);
     color: var(--ink);
   }
 
-  .merch [hidden] {
+  .pdp [hidden] {
     display: none !important;
   }
 
-  .merch-back {
-    display: inline-flex;
-    grid-area: back;
-    justify-self: start;
-  }
-
-  .merch-hero {
-    display: grid;
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-    grid-template-areas:
-      'back back'
-      'copy visual';
-    column-gap: clamp(1.5rem, 4vw, 3rem);
-    row-gap: 1rem;
-    align-items: start;
-    padding-top: clamp(5.25rem, 11vw, 6.75rem);
-    padding-bottom: clamp(2.5rem, 6vw, 4rem);
-  }
-
-  .merch-hero__copy {
-    grid-area: copy;
-    align-self: start;
-    margin: 0;
+  .pdp-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
     padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
-  .merch-hero__copy .section-label {
-    margin: 0;
+  .pdp__shell {
+    padding-top: calc(72px + clamp(0.85rem, 2vw, 1.35rem));
+    padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
   }
 
-  .merch-hero__visual {
-    grid-area: visual;
-    align-self: start;
-    margin: 0;
+  .pdp__back {
+    display: inline-flex;
+    margin-bottom: clamp(0.85rem, 2vw, 1.25rem);
   }
 
-  .merch-hero__title {
-    margin: 0.85rem 0 0;
-    font-family: var(--display);
-    font-size: clamp(2.6rem, 6vw, 5.2rem);
-    font-weight: 400;
-    letter-spacing: -0.045em;
-    line-height: 0.95;
+  .pdp__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    grid-template-areas: 'buy media';
+    gap: clamp(1.75rem, 4.5vw, 4.5rem);
+    align-items: start;
   }
 
-  .merch-hero__sub {
-    margin: 1.1rem 0 0;
-    max-width: 28rem;
-    font-family: var(--display);
-    font-size: clamp(1.2rem, 2vw, 1.65rem);
-    line-height: 1.25;
-  }
-
-  .merch-hero__concept {
+  .pdp__media {
+    grid-area: media;
+    position: sticky;
+    top: calc(72px + 1rem);
     display: grid;
     gap: 0.75rem;
-    margin-top: 1.15rem;
-    max-width: 34rem;
+    min-width: 0;
   }
 
-  .merch-hero__concept .merch-prose {
-    margin: 0;
+  .pdp__buy {
+    grid-area: buy;
+    display: grid;
+    gap: 0;
+    min-width: 0;
   }
 
-  .merch-prose {
-    margin: 1rem 0 0;
-    max-width: 38rem;
-    color: var(--muted);
-    font-size: clamp(1rem, 1.3vw, 1.12rem);
-    line-height: 1.7;
+  /* Gallery */
+  .pdp-gallery {
+    display: grid;
+    gap: 0.65rem;
+    width: min(100%, calc((100svh - 72px - 11rem) * var(--ratio)));
+    margin-inline: auto;
   }
 
-  .merch-suit-val {
-    margin: 0;
-    padding-top: 0.08em;
-    color: var(--ink);
-    font-family: var(--display);
-    font-size: clamp(1.55rem, 2.4vw, 2rem);
-    line-height: 1.25;
-  }
-
-  .merch-suit-val[data-suit='hearts'],
-  .merch-suit-val[data-suit='diamonds'] {
-    color: var(--accent);
-  }
-
-  .merch-suit-val :global(.merch-suit-symbol) {
-    display: inline-block;
-    padding-top: 0.1em;
-    line-height: 1;
-    vertical-align: -0.06em;
-  }
-
-  .merch-suit-val :global(.merch-suit-rank) {
-    margin-left: 0.12em;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .merch-suit-val--preview {
-    font-size: 1.45rem;
-  }
-
-  .merch-world-line {
-    margin: 0;
-    color: var(--muted);
-    font: 600 0.62rem/1.7 var(--sans);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-  }
-
-  .merch-hero__actions {
+  .pdp-gallery__track {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.85rem;
-    margin-top: 1.6rem;
+    aspect-ratio: var(--ratio);
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    background: var(--paper-deep);
+    outline-offset: 3px;
   }
 
-  .merch-hero__visual {
+  .pdp-gallery__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pdp-gallery__slide {
+    position: relative;
+    flex: 0 0 100%;
     margin: 0;
+    overflow: hidden;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
-  .merch-hero__visual img {
+  .pdp-gallery__slide > img {
     display: block;
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
   }
 
-  .merch-section-title {
-    max-width: none;
-    white-space: normal;
-    font-size: clamp(2rem, 4.4vw, 3.8rem);
-    line-height: 1;
+  .pdp-gallery__slide[data-fit='contain'] > img {
+    object-fit: contain;
+    padding: clamp(0.75rem, 3%, 1.5rem);
   }
 
-  .merch-box {
-    padding-block: clamp(2.5rem, 6vw, 4rem);
-    border-top: 1px solid var(--line);
+  .pdp-gallery__thumbs {
+    display: flex;
+    gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
   }
 
-  .merch-box__title {
-    margin: 0 0 1.25rem;
-    font-family: var(--display);
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    font-weight: 400;
+  .pdp-gallery__thumb {
+    flex: 0 0 auto;
+    width: 3.5rem;
+    height: 3.5rem;
+    padding: 0;
+    border: 1px solid var(--line);
+    background: var(--paper-deep);
+    cursor: pointer;
+    opacity: 0.7;
+    transition:
+      opacity 160ms ease,
+      border-color 160ms ease;
   }
 
-  .merch-box__list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0 clamp(1.5rem, 4vw, 3rem);
+  .pdp-gallery__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pdp-gallery__thumb:hover,
+  .pdp-gallery__thumb[aria-current='true'] {
+    opacity: 1;
+    border-color: var(--ink);
+  }
+
+  .pdp__caption {
+    margin: 0;
+    min-height: 1.5em;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  /* Deck: size comparison and card fan */
+  .pdp-scale {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 9%;
+    padding: 0 8% 15%;
+  }
+
+  .pdp-scale__card {
+    position: relative;
+    display: block;
+    transition: opacity 200ms ease;
+  }
+
+  .pdp-scale__card--xl {
+    height: 72%;
+  }
+
+  .pdp-scale__card--standard {
+    height: 48%;
+  }
+
+  .pdp-scale__card img {
+    display: block;
+    height: 100%;
+    width: auto;
+    aspect-ratio: 7 / 12;
+    object-fit: cover;
+    border-radius: 4%/2.4%;
+    box-shadow:
+      0 1px 2px rgba(23, 23, 20, 0.18),
+      0 18px 36px -14px rgba(23, 23, 20, 0.45);
+  }
+
+  .pdp-scale__card--standard img {
+    aspect-ratio: 5 / 8;
+  }
+
+  .pdp-scale__card span {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    left: 50%;
+    color: var(--ink);
+    font: 600 0.66rem/1.3 var(--sans);
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
+  .pdp-scale[data-scale-pick='xl'] [data-scale='standard'],
+  .pdp-scale[data-scale-pick='standard'] [data-scale='xl'] {
+    opacity: 0.35;
+  }
+
+  .pdp-faces {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8%;
+  }
+
+  .pdp-faces img {
+    height: 78%;
+    width: auto;
+    aspect-ratio: 920 / 1320;
+    margin-inline: -4%;
+    border-radius: 3%/2%;
+    box-shadow: 0 18px 36px -14px rgba(23, 23, 20, 0.45);
+  }
+
+  .pdp-faces img:nth-child(1) {
+    transform: rotate(-7deg) translateY(3%);
+  }
+
+  .pdp-faces img:nth-child(2) {
+    position: relative;
+    z-index: 1;
+  }
+
+  .pdp-faces img:nth-child(3) {
+    transform: rotate(7deg) translateY(3%);
+  }
+
+  /* Buy column */
+  .pdp__buy .section-label {
     margin: 0;
   }
 
-  .merch-box__row {
-    display: grid;
-    grid-template-columns: 8.5rem minmax(0, 1fr);
-    gap: 1rem;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--line);
+  .pdp__title {
+    margin: 0.55rem 0 0;
+    font-family: var(--display);
+    font-size: clamp(1.9rem, 3.1vw, 2.75rem);
+    font-weight: 400;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    text-wrap: balance;
   }
 
-  .merch-box__row dt {
+  .pdp__sub {
+    margin: 0.7rem 0 0;
+    max-width: 30rem;
     color: var(--muted);
-    font: 600 0.68rem/1.6 var(--sans);
+    font-size: clamp(1rem, 1.25vw, 1.08rem);
+    line-height: 1.55;
+  }
+
+  .pdp__price {
+    margin: 1rem 0 0;
+    font-family: var(--display);
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .pdp-form {
+    display: grid;
+    gap: 1.15rem;
+    margin-top: 1.25rem;
+  }
+
+  .pdp-field {
+    display: grid;
+    gap: 0.55rem;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .pdp-field__label {
+    margin: 0;
+    padding: 0;
+    color: var(--ink);
+    font: 600 0.68rem/1.4 var(--sans);
     letter-spacing: 0.12em;
     text-transform: uppercase;
   }
 
-  .merch-box__row dd {
-    margin: 0;
-    line-height: 1.5;
-  }
-
-  .merch-box__note {
-    margin: 1.25rem 0 0;
-    color: var(--muted);
-  }
-
-  @media (max-width: 760px) {
-    .merch-box__list {
-      grid-template-columns: 1fr;
-    }
-
-    .merch-box__row {
-      grid-template-columns: 7rem minmax(0, 1fr);
-    }
-  }
-
-  .merch-section-header {
-    max-width: 42rem;
-    margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
-  }
-
-  .merch-config {
-    background: var(--paper-deep);
-  }
-
-  .merch-config__layout {
+  .pdp-field-row {
     display: grid;
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-    gap: clamp(1.5rem, 3.5vw, 2.75rem);
-    align-items: start;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1.35rem 1.75rem;
   }
 
-  .merch-config__steps {
+  /* Deck formats */
+  .pdp-formats {
     display: grid;
-    gap: 1.35rem;
-  }
-
-  .merch-step {
-    display: grid;
-    gap: 0.75rem;
-    padding: clamp(1.1rem, 2.4vw, 1.5rem);
-    border: 1px solid var(--line);
-    background: var(--white);
-  }
-
-  .merch-step h3 {
-    margin: 0;
-    font-family: var(--display);
-    font-size: 1.35rem;
-    font-weight: 400;
-  }
-
-  .merch-choice-row {
-    display: flex;
-    flex-wrap: wrap;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.5rem;
   }
 
-  .merch-chip {
-    min-height: 2.55rem;
-    padding: 0.45rem 0.85rem;
-    border: 1px solid var(--line);
-    background: transparent;
-    color: var(--ink);
+  .pdp-format {
+    position: relative;
+    display: block;
     cursor: pointer;
-    font: 500 0.82rem/1 var(--sans);
-    letter-spacing: 0.04em;
   }
 
-  .merch-chip.is-active,
-  .merch-chip[aria-pressed='true'] {
+  .pdp-format__box {
+    display: grid;
+    align-content: start;
+    gap: 0.15rem;
+    height: 100%;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid var(--line);
+    background: var(--white);
+    transition:
+      border-color 160ms ease,
+      box-shadow 160ms ease;
+  }
+
+  .pdp-format:hover .pdp-format__box {
+    border-color: var(--muted);
+  }
+
+  .pdp-format input:checked + .pdp-format__box {
+    border-color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--ink);
+  }
+
+  .pdp-format input:focus-visible + .pdp-format__box {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .pdp-format__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .pdp-format__name {
+    font-family: var(--display);
+    font-size: 1.12rem;
+    line-height: 1.2;
+  }
+
+  .pdp-format__price {
+    font-family: var(--display);
+    font-size: 1.12rem;
+    white-space: nowrap;
+  }
+
+  .pdp-format__spec,
+  .pdp-format__note {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+
+  .pdp-format__note {
+    font-style: italic;
+  }
+
+  .pdp-format__badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.2rem;
+  }
+
+  .pdp-format__badge {
+    padding: 0.2rem 0.4rem;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    color: var(--accent);
+    font: 600 0.6rem/1.2 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Chips */
+  .pdp-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .pdp-chips--tight {
+    gap: 0.3rem;
+  }
+
+  .pdp-chip {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .pdp-chip > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.5rem;
+    padding: 0.45rem 0.8rem;
+    border: 1px solid var(--line);
+    background: var(--white);
+    color: var(--ink);
+    font: 500 0.82rem/1 var(--sans);
+    letter-spacing: 0.02em;
+    transition:
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease;
+  }
+
+  .pdp-chip--size > span {
+    justify-content: center;
+    min-width: 2.4rem;
+    padding-inline: 0.4rem;
+  }
+
+  .pdp-chip:hover > span {
+    border-color: var(--muted);
+  }
+
+  .pdp-chip input:checked + span {
     border-color: var(--ink);
     background: var(--ink);
     color: var(--paper);
   }
 
-  .merch-birth-form,
-  .merch-fields label,
-  .merch-step > label {
+  .pdp-chip input:focus-visible + span {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .pdp-chip__price {
+    opacity: 0.7;
+  }
+
+  /* Card pick */
+  .pdp-card {
     display: grid;
-    gap: 0.35rem;
-  }
-
-  .merch-birth-form {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
-    align-items: end;
-  }
-
-  .merch-birth-form .btn {
-    grid-column: 1 / -1;
-    justify-self: start;
-  }
-
-  .merch-birth-form span,
-  .merch-fields label span,
-  .merch-step > label > span {
-    color: var(--muted);
-    font: 600 0.68rem/1.4 var(--sans);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .merch-birth-form select,
-  .merch-fields input,
-  .merch-step textarea,
-  .merch-preview__locked input {
-    width: 100%;
-    min-height: 2.75rem;
-    padding: 0.65rem 0.8rem;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    color: var(--ink);
-    font: inherit;
-  }
-
-  .merch-step textarea {
-    resize: vertical;
-    min-height: 6.5rem;
-  }
-
-  .merch-birth__result {
-    display: grid;
-    gap: 1rem;
-    margin-top: 0.35rem;
-  }
-
-  .merch-birth__card {
-    display: grid;
-    grid-template-columns: 6.5rem minmax(0, 1fr);
-    gap: 0.85rem;
-    align-items: start;
-    padding-top: 0.85rem;
-    border-top: 1px solid var(--line);
-  }
-
-  .merch-birth__card img,
-  .merch-selected img {
-    width: 100%;
-    height: auto;
-  }
-
-  .merch-birth__card h4,
-  .merch-selected h4 {
-    margin: 0.2rem 0 0;
-    font-family: var(--display);
-    font-size: 1.35rem;
-    font-weight: 400;
-  }
-
-  .merch-selected .merch-world-line,
-  .merch-birth__card .merch-world-line {
-    margin-top: 0.15rem;
-  }
-
-  .merch-preview__phone .text-link {
-    margin-top: 0.15rem;
-  }
-
-  .merch-birth__summary {
-    font-size: 0.95rem;
-  }
-
-  .merch-selected-empty {
-    display: grid;
-    gap: 0.75rem;
-    justify-items: start;
-  }
-
-  .merch-selected {
-    display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr);
+    grid-template-columns: 3.75rem minmax(0, 1fr) auto;
     gap: 0.85rem;
     align-items: center;
-  }
-
-  .merch-field-label {
-    margin: 0.35rem 0 0;
-    color: var(--ink);
-    font: 600 0.68rem/1.4 var(--sans);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .merch-fields {
-    display: grid;
-    gap: 0.75rem;
-  }
-
-  .merch-note,
-  .merch-muted {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.92rem;
-    line-height: 1.55;
-  }
-
-  .merch-pin__row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .merch-pin strong {
-    font-family: var(--display);
-    font-size: 1.8rem;
-    font-weight: 400;
-    letter-spacing: 0.18em;
-  }
-
-  .merch-config__stage {
-    display: grid;
-    gap: 1.25rem;
-    position: sticky;
-    top: 5.5rem;
-  }
-
-  .merch-garment {
-    position: relative;
-    margin: 0;
-    border: 1px solid var(--line);
-    background: #8a8a86;
-    overflow: hidden;
-  }
-
-  .merch-garment__photo {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    object-position: center center;
-    background: #8a8a86;
-  }
-
-  .merch-garment--print {
-    background: #efece4;
-  }
-
-  .merch-garment--print .merch-garment__photo {
-    aspect-ratio: 5 / 7;
-    object-fit: contain;
-    object-position: center center;
-    background: #efece4;
-  }
-
-  .merch-garment--deck,
-  .merch-garment--album {
-    background: transparent;
-    border: 0;
-  }
-
-  .merch-garment--deck .merch-garment__photo {
-    aspect-ratio: 3 / 2;
-    object-fit: contain;
-    object-position: center center;
-    background: transparent;
-  }
-
-  .merch-garment--album .merch-garment__photo {
-    aspect-ratio: 1024 / 724;
-    object-fit: contain;
-    object-position: center center;
-    background: transparent;
-  }
-
-  .merch[data-kind='deck'] .merch-hero__visual img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
-    object-fit: contain;
-  }
-
-  .merch[data-kind='album'] .merch-hero__visual img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 724 / 1024;
-    object-fit: contain;
-  }
-
-  .merch[data-kind='deck'] #merch-preview-art {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 3 / 2;
-    object-fit: contain;
-  }
-
-  .merch[data-kind='album'] #merch-preview-art {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 724 / 1024;
-    object-fit: contain;
-  }
-
-  .merch-garment__label {
-    position: absolute;
-    top: 0.85rem;
-    left: 0.85rem;
-    z-index: 2;
-    padding: 0.3rem 0.5rem;
-    background: rgba(23, 23, 20, 0.55);
-    color: rgba(243, 240, 232, 0.92);
-    font: 600 0.68rem/1 var(--sans);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-
-  .merch-preview {
-    display: grid;
-    gap: 0.85rem;
-    padding: 1.15rem;
+    padding: 0.6rem;
     border: 1px solid var(--line);
     background: var(--white);
   }
 
-  .merch-preview__badge {
-    margin: 0;
-    color: var(--accent);
-    font: 600 0.68rem/1 var(--sans);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-  }
-
-  .merch-preview h3 {
-    margin: 0;
-    font-family: var(--display);
-    font-size: 1.55rem;
-    font-weight: 400;
-  }
-
-  .merch-preview__phone {
-    display: grid;
-    gap: 0.55rem;
-    justify-items: center;
-    padding: 1.1rem 1rem 1.25rem;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    text-align: center;
-  }
-
-  .merch-preview__phone img {
-    width: min(100%, 9.5rem);
-    height: auto;
-  }
-
-  .merch-preview__phone h4 {
-    margin: 0.35rem 0 0;
-    font-family: var(--display);
-    font-size: 1.25rem;
-    font-weight: 400;
-  }
-
-  .merch-preview__world,
-  .merch-preview__meta {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.85rem;
-  }
-
-  .merch-preview__desc,
-  .merch-preview__message {
-    margin: 0;
-    color: var(--ink);
-    font-size: 0.92rem;
-    line-height: 1.55;
-  }
-
-  .merch-preview__locked {
-    display: grid;
-    gap: 0.45rem;
+  .pdp-card__art {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px dashed var(--line);
+    height: auto;
+    aspect-ratio: 920 / 1320;
+    object-fit: cover;
   }
 
-  .merch-preview__qr {
+  .pdp-card__text {
     display: grid;
-    gap: 0.4rem;
-    justify-items: center;
-    margin-top: 0.35rem;
+    gap: 0.1rem;
+    min-width: 0;
   }
 
-  .merch-preview__qr p,
-  .merch-ready {
+  .pdp-card__suit,
+  .pdp-card__title,
+  .pdp-card__world {
     margin: 0;
-    color: var(--muted);
-    font-size: 0.82rem;
   }
 
-  .merch-outro {
-    padding-block: clamp(2.5rem, 5vw, 3.75rem);
-  }
-
-  .merch-outro__inner {
-    display: grid;
-    gap: 0.85rem;
-    justify-items: start;
-  }
-
-  .merch-outro__line {
-    margin: 0;
+  .pdp-card__suit {
     font-family: var(--display);
-    font-size: clamp(1.45rem, 3vw, 2.1rem);
-    font-weight: 400;
+    font-size: 1.1rem;
+    line-height: 1.1;
+  }
+
+  .pdp-card__suit[data-suit='hearts'],
+  .pdp-card__suit[data-suit='diamonds'] {
+    color: var(--accent);
+  }
+
+  .pdp-card__title {
+    font-family: var(--display);
+    font-size: 1.12rem;
     line-height: 1.2;
   }
 
+  .pdp-card__world {
+    color: var(--muted);
+    font: 600 0.6rem/1.6 var(--sans);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .pdp-card__actions {
+    display: grid;
+    gap: 0.4rem;
+    justify-items: end;
+    text-align: right;
+  }
+
+  .pdp-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--accent);
+    cursor: pointer;
+    font: 600 0.68rem/1.3 var(--sans);
+    letter-spacing: 0.1em;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-transform: uppercase;
+    text-underline-offset: 0.25em;
+  }
+
+  .pdp-link:hover {
+    color: var(--accent-dark);
+  }
+
+  .pdp-birth {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.85rem;
+    border: 1px dashed var(--line);
+  }
+
+  .pdp-birth__form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 5.5rem auto;
+    gap: 0.6rem;
+    align-items: end;
+  }
+
+  .pdp-birth__form label,
+  .pdp-input {
+    display: grid;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  .pdp-birth__form label > span,
+  .pdp-input > span {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    color: var(--muted);
+    font: 600 0.64rem/1.4 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .pdp-birth__form select,
+  .pdp-input input,
+  .pdp-input textarea {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 0;
+    background: var(--white);
+    color: var(--ink);
+    font: inherit;
+    font-size: 1rem;
+  }
+
+  .pdp-input input::placeholder {
+    color: color-mix(in srgb, var(--muted) 70%, transparent);
+  }
+
+  .pdp-input textarea {
+    min-height: 5.5rem;
+    resize: vertical;
+  }
+
+  .pdp-birth__form .btn {
+    min-height: 2.75rem;
+    padding-inline: 0.9rem;
+  }
+
+  .pdp-birth__result {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .pdp-birth__result:empty {
+    display: none;
+  }
+
+  .pdp-birth__result :global(.pdp-birth__card) {
+    display: grid;
+    grid-template-columns: 3.25rem minmax(0, 1fr) auto;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .pdp-birth__result :global(.pdp-birth__card img) {
+    width: 100%;
+    height: auto;
+  }
+
+  .pdp-birth__result :global(.pdp-birth__card p) {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 1.05rem;
+    line-height: 1.2;
+  }
+
+  .pdp-birth__result :global(.pdp-birth__note) {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  /* Message */
+  .pdp-msg {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pdp-msg__toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.5rem 0;
+    border: 0;
+    background: none;
+    color: var(--ink);
+    cursor: pointer;
+    font: 500 0.95rem/1.3 var(--sans);
+    text-align: left;
+  }
+
+  .pdp-msg__sign {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 1px solid var(--ink);
+    border-radius: 50%;
+    font: 400 1rem/1 var(--sans);
+    transition: transform 180ms ease;
+  }
+
+  .pdp-msg__toggle[aria-expanded='true'] .pdp-msg__sign {
+    transform: rotate(45deg);
+  }
+
+  .pdp-msg__free {
+    margin-left: auto;
+    color: var(--accent);
+    font: 600 0.62rem/1 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .pdp-msg__panel {
+    display: grid;
+    gap: 0.85rem;
+    padding-bottom: 1.1rem;
+  }
+
+  .pdp-msg__names {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+  }
+
+  .pdp-msg__count {
+    color: var(--muted);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pdp-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    cursor: pointer;
+    font-size: 0.92rem;
+  }
+
+  .pdp-check input {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0;
+    accent-color: var(--ink);
+  }
+
+  .pdp-pin {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  .pdp-pin__row {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin: 0;
+  }
+
+  .pdp-pin strong {
+    font-family: var(--display);
+    font-size: 1.5rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+  }
+
+  .pdp-note {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+
+  /* QR */
+  .pdp-qr {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .pdp-qr__code {
+    flex: 0 0 auto;
+    display: block;
+    width: 7rem;
+    height: 7rem;
+    background: #fff;
+    transition: opacity 0.2s ease;
+  }
+
+  .pdp-qr__code:not([href]) {
+    pointer-events: none;
+  }
+
+  .pdp-qr__code:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .pdp-qr.is-pending .pdp-qr__code {
+    opacity: 0.25;
+  }
+
+  .pdp-qr canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+
+  .pdp-qr__error {
+    margin-top: 0.25rem !important;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.35;
+  }
+
+  .pdp-qr p {
+    margin: 0;
+  }
+
+  .pdp-qr__caption {
+    font-family: var(--display);
+    font-size: 1.05rem;
+    line-height: 1.25;
+  }
+
+  .pdp-qr__lock {
+    margin-top: 0.25rem !important;
+    color: var(--accent);
+    font: 600 0.62rem/1.4 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .pdp-qr--media {
+    justify-content: center;
+    padding: 0.75rem;
+    border: 1px solid var(--line);
+    background: var(--white);
+  }
+
+  .pdp-qr--inline {
+    display: none;
+  }
+
+  /* CTA */
+  .pdp-cta {
+    margin-top: 0.15rem;
+  }
+
+  .pdp__buy > .pdp-cta {
+    margin-top: 1.5rem;
+  }
+
+  .pdp-cta__btn {
+    width: 100%;
+    min-height: 3.4rem;
+    gap: 0.6rem;
+    font-size: 0.78rem;
+  }
+
+  .pdp-cta__btn.is-done {
+    border-color: var(--ink);
+    background: var(--ink);
+  }
+
+  .pdp-cta__sep {
+    opacity: 0.6;
+  }
+
+  .pdp-ships {
+    display: grid;
+    gap: 0.15rem;
+    margin: 0.85rem 0 0;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.5;
+  }
+
+  .pdp-ships strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* Details */
+  .pdp-details {
+    display: grid;
+    margin-top: 1.75rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .pdp-acc {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .pdp-acc summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 3rem;
+    cursor: pointer;
+    font: 600 0.7rem/1.4 var(--sans);
+    letter-spacing: 0.12em;
+    list-style: none;
+    text-transform: uppercase;
+  }
+
+  .pdp-acc summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .pdp-acc summary::after {
+    content: '+';
+    font: 400 1.2rem/1 var(--sans);
+    transition: transform 180ms ease;
+  }
+
+  .pdp-acc[open] summary::after {
+    transform: rotate(45deg);
+  }
+
+  .pdp-acc__body {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding-bottom: 1.1rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  .pdp-acc__body p {
+    margin: 0;
+  }
+
+  .pdp-box {
+    gap: 0;
+  }
+
+  .pdp-box div {
+    display: grid;
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding: 0.45rem 0;
+  }
+
+  .pdp-box dt {
+    color: var(--ink);
+    font: 600 0.64rem/1.9 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .pdp-box dd {
+    margin: 0;
+  }
+
+  .pdp-details__link {
+    justify-self: start;
+    margin-top: 1.1rem;
+  }
+
+  /* Mobile buy bar */
+  .pdp-bar {
+    display: none;
+  }
+
+  /* Card picker */
   .merch-picker {
     position: fixed;
     inset: 0;
@@ -1017,19 +1578,35 @@ const uiJson = JSON.stringify({
   .merch-picker__suits {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.45rem;
+    gap: 0.4rem;
+  }
+
+  .pdp-suit {
+    min-height: 2.4rem;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    font: 500 0.8rem/1 var(--sans);
+  }
+
+  .pdp-suit.is-active {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
   }
 
   .merch-picker__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
     gap: 0.65rem;
-    overflow: auto;
     min-height: 0;
-    padding-right: 0.2rem;
+    overflow: auto;
+    padding: 0.2rem;
   }
 
-  .merch-picker__card {
+  .merch-picker__grid :global(.merch-picker__card) {
     display: grid;
     gap: 0.35rem;
     padding: 0;
@@ -1040,53 +1617,142 @@ const uiJson = JSON.stringify({
     text-align: left;
   }
 
-  .merch-picker__card img {
+  .merch-picker__grid :global(.merch-picker__card img) {
     width: 100%;
     height: auto;
     border: 1px solid var(--line);
   }
 
-  .merch-picker__card span {
+  .merch-picker__grid :global(.merch-picker__card span) {
     font-size: 0.78rem;
     line-height: 1.3;
   }
 
-  .merch-picker__card.is-selected,
-  .merch-picker__card:hover,
-  .merch-picker__card:focus-visible {
+  .merch-picker__grid :global(.merch-picker__card.is-selected),
+  .merch-picker__grid :global(.merch-picker__card:hover),
+  .merch-picker__grid :global(.merch-picker__card:focus-visible) {
     border-color: var(--ink);
   }
 
-  .merch button.text-link {
-    justify-self: start;
-    padding: 0;
-    border: 0;
-    background: none;
-    color: var(--accent);
-    cursor: pointer;
-    font: inherit;
-    text-align: left;
-  }
-
   @media (max-width: 900px) {
-    .merch-hero {
-      grid-template-columns: 1fr;
+    .pdp__grid {
+      grid-template-columns: minmax(0, 1fr);
       grid-template-areas:
-        'back'
-        'visual'
-        'copy';
+        'media'
+        'buy';
+      gap: 1.5rem;
     }
 
-    .merch-config__layout {
-      grid-template-columns: 1fr;
-    }
-
-    .merch-config__stage {
+    .pdp__media {
       position: static;
     }
 
-    .merch-birth-form {
+    .pdp-gallery {
+      width: 100%;
+    }
+
+    .pdp-qr--media {
+      display: none !important;
+    }
+
+    .pdp-qr--inline {
+      display: flex;
+    }
+
+    .pdp-bar {
+      position: fixed;
+      inset: auto 0 0;
+      z-index: 85;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.6rem var(--page-pad) calc(0.6rem + env(safe-area-inset-bottom, 0px));
+      border-top: 1px solid var(--line);
+      background: color-mix(in srgb, var(--paper) 96%, transparent);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 -10px 30px -18px rgba(23, 23, 20, 0.35);
+      animation: pdp-bar-in 200ms ease;
+    }
+
+    .pdp-bar__text {
+      display: grid;
+      min-width: 0;
+    }
+
+    .pdp-bar__label {
+      overflow: hidden;
+      color: var(--muted);
+      font: 600 0.62rem/1.4 var(--sans);
+      letter-spacing: 0.12em;
+      text-overflow: ellipsis;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .pdp-bar__price {
+      font-family: var(--display);
+      font-size: 1.3rem;
+      line-height: 1.1;
+    }
+
+    .pdp-bar .btn {
+      flex: 0 0 auto;
+      min-height: 2.9rem;
+    }
+
+    :global(body:has(.pdp-bar)) {
+      padding-bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+    }
+
+    :global(body.dialog-open) .pdp-bar,
+    :global(body.menu-open) .pdp-bar {
+      display: none !important;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .pdp-formats {
       grid-template-columns: 1fr;
+    }
+
+    .pdp-field-row {
+      grid-template-columns: 1fr;
+    }
+
+    .pdp-card {
+      grid-template-columns: 3.25rem minmax(0, 1fr);
+    }
+
+    .pdp-card__actions {
+      grid-column: 1 / -1;
+      grid-auto-flow: column;
+      justify-content: start;
+      gap: 1.25rem;
+    }
+
+    .pdp-birth__form {
+      grid-template-columns: minmax(0, 1fr) 5rem;
+    }
+
+    .pdp-birth__form .btn {
+      grid-column: 1 / -1;
+    }
+
+    .pdp-msg__names {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @keyframes pdp-bar-in {
+    from {
+      transform: translateY(100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pdp-bar {
+      animation: none;
     }
   }
 </style>

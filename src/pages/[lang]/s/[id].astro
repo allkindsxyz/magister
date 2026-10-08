@@ -1,0 +1,757 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import Nav from '../../../components/Nav.astro';
+import Footer from '../../../components/Footer.astro';
+import type { Lang } from '../../../i18n/utils';
+import { getLocalizedPath } from '../../../i18n/utils';
+import { getPiece, toPublicPiece } from '../../../lib/piecesStore';
+import { getPreview } from '../../../lib/previewStore';
+
+export const prerender = false;
+
+const { lang: langParam, id } = Astro.params;
+
+if (!langParam || !['en', 'ru', 'be', 'zh'].includes(langParam) || !id) {
+  return Astro.redirect('/en/');
+}
+
+const lang = langParam as Lang;
+const stored = await getPiece(id);
+const preview = stored ? null : getPreview(id);
+const piece = stored ?? preview;
+const isPreview = Boolean(preview);
+if (!piece) {
+  return new Response(null, { status: 404, statusText: 'Not Found' });
+}
+
+const pub = toPublicPiece(piece, false);
+const home = getLocalizedPath('/', lang);
+
+const productFallback: Record<string, Record<Lang, string>> = {
+  hoodie: { en: 'Hoodie', ru: 'Худи', be: 'Худзі', zh: '卫衣' },
+  tee: { en: 'T-shirt', ru: 'Футболка', be: 'Футболка', zh: 'T恤' },
+  print: { en: 'Art print', ru: 'Арт-принт', be: 'Арт-прынт', zh: '艺术版画' },
+  deck: { en: 'The Deck', ru: 'Колода', be: 'Калода', zh: '牌组' },
+  album: { en: 'Art album', ru: 'Арт-альбом', be: 'Арт-альбом', zh: '画册' },
+};
+
+const copy = {
+  en: {
+    from: 'From',
+    to: 'To',
+    message: 'Message',
+    order_date: 'Order date',
+    enter_pin: 'Enter PIN',
+    pin_prompt: 'PIN',
+    unlock: 'Unlock',
+    wrong_pin: 'Wrong PIN',
+    cancel_pin: 'Cancel',
+    claim_title: 'Make this message yours',
+    claim_body:
+      'The PIN on the tag can be seen by anyone who handled the piece. Set your own PIN so only you can open the message again.',
+    claim_new: 'New PIN',
+    claim_confirm: 'Confirm PIN',
+    claim_save: 'Set new PIN',
+    claim_skip: 'Not now',
+    claim_mismatch: 'PINs do not match',
+    claim_same: 'Choose a different PIN than the printed one',
+    claim_fail: 'Could not update PIN',
+    claim_done: 'PIN updated. Remember it — the printed one no longer works.',
+    short: 'About the card',
+    full: 'Full story',
+    missing_card: 'Magister piece',
+    home: 'Magister Cards',
+  },
+  ru: {
+    from: 'От кого',
+    to: 'Кому',
+    message: 'Сообщение',
+    order_date: 'Дата заказа',
+    enter_pin: 'Ввести PIN',
+    pin_prompt: 'PIN',
+    unlock: 'Открыть',
+    wrong_pin: 'Неверный PIN',
+    cancel_pin: 'Отмена',
+    claim_title: 'Сделайте сообщение своим',
+    claim_body:
+      'PIN на бирке видит каждый, кто держал вещь. Задайте свой — и снова открыть послание сможете только вы.',
+    claim_new: 'Новый PIN',
+    claim_confirm: 'Повторите PIN',
+    claim_save: 'Сохранить PIN',
+    claim_skip: 'Не сейчас',
+    claim_mismatch: 'PIN не совпадают',
+    claim_same: 'Выберите PIN, отличный от напечатанного',
+    claim_fail: 'Не удалось сменить PIN',
+    claim_done: 'PIN обновлён. Запомните его — напечатанный больше не действует.',
+    short: 'О карте',
+    full: 'Полное описание',
+    missing_card: 'Вещь Magister',
+    home: 'Magister Cards',
+  },
+  be: {
+    from: 'Ад каго',
+    to: 'Каму',
+    message: 'Паведамленне',
+    order_date: 'Дата заказу',
+    enter_pin: 'Увесці PIN',
+    pin_prompt: 'PIN',
+    unlock: 'Адкрыць',
+    wrong_pin: 'Няправільны PIN',
+    cancel_pin: 'Скасаваць',
+    claim_title: 'Зрабіце паведамленне сваім',
+    claim_body:
+      'PIN на бірцы бачыць кожны, хто трымаў рэч. Задайце свой — і зноў адкрыць пасланне зможаце толькі вы.',
+    claim_new: 'Новы PIN',
+    claim_confirm: 'Паўтарыце PIN',
+    claim_save: 'Захаваць PIN',
+    claim_skip: 'Не зараз',
+    claim_mismatch: 'PIN не супадаюць',
+    claim_same: 'Абярыце PIN, адрозны ад надрукаванага',
+    claim_fail: 'Не ўдалося змяніць PIN',
+    claim_done: 'PIN абноўлены. Запомніце яго — надрукаваны больш не дзейнічае.',
+    short: 'Пра карту',
+    full: 'Поўнае апісанне',
+    missing_card: 'Рэч Magister',
+    home: 'Magister Cards',
+  },
+  zh: {
+    from: '来自',
+    to: '致',
+    message: '留言',
+    order_date: '下单日期',
+    enter_pin: '输入 PIN',
+    pin_prompt: 'PIN',
+    unlock: '解锁',
+    wrong_pin: 'PIN 错误',
+    cancel_pin: '取消',
+    claim_title: '把留言设为仅你可读',
+    claim_body: '吊牌上的 PIN 任何接触过单品的人都可能看到。设置你自己的 PIN，之后只有你能再次打开留言。',
+    claim_new: '新 PIN',
+    claim_confirm: '确认 PIN',
+    claim_save: '设置新 PIN',
+    claim_skip: '暂不',
+    claim_mismatch: '两次 PIN 不一致',
+    claim_same: '请设置与吊牌不同的 PIN',
+    claim_fail: '无法更新 PIN',
+    claim_done: 'PIN 已更新。请牢记 — 吊牌上的 PIN 已失效。',
+    short: '关于这张牌',
+    full: '完整故事',
+    missing_card: 'Magister 单品',
+    home: 'Magister Cards',
+  },
+}[lang];
+
+const previewNote = {
+  en: {
+    title: 'Preview',
+    body: 'This is how the recipient will see the message once the order is placed. The link expires in 24 hours.',
+  },
+  ru: {
+    title: 'Предпросмотр',
+    body: 'Так послание увидит получатель после оформления заказа. Ссылка действует 24 часа.',
+  },
+  be: {
+    title: 'Папярэдні прагляд',
+    body: 'Так пасланне ўбачыць атрымальнік пасля афармлення заказу. Спасылка дзейнічае 24 гадзіны.',
+  },
+  zh: {
+    title: '预览',
+    body: '下单后，收件人将看到这样的留言。此链接 24 小时内有效。',
+  },
+}[lang];
+
+const cardTitle = pub.cardTitle || productFallback[pub.product]?.[lang] || copy.missing_card;
+const pageTitle = `${cardTitle} — Magister`;
+const orderDate = new Date(pub.createdAt).toLocaleDateString(
+  lang === 'zh' ? 'zh-CN' : lang === 'be' ? 'be-BY' : lang === 'ru' ? 'ru-RU' : 'en-GB',
+  { year: 'numeric', month: 'long', day: 'numeric' },
+);
+
+const hasSender = Boolean(pub.sender.trim());
+const hasRecipient = Boolean(pub.recipient.trim());
+const hasMessage = pub.hasMessage;
+const shortText = (pub.cardSummary || '').trim();
+const fullText = (pub.cardDescription || '').trim();
+const showFull = Boolean(fullText && fullText !== shortText);
+const rankLabel =
+  pub.cardSuitSymbol && pub.cardValue
+    ? `${pub.cardSuitSymbol} ${pub.cardValue}`
+    : pub.cardValue || '';
+---
+
+<Layout lang={lang} title={pageTitle} description={shortText || pub.message || pageTitle} noindex>
+  <Nav lang={lang} />
+  <main
+    id="main-content"
+    class="story"
+    data-story
+    data-piece-id={pub.id}
+    data-locked={pub.messageLocked ? '1' : '0'}
+  >
+    <article class="page-shell story__shell">
+      {
+        isPreview ? (
+          <aside class="story__preview" role="note">
+            <p class="story__label">{previewNote.title}</p>
+            <p class="story__preview-body">{previewNote.body}</p>
+          </aside>
+        ) : null
+      }
+      {/* 1–4: personal / order meta */}
+      <header class="story__personal">
+        {
+          hasSender ? (
+            <p class="story__field">
+              <span class="story__label">{copy.from}</span>
+              <span class="story__value">{pub.sender}</span>
+            </p>
+          ) : null
+        }
+        {
+          hasRecipient ? (
+            <p class="story__field">
+              <span class="story__label">{copy.to}</span>
+              <span class="story__value">{pub.recipient}</span>
+            </p>
+          ) : null
+        }
+
+        {
+          hasMessage ? (
+            <div class="story__message-block">
+              <p class="story__label">{copy.message}</p>
+              {
+                pub.messageLocked ? (
+                  <>
+                    <button class="btn story__pin-btn" type="button" id="story-pin-open">
+                      {copy.enter_pin}
+                    </button>
+                    <form class="story__lock" id="story-unlock" hidden novalidate>
+                      <label>
+                        <span class="visually-hidden">{copy.pin_prompt}</span>
+                        <input
+                          id="story-pin"
+                          name="pin"
+                          type="text"
+                          inputmode="numeric"
+                          maxlength="4"
+                          autocomplete="one-time-code"
+                          placeholder="••••"
+                          required
+                        />
+                      </label>
+                      <div class="story__lock-actions">
+                        <button class="btn btn-accent" type="submit">{copy.unlock}</button>
+                        <button class="text-link" type="button" id="story-pin-cancel">
+                          {copy.cancel_pin}
+                        </button>
+                      </div>
+                      <p class="story__err" id="story-pin-err" hidden>{copy.wrong_pin}</p>
+                    </form>
+                    <p class="story__message" id="story-message" hidden></p>
+                    <aside
+                      class="story__claim"
+                      id="story-claim"
+                      hidden
+                      data-err-mismatch={copy.claim_mismatch}
+                      data-err-same={copy.claim_same}
+                      data-err-fail={copy.claim_fail}
+                    >
+                      <h2 class="story__claim-title">{copy.claim_title}</h2>
+                      <p class="story__claim-body">{copy.claim_body}</p>
+                      <form class="story__claim-form" id="story-claim-form" novalidate>
+                        <label>
+                          <span class="visually-hidden">{copy.claim_new}</span>
+                          <input
+                            id="story-claim-new"
+                            name="newPin"
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="4"
+                            autocomplete="new-password"
+                            placeholder={copy.claim_new}
+                            required
+                          />
+                        </label>
+                        <label>
+                          <span class="visually-hidden">{copy.claim_confirm}</span>
+                          <input
+                            id="story-claim-confirm"
+                            name="confirmPin"
+                            type="text"
+                            inputmode="numeric"
+                            maxlength="4"
+                            autocomplete="new-password"
+                            placeholder={copy.claim_confirm}
+                            required
+                          />
+                        </label>
+                        <div class="story__lock-actions">
+                          <button class="btn btn-accent" type="submit">{copy.claim_save}</button>
+                          <button class="text-link" type="button" id="story-claim-skip">
+                            {copy.claim_skip}
+                          </button>
+                        </div>
+                        <p class="story__err" id="story-claim-err" hidden></p>
+                      </form>
+                      <p class="story__claim-done" id="story-claim-done" hidden>
+                        {copy.claim_done}
+                      </p>
+                    </aside>
+                  </>
+                ) : (
+                  <p class="story__message" id="story-message">{pub.message}</p>
+                )
+              }
+            </div>
+          ) : null
+        }
+
+        {
+          isPreview ? null : (
+            <p class="story__field story__field--date">
+              <span class="story__label">{copy.order_date}</span>
+              <time class="story__value" datetime={pub.createdAt}>{orderDate}</time>
+            </p>
+          )
+        }
+      </header>
+
+      {/* 5–7: card */}
+      <section class="story__card" aria-labelledby="story-card-title">
+        {
+          pub.cardImage ? (
+            <img
+              class="story__art"
+              src={pub.cardImage}
+              alt=""
+              width="440"
+              height="628"
+              decoding="async"
+            />
+          ) : null
+        }
+
+        <div class="story__card-head">
+          {
+            rankLabel ? (
+              <p class="story__rank" data-suit={pub.cardSuit || undefined}>
+                {rankLabel}
+              </p>
+            ) : null
+          }
+          <h1 class="story__title" id="story-card-title">{cardTitle}</h1>
+          {pub.cardWorld ? <p class="story__world">{pub.cardWorld}</p> : null}
+        </div>
+
+        {
+          shortText ? (
+            <div class="story__block">
+              <h2 class="story__label">{copy.short}</h2>
+              <p class="story__body">{shortText}</p>
+            </div>
+          ) : null
+        }
+
+        {
+          showFull ? (
+            <div class="story__block">
+              <h2 class="story__label">{copy.full}</h2>
+              <p class="story__body story__body--full">{fullText}</p>
+            </div>
+          ) : fullText && !shortText ? (
+            <div class="story__block">
+              <h2 class="story__label">{copy.full}</h2>
+              <p class="story__body story__body--full">{fullText}</p>
+            </div>
+          ) : null
+        }
+      </section>
+
+      <p class="story__brand">
+        <a href={home}>{copy.home}</a>
+      </p>
+    </article>
+  </main>
+  <Footer lang={lang} />
+</Layout>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-story]');
+  const openBtn = document.getElementById('story-pin-open');
+  const cancelBtn = document.getElementById('story-pin-cancel');
+  const form = document.getElementById('story-unlock');
+  const err = document.getElementById('story-pin-err');
+  const messageEl = document.getElementById('story-message');
+  const claim = document.getElementById('story-claim');
+  const claimForm = document.getElementById('story-claim-form');
+  const claimErr = document.getElementById('story-claim-err');
+  const claimDone = document.getElementById('story-claim-done');
+  const claimSkip = document.getElementById('story-claim-skip');
+  const id = root?.dataset.pieceId;
+
+  let sessionPin = '';
+
+  function claimMsg(kind: 'mismatch' | 'same' | 'fail'): string {
+    if (!(claim instanceof HTMLElement)) return '';
+    if (kind === 'mismatch') return claim.dataset.errMismatch || '';
+    if (kind === 'same') return claim.dataset.errSame || '';
+    return claim.dataset.errFail || '';
+  }
+
+  function showClaimErr(kind: 'mismatch' | 'same' | 'fail') {
+    if (!claimErr) return;
+    claimErr.textContent = claimMsg(kind);
+    claimErr.hidden = false;
+  }
+
+  openBtn?.addEventListener('click', () => {
+    if (!(form instanceof HTMLFormElement)) return;
+    form.hidden = false;
+    openBtn.hidden = true;
+    form.querySelector<HTMLInputElement>('#story-pin')?.focus();
+  });
+
+  cancelBtn?.addEventListener('click', () => {
+    if (!(form instanceof HTMLFormElement) || !openBtn) return;
+    form.hidden = true;
+    openBtn.hidden = false;
+    if (err) err.hidden = true;
+    const pin = form.querySelector<HTMLInputElement>('#story-pin');
+    if (pin) pin.value = '';
+  });
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!id || !(form instanceof HTMLFormElement)) return;
+    const pinInput = form.querySelector<HTMLInputElement>('#story-pin');
+    const pin = pinInput?.value.trim() || '';
+    if (err) err.hidden = true;
+
+    try {
+      const res = await fetch(`/api/pieces/${encodeURIComponent(id)}/unlock`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin }),
+      });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        piece?: { message?: string | null; canClaimPin?: boolean };
+      };
+      if (!res.ok || !data.ok || !data.piece?.message) {
+        if (err) err.hidden = false;
+        return;
+      }
+      if (messageEl) {
+        messageEl.hidden = false;
+        messageEl.textContent = data.piece.message;
+      }
+      form.hidden = true;
+      if (openBtn) openBtn.hidden = true;
+      sessionPin = pin;
+      if (data.piece.canClaimPin && claim) {
+        claim.hidden = false;
+        claim.querySelector<HTMLInputElement>('#story-claim-new')?.focus();
+      }
+    } catch {
+      if (err) err.hidden = false;
+    }
+  });
+
+  claimSkip?.addEventListener('click', () => {
+    if (claim) claim.hidden = true;
+    sessionPin = '';
+  });
+
+  claimForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!id || !(claimForm instanceof HTMLFormElement) || !sessionPin) return;
+
+    const newInput = claimForm.querySelector<HTMLInputElement>('#story-claim-new');
+    const confirmInput = claimForm.querySelector<HTMLInputElement>('#story-claim-confirm');
+    const newPin = newInput?.value.trim() || '';
+    const confirmPin = confirmInput?.value.trim() || '';
+
+    if (claimErr) claimErr.hidden = true;
+
+    if (!/^\d{4}$/.test(newPin) || !/^\d{4}$/.test(confirmPin)) {
+      showClaimErr('fail');
+      return;
+    }
+    if (newPin !== confirmPin) {
+      showClaimErr('mismatch');
+      return;
+    }
+    if (newPin === sessionPin) {
+      showClaimErr('same');
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/pieces/${encodeURIComponent(id)}/pin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ currentPin: sessionPin, newPin }),
+      });
+      const data = (await res.json()) as { ok?: boolean; error?: string };
+      if (!res.ok || !data.ok) {
+        showClaimErr(data.error === 'same' ? 'same' : 'fail');
+        return;
+      }
+      claimForm.hidden = true;
+      if (claimDone) claimDone.hidden = false;
+      sessionPin = '';
+    } catch {
+      showClaimErr('fail');
+    }
+  });
+</script>
+
+<style>
+  .story {
+    background: var(--paper);
+    color: var(--ink);
+    padding-block: clamp(5.5rem, 12vw, 7.5rem) clamp(3rem, 8vw, 5rem);
+  }
+
+  .story__shell {
+    max-width: 32rem;
+    margin-inline: auto;
+    display: grid;
+    gap: clamp(1.75rem, 4vw, 2.5rem);
+  }
+
+  .story__preview {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.85rem 1rem;
+    border: 1px dashed var(--accent);
+    background: var(--white);
+  }
+
+  .story__preview-body {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  .story__personal {
+    display: grid;
+    gap: 1rem;
+    padding-bottom: 1.35rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .story__field {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+  }
+
+  .story__label {
+    margin: 0;
+    color: var(--accent);
+    font: 600 0.68rem/1.2 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .story__value {
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 400;
+    line-height: 1.25;
+  }
+
+  .story__field--date .story__value {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
+
+  .story__message-block {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .story__message {
+    margin: 0;
+    padding: 0.95rem 1rem;
+    border-left: 3px solid var(--accent);
+    background: color-mix(in srgb, var(--white) 70%, var(--paper));
+    font-family: var(--display);
+    font-size: clamp(1.15rem, 2.5vw, 1.35rem);
+    line-height: 1.45;
+  }
+
+  .story__pin-btn {
+    justify-self: start;
+  }
+
+  .story__lock {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--white);
+  }
+
+  .story__lock input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    letter-spacing: 0.35em;
+    font-size: 1.15rem;
+  }
+
+  .story__lock-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.85rem 1.25rem;
+  }
+
+  .story__err {
+    margin: 0;
+    color: var(--accent);
+    font-size: 0.9rem;
+  }
+
+  .story__claim {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 0.35rem;
+    padding: 0.95rem 1rem;
+    border: 1px solid var(--line);
+    background: var(--white);
+  }
+
+  .story__claim-title {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 1.25rem;
+    font-weight: 400;
+    line-height: 1.25;
+  }
+
+  .story__claim-body {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .story__claim-form {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .story__claim-form input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    letter-spacing: 0.35em;
+    font-size: 1.15rem;
+  }
+
+  .story__claim-done {
+    margin: 0;
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+
+  .story__card {
+    display: grid;
+    gap: 1.15rem;
+  }
+
+  .story__art {
+    width: min(100%, 16rem);
+    margin-inline: auto;
+    border-radius: var(--card-radius);
+  }
+
+  .story__card-head {
+    text-align: center;
+  }
+
+  .story__rank {
+    margin: 0;
+    color: var(--ink);
+    font: 600 0.85rem/1 var(--sans);
+    letter-spacing: 0.08em;
+  }
+
+  .story__rank[data-suit='hearts'],
+  .story__rank[data-suit='diamonds'] {
+    color: #9a3412;
+  }
+
+  .story__title {
+    margin: 0.45rem 0 0;
+    font-family: var(--display);
+    font-size: clamp(1.75rem, 4vw, 2.35rem);
+    font-weight: 400;
+    line-height: 1.15;
+  }
+
+  .story__world {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .story__block {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .story__body {
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .story__body--full {
+    color: var(--ink);
+  }
+
+  .story__brand {
+    margin: 0;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+
+  .story__brand a {
+    color: var(--muted);
+    font: 600 0.68rem/1 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .story__brand a:hover {
+    color: var(--accent);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

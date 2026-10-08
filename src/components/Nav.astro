@@ -4,14 +4,17 @@ import { useTranslations, getLocalizedPath, LOCALE_LINKS } from '../i18n/utils';
 import { BOOKING_URL } from '../lib/site';
 import SpielLogo from './SpielLogo.astro';
 import MagisterLogo from './MagisterLogo.astro';
+import CartDrawer from './CartDrawer.astro';
 
 interface Props {
   lang: Lang;
   /** SPIEL-era homepage nav (old_landing). */
   legacy?: boolean;
+  /** Product pages render their own sticky buy bar on mobile. */
+  hideStickyCart?: boolean;
 }
 
-const { lang, legacy = false } = Astro.props;
+const { lang, legacy = false, hideStickyCart = false } = Astro.props;
 const t = useTranslations(lang);
 const externalBooking = BOOKING_URL.startsWith('http');
 const homePath = legacy ? '/old_landing/' : '/';
@@ -82,13 +85,14 @@ const primaryCtaExternal = legacy && externalBooking;
           {primaryCtaLabel}
         </a>
       ) : (
-        <a href={orderHref} class="nav-cart" aria-label={t('nav.cart_aria')}>
+        <a href={orderHref} class="nav-cart" aria-label={t('cart.open_aria')} data-cart-open>
           <svg class="nav-cart__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
             <path
               fill="currentColor"
               d="M7 4h-2l-1 2h2.1l2.4 9.2a1.5 1.5 0 0 0 1.5 1.1h7.3a1.5 1.5 0 0 0 1.45-1.1L21 8H8.2l-.35-1.35A1.5 1.5 0 0 0 6.4 5.5H7V4Zm3.25 14.25a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm7 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"
             />
           </svg>
+          <span class="nav-cart__count" data-cart-count hidden></span>
         </a>
       )
     }
@@ -107,6 +111,19 @@ const primaryCtaExternal = legacy && externalBooking;
         </a>
       ))}
     </div>
+    {
+      !legacy && (
+        <a href={orderHref} class="nav-cart nav-cart--bar" aria-label={t('cart.open_aria')} data-cart-open>
+          <svg class="nav-cart__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+            <path
+              fill="currentColor"
+              d="M7 4h-2l-1 2h2.1l2.4 9.2a1.5 1.5 0 0 0 1.5 1.1h7.3a1.5 1.5 0 0 0 1.45-1.1L21 8H8.2l-.35-1.35A1.5 1.5 0 0 0 6.4 5.5H7V4Zm3.25 14.25a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm7 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"
+            />
+          </svg>
+          <span class="nav-cart__count" data-cart-count hidden></span>
+        </a>
+      )
+    }
     <button
       class="nav-toggle"
       id="nav-toggle"
@@ -192,14 +209,19 @@ const primaryCtaExternal = legacy && externalBooking;
       {t('nav.book')}
     </a>
   ) : (
-    <a href={orderHref} class="mobile-book-sticky mobile-cart-sticky" aria-label={t('nav.cart_aria')}>
-      <svg class="nav-cart__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
-        <path
-          fill="currentColor"
-          d="M7 4h-2l-1 2h2.1l2.4 9.2a1.5 1.5 0 0 0 1.5 1.1h7.3a1.5 1.5 0 0 0 1.45-1.1L21 8H8.2l-.35-1.35A1.5 1.5 0 0 0 6.4 5.5H7V4Zm3.25 14.25a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm7 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"
-        />
-      </svg>
-    </a>
+    <>
+      {!hideStickyCart && (
+        <a href={orderHref} class="mobile-book-sticky mobile-cart-sticky" aria-label={t('nav.cart_aria')}>
+          <svg class="nav-cart__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+            <path
+              fill="currentColor"
+              d="M7 4h-2l-1 2h2.1l2.4 9.2a1.5 1.5 0 0 0 1.5 1.1h7.3a1.5 1.5 0 0 0 1.45-1.1L21 8H8.2l-.35-1.35A1.5 1.5 0 0 0 6.4 5.5H7V4Zm3.25 14.25a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm7 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"
+            />
+          </svg>
+        </a>
+      )}
+      <CartDrawer lang={lang} />
+    </>
   )
 }
 
@@ -345,8 +367,34 @@ const primaryCtaExternal = legacy && externalBooking;
   }
 
   .nav-cart {
+    position: relative;
     width: 2.5rem;
     padding-inline: 0;
+  }
+
+  .nav-cart__count {
+    position: absolute;
+    top: -0.4rem;
+    right: -0.4rem;
+    min-width: 1.15rem;
+    height: 1.15rem;
+    padding: 0 0.25rem;
+    border: 1.5px solid var(--paper);
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--paper);
+    font: 700 0.6rem/0.85rem var(--sans);
+    letter-spacing: 0;
+    text-align: center;
+  }
+
+  .nav-cart__count[hidden] {
+    display: none;
+  }
+
+  .nav-cart--bar {
+    min-height: 2.5rem;
+    margin-left: 0.35rem;
   }
 
   .nav-cart__icon {
@@ -502,7 +550,7 @@ const primaryCtaExternal = legacy && externalBooking;
     }
 
     .nav-logo {
-      max-width: calc(100vw - var(--page-pad) * 2 - 9.5rem);
+      max-width: calc(100vw - var(--page-pad) * 2 - 12.5rem);
     }
 
     .nav-logo :global(.magister-logo),
