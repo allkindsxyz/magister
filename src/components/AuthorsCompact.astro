@@ -4,11 +4,12 @@ import { useTranslations, getLocalizedPath } from '../i18n/utils';
 
 interface Props {
   lang: Lang;
+  showMore?: boolean;
 }
 
-const { lang } = Astro.props;
+const { lang, showMore = true } = Astro.props;
 const t = useTranslations(lang);
-const fullStoryHref = `${getLocalizedPath('/old_landing/', lang)}#authors`;
+const fullStoryHref = getLocalizedPath('/authors/', lang);
 ---
 
 <section class="authors-compact editorial-section" id="authors" aria-labelledby="authors-title">
@@ -17,8 +18,8 @@ const fullStoryHref = `${getLocalizedPath('/old_landing/', lang)}#authors`;
       <img
         src="/media/authors-together.jpg"
         alt={t('authors.preface_image_alt')}
-        width="692"
-        height="620"
+        width="1024"
+        height="682"
         loading="lazy"
         decoding="async"
       />
@@ -31,7 +32,9 @@ const fullStoryHref = `${getLocalizedPath('/old_landing/', lang)}#authors`;
         <p>{t('authors.compact_quote')}</p>
         <footer>{t('authors.compact_quote_author')}</footer>
       </blockquote>
-      <a class="text-link" href={fullStoryHref}>{t('authors.compact_more')}</a>
+      {showMore && (
+        <a class="text-link" href={fullStoryHref}>{t('authors.compact_more')}</a>
+      )}
     </div>
   </div>
 </section>

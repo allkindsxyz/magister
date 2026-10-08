@@ -1,0 +1,24 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import AuthorsPage from '../../../components/AuthorsPage.astro';
+import type { Lang } from '../../../i18n/utils';
+import { useTranslations } from '../../../i18n/utils';
+
+export function getStaticPaths() {
+  const langs: Lang[] = ['en', 'ru', 'be', 'zh'];
+  return langs.map((lang) => ({ params: { lang } }));
+}
+
+const { lang: langParam } = Astro.params;
+
+if (!langParam || !['en', 'ru', 'be', 'zh'].includes(langParam)) {
+  return Astro.redirect('/en/');
+}
+
+const lang = langParam as Lang;
+const t = useTranslations(lang);
+---
+
+<Layout lang={lang} title={t('authors.page.meta_title')} description={t('authors.page.meta_description')}>
+  <AuthorsPage lang={lang} />
+</Layout>

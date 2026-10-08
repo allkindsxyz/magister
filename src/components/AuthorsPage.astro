@@ -1,0 +1,43 @@
+---
+import type { Lang } from '../i18n/utils';
+import { useTranslations, getLocalizedPath } from '../i18n/utils';
+import Nav from './Nav.astro';
+import Footer from './Footer.astro';
+import AuthorsCompact from './AuthorsCompact.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const backHref = `${getLocalizedPath('/', lang)}#authors`;
+---
+
+<Nav lang={lang} />
+<main id="main-content" class="authors-page">
+  <div class="page-shell authors-page__shell">
+    <a class="text-link authors-page__back" href={backHref}>← {t('authors.page.back')}</a>
+  </div>
+  <AuthorsCompact lang={lang} showMore={false} />
+</main>
+<Footer lang={lang} />
+
+<style>
+  .authors-page {
+    padding-top: clamp(5.25rem, 11vw, 6.75rem);
+    background: var(--paper);
+  }
+
+  .authors-page__shell {
+    margin-bottom: 0.25rem;
+  }
+
+  .authors-page__back {
+    display: inline-flex;
+  }
+
+  .authors-page :global(.authors-compact) {
+    padding-top: clamp(1.25rem, 3vw, 2rem);
+  }
+</style>

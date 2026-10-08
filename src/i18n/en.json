@@ -122,9 +122,14 @@
     "preface_p2": "Vasily Pochitsky and Alexander Zhilchik spent years creating their own worlds — inventing characters, places and stories, and bringing them to life on canvas.",
     "preface_p3": "Each of the 54 cards is based on one of these original works.",
     "preface_p4": "The deck is only a glimpse into a much larger world.",
-    "preface_image_alt": "Vasily Pochitsky and Alexander Zhilchik.",
+    "preface_image_alt": "Alexander Zhilchik outdoors with a butterfly resting on his finger.",
     "label": "Authors",
     "title": "Authors of Magister Cards",
+    "page": {
+      "back": "Back",
+      "meta_title": "Authors of Magister Cards — Vasily Pochitsky & Alexander Zhilchik",
+      "meta_description": "First, there were paintings. The story of Vasily Pochitsky and Alexander Zhilchik, creators of the Magister universe."
+    },
     "pochitsky": {
       "name": "Vasily Pochitsky",
       "role": "Artist and co-creator of the Magister universe.",
