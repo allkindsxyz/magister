@@ -39,6 +39,11 @@ const cardsPayload = JSON.stringify(
 
 const jokerNote = t('destiny.joker_note');
 const missingNote = t('destiny.missing_note');
+const viewerContext = {
+  kicker: t('destiny.result_kicker'),
+  ctaLabel: t('destiny.order'),
+  ctaHref: deckHref,
+};
 ---
 
 <div
@@ -102,6 +107,7 @@ const missingNote = t('destiny.missing_note');
     jokerKing,
     jokerNote,
     missingNote,
+    viewerContext,
   }}
 >
   const cards = JSON.parse(cardsPayload);
@@ -161,6 +167,34 @@ const missingNote = t('destiny.missing_note');
     `;
   }
 
+  /** The gallery's card viewer (full story, zoom, share) is the canonical card view when it is on the page. */
+  function hasCardViewer() {
+    return Boolean(document.getElementById('card-viewer'));
+  }
+
+  /**
+   * @param {string} id
+   * @returns {boolean} whether the gallery viewer took over
+   */
+  function openInViewer(id) {
+    // The sheet may have opened on its own (mobile prompt), so fall back to the hero entry point for focus return.
+    const opener = sheetTrigger ?? document.querySelector('[data-destiny-open]');
+    const detail = { id, opener, ...viewerContext, handled: false };
+    window.dispatchEvent(new CustomEvent('magister:card-view', { detail }));
+    return detail.handled;
+  }
+
+  /** @param {{ id: string, title: string, summary: string, image: string, value: string }} card */
+  function jokerChoiceHtml(card) {
+    const title = String(card.title).replace(/"/g, '&quot;');
+    return `
+      <button class="destiny-birth__choice" type="button" data-destiny-card="${card.id}" aria-label="${title}">
+        <img src="${card.image}" alt="" width="320" height="448" />
+        <span class="destiny-birth__choice-title">${card.title}</span>
+      </button>
+    `;
+  }
+
   /**
    * @param {HTMLSelectElement | null} monthSelect
    * @param {HTMLSelectElement | null} daySelect
@@ -197,8 +231,9 @@ const missingNote = t('destiny.missing_note');
       note.textContent = jokerNote;
       const wrap = document.createElement('div');
       wrap.className = 'destiny-birth__joker-pair';
-      if (jokerAce) wrap.insertAdjacentHTML('beforeend', cardHtml(jokerAce));
-      if (jokerKing) wrap.insertAdjacentHTML('beforeend', cardHtml(jokerKing));
+      const render = hasCardViewer() ? jokerChoiceHtml : cardHtml;
+      if (jokerAce) wrap.insertAdjacentHTML('beforeend', render(jokerAce));
+      if (jokerKing) wrap.insertAdjacentHTML('beforeend', render(jokerKing));
       cardMount.append(wrap);
       return true;
     }
@@ -251,9 +286,12 @@ const missingNote = t('destiny.missing_note');
   let sheetTrigger = null;
   let sheetPrompted = false;
 
+  let hideTimer = 0;
+
   /** @param {'invite' | 'form'} [step] */
   function openSheet(step = 'invite') {
     if (!sheet) return;
+    window.clearTimeout(hideTimer);
     sheetPrompted = true;
     showSheetStep(step);
     sheet.hidden = false;
@@ -272,19 +310,25 @@ const missingNote = t('destiny.missing_note');
     sheetTrigger = null;
   }
 
-  function closeSheet() {
+  /** @param {boolean} [restoreFocus] false when another dialog already took focus */
+  function closeSheet(restoreFocus = true) {
+    const settleFocus = () => {
+      if (restoreFocus) restoreTriggerFocus();
+      else sheetTrigger = null;
+    };
     if (!sheet || !sheet.classList.contains('is-open')) {
       if (sheet) sheet.hidden = true;
       document.body.classList.remove('destiny-sheet-open');
       markSheetSeen();
-      restoreTriggerFocus();
+      settleFocus();
       return;
     }
     sheet.classList.remove('is-open');
     document.body.classList.remove('destiny-sheet-open');
     markSheetSeen();
-    restoreTriggerFocus();
-    window.setTimeout(() => {
+    settleFocus();
+    window.clearTimeout(hideTimer);
+    hideTimer = window.setTimeout(() => {
       sheet.hidden = true;
       showSheetStep('invite');
     }, 520);
@@ -343,6 +387,11 @@ const missingNote = t('destiny.missing_note');
     if (target.closest('[data-sheet-done]')) {
       markSheetSeen();
       closeSheet();
+      return;
+    }
+    const choice = target.closest('[data-destiny-card]');
+    if (choice instanceof HTMLElement && choice.dataset.destinyCard && openInViewer(choice.dataset.destinyCard)) {
+      closeSheet(false);
     }
   });
 
@@ -350,14 +399,21 @@ const missingNote = t('destiny.missing_note');
     e.preventDefault();
     if (!(sheetMonth instanceof HTMLSelectElement) || !(sheetDay instanceof HTMLSelectElement)) return;
     if (!sheetCard || !sheetNote) return;
-    const ok = renderBirthResult(Number(sheetMonth.value), Number(sheetDay.value), sheetCard, sheetNote);
-    if (!ok) return;
-    showSheetStep('result');
+    const month = Number(sheetMonth.value);
+    const day = Number(sheetDay.value);
     try {
       localStorage.setItem(SHEET_KEY, 'done');
     } catch {
       /* ignore */
     }
+    const found = birthCard(month, day);
+    if (found?.kind === 'card' && cards[found.id] && openInViewer(found.id)) {
+      closeSheet(false);
+      return;
+    }
+    const ok = renderBirthResult(month, day, sheetCard, sheetNote);
+    if (!ok) return;
+    showSheetStep('result');
   });
 
   document.addEventListener('keydown', (e) => {
@@ -579,6 +635,37 @@ const missingNote = t('destiny.missing_note');
 
   #destiny-sheet-card :global(.destiny-birth__joker-pair img) {
     width: 100%;
+  }
+
+  #destiny-sheet-card :global(.destiny-birth__choice) {
+    display: grid;
+    gap: 0.55rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  #destiny-sheet-card :global(.destiny-birth__choice img) {
+    transition: transform 0.2s ease;
+  }
+
+  #destiny-sheet-card :global(.destiny-birth__choice:hover img),
+  #destiny-sheet-card :global(.destiny-birth__choice:focus-visible img) {
+    transform: translateY(-3px);
+  }
+
+  #destiny-sheet-card :global(.destiny-birth__choice:focus-visible) {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  #destiny-sheet-card :global(.destiny-birth__choice-title) {
+    font-family: var(--display);
+    font-size: 1.05rem;
+    line-height: 1.2;
   }
 
   .destiny-sheet__note {

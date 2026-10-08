@@ -101,6 +101,7 @@ const payloads = cards.map((card) => {
         </button>
       </div>
       <div class="lb-text" aria-live="polite">
+        <p class="lb-context" id="lb-context" hidden></p>
         <div class="lb-suit-row">
           <div class="lb-suit-val" id="lb-suit-val"></div>
           <button class="btn lb-share" id="lb-share" type="button" data-copied={t('gallery.share_copied')}>
@@ -115,6 +116,7 @@ const payloads = cards.map((card) => {
         <div class="lb-divider"></div>
         <p class="lb-body" id="lb-body"></p>
         <p class="lb-meta" id="lb-meta"></p>
+        <a class="btn btn-accent lb-cta" id="lb-cta" hidden></a>
       </div>
     </div>
 
@@ -592,6 +594,24 @@ const payloads = cards.map((card) => {
     text-transform: uppercase;
   }
 
+  .lb-context {
+    margin: 0 0 0.75rem;
+    color: var(--accent);
+    font: 600 0.68rem/1.2 var(--sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .lb-cta {
+    display: inline-flex;
+    margin-top: 1.25rem;
+  }
+
+  .lb-context[hidden],
+  .lb-cta[hidden] {
+    display: none;
+  }
+
   .lb-close {
     position: absolute;
     top: 0;
@@ -852,9 +872,30 @@ const payloads = cards.map((card) => {
   const share = document.getElementById('lb-share') as HTMLButtonElement | null;
   const shareIdle = share?.querySelector<HTMLElement>('[data-idle]') ?? null;
   const shareDone = share?.querySelector<HTMLElement>('[data-done]') ?? null;
+  const contextLine = document.getElementById('lb-context');
+  const cta = document.getElementById('lb-cta') as HTMLAnchorElement | null;
   let currentIndex = 0;
   let opener: HTMLElement | null = null;
   let shareTimer = 0;
+
+  /** Extra framing when the viewer is opened from elsewhere (e.g. the birthday card); shown only on that card, cleared on close. */
+  type ViewerContext = { cardId: string; kicker?: string; ctaLabel?: string; ctaHref?: string };
+  let context: ViewerContext | null = null;
+
+  function renderContext(cardId: string) {
+    const active = context && context.cardId === cardId ? context : null;
+    if (contextLine) {
+      contextLine.hidden = !active?.kicker;
+      contextLine.textContent = active?.kicker ?? '';
+    }
+    if (cta) {
+      const show = Boolean(active?.ctaLabel && active.ctaHref?.startsWith('/'));
+      cta.hidden = !show;
+      cta.textContent = show ? (active?.ctaLabel ?? '') : '';
+      if (show && active?.ctaHref) cta.href = active.ctaHref;
+      else cta.removeAttribute('href');
+    }
+  }
 
   function cardLink(id: string): string {
     const url = new URL(window.location.href);
@@ -911,6 +952,7 @@ const payloads = cards.map((card) => {
       meta.hidden = !card.metaLine;
       meta.textContent = card.metaLine;
     }
+    renderContext(card.id);
     resetShare();
     syncCardLink(card.id);
   }
@@ -953,6 +995,7 @@ const payloads = cards.map((card) => {
     viewer.setAttribute('inert', '');
     viewer.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('dialog-open');
+    context = null;
     resetShare();
     syncCardLink(null);
     opener?.focus();
@@ -1031,7 +1074,7 @@ const payloads = cards.map((card) => {
     if (event.key === 'ArrowRight') renderCard(currentIndex + 1);
     if (event.key !== 'Tab') return;
 
-    const focusable = Array.from(viewer.querySelectorAll<HTMLElement>('button:not([disabled])')).filter(
+    const focusable = Array.from(viewer.querySelectorAll<HTMLElement>('button:not([disabled]), a[href]')).filter(
       (button) => !button.closest('[hidden]'),
     );
     const first = focusable[0];
@@ -1044,6 +1087,31 @@ const payloads = cards.map((card) => {
       event.preventDefault();
       first.focus();
     }
+  });
+
+  // Public entry point: other components open a card here instead of rendering their own card view.
+  // Sets `detail.handled` synchronously so callers can fall back when no gallery is on the page.
+  window.addEventListener('magister:card-view', (event) => {
+    const detail = (event as CustomEvent<{
+      id?: string;
+      opener?: HTMLElement | null;
+      kicker?: string;
+      ctaLabel?: string;
+      ctaHref?: string;
+      handled?: boolean;
+    }>).detail;
+    if (!detail?.id || !viewer) return;
+    const index = cards.findIndex((card) => card.id === detail.id);
+    if (index < 0) return;
+    context = { cardId: detail.id, kicker: detail.kicker, ctaLabel: detail.ctaLabel, ctaHref: detail.ctaHref };
+    const source =
+      detail.opener ??
+      (document.activeElement instanceof HTMLElement ? document.activeElement : null) ??
+      track?.querySelector<HTMLElement>(`.carousel-card[data-index="${index}"]`) ??
+      document.body;
+    if (zoom && !zoom.hidden) closeZoom(false);
+    openViewer(index, source);
+    detail.handled = true;
   });
 
   const requestedId = new URLSearchParams(window.location.search).get('card');
