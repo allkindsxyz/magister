@@ -78,11 +78,9 @@ type DeckOfferInput = {
   description: string;
   xlName: string;
   standardName: string;
-  setName: string;
-  twoXlName: string;
 };
 
-export function deckProductJsonLd({ url, image, description, xlName, standardName, setName, twoXlName }: DeckOfferInput): string {
+export function deckProductJsonLd({ url, image, description, xlName, standardName }: DeckOfferInput): string {
   return productJsonLd({
     name: 'Magister — art playing cards by Dr. Klein',
     url,
@@ -91,8 +89,6 @@ export function deckProductJsonLd({ url, image, description, xlName, standardNam
     offers: [
       { name: xlName, price: PRICES.xl, sku: 'MAGISTER-XL' },
       { name: standardName, price: PRICES.standard, sku: 'MAGISTER-STD' },
-      { name: setName, price: PRICES.set, sku: 'MAGISTER-SET' },
-      { name: twoXlName, price: PRICES.two_xl, sku: 'MAGISTER-2XL' },
     ],
   });
 }

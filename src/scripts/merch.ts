@@ -276,7 +276,7 @@ export function mountMerch(root: HTMLElement): void {
   const syncScale = (): void => {
     if (!scale) return;
     const sku = currentSku();
-    scale.dataset.scalePick = sku === 'deck_standard' ? 'standard' : sku === 'deck_set' ? 'both' : 'xl';
+    scale.dataset.scalePick = sku === 'deck_standard' ? 'standard' : 'xl';
   };
 
   const syncCard = (): void => {
@@ -463,7 +463,7 @@ export function mountMerch(root: HTMLElement): void {
       syncGarment();
       syncScale();
       if (isApparel) gallery.goTo('garment');
-      if (isDeck) gallery.goTo(target.value === 'deck_two_xl' ? 'lifestyle' : 'scale');
+      if (isDeck) gallery.goTo('scale');
     }
     if (target.name === 'private') syncMessage();
     else schedulePreview();

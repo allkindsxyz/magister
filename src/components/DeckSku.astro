@@ -1,7 +1,7 @@
 ---
 import type { Lang } from '../i18n/utils';
 import { useTranslations, getLocalizedPath } from '../i18n/utils';
-import { PRICES, formatPrice, deckProductJsonLd } from '../lib/pricing';
+import { deckProductJsonLd } from '../lib/pricing';
 import { absoluteUrl, localizedAbsoluteUrl } from '../lib/site';
 
 interface Props {
@@ -13,49 +13,32 @@ const t = useTranslations(lang);
 const deckHref = getLocalizedPath('/artifacts/deck', lang);
 const shopHref = `${getLocalizedPath('/', lang)}#artifacts`;
 
-/** Physical card sizes drive relative on-screen scale of the two packs. */
-const formats = [
+/** Same XL shot as the shop card; standard is the product pack photo. */
+const slides = [
   {
     key: 'xl',
-    image: '/media/pack.webp',
-    width: 1200,
-    height: 800,
-    widthMm: 70,
-    heightMm: 120,
-    name: t('deck_sku.xl_name'),
-    purpose: t('deck_sku.xl_purpose'),
-    spec: t('deck_sku.xl_spec'),
-    price: formatPrice(PRICES.xl, lang),
+    image: '/media/deck-lifestyle.jpg',
+    width: 1024,
+    height: 672,
+    label: t('deck_sku.xl_name'),
     alt: t('deck_sku.image_alt'),
   },
   {
     key: 'standard',
     image: '/media/pack-standard.webp',
-    width: 687,
+    width: 785,
     height: 1024,
-    widthMm: 50,
-    heightMm: 80,
-    name: t('deck_sku.standard_name'),
-    purpose: t('deck_sku.standard_purpose'),
-    spec: t('deck_sku.standard_spec'),
-    price: formatPrice(PRICES.standard, lang),
+    label: t('deck_sku.standard_name'),
     alt: t('deck_sku.image_alt_standard'),
   },
 ];
 
-const extraRows = [
-  { label: t('deck_sku.price_set'), amount: PRICES.set },
-  { label: t('deck_sku.price_two_xl'), amount: PRICES.two_xl },
-];
-
 const productJsonLd = deckProductJsonLd({
   url: localizedAbsoluteUrl(lang, '/artifacts/deck'),
-  image: absoluteUrl('/media/pack.webp'),
+  image: absoluteUrl('/media/deck-lifestyle.jpg'),
   description: t('deck_sku.body'),
   xlName: t('deck_sku.price_xl'),
   standardName: t('deck_sku.price_standard'),
-  setName: t('deck_sku.price_set'),
-  twoXlName: t('deck_sku.price_two_xl'),
 });
 ---
 
@@ -68,16 +51,6 @@ const productJsonLd = deckProductJsonLd({
 
       <details class="deck-sku__more">
         <summary>{t('deck_sku.more_title')}</summary>
-        <dl>
-          {
-            extraRows.map((row) => (
-              <div class="deck-sku__row">
-                <dt>{row.label}</dt>
-                <dd>{formatPrice(row.amount, lang)}</dd>
-              </div>
-            ))
-          }
-        </dl>
         <p>{t('deck_sku.shipping')}</p>
         <p>{t('deck_sku.delivery')}</p>
       </details>
@@ -88,32 +61,121 @@ const productJsonLd = deckProductJsonLd({
       </div>
     </div>
 
-    <ul class="deck-sku__formats reveal" aria-label={t('deck_sku.formats_aria')}>
-      {
-        formats.map((format) => (
-          <li class="deck-format" style={`--w: ${format.widthMm}; --h: ${format.heightMm};`}>
-            <img
-              class="deck-format__pack"
-              src={format.image}
-              alt={format.alt}
-              width={format.width}
-              height={format.height}
-              loading="lazy"
-              decoding="async"
+    <div class="deck-sku__media reveal" data-deck-gallery>
+      <div
+        class="deck-sku__track"
+        data-deck-track
+        tabindex="0"
+        aria-roledescription="carousel"
+        aria-label={t('deck_sku.formats_aria')}
+      >
+        {
+          slides.map((slide, index) => (
+            <figure class="deck-sku__slide" data-deck-slide={slide.key} aria-hidden={index === 0 ? 'false' : 'true'}>
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                width={slide.width}
+                height={slide.height}
+                loading={index === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+                draggable="false"
+              />
+            </figure>
+          ))
+        }
+      </div>
+
+      <div class="deck-sku__dots" role="tablist" aria-label={t('deck_sku.formats_aria')}>
+        {
+          slides.map((slide, index) => (
+            <button
+              class:list={['deck-sku__dot', { 'is-active': index === 0 }]}
+              type="button"
+              role="tab"
+              aria-selected={index === 0 ? 'true' : 'false'}
+              aria-label={slide.label}
+              data-deck-dot={index}
             />
-            <p class="deck-format__name">
-              {format.name}
-              <span class="deck-format__purpose">{format.purpose}</span>
-            </p>
-            <p class="deck-format__spec">{format.spec}</p>
-            <p class="deck-format__price">{format.price}</p>
-          </li>
-        ))
-      }
-    </ul>
+          ))
+        }
+      </div>
+    </div>
   </div>
   <script type="application/ld+json" set:html={productJsonLd} />
 </section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-deck-gallery]');
+  const track = root?.querySelector<HTMLElement>('[data-deck-track]');
+  if (!root || !track) {
+    /* gallery missing */
+  } else {
+    const slides = Array.from(track.querySelectorAll<HTMLElement>('[data-deck-slide]'));
+    const dots = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-deck-dot]'));
+    let active = 0;
+    let frame = 0;
+
+    const setActive = (index: number): void => {
+      const next = Math.max(0, Math.min(slides.length - 1, index));
+      active = next;
+      slides.forEach((slide, i) => {
+        slide.setAttribute('aria-hidden', String(i !== next));
+      });
+      dots.forEach((dot, i) => {
+        const on = i === next;
+        dot.classList.toggle('is-active', on);
+        dot.setAttribute('aria-selected', String(on));
+      });
+    };
+
+    const goTo = (index: number, smooth = true): void => {
+      const width = track.clientWidth;
+      if (!width) return;
+      track.scrollTo({ left: index * width, behavior: smooth ? 'smooth' : 'auto' });
+      setActive(index);
+    };
+
+    track.addEventListener(
+      'scroll',
+      () => {
+        cancelAnimationFrame(frame);
+        frame = requestAnimationFrame(() => {
+          const width = track.clientWidth;
+          if (!width) return;
+          setActive(Math.round(track.scrollLeft / width));
+        });
+      },
+      { passive: true },
+    );
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const index = Number(dot.dataset.deckDot);
+        if (Number.isFinite(index)) goTo(index);
+      });
+    });
+
+    track.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        goTo(active + 1);
+      } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        goTo(active - 1);
+      }
+    });
+
+    if ('ResizeObserver' in window) {
+      let lastWidth = track.clientWidth;
+      new ResizeObserver(() => {
+        if (track.clientWidth === lastWidth) return;
+        lastWidth = track.clientWidth;
+        goTo(active, false);
+      }).observe(track);
+    }
+  }
+</script>
 
 <style>
   .deck-sku {
@@ -164,30 +226,8 @@ const productJsonLd = deckProductJsonLd({
     transform: rotate(45deg);
   }
 
-  .deck-sku__more dl {
-    display: grid;
-    gap: 0.35rem;
-    margin: 0;
-  }
-
-  .deck-sku__row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-bottom: 0.35rem;
-    border-bottom: 1px dashed var(--line);
-  }
-
-  .deck-sku__row dd {
-    margin: 0;
-    font-family: var(--display);
-    font-size: 1.1rem;
-    white-space: nowrap;
-  }
-
   .deck-sku__more p {
-    margin: 0.6rem 0 0;
+    margin: 0.85rem 0 0;
     color: var(--muted);
     font-size: 0.9rem;
   }
@@ -203,54 +243,75 @@ const productJsonLd = deckProductJsonLd({
     gap: 1rem 1.5rem;
   }
 
-  .deck-sku__formats {
-    /* One millimetre of card height → pack scale (XL taller than standard). */
-    --mm: clamp(1.85px, 0.48vw, 2.55px);
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: clamp(1.25rem, 3vw, 2.25rem);
+  .deck-sku__media {
+    display: grid;
+    gap: 0.85rem;
+    width: min(100%, 24rem);
+    justify-self: center;
+  }
+
+  .deck-sku__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    outline: none;
+  }
+
+  .deck-sku__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .deck-sku__track:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  .deck-sku__slide {
     margin: 0;
-    padding: 0;
-    list-style: none;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
   }
 
-  .deck-format {
-    flex: 0 1 auto;
-    width: min(100%, calc(var(--h) * var(--mm) * 0.85));
-  }
-
-  .deck-format__pack {
+  /* Match the shop card framing: same crop box for both slides. */
+  .deck-sku__slide img {
     display: block;
     width: 100%;
-    height: calc(var(--h) * var(--mm));
-    object-fit: contain;
-    object-position: bottom center;
-    background: color-mix(in srgb, var(--paper) 55%, var(--white));
+    aspect-ratio: 3 / 4;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
-  .deck-format__name {
-    margin: 1rem 0 0;
-    font-family: var(--display);
-    font-size: 1.15rem;
-    line-height: 1.25;
+  .deck-sku__dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.55rem;
   }
 
-  .deck-format__purpose {
-    display: block;
-    color: var(--muted);
-    font-style: italic;
+  .deck-sku__dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--ink) 22%, transparent);
+    cursor: pointer;
   }
 
-  .deck-format__spec,
-  .deck-format__price {
-    margin: 0.2rem 0 0;
-    color: var(--muted);
-    font-size: 0.85rem;
+  .deck-sku__dot.is-active {
+    background: var(--ink);
   }
 
-  .deck-format__price {
-    color: var(--ink);
+  .deck-sku__dot:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
   }
 
   @media (max-width: 860px) {
@@ -258,8 +319,9 @@ const productJsonLd = deckProductJsonLd({
       grid-template-columns: 1fr;
     }
 
-    .deck-sku__formats {
-      justify-content: flex-start;
+    .deck-sku__media {
+      width: min(100%, 22rem);
+      justify-self: start;
     }
   }
 </style>

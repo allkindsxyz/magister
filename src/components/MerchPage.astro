@@ -6,7 +6,7 @@ import { productCopy, productHasCardPick, deckBoxCopy, pdpUi, type ProductKind }
 import Nav from './Nav.astro';
 import BuyerFooter from './BuyerFooter.astro';
 import { deckProductJsonLd, productJsonLd, fillPrices, formatPrice, PRICES } from '../lib/pricing';
-import { APPAREL_SIZES, SKUS, bundleSaving, type SkuId } from '../lib/catalog';
+import { APPAREL_SIZES, SKUS, type SkuId } from '../lib/catalog';
 import { absoluteUrl, localizedAbsoluteUrl } from '../lib/site';
 
 interface Props {
@@ -142,20 +142,6 @@ const deckOptions: DeckOption[] = isDeck
         note: t('deck_sku.standard_purpose'),
         badges: [],
       },
-      {
-        sku: 'deck_set',
-        name: ui.set_name,
-        spec: ui.set_spec,
-        note: '',
-        badges: [fill(ui.save, { amount: money(bundleSaving('deck_set')) })],
-      },
-      {
-        sku: 'deck_two_xl',
-        name: ui.two_xl_name,
-        spec: ui.two_xl_spec,
-        note: '',
-        badges: [fill(ui.save, { amount: money(bundleSaving('deck_two_xl')) }), ui.free_shipping],
-      },
     ]
   : [];
 
@@ -173,8 +159,6 @@ const jsonLd = isDeck
       description: copy.meta_description,
       xlName: t('deck_sku.price_xl'),
       standardName: t('deck_sku.price_standard'),
-      setName: t('deck_sku.price_set'),
-      twoXlName: t('deck_sku.price_two_xl'),
     })
   : isApparel
     ? productJsonLd({
