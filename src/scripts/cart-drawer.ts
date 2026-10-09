@@ -16,6 +16,7 @@ import type { Lang } from '../i18n/utils';
 
 type CartUi = {
   skuNames: Record<string, string>;
+  cardTitles: Record<string, string>;
   count_aria: string;
   open_aria: string;
   qty_label: string;
@@ -87,9 +88,15 @@ export function mountCartDrawer(root: HTMLElement): void {
     headCount.textContent = count ? `· ${count}` : '';
   };
 
+  const cardLabel = (line: CartLine): string | null => {
+    if (line.cardId && ui.cardTitles?.[line.cardId]) return ui.cardTitles[line.cardId];
+    return line.cardTitle;
+  };
+
   const lineMeta = (line: CartLine): string => {
     const parts: string[] = [];
-    if (line.cardTitle) parts.push(line.cardTitle);
+    const card = cardLabel(line);
+    if (card) parts.push(card);
     if (line.color) parts.push(line.color === 'inspired' ? ui.color_inspired : ui.color_black);
     if (line.size) parts.push(fill(ui.size, { size: line.size }));
     return parts.join(' · ');

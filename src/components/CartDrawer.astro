@@ -1,6 +1,7 @@
 ---
+import { getCollection } from 'astro:content';
 import type { Lang } from '../i18n/utils';
-import { useTranslations, getLocalizedPath } from '../i18n/utils';
+import { useTranslations, getLocalizedPath, pickLocalized } from '../i18n/utils';
 import { SKUS } from '../lib/catalog';
 
 interface Props {
@@ -12,8 +13,15 @@ const t = useTranslations(lang);
 const deckHref = getLocalizedPath('/artifacts/deck', lang);
 
 const skuNames = Object.fromEntries(Object.keys(SKUS).map((id) => [id, t(`cart.sku.${id}`)]));
+/** Resolve card titles in the current locale — cart lines only store an id + a stale snapshot. */
+const cardTitles = Object.fromEntries(
+  (await getCollection('cards'))
+    .filter((card) => !card.data.back && card.data.id)
+    .map((card) => [card.data.id as string, pickLocalized(card.data.title, lang)]),
+);
 const uiJson = JSON.stringify({
   skuNames,
+  cardTitles,
   count_aria: t('cart.count_aria'),
   open_aria: t('cart.open_aria'),
   qty_label: t('cart.qty_label'),
