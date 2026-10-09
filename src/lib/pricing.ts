@@ -84,7 +84,7 @@ type DeckOfferInput = {
 
 export function deckProductJsonLd({ url, image, description, xlName, standardName, setName, twoXlName }: DeckOfferInput): string {
   return productJsonLd({
-    name: 'Magister — art playing cards by Vasily Pochitsky',
+    name: 'Magister — art playing cards by Dr. Klein',
     url,
     image,
     description,

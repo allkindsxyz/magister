@@ -81,7 +81,7 @@
     "lead_before": "A deck of playing cards where ",
     "lead_mark": "every suit and rank hides inside a painting",
     "lead_after": ".",
-    "body": "54 works by Vasily Pochitsky across four worlds — from the gods of Olympus to the celebrities of our time. There are no pips or corner marks: you read each card from its scene, and the key comes in the box.",
+    "body": "54 works by Dr. Klein across four worlds — from the gods of Olympus to the celebrities of our time. There are no pips or corner marks: you read each card from its scene, and the key comes in the box.",
     "explore": "Explore the deck",
     "meet": "Meet us at SPIEL 2026",
     "meet_aria": "Meet us at SPIEL Essen 2026",
@@ -155,7 +155,7 @@
   "authors": {
     "preface_title": "Before They Became Cards",
     "preface_p1": "Long before Magister became a deck of cards, there were paintings.",
-    "preface_p2": "Vasily Pochitsky and Alexander Zhilchik spent years creating their own worlds — inventing characters, places and stories, and bringing them to life on canvas.",
+    "preface_p2": "Dr. Klein and Alexander Zhilchik spent years creating their own worlds — inventing characters, places and stories, and bringing them to life on canvas.",
     "preface_p3": "Each of the 54 cards is based on one of these original works.",
     "preface_p4": "The deck is only a glimpse into a much larger world.",
     "preface_image_alt": "Alexander Zhilchik outdoors with a butterfly resting on his finger.",
@@ -163,28 +163,28 @@
     "title": "Authors of Magister Cards",
     "page": {
       "back": "Back",
-      "meta_title": "Authors of Magister Cards — Vasily Pochitsky & Alexander Zhilchik",
-      "meta_description": "First, there were paintings. The story of Vasily Pochitsky and Alexander Zhilchik, creators of the Magister universe."
+      "meta_title": "Authors of Magister Cards — Dr. Klein & Alexander Zhilchik",
+      "meta_description": "First, there were paintings. The story of Dr. Klein (real name Vasily Pochitsky) and Alexander Zhilchik, creators of the Magister universe."
     },
     "pochitsky": {
-      "name": "Vasily Pochitsky",
+      "name": "Dr. Klein (real name Vasily Pochitsky)",
       "role": "Artist and co-creator of the Magister universe.",
       "bio": "Belarusian painter, illustrator and musician. He began painting in Rechitsa and went on to exhibit from Moscow to New York. For nearly a decade, his drawings appeared in the national press, and throughout his career he illustrated books and records.",
       "bio_2": "Magister was his most ambitious cycle: created in close collaboration with Alexander Zhilchik, the fifty-four paintings brought their shared world and its characters to life on canvas.",
-      "link": "More about Vasily Pochitsky",
-      "photo_alt": "Portrait of artist Vasily Pochitsky."
+      "link": "More about Dr. Klein",
+      "photo_alt": "Portrait of artist Dr. Klein."
     },
     "zhilchik": {
       "name": "Alexander Zhilchik",
       "role": "Author of the idea",
-      "bio": "“I was lucky to be friends with a genius… and that was Vasya Pochitsky.”",
+      "bio": "“I was lucky to be friends with a genius… and that was Dr. Klein.”",
       "bio_2": "",
       "photo_alt": "Portrait of Alexander Zhilchik."
     },
-    "compact_body": "Vasily Pochitsky (1967–2024) was a Belarusian painter, illustrator and musician from Rechitsa. His work was exhibited from Moscow to New York, ran in the national press for nearly a decade, and illustrated books and records. Magister is his largest cycle: 54 paintings of a world he invented with his friend Alexander Zhilchik. Vasily is gone. His world remains — in the paintings and in this deck.",
+    "compact_body": "Dr. Klein (real name Vasily Pochitsky, 1967–2024) was a Belarusian painter, illustrator and musician from Rechitsa. His work was exhibited from Moscow to New York, ran in the national press for nearly a decade, and illustrated books and records. Magister is his largest cycle: 54 paintings of a world he invented with his friend Alexander Zhilchik. He is gone. His world remains — in the paintings and in this deck.",
     "compact_more": "More about the authors →",
     "compact_title": "First, There Were Paintings",
-    "compact_quote": "“I was lucky to be friends with a genius… and that was Vasya Pochitsky.”",
+    "compact_quote": "“I was lucky to be friends with a genius… and that was Dr. Klein.”",
     "compact_quote_author": "Alexander Zhilchik, creator of the concept"
   },
   "next": {
@@ -212,7 +212,7 @@
     "prints": {
       "title": "Prints",
       "lead": "A painting from the deck at original size — 60 × 40 cm.",
-      "body": "High-quality prints of Vasily Pochitsky’s original paintings, preserving the artwork in its original format.",
+      "body": "High-quality prints of Dr. Klein’s original paintings, preserving the artwork in its original format.",
       "cta": "Choose a painting",
       "image_alt": "Framed Magister art print hanging on a wall above a shelf."
     },

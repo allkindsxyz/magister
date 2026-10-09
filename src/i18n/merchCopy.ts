@@ -301,7 +301,7 @@ export const pdpUi: Record<Lang, PdpUi> = {
 
 const apparel: Record<Lang, MerchCopy> = {
   en: {
-    meta_title: 'Magister Apparel — Hoodies & Tees with Vasily Pochitsky’s Paintings',
+    meta_title: 'Magister Apparel — Hoodies & Tees with Dr. Klein’s Paintings',
     meta_description: `Hoodies (${price('hoodie', 'en')}) and T-shirts (${price('tee', 'en')}) featuring a painting from the Magister deck — your pick or your birth card — with a QR label that opens its story and your message.`,
     label: 'Apparel',
     title: 'Wear Your Card',
@@ -321,7 +321,7 @@ const apparel: Record<Lang, MerchCopy> = {
     },
   },
   ru: {
-    meta_title: 'Одежда Magister — худи и футболки с картинами Почицкого',
+    meta_title: 'Одежда Magister — худи и футболки с картинами Dr. Klein',
     meta_description: `Худи (${price('hoodie', 'ru')}) и футболки (${price('tee', 'ru')}) с картиной из колоды Magister — на ваш выбор или по дате рождения. QR-код на бирке открывает историю карты и ваше послание.`,
     label: 'Одежда',
     title: 'Наденьте свою карту',
@@ -341,7 +341,7 @@ const apparel: Record<Lang, MerchCopy> = {
     },
   },
   be: {
-    meta_title: 'Адзенне Magister — худзі і футболкі з карцінамі Пачыцкага',
+    meta_title: 'Адзенне Magister — худзі і футболкі з карцінамі Dr. Klein',
     meta_description: `Худзі (${price('hoodie', 'be')}) і футболкі (${price('tee', 'be')}) з карцінай з калоды Magister — на ваш выбар або па даце нараджэння. QR-код на бірцы адкрывае гісторыю карты і ваша пасланне.`,
     label: 'Адзенне',
     title: 'Апраніце сваю карту',
@@ -361,7 +361,7 @@ const apparel: Record<Lang, MerchCopy> = {
     },
   },
   zh: {
-    meta_title: 'Magister 服装 — 印有瓦西里·波奇茨基画作的连帽衫与 T 恤',
+    meta_title: 'Magister 服装 — 印有 Dr. Klein 画作的连帽衫与 T 恤',
     meta_description: `印有 Magister 牌组画作的连帽衫（${price('hoodie', 'zh')}）与 T 恤（${price('tee', 'zh')}）——由你挑选，或由你的生日决定。领标上的二维码可打开这张牌的故事与你的留言。`,
     label: '服装',
     title: '把你的牌穿在身上',
@@ -384,7 +384,7 @@ const apparel: Record<Lang, MerchCopy> = {
 
 const prints: Record<Lang, MerchCopy> = {
   en: {
-    meta_title: 'Magister Prints — Pochitsky’s Paintings at Original Size',
+    meta_title: 'Magister Prints — Dr. Klein’s Paintings at Original Size',
     meta_description: `A print of any painting from the Magister deck at its original 60 × 40 cm size, ${price('print', 'en')}. Pick it yourself or by birthday — with a QR code and a personal message.`,
     label: 'Prints',
     title: 'A Painting from the Deck, on Your Wall',
@@ -392,7 +392,7 @@ const prints: Record<Lang, MerchCopy> = {
     ships: 'Printed to order.',
     about_title: 'About the print',
     about: [
-      'Each print reproduces Vasily Pochitsky’s painting at its true size. Details you can barely see on a card come through in full.',
+      'Each print reproduces Dr. Klein’s painting at its true size. Details you can barely see on a card come through in full.',
       'Choose the painting yourself — or by date of birth, for a gift with personal meaning.',
     ],
     message_hint: 'It opens from the QR code on the print, together with the painting’s story.',
@@ -405,7 +405,7 @@ const prints: Record<Lang, MerchCopy> = {
     },
   },
   ru: {
-    meta_title: 'Принты Magister — картины Почицкого в размере оригинала',
+    meta_title: 'Принты Magister — картины Dr. Klein в размере оригинала',
     meta_description: `Принт любой картины из колоды Magister в размере оригинала, 60 × 40 см, — ${price('print', 'ru')}. Выберите сами или по дате рождения — с QR-кодом и личным посланием.`,
     label: 'Принты',
     title: 'Картина из колоды — на вашей стене',
@@ -413,7 +413,7 @@ const prints: Record<Lang, MerchCopy> = {
     ships: 'Напечатаем под заказ.',
     about_title: 'О принте',
     about: [
-      'Каждый принт повторяет картину Василия Почицкого в её настоящем размере. Детали, которые на карте едва различимы, здесь видны целиком.',
+      'Каждый принт повторяет картину Dr. Klein в её настоящем размере. Детали, которые на карте едва различимы, здесь видны целиком.',
       'Выберите картину сами — или по дате рождения: так получается подарок с личным смыслом.',
     ],
     message_hint: 'Откроется по QR-коду на принте вместе с историей картины.',
@@ -426,7 +426,7 @@ const prints: Record<Lang, MerchCopy> = {
     },
   },
   be: {
-    meta_title: 'Прынты Magister — карціны Пачыцкага ў памеры арыгінала',
+    meta_title: 'Прынты Magister — карціны Dr. Klein у памеры арыгінала',
     meta_description: `Прынт любой карціны з калоды Magister у памеры арыгінала, 60 × 40 см, — ${price('print', 'be')}. Абярыце самі або па даце нараджэння — з QR-кодам і асабістым пасланнем.`,
     label: 'Прынты',
     title: 'Карціна з калоды — на вашай сцяне',
@@ -434,7 +434,7 @@ const prints: Record<Lang, MerchCopy> = {
     ships: 'Надрукуем пад заказ.',
     about_title: 'Пра прынт',
     about: [
-      'Кожны прынт паўтарае карціну Васіля Пачыцкага ў яе сапраўдным памеры. Дэталі, якія на карце ледзь бачныя, тут відаць цалкам.',
+      'Кожны прынт паўтарае карціну Dr. Klein у яе сапраўдным памеры. Дэталі, якія на карце ледзь бачныя, тут відаць цалкам.',
       'Абярыце карціну самі — або па даце нараджэння: так атрымліваецца падарунак з асабістым сэнсам.',
     ],
     message_hint: 'Адкрыецца па QR-кодзе на прынце разам з гісторыяй карціны.',
@@ -447,7 +447,7 @@ const prints: Record<Lang, MerchCopy> = {
     },
   },
   zh: {
-    meta_title: 'Magister 版画 — 原作尺寸的波奇茨基画作',
+    meta_title: 'Magister 版画 — 原作尺寸的 Dr. Klein 画作',
     meta_description: `牌组中任意一幅画的版画，原作尺寸 60 × 40 cm，${price('print', 'zh')}。由你挑选或按生日选择，附二维码与个人留言。`,
     label: '版画',
     title: '牌组里的一幅画，挂上你的墙',
@@ -455,7 +455,7 @@ const prints: Record<Lang, MerchCopy> = {
     ships: '按单印制。',
     about_title: '关于版画',
     about: [
-      '每一幅版画都按真实尺寸复制瓦西里·波奇茨基的原作。牌面上几乎看不清的细节，在这里一览无余。',
+      '每一幅版画都按真实尺寸复制 Dr. Klein 的原作。牌面上几乎看不清的细节，在这里一览无余。',
       '自己挑选画作——或按出生日期选择，成为一份有个人意义的礼物。',
     ],
     message_hint: '扫描版画上的二维码，即可与画作的故事一同打开。',
@@ -468,11 +468,11 @@ const prints: Record<Lang, MerchCopy> = {
 
 const deck: Record<Lang, MerchCopy> = {
   en: {
-    meta_title: 'Magister Deck — 54 Paintings by Vasily Pochitsky | First Edition',
+    meta_title: 'Magister Deck — 54 Paintings by Dr. Klein | First Edition',
     meta_description: `An art deck of 54 cards where suit and rank hide inside each painting. XL 70 × 120 mm — ${price('xl', 'en')}, standard 50 × 80 mm — ${price('standard', 'en')}. Key booklet included. EU & US delivery in 10–14 days.`,
     label: 'The Deck',
     title: 'A Deck You Decode First',
-    sub: '54 paintings by Vasily Pochitsky. The suit and rank of every card hide inside its scene.',
+    sub: '54 paintings by Dr. Klein. The suit and rank of every card hide inside its scene.',
     ships: 'In stock: the edition is already printed.',
     about_title: 'About the deck',
     about: [
@@ -491,11 +491,11 @@ const deck: Record<Lang, MerchCopy> = {
     },
   },
   ru: {
-    meta_title: 'Колода Magister — 54 картины Василия Почицкого | Первый тираж',
+    meta_title: 'Колода Magister — 54 картины Dr. Klein | Первый тираж',
     meta_description: `Арт-колода из 54 карт: масть и ранг спрятаны в сюжете картины. XL 70 × 120 мм — ${price('xl', 'ru')}, стандартная 50 × 80 мм — ${price('standard', 'ru')}. Буклет-ключ в коробке. Доставка в EU и US за 10–14 дней.`,
     label: 'Колода',
     title: 'Колода, которую сначала разгадывают',
-    sub: '54 картины Василия Почицкого. Масть и ранг каждой карты спрятаны в сюжете.',
+    sub: '54 картины Dr. Klein. Масть и ранг каждой карты спрятаны в сюжете.',
     ships: 'В наличии: тираж уже напечатан.',
     about_title: 'О колоде',
     about: [
@@ -514,11 +514,11 @@ const deck: Record<Lang, MerchCopy> = {
     },
   },
   be: {
-    meta_title: 'Калода Magister — 54 карціны Васіля Пачыцкага | Першы наклад',
+    meta_title: 'Калода Magister — 54 карціны Dr. Klein | Першы наклад',
     meta_description: `Арт-калода з 54 карт: масць і ранг схаваныя ў сюжэце карціны. XL 70 × 120 мм — ${price('xl', 'be')}, стандартная 50 × 80 мм — ${price('standard', 'be')}. Буклет-ключ у каробцы. Дастаўка ў EU і US за 10–14 дзён.`,
     label: 'Калода',
     title: 'Калода, якую спачатку разгадваюць',
-    sub: '54 карціны Васіля Пачыцкага. Масць і ранг кожнай карты схаваныя ў сюжэце.',
+    sub: '54 карціны Dr. Klein. Масць і ранг кожнай карты схаваныя ў сюжэце.',
     ships: 'У наяўнасці: наклад ужо надрукаваны.',
     about_title: 'Пра калоду',
     about: [
@@ -537,11 +537,11 @@ const deck: Record<Lang, MerchCopy> = {
     },
   },
   zh: {
-    meta_title: 'Magister 牌组 — 瓦西里·波奇茨基的 54 幅画作 | 首版',
+    meta_title: 'Magister 牌组 — Dr. Klein 的 54 幅画作 | 首版',
     meta_description: `一副 54 张的艺术扑克牌，花色与点数藏在每幅画里。XL 70 × 120 mm ${price('xl', 'zh')}，标准 50 × 80 mm ${price('standard', 'zh')}。盒内附解读小册子。发货至欧盟与美国，10–14 天送达。`,
     label: '牌组',
     title: '一副要先解读的牌',
-    sub: '瓦西里·波奇茨基的 54 幅画。每张牌的花色与点数都藏在画面里。',
+    sub: 'Dr. Klein 的 54 幅画。每张牌的花色与点数都藏在画面里。',
     ships: '现货：首版已印制完成。',
     about_title: '关于牌组',
     about: [
@@ -562,13 +562,13 @@ const album: Record<Lang, MerchCopy> = {
   en: {
     meta_title: 'Magister Art Album — 152 Pages Beyond the Deck',
     meta_description:
-      'The Magister art album: Vasily Pochitsky’s paintings at full scale, the stories of their characters, and how the cycle was made. 152 pages. Coming soon.',
+      'The Magister art album: Dr. Klein’s paintings at full scale, the stories of their characters, and how the cycle was made. 152 pages. Coming soon.',
     label: 'Art Album',
     title: 'Everything That Didn’t Fit in the Deck',
     sub: '152 pages on the paintings, characters and world of Magister.',
     ships: 'The album is coming soon.',
     about_title: 'About the album',
-    about: ['Vasily Pochitsky’s paintings at full scale, the stories of their characters, and how the cycle came to be.'],
+    about: ['Dr. Klein’s paintings at full scale, the stories of their characters, and how the cycle came to be.'],
     message_hint: '',
     slides: {
       cover: { alt: 'Cover of the Magister art album', caption: '152 pages on the paintings, characters and world of Magister.' },
@@ -578,13 +578,13 @@ const album: Record<Lang, MerchCopy> = {
   ru: {
     meta_title: 'Арт-альбом Magister — 152 страницы о мире колоды',
     meta_description:
-      'Арт-альбом Magister: картины Василия Почицкого крупно, истории героев и то, как создавался цикл. 152 страницы. Скоро.',
+      'Арт-альбом Magister: картины Dr. Klein крупно, истории героев и то, как создавался цикл. 152 страницы. Скоро.',
     label: 'Арт-альбом',
     title: 'Всё, что не поместилось в колоду',
     sub: '152 страницы о картинах, героях и мире Magister.',
     ships: 'Альбом скоро выйдет.',
     about_title: 'Об альбоме',
-    about: ['Картины Василия Почицкого крупно, истории персонажей и то, как создавался цикл.'],
+    about: ['Картины Dr. Klein крупно, истории персонажей и то, как создавался цикл.'],
     message_hint: '',
     slides: {
       cover: { alt: 'Обложка арт-альбома Magister', caption: '152 страницы о картинах, героях и мире Magister.' },
@@ -594,13 +594,13 @@ const album: Record<Lang, MerchCopy> = {
   be: {
     meta_title: 'Арт-альбом Magister — 152 старонкі пра свет калоды',
     meta_description:
-      'Арт-альбом Magister: карціны Васіля Пачыцкага буйна, гісторыі герояў і тое, як ствараўся цыкл. 152 старонкі. Хутка.',
+      'Арт-альбом Magister: карціны Dr. Klein буйна, гісторыі герояў і тое, як ствараўся цыкл. 152 старонкі. Хутка.',
     label: 'Арт-альбом',
     title: 'Усё, што не змясцілася ў калоду',
     sub: '152 старонкі пра карціны, герояў і свет Magister.',
     ships: 'Альбом хутка выйдзе.',
     about_title: 'Пра альбом',
-    about: ['Карціны Васіля Пачыцкага буйна, гісторыі персанажаў і тое, як ствараўся цыкл.'],
+    about: ['Карціны Dr. Klein буйна, гісторыі персанажаў і тое, як ствараўся цыкл.'],
     message_hint: '',
     slides: {
       cover: { alt: 'Вокладка арт-альбома Magister', caption: '152 старонкі пра карціны, герояў і свет Magister.' },
@@ -609,13 +609,13 @@ const album: Record<Lang, MerchCopy> = {
   },
   zh: {
     meta_title: 'Magister 艺术画册 — 牌组之外的 152 页',
-    meta_description: 'Magister 艺术画册：瓦西里·波奇茨基画作的大幅呈现、角色故事与系列诞生的过程。152 页，即将推出。',
+    meta_description: 'Magister 艺术画册：Dr. Klein 画作的大幅呈现、角色故事与系列诞生的过程。152 页，即将推出。',
     label: '艺术画册',
     title: '牌组里装不下的一切',
     sub: '152 页，关于画作、角色与 Magister 的世界。',
     ships: '画册即将推出。',
     about_title: '关于画册',
-    about: ['瓦西里·波奇茨基画作的大幅呈现、角色的故事，以及这个系列如何诞生。'],
+    about: ['Dr. Klein 画作的大幅呈现、角色的故事，以及这个系列如何诞生。'],
     message_hint: '',
     slides: {
       cover: { alt: 'Magister 艺术画册封面', caption: '152 页，关于画作、角色与 Magister 的世界。' },
@@ -628,25 +628,25 @@ export type DeckBoxCopy = ReadonlyArray<{ label: string; value: string }>;
 
 export const deckBoxCopy: Record<Lang, DeckBoxCopy> = {
   en: [
-    { label: 'Cards', value: '54 cards, each one a painting by Vasily Pochitsky' },
+    { label: 'Cards', value: '54 cards, each one a painting by Dr. Klein' },
     { label: 'Key', value: 'A booklet that explains the symbols of every suit and rank' },
     { label: 'XL', value: '70 × 120 mm · edition of 500' },
     { label: 'Standard', value: '50 × 80 mm · edition of 100' },
   ],
   ru: [
-    { label: 'Карты', value: '54 карты — каждая картина Василия Почицкого' },
+    { label: 'Карты', value: '54 карты — каждая картина Dr. Klein' },
     { label: 'Ключ', value: 'Буклет с расшифровкой символов каждой масти и ранга' },
     { label: 'XL', value: '70 × 120 мм · тираж 500' },
     { label: 'Стандартная', value: '50 × 80 мм · тираж 100' },
   ],
   be: [
-    { label: 'Карты', value: '54 карты — кожная карціна Васіля Пачыцкага' },
+    { label: 'Карты', value: '54 карты — кожная карціна Dr. Klein' },
     { label: 'Ключ', value: 'Буклет з расшыфроўкай сімвалаў кожнай масці і рангу' },
     { label: 'XL', value: '70 × 120 мм · наклад 500' },
     { label: 'Стандартная', value: '50 × 80 мм · наклад 100' },
   ],
   zh: [
-    { label: '牌', value: '54 张牌，每一张都是瓦西里·波奇茨基的画作' },
+    { label: '牌', value: '54 张牌，每一张都是 Dr. Klein 的画作' },
     { label: '解读', value: '一本手册，解释每种花色与点数的符号' },
     { label: 'XL', value: '70 × 120 毫米 · 限量 500 副' },
     { label: '标准版', value: '50 × 80 毫米 · 限量 100 副' },
