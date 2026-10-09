@@ -267,7 +267,7 @@
     "body": "Each deck is 54 scenes in a box, with a booklet that holds the key. Learn the symbols and play the games you already know — or simply look.",
     "cta": "Buy the deck",
     "shop_link": "Apparel & prints →",
-    "image_alt": "Magister deck on a wooden desk",
+    "image_alt": "Magister XL deck on a wooden desk",
     "price_xl": "XL · 70 × 120 mm",
     "price_standard": "Standard · 50 × 80 mm",
     "price_set": "Set: XL + standard",
@@ -281,7 +281,8 @@
     "standard_spec": "50 × 80 mm · 100 decks",
     "more_title": "Sets & shipping",
     "delivery": "Delivery to the EU and US in 10–14 days.",
-    "formats_aria": "Deck formats"
+    "formats_aria": "Deck formats",
+    "image_alt_standard": "Magister standard deck tuck box"
   },
   "opportunity": {
     "label": "Partnership",

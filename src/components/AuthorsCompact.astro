@@ -48,11 +48,12 @@ const fullStoryHref = getLocalizedPath('/authors/', lang);
     display: grid;
     grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
     gap: clamp(1.5rem, 4vw, 3rem);
-    align-items: center;
+    align-items: start;
   }
 
+  /* Drop the media to the title baseline (label sits above the title). */
   .authors-compact__media {
-    margin: 0;
+    margin: calc(0.68rem * 1.2 + 0.35rem) 0 0;
   }
 
   .authors-compact__media img {
@@ -101,6 +102,10 @@ const fullStoryHref = getLocalizedPath('/authors/', lang);
   @media (max-width: 800px) {
     .authors-compact__grid {
       grid-template-columns: 1fr;
+    }
+
+    .authors-compact__media {
+      margin-top: 0;
     }
   }
 </style>

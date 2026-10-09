@@ -13,27 +13,33 @@ const t = useTranslations(lang);
 const deckHref = getLocalizedPath('/artifacts/deck', lang);
 const shopHref = `${getLocalizedPath('/', lang)}#artifacts`;
 
-/** Physical sizes drive the on-screen scale, so the two formats compare truthfully. */
+/** Physical card sizes drive relative on-screen scale of the two packs. */
 const formats = [
   {
     key: 'xl',
-    image: '/cards/queen-hearts.webp',
+    image: '/media/pack.webp',
+    width: 1200,
+    height: 800,
     widthMm: 70,
     heightMm: 120,
     name: t('deck_sku.xl_name'),
     purpose: t('deck_sku.xl_purpose'),
     spec: t('deck_sku.xl_spec'),
     price: formatPrice(PRICES.xl, lang),
+    alt: t('deck_sku.image_alt'),
   },
   {
     key: 'standard',
-    image: '/cards/king-clubs.webp',
+    image: '/media/pack-standard.webp',
+    width: 687,
+    height: 1024,
     widthMm: 50,
     heightMm: 80,
     name: t('deck_sku.standard_name'),
     purpose: t('deck_sku.standard_purpose'),
     spec: t('deck_sku.standard_spec'),
     price: formatPrice(PRICES.standard, lang),
+    alt: t('deck_sku.image_alt_standard'),
   },
 ];
 
@@ -44,7 +50,7 @@ const extraRows = [
 
 const productJsonLd = deckProductJsonLd({
   url: localizedAbsoluteUrl(lang, '/artifacts/deck'),
-  image: absoluteUrl('/media/deck-lifestyle.jpg'),
+  image: absoluteUrl('/media/pack.webp'),
   description: t('deck_sku.body'),
   xlName: t('deck_sku.price_xl'),
   standardName: t('deck_sku.price_standard'),
@@ -87,11 +93,11 @@ const productJsonLd = deckProductJsonLd({
         formats.map((format) => (
           <li class="deck-format" style={`--w: ${format.widthMm}; --h: ${format.heightMm};`}>
             <img
-              class="deck-format__card"
+              class="deck-format__pack"
               src={format.image}
-              alt=""
-              width="1200"
-              height="1680"
+              alt={format.alt}
+              width={format.width}
+              height={format.height}
               loading="lazy"
               decoding="async"
             />
@@ -118,7 +124,7 @@ const productJsonLd = deckProductJsonLd({
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: clamp(2rem, 5vw, 4.5rem);
-    align-items: end;
+    align-items: start;
   }
 
   .deck-sku__copy .section-title {
@@ -198,30 +204,29 @@ const productJsonLd = deckProductJsonLd({
   }
 
   .deck-sku__formats {
-    /* One millimetre of card, in screen pixels. */
-    --mm: clamp(2.2px, 0.62vw, 3.2px);
+    /* One millimetre of card height → pack scale (XL taller than standard). */
+    --mm: clamp(1.85px, 0.48vw, 2.55px);
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
     justify-content: center;
-    gap: clamp(1.25rem, 3vw, 2.5rem);
+    gap: clamp(1.25rem, 3vw, 2.25rem);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
   .deck-format {
-    width: calc(var(--w) * var(--mm));
+    flex: 0 1 auto;
+    width: min(100%, calc(var(--h) * var(--mm) * 0.85));
   }
 
-  .deck-format__card {
+  .deck-format__pack {
     display: block;
     width: 100%;
     height: calc(var(--h) * var(--mm));
-    object-fit: cover;
-    border-radius: calc(3 * var(--mm));
-    box-shadow:
-      0 1px 2px rgba(23, 23, 20, 0.18),
-      0 18px 36px -14px rgba(23, 23, 20, 0.45);
+    object-fit: contain;
+    object-position: bottom center;
+    background: color-mix(in srgb, var(--paper) 55%, var(--white));
   }
 
   .deck-format__name {
