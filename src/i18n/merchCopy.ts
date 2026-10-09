@@ -476,7 +476,7 @@ const deck: Record<Lang, MerchCopy> = {
     ships: 'In stock: the edition is already printed.',
     about_title: 'About the deck',
     about: [
-      'Hearts are the Olympic Gods, Diamonds the Bearers of Secrets, Clubs the Templars, Spades the Celebrities. The key to the symbols is in the booklet inside the box — and every card is online too.',
+      'Hearts are the Olympian Gods, Diamonds the Bearers of Secrets, Clubs the Templars, Spades the Celebrities. The key to the symbols is in the booklet inside the box — and every card is online too.',
     ],
     message_hint: 'It opens from the QR code on your copy.',
     slides: {
