@@ -1,7 +1,9 @@
 import type { GamesCopy, SuitName } from '../i18n/gamesCopy';
 import type { DeepDiveResolved, DeepDiveLevel, DeepDiveQuestion } from '../content/deep-dive/types';
+import type { OracleReading } from '../content/oracle';
 import { birthCard, daysInMonth } from '../lib/birthCard';
 import { shuffle } from '../utils/shuffle';
+import { mountOracle, type OracleController, type OraclePhase } from './oracle';
 
 type Suit = SuitName;
 
@@ -23,6 +25,8 @@ type PlayData = {
   symbols: Record<Suit, string>;
   cards: PlayCard[];
   lore: DeepDiveResolved[];
+  oracle: OracleReading[] | null;
+  cardBack: string;
 };
 
 type Save = {
@@ -276,6 +280,29 @@ export function mountPlayGames(): void {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let hideLoupe = (): void => {};
 
+  const oracleHost = root.querySelector<HTMLElement>('[data-screen="oracle"]');
+  const oracle: OracleController | null =
+    oracleHost && copy.oracle && data.oracle
+      ? mountOracle(oracleHost, {
+          copy: copy.oracle,
+          cards: data.oracle.flatMap((reading) => {
+            const card = byId.get(reading.id);
+            if (!card) return [];
+            const story = card.description
+              .split(/\n+/)
+              .map((part) => part.trim())
+              .filter(Boolean);
+            return [{ ...reading, suit: card.suit, value: card.value, title: card.title, world: worlds[card.suit].name, image: card.image, story }];
+          }),
+          back: data.cardBack,
+          symbols,
+          rankName: rankWord,
+          onPhase: paintOracleBar,
+          zoom: openZoom,
+          say,
+        })
+      : null;
+
   let meetSuit = 0;
   let meetCards: PlayCard[] = [];
   let meetAt = 0;
@@ -462,7 +489,7 @@ export function mountPlayGames(): void {
   function gameTitle(): string {
     const pressed = root?.querySelector<HTMLElement>('.play-menu [aria-pressed="true"]');
     const game = pressed?.dataset.game;
-    if (game === 'birthday') return copy.menu.birth_title;
+    if (game === 'birthday' || game === 'oracle') return copy.menu.birth_title;
     if (game === 'lore') {
       if (screen === 'lore-meet') return `${copy.menu.lore_title}: ${copy.lore.levels[loreKind()]}`;
       return copy.menu.lore_title;
@@ -470,18 +497,7 @@ export function mountPlayGames(): void {
     return copy.menu.learn_title;
   }
 
-  function menuButton(game: string): HTMLButtonElement | null {
-    return root?.querySelector<HTMLButtonElement>(`.play-menu [data-game="${game}"]`) ?? null;
-  }
-
   function updateLocks(): void {
-    const birthLock = root?.querySelector<HTMLElement>('[data-lock-for="birthday"]');
-    const note = `${copy.soon.title} ${copy.soon.body}`;
-    if (birthLock) {
-      birthLock.hidden = false;
-      birthLock.textContent = note;
-    }
-    menuButton('birthday')?.classList.remove('is-locked');
     if (save.bestMs == null) {
       recordsBest.hidden = true;
       recordsBest.textContent = '';
@@ -510,6 +526,7 @@ export function mountPlayGames(): void {
   function show(next: string): void {
     const leavingSpread = screen === 'fw-spread' && next !== 'fw-spread';
     if (leavingSpread) abandonSort();
+    if (screen === 'oracle' && next !== 'oracle') oracle?.leave();
     const sameFamily =
       (screen.startsWith('fw-') && next.startsWith('fw-')) ||
       (screen.startsWith('lore-') && next.startsWith('lore-'));
@@ -524,7 +541,8 @@ export function mountPlayGames(): void {
     stage.hidden = false;
     scrim.hidden = false;
     recordSheet.hidden = true;
-    const titleScreen = next === 'fw-threshold' || next === 'lore-threshold';
+    /* The oracle always enters on its intro; later phases repaint the bar through paintOracleBar. */
+    const titleScreen = next === 'fw-threshold' || next === 'lore-threshold' || next === 'oracle';
     const soonScreen = next === 'soon';
     const worldsScreen = next === 'fw-worlds';
     const suitScreen = next === 'fw-suit';
@@ -568,9 +586,20 @@ export function mountPlayGames(): void {
     focusable?.focus({ preventScroll: true });
   }
 
+  function paintOracleBar(phase: OraclePhase): void {
+    if (screen !== 'oracle') return;
+    const intro = phase === 'intro';
+    stage.classList.toggle('is-title', intro);
+    stage.classList.add('is-cover');
+    closeBtn.hidden = intro;
+    backBtn.dataset.action = intro ? 'close' : 'oracle-back';
+    backLabel.textContent = intro ? copy.exit : copy.back;
+  }
+
   function closeStage(): void {
     if (stage.hidden || stage.classList.contains('is-leaving')) return;
     if (screen === 'fw-spread') abandonSort();
+    if (screen === 'oracle') oracle?.leave();
     closeZoom();
     hideLoupe();
     resultEl.hidden = true;
@@ -627,7 +656,13 @@ export function mountPlayGames(): void {
       show('lore-threshold');
       return;
     }
-    if (game === 'birthday') {
+    if (game === 'oracle' && oracle) {
+      setPressed('oracle');
+      show('oracle');
+      oracle.enter();
+      return;
+    }
+    if (game === 'oracle' || game === 'birthday') {
       setPressed(game);
       show('soon');
     }
@@ -1810,7 +1845,9 @@ export function mountPlayGames(): void {
     else if (action === 'lore-begin') beginLoreFromIntro();
     else if (action === 'lore-retry') retryLore();
     else if (action === 'lore-onward') onwardLore();
-    else if (action === 'lore-again') {
+    else if (action === 'oracle-back') {
+      if (!oracle?.back()) closeStage();
+    } else if (action === 'lore-again') {
       setPressed('lore');
       show('lore-threshold');
     }
@@ -1826,6 +1863,10 @@ export function mountPlayGames(): void {
     if (!zoom.hidden) {
       event.preventDefault();
       closeZoom();
+      return;
+    }
+    if (screen === 'oracle' && oracle?.escape()) {
+      event.preventDefault();
       return;
     }
     if (!recordSheet.hidden) {

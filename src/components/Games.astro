@@ -4,6 +4,7 @@ import { pickLocalized, useTranslations } from '../i18n/utils';
 import { gamesCopy } from '../i18n/gamesCopy';
 import { getCollection } from 'astro:content';
 import { deepDiveDeck, resolveDeepDive } from '../content/deep-dive';
+import { resolveOracle } from '../content/oracle';
 import MagisterLogo from './MagisterLogo.astro';
 
 interface Props {
@@ -42,6 +43,9 @@ const cards = allCards
   }));
 
 const byId = new Map(cards.map((card) => [card.id, card]));
+const oracleCopy = copy.oracle;
+const oracle = oracleCopy ? resolveOracle(lang, cards.map((card) => card.id)) : null;
+const cardBack = '/media/card-back.jpg';
 
 const payload = {
   lang,
@@ -61,6 +65,8 @@ const payload = {
   symbols,
   cards,
   lore: deepDiveDeck.map((card) => resolveDeepDive(card, lang)),
+  oracle,
+  cardBack,
 };
 
 const art = (id: string) => byId.get(id)?.image ?? '';
@@ -102,7 +108,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
         <span class="poster-body">{copy.menu.lore_blurb}</span>
         <span class="poster-play">{copy.cta}</span>
       </button>
-      <button class="poster" type="button" data-action="open" data-game="birthday" aria-pressed="false">
+      <button class="poster" type="button" data-action="open" data-game="oracle" aria-pressed="false">
         <span class="poster-title">{copy.menu.birth_title}</span>
         <span class="poster-stage">
           <span class="poster-art poster-art--print" aria-hidden="true">
@@ -110,7 +116,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
           </span>
         </span>
         <span class="poster-body">{copy.menu.birth_blurb}</span>
-        <span class="play-lock" data-lock-for="birthday">{copy.soon.title} {copy.soon.body}</span>
+        {!oracle && <span class="play-lock">{copy.soon.title} {copy.soon.body}</span>}
         <span class="poster-play">{copy.cta}</span>
       </button>
     </div>
@@ -498,6 +504,117 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
         <p class="fw-spread-intro-body">{copy.soon.body}</p>
         <img class="fw-soon-back" src="/media/card-back.jpg" alt="" width="732" height="1024" decoding="async" />
       </div>
+
+      {oracleCopy && oracle && (
+        <div data-screen="oracle" class="oracle" data-phase="intro" hidden>
+          <div class="oracle-ambient" aria-hidden="true"></div>
+          <div class="oracle-motes" data-oracle="motes" aria-hidden="true"></div>
+
+          <section class="oracle-phase oracle-intro" data-phase-for="intro" aria-labelledby="oracle-title">
+            <div class="oracle-intro-deck" aria-hidden="true">
+              <img src={cardBack} alt="" width="732" height="1024" loading="lazy" />
+              <img src={cardBack} alt="" width="732" height="1024" loading="lazy" />
+              <img src={cardBack} alt="" width="732" height="1024" loading="lazy" />
+            </div>
+            <p class="oracle-kicker">{oracleCopy.kicker}</p>
+            <h3 class="oracle-title" id="oracle-title" tabindex="-1">{copy.menu.birth_title}</h3>
+            <p class="oracle-lead">{oracleCopy.lead}</p>
+            <div class="fw-title-actions">
+              <button class="btn btn-accent" type="button" data-oracle="start">{oracleCopy.start}</button>
+            </div>
+          </section>
+
+          <section
+            class="oracle-phase oracle-shuffle"
+            data-phase-for="shuffle"
+            data-oracle="shuffle"
+            role="button"
+            tabindex="-1"
+            aria-label={oracleCopy.shuffle_label}
+          >
+            <div class="oracle-ring-wrap" data-oracle="ring-wrap">
+              <svg class="oracle-ring" viewBox="0 0 100 100" aria-hidden="true">
+                <circle class="oracle-ring-track" cx="50" cy="50" r="49"></circle>
+                <circle
+                  class="oracle-ring-prog"
+                  data-oracle="ring"
+                  cx="50"
+                  cy="50"
+                  r="49"
+                  pathLength="1"
+                  stroke-dasharray="1"
+                  stroke-dashoffset="1"
+                ></circle>
+              </svg>
+              <div class="oracle-deck" data-oracle="deck" aria-hidden="true"></div>
+            </div>
+            <p class="oracle-cue" data-oracle="cue" aria-live="polite"></p>
+            <p class="oracle-sub" data-oracle="sub">
+              <span class="oracle-sub-touch">{oracleCopy.hold_hint_touch}</span>
+              <span class="oracle-sub-key">{oracleCopy.hold_hint_key}</span>
+            </p>
+          </section>
+
+          <section class="oracle-phase oracle-wheel" data-phase-for="wheel" data-oracle="wheel" aria-label={oracleCopy.wheel_label}>
+            <div class="oracle-wheel-copy">
+              <p class="oracle-kicker">{oracleCopy.wheel_kicker}</p>
+              <p class="oracle-cue">{oracleCopy.wheel_title}</p>
+            </div>
+            <div class="oracle-fan" data-oracle="fan"></div>
+            <p class="oracle-hint" data-oracle="hint">
+              <span class="oracle-hint-arrow" aria-hidden="true"></span>
+              {oracleCopy.wheel_hint}
+            </p>
+          </section>
+
+          <section class="oracle-phase oracle-result" data-phase-for="result" data-oracle="result">
+            <div class="oracle-slot" data-oracle="slot"></div>
+            <div class="oracle-answer" data-oracle="answer">
+              <p class="oracle-kicker">{oracleCopy.answer_kicker}</p>
+              <h3 class="oracle-message" data-oracle="message"></h3>
+              <p class="oracle-line" data-oracle="line"></p>
+              <p class="oracle-repeat" data-oracle="repeat" hidden>{oracleCopy.repeat}</p>
+              <div class="oracle-actions">
+                <button class="btn btn-accent" type="button" data-oracle="again">{oracleCopy.again}</button>
+                <button class="fw-story-toggle" type="button" data-oracle="story">{oracleCopy.story}</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- A div, not a button: Safari flattens preserve-3d inside <button>, which breaks the flip. -->
+          <div class="oracle-pick" data-oracle="pick" role="button" tabindex="-1" aria-label={oracleCopy.zoom}>
+            <div class="oracle-pick-inner" data-oracle="pick-inner">
+              <div class="oracle-face oracle-face--back">
+                <img src={cardBack} alt="" width="732" height="1024" loading="lazy" />
+              </div>
+              <div class="oracle-face oracle-face--front">
+                <img data-oracle="pick-face" alt="" width="920" height="1316" />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="oracle-sheet"
+            data-oracle="sheet"
+            role="dialog"
+            aria-modal="true"
+            aria-hidden="true"
+            aria-labelledby="oracle-sheet-title"
+          >
+            <button class="oracle-sheet-backdrop" type="button" data-oracle-close tabindex="-1" aria-label={oracleCopy.story_close}></button>
+            <div class="oracle-sheet-panel" data-oracle="sheet-panel">
+              <div class="oracle-sheet-head">
+                <div>
+                  <p class="oracle-kicker" data-oracle="sheet-kicker"></p>
+                  <h3 class="oracle-sheet-title" id="oracle-sheet-title" data-oracle="sheet-title"></h3>
+                </div>
+                <button class="oracle-sheet-close" type="button" data-oracle-close data-oracle="sheet-close" aria-label={oracleCopy.story_close}>×</button>
+              </div>
+              <div class="oracle-sheet-body" data-oracle="sheet-body"></div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div class="play-zoom" id="play-zoom" hidden role="dialog" aria-modal="true" aria-label={copy.zoom}>
         <button class="play-zoom-close" id="play-zoom-close" type="button" data-action="zoom-close">{copy.zoom_close}</button>
@@ -3441,6 +3558,728 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
   @keyframes fw-sweep {
     from { transform: translateY(120%); }
     to { transform: none; }
+  }
+
+  /* ---------------- Ask the Magister (oracle) ---------------- */
+
+  .play-stage > .oracle:not([hidden]) {
+    --oracle-tint: 217, 181, 106;
+    --oracle-ratio: 0.6975;
+    --oracle-radius: clamp(0.5rem, 4cqmin, 0.75rem);
+    position: relative;
+    display: block;
+    /* Bleed to the stage edges: the fan runs off-screen on both sides. */
+    margin:
+      0
+      calc(-1 * max(1rem, env(safe-area-inset-right)))
+      calc(-1 * max(0.7rem, env(safe-area-inset-bottom)))
+      calc(-1 * max(1rem, env(safe-area-inset-left)));
+    overflow: hidden;
+    container-type: size;
+    color: var(--play-parchment);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .oracle img {
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .oracle-ambient {
+    position: absolute;
+    inset: -20%;
+    background:
+      radial-gradient(40% 32% at 50% 46%, rgba(var(--oracle-tint), 0.16), transparent 70%),
+      radial-gradient(60% 50% at 50% 110%, rgba(var(--oracle-tint), 0.08), transparent 70%);
+    animation: oracle-breathe 9s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .oracle-motes {
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .oracle-motes i {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    border-radius: 50%;
+    background: rgba(var(--oracle-tint), 0.9);
+    box-shadow: 0 0 6px rgba(var(--oracle-tint), 0.8);
+    animation: oracle-drift linear infinite;
+  }
+
+  .oracle-phase {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem max(1.25rem, env(safe-area-inset-right)) max(1.25rem, env(safe-area-inset-bottom)) max(1.25rem, env(safe-area-inset-left));
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.7s ease, visibility 0s linear 0.7s;
+  }
+
+  .oracle[data-phase='intro'] .oracle-intro,
+  .oracle[data-phase='shuffle'] .oracle-shuffle,
+  .oracle[data-phase='wheel'] .oracle-wheel,
+  .oracle[data-phase='result'] .oracle-result {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.7s ease, visibility 0s;
+  }
+
+  .oracle-kicker {
+    margin: 0;
+    color: var(--play-gold);
+    font: 600 0.68rem/1.2 'Spectral', 'Noto Serif SC', Georgia, serif;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .oracle-cue {
+    min-height: 2.8em;
+    max-width: 22rem;
+    margin: 0;
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(1.3rem, 5.6cqw, 1.65rem);
+    font-style: italic;
+    line-height: 1.35;
+    text-align: center;
+    transition: opacity 0.5s ease;
+  }
+
+  .oracle-cue.is-out {
+    opacity: 0;
+  }
+
+  /* Intro */
+  .oracle-intro {
+    gap: 0.85rem;
+    text-align: center;
+  }
+
+  .oracle-intro-deck {
+    position: relative;
+    flex: none;
+    width: min(50cqw, 200px, calc(34cqh * var(--oracle-ratio)));
+    aspect-ratio: var(--oracle-ratio);
+    margin-bottom: 1.25rem;
+  }
+
+  .oracle-intro-deck img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--oracle-radius);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6), 0 0 60px rgba(var(--oracle-tint), 0.12);
+  }
+
+  .oracle-intro-deck img:nth-child(1) {
+    transform: translate(-7px, 7px) rotate(-4deg);
+    filter: brightness(0.6);
+  }
+
+  .oracle-intro-deck img:nth-child(2) {
+    transform: translate(6px, 3px) rotate(3deg);
+    filter: brightness(0.75);
+  }
+
+  .oracle-intro-deck img:nth-child(3) {
+    animation: oracle-hover 4.5s ease-in-out infinite;
+  }
+
+  .play-stage h3.oracle-title {
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(2.4rem, 9cqw, 4.2rem);
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+
+  .oracle-lead {
+    max-width: 24rem;
+    margin: 0;
+    color: var(--play-parchment);
+    font-size: clamp(1.08rem, 1.7vw, 1.25rem);
+    line-height: 1.45;
+  }
+
+  .oracle-intro .fw-title-actions {
+    width: min(100%, 22rem);
+    margin-top: 0.6rem;
+  }
+
+  /* Shuffle */
+  .oracle-shuffle {
+    gap: 1.25rem;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    outline: none;
+  }
+
+  .oracle-shuffle.is-holding {
+    cursor: grabbing;
+  }
+
+  .oracle-ring-wrap {
+    position: relative;
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: min(86cqw, 340px, 52cqh);
+    aspect-ratio: 1;
+  }
+
+  .oracle-ring {
+    position: absolute;
+    inset: 0;
+    transform: rotate(-90deg);
+  }
+
+  .oracle-ring circle {
+    fill: none;
+    stroke-width: 1.2;
+  }
+
+  .oracle-ring-track {
+    stroke: rgba(var(--oracle-tint), 0.14);
+  }
+
+  .oracle-ring-prog {
+    stroke: var(--play-gold-hot);
+    stroke-linecap: round;
+  }
+
+  .oracle-ring-wrap.is-ready .oracle-ring-prog {
+    animation: oracle-ready 1.6s ease-in-out infinite;
+  }
+
+  .oracle-deck {
+    position: relative;
+    width: min(42cqw, 170px, calc(31cqh * var(--oracle-ratio)));
+    aspect-ratio: var(--oracle-ratio);
+  }
+
+  .oracle-deck img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--oracle-radius);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+    will-change: transform;
+  }
+
+  .oracle-sub {
+    margin: 0;
+    color: var(--play-dim);
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+  }
+
+  .oracle-sub-key {
+    display: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .oracle-sub-touch {
+      display: none;
+    }
+
+    .oracle-sub-key {
+      display: inline;
+    }
+  }
+
+  /* Wheel */
+  .oracle-wheel {
+    justify-content: flex-start;
+    padding: 0;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  .oracle-fan {
+    position: absolute;
+    inset: 0;
+    transition: transform 0.8s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.6s ease;
+  }
+
+  .oracle-fan.is-sunk {
+    transform: translateY(45%);
+    opacity: 0;
+  }
+
+  .oracle-fc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--oracle-radius);
+    background: none;
+    cursor: pointer;
+    will-change: transform;
+  }
+
+  .oracle-fc img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--oracle-radius);
+    box-shadow: -6px 10px 22px rgba(0, 0, 0, 0.55);
+    pointer-events: none;
+  }
+
+  .oracle-fc-shade {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--oracle-radius);
+    background: #000;
+    opacity: var(--dim, 0);
+    pointer-events: none;
+  }
+
+  .oracle-fc.is-focus img {
+    box-shadow:
+      0 0 0 1px rgba(var(--oracle-tint), 0.5),
+      0 0 34px rgba(var(--oracle-tint), 0.45),
+      0 18px 34px rgba(0, 0, 0, 0.6);
+  }
+
+  .oracle-fc:focus-visible {
+    outline: 2px solid var(--play-gold-hot);
+    outline-offset: 4px;
+  }
+
+  .oracle-fan.is-dealing .oracle-fc {
+    transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: var(--deal, 0ms);
+  }
+
+  .oracle-wheel-copy {
+    position: absolute;
+    top: 0.5rem;
+    right: 0;
+    left: 0;
+    z-index: 1;
+    display: grid;
+    gap: 0.5rem;
+    justify-items: center;
+    padding: 0 1.5rem;
+    pointer-events: none;
+  }
+
+  .oracle-wheel-copy .oracle-cue {
+    min-height: 0;
+  }
+
+  .oracle-hint {
+    position: absolute;
+    right: 0;
+    bottom: max(1.5rem, env(safe-area-inset-bottom));
+    left: 0;
+    z-index: 1;
+    margin: 0;
+    padding: 0 1.5rem;
+    color: var(--play-dim);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    text-align: center;
+    transition: opacity 0.6s;
+    pointer-events: none;
+  }
+
+  .oracle-hint.is-out {
+    opacity: 0;
+  }
+
+  .oracle-hint-arrow {
+    display: block;
+    width: 1px;
+    height: 26px;
+    margin: 0 auto 0.5rem;
+    background: linear-gradient(transparent, var(--play-gold-hot));
+    animation: oracle-arrow 1.8s ease-in-out infinite;
+  }
+
+  /* Drawn card */
+  .oracle-pick {
+    position: absolute;
+    z-index: 30;
+    display: none;
+    perspective: 1400px;
+    pointer-events: none;
+    outline: none;
+  }
+
+  .oracle-pick.is-on {
+    display: block;
+  }
+
+  .oracle-pick.is-docked {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: none !important;
+    pointer-events: auto;
+    cursor: zoom-in;
+  }
+
+  .oracle-pick.is-docked:focus-visible {
+    outline: 2px solid var(--play-gold-hot);
+    outline-offset: 4px;
+  }
+
+  .oracle-pick-inner {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+  }
+
+  .oracle-pick.is-flipped .oracle-pick-inner {
+    transform: rotateY(180deg);
+  }
+
+  .oracle-pick.is-waiting .oracle-pick-inner {
+    animation: oracle-levitate 1.6s ease-in-out infinite;
+  }
+
+  .oracle-face {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: var(--oracle-radius);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .oracle-face img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .oracle-face--back {
+    box-shadow:
+      0 0 0 1px rgba(var(--oracle-tint), 0.4),
+      0 0 50px rgba(var(--oracle-tint), 0.35),
+      0 26px 50px rgba(0, 0, 0, 0.7);
+  }
+
+  .oracle-pick.is-waiting .oracle-face--back {
+    animation: oracle-glow 1.6s ease-in-out infinite;
+  }
+
+  .oracle-face--front {
+    transform: rotateY(180deg);
+    box-shadow: 0 0 60px rgba(var(--oracle-tint), 0.25), 0 26px 50px rgba(0, 0, 0, 0.7);
+  }
+
+  .oracle-face--front::after {
+    content: '';
+    position: absolute;
+    inset: -40%;
+    background: linear-gradient(115deg, transparent 40%, rgba(255, 245, 220, 0.55) 50%, transparent 60%);
+    transform: translateX(-100%);
+    pointer-events: none;
+  }
+
+  .oracle-pick.is-flipped .oracle-face--front::after {
+    animation: oracle-glint 1.3s 0.55s ease-out both;
+  }
+
+  .oracle-pick.is-glinted .oracle-face--front::after {
+    animation: none;
+    transform: translateX(100%);
+  }
+
+  /* Result */
+  .oracle-result {
+    justify-content: flex-start;
+    gap: 1.5rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-top: 0.5rem;
+  }
+
+  .oracle-slot {
+    position: relative;
+    flex: none;
+    width: min(70cqw, 320px, calc(50cqh * var(--oracle-ratio)));
+    aspect-ratio: var(--oracle-ratio);
+  }
+
+  .oracle-answer {
+    display: grid;
+    flex: none;
+    gap: 0.8rem;
+    justify-items: center;
+    max-width: 27rem;
+    padding-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .oracle-answer > * {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .oracle-answer.is-shown > * {
+    opacity: 1;
+    transform: none;
+  }
+
+  .oracle-answer.is-shown > :nth-child(2) { transition-delay: 0.2s; }
+  .oracle-answer.is-shown > :nth-child(3) { transition-delay: 1s; }
+  .oracle-answer.is-shown > :nth-child(4) { transition-delay: 1.2s; }
+  .oracle-answer.is-shown > :nth-child(5) { transition-delay: 1.5s; }
+
+  .play-stage h3.oracle-message {
+    margin: 0;
+    color: #f6efdc;
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(1.4rem, 5.6cqw, 1.85rem);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.32;
+    text-wrap: pretty;
+  }
+
+  .oracle-line {
+    margin: 0;
+    color: var(--play-dim);
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+  }
+
+  .oracle-line b {
+    color: var(--play-parchment);
+    font-weight: 400;
+  }
+
+  .oracle-repeat {
+    margin: 0;
+    color: var(--play-gold-hot);
+    font-size: 0.95rem;
+    font-style: italic;
+  }
+
+  .oracle-actions {
+    display: grid;
+    gap: 0.6rem;
+    justify-items: center;
+    width: min(100%, 18.5rem);
+    margin-top: 0.4rem;
+  }
+
+  .oracle-actions .btn {
+    width: 100%;
+    min-height: 3.35rem;
+    letter-spacing: 0.2em;
+  }
+
+  .oracle-actions .fw-story-toggle {
+    min-height: 44px;
+    margin: 0;
+    align-items: center;
+  }
+
+  @container (min-width: 760px) or ((min-width: 560px) and (orientation: landscape)) {
+    .oracle-result {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(2rem, 5cqw, 4rem);
+      padding-top: 1rem;
+    }
+
+    .oracle-slot {
+      width: min(36cqw, 380px, calc(86cqh * var(--oracle-ratio)));
+    }
+
+    .oracle-answer {
+      justify-items: start;
+      padding-bottom: 0;
+      text-align: left;
+    }
+
+    .oracle-actions {
+      justify-items: start;
+    }
+  }
+
+  /* Story sheet */
+  .oracle-sheet {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    visibility: hidden;
+    transition: visibility 0s linear 0.45s;
+  }
+
+  .oracle-sheet.is-open {
+    visibility: visible;
+    transition: visibility 0s;
+  }
+
+  .oracle-sheet-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    cursor: pointer;
+    transition: opacity 0.45s ease;
+  }
+
+  .oracle-sheet.is-open .oracle-sheet-backdrop {
+    opacity: 1;
+  }
+
+  .oracle-sheet-panel {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: min(100%, 40rem);
+    max-height: 88%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 1.25rem 1.5rem calc(2rem + env(safe-area-inset-bottom));
+    border: 1px solid rgba(176, 144, 79, 0.45);
+    border-bottom: 0;
+    background: var(--play-ink);
+    box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5);
+    transform: translate(-50%, 100%);
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .oracle-sheet.is-open .oracle-sheet-panel {
+    transform: translate(-50%, 0);
+  }
+
+  .oracle-sheet-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .oracle-sheet-close {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    margin: -0.5rem -0.75rem 0 0;
+    border: 0;
+    background: none;
+    color: var(--play-dim);
+    cursor: pointer;
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+
+  .oracle-sheet-close:hover,
+  .oracle-sheet-close:focus-visible {
+    color: var(--play-parchment);
+  }
+
+  .play-stage h3.oracle-sheet-title {
+    margin-top: 0.5rem;
+    font-family: 'Newsreader', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    font-size: clamp(1.5rem, 6cqw, 2rem);
+    line-height: 1.15;
+  }
+
+  .oracle-sheet-body {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 1rem;
+    color: #d8cfb8;
+    font-family: var(--sans);
+    font-size: 0.9375rem;
+    line-height: 1.7;
+  }
+
+  .oracle-sheet-body p {
+    margin: 0;
+  }
+
+  @keyframes oracle-breathe {
+    50% { transform: scale(1.06); opacity: 0.8; }
+  }
+
+  @keyframes oracle-drift {
+    from { transform: translate3d(0, 10cqh, 0); opacity: 0; }
+    15%, 85% { opacity: 1; }
+    to { transform: translate3d(3cqw, -110cqh, 0); opacity: 0; }
+  }
+
+  @keyframes oracle-hover {
+    50% { transform: translateY(-8px); }
+  }
+
+  @keyframes oracle-ready {
+    50% { opacity: 0.45; }
+  }
+
+  @keyframes oracle-arrow {
+    0% { transform: translateY(10px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(-10px); opacity: 0; }
+  }
+
+  @keyframes oracle-levitate {
+    50% { transform: translateY(-6px) rotateZ(0.4deg); }
+  }
+
+  @keyframes oracle-glow {
+    50% {
+      box-shadow:
+        0 0 0 1px rgba(var(--oracle-tint), 0.7),
+        0 0 90px rgba(var(--oracle-tint), 0.6),
+        0 26px 50px rgba(0, 0, 0, 0.7);
+    }
+  }
+
+  @keyframes oracle-glint {
+    to { transform: translateX(100%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .oracle-ambient,
+    .oracle-motes,
+    .oracle-intro-deck img,
+    .oracle-hint-arrow,
+    .oracle-pick.is-waiting .oracle-pick-inner,
+    .oracle-pick.is-waiting .oracle-face--back,
+    .oracle-ring-wrap.is-ready .oracle-ring-prog {
+      animation: none !important;
+    }
+
+    .oracle-motes {
+      display: none;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -1,5 +1,33 @@
 export type SuitName = 'hearts' | 'diamonds' | 'clubs' | 'spades';
 
+export type OracleCopy = {
+  kicker: string;
+  lead: string;
+  start: string;
+  shuffle_label: string;
+  hold: string;
+  hold_again: string;
+  hold_hint_touch: string;
+  hold_hint_key: string;
+  /** Cues shown while the deck is held; `from` is the held time in ms. */
+  cues: { text: string; from: number }[];
+  ready: string;
+  too_early: string;
+  heard: string;
+  wheel_label: string;
+  wheel_kicker: string;
+  wheel_title: string;
+  wheel_hint: string;
+  card_back: string;
+  answer_kicker: string;
+  repeat: string;
+  again: string;
+  story: string;
+  zoom: string;
+  zoom_close: string;
+  story_close: string;
+};
+
 export type GamesCopy = {
   kicker: string;
   title: string;
@@ -141,6 +169,8 @@ export type GamesCopy = {
     title: string;
     body: string;
   };
+  /** Absent until the oracle is written for the language; the poster then shows the "soon" screen. */
+  oracle?: OracleCopy;
   board: {
     title: string;
     empty: string;
@@ -171,8 +201,8 @@ const en: GamesCopy = {
   menu: {
     learn_title: 'The Four Worlds',
     learn_blurb: 'Meet the heroes of each suit and learn to tell a card by its scene. Includes a timed mode.',
-    birth_title: 'Card of Destiny',
-    birth_blurb: 'Every day of the year has its card. Enter your birthday and discover yours.',
+    birth_title: 'Ask the Magister',
+    birth_blurb: 'The Magister deck oracle. Hold a question in mind. Draw a card.',
     birth_lock: 'Opens if you lay the deck out in five minutes or less.',
     lore_title: 'Initiation',
     lore_blurb: 'Questions on every card in the deck, from the scene to its hidden meaning. Find out how closely you really look.',
@@ -394,8 +424,8 @@ const ru: GamesCopy = {
   menu: {
     learn_title: 'Четыре мира',
     learn_blurb: 'Познакомьтесь с героями каждой масти и научитесь узнавать карту по сюжету. Есть режим на время.',
-    birth_title: 'Карта судьбы',
-    birth_blurb: 'Каждому дню года соответствует карта. Введите дату рождения — и узнайте свою.',
+    birth_title: 'Вопрос Магистру',
+    birth_blurb: 'Оракул колоды Магистр. Подумай о вопросе и вытяни карту.',
     birth_lock: 'Откроется, если разложить колоду за пять минут или быстрее.',
     lore_title: 'Посвящение',
     lore_blurb: 'Вопросы по каждой карте колоды: от сюжета — к скрытым смыслам. Проверьте, насколько внимательно вы смотрите.',
@@ -549,6 +579,35 @@ const ru: GamesCopy = {
     title: 'Скоро откроется.',
     body: 'Мы заканчиваем эту игру.',
   },
+  oracle: {
+    kicker: 'Оракул колоды Магистр',
+    lead: 'Подумай о вопросе и вытяни карту.',
+    start: 'Задать вопрос',
+    shuffle_label: 'Колода. Удерживай, чтобы перетасовать',
+    hold: 'Удерживай колоду, чтобы перетасовать',
+    hold_again: 'Подумай о новом вопросе и удерживай колоду',
+    hold_hint_touch: 'Нажми и держи',
+    hold_hint_key: 'Нажми и держи · пробел на клавиатуре',
+    cues: [
+      { text: 'Подумай о том, что тебе важно', from: 0 },
+      { text: 'Спроси не «да или нет», а «что мне важно знать?»', from: 1000 },
+    ],
+    ready: 'Отпусти, когда вопрос прозвучит',
+    too_early: 'Не торопись — вопрос должен прозвучать',
+    heard: 'Колода слышит тебя',
+    wheel_label: 'Выбор карты',
+    wheel_kicker: 'Колода разложена',
+    wheel_title: 'Выбери карту',
+    wheel_hint: 'Листай веер · потяни карту вверх или вниз, чтобы вытянуть',
+    card_back: 'Карта рубашкой вверх',
+    answer_kicker: 'Магистр отвечает',
+    repeat: 'Эта карта приходит к тебе не в первый раз. Прислушайся.',
+    again: 'Новый вопрос',
+    story: 'Читать историю карты',
+    zoom: 'Рассмотреть карту',
+    zoom_close: 'Закрыть увеличение',
+    story_close: 'Закрыть',
+  },
   board: {
     title: 'Рекорды',
     empty: 'Рекордов пока нет.',
@@ -617,8 +676,8 @@ const be: GamesCopy = {
   menu: {
     learn_title: 'Чатыры светы',
     learn_blurb: 'Пазнаёмцеся з героямі кожнай масці і навучыцеся пазнаваць карту па сюжэце. Ёсць рэжым на час.',
-    birth_title: 'Карта лёсу',
-    birth_blurb: 'Кожнаму дню года адпавядае карта. Увядзіце дату нараджэння — і даведайцеся сваю.',
+    birth_title: 'Пытанне Магістру',
+    birth_blurb: 'Аракул калоды Магістр. Падумай пра пытанне і выцягні карту.',
     birth_lock: 'Адкрыецца, калі раскласці калоду за пяць хвілін або хутчэй.',
     lore_title: 'Пасвячэнне',
     lore_blurb: 'Пытанні па кожнай карце калоды: ад сюжэта — да схаваных сэнсаў. Праверце, наколькі ўважліва вы глядзіце.',
@@ -840,8 +899,8 @@ const zh: GamesCopy = {
   menu: {
     learn_title: '四个世界',
     learn_blurb: '认识每种花色的主角，学会从画面认出一张牌。附限时模式。',
-    birth_title: '命运之牌',
-    birth_blurb: '一年中的每一天都有它的牌。输入生日，找到属于你的那一张。',
+    birth_title: '问 Magister',
+    birth_blurb: 'Magister 牌组的神谕。心里想着一个问题，抽一张牌。',
     birth_lock: '在五分钟内排完牌组后开启。',
     lore_title: '授礼',
     lore_blurb: '关于每一张牌的问题：从画面到隐藏的含义。看看你观察得有多仔细。',
