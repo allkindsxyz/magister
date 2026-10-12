@@ -4065,6 +4065,13 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     text-wrap: pretty;
   }
 
+  /* CJK has no true italics; the browser would slant the glyphs synthetically. */
+  .play-stage .oracle:lang(zh) :is(h3.oracle-message, .oracle-cue, .oracle-repeat) {
+    font-family: 'Noto Serif SC', 'Songti SC', serif;
+    font-style: normal;
+    letter-spacing: 0.02em;
+  }
+
   .oracle-line {
     margin: 0;
     color: var(--play-dim);

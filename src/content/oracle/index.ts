@@ -1,4 +1,7 @@
+import be from './be.json';
+import en from './en.json';
 import ru from './ru.json';
+import zh from './zh.json';
 
 /** Internal balance axis for editors; never shown to the player. */
 export type OracleEnergy = 'move' | 'check' | 'pause' | 'release';
@@ -16,7 +19,7 @@ type OracleLang = 'en' | 'ru' | 'be' | 'zh';
 const ENERGIES = new Set<string>(['move', 'check', 'pause', 'release']);
 
 /** Languages without a written oracle fall back to the "soon" screen instead of a literal translation. */
-const decks: Partial<Record<OracleLang, unknown>> = { ru };
+const decks: Partial<Record<OracleLang, unknown>> = { en, ru, be, zh };
 
 function readEntry(raw: unknown, lang: OracleLang, index: number): OracleEntry {
   const fail = (why: string): never => {
