@@ -96,19 +96,6 @@
     "lead": "A classic 54-card deck — with scenes instead of pips. Ancient myth, the Middle Ages and modern culture, sorted into four suits.",
     "mechanic": "Suit and rank aren’t printed on the cards; they’re encoded in the details of each painting. Below is the key — the same one you’ll find in the booklet in the box."
   },
-  "worlds_check": {
-    "label": "Test yourself",
-    "question": "Which world is this card from?",
-    "progress": "Card {n} of {total}",
-    "right": "Right: {symbol} {world}. “{title}”.",
-    "wrong": "Not quite — it’s {symbol} {world}. “{title}”.",
-    "next": "Next card",
-    "score": "You read {score} of {total}.",
-    "score_body": "The suit is only the start — the full game asks you to read the rank as well.",
-    "play": "Play the full game",
-    "again": "Try again",
-    "image_alt": "A card from the deck — guess its world"
-  },
   "worlds": {
     "hearts": {
       "name": "Olympian Gods",

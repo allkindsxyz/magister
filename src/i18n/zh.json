@@ -96,19 +96,6 @@
     "lead": "一副经典的 54 张牌——只是用场景代替了花色符号。古代神话、中世纪与当代文化，分入四种花色。",
     "mechanic": "花色与点数并未印在牌上，而是藏在每幅画的细节里。下面就是解读的钥匙——与盒内小册子中的相同。"
   },
-  "worlds_check": {
-    "label": "试试看",
-    "question": "这张牌来自哪个世界？",
-    "progress": "第 {n} 张，共 {total} 张",
-    "right": "答对了：{symbol} {world}。「{title}」。",
-    "wrong": "不对——这是 {symbol} {world}。「{title}」。",
-    "next": "下一张",
-    "score": "你认出了 {score} / {total} 张。",
-    "score_body": "花色只是开始——完整游戏还要读出点数。",
-    "play": "玩完整游戏",
-    "again": "再来一次",
-    "image_alt": "牌组中的一张牌——猜猜它属于哪个世界"
-  },
   "worlds": {
     "hearts": {
       "name": "奥林匹斯诸神",
