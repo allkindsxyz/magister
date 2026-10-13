@@ -53,12 +53,13 @@ type DragStart = { x: number; y: number; offset: number; axis: 'x' | 'y' | null;
 
 const CARD_RATIO = 0.6975;
 const HOLD_MIN_MS = 3000;
-const DECK_SIZE = 10;
+const DECK_SIZE = 14;
 const CYCLE_MS = 1350;
 const DEAL_MS = 1150;
-const FLIGHT_MS = 900;
-const FLIP_MS = 1150;
-const FACE_WAIT_MS = 6000;
+/* Draw: one continuous flight with the turn folded in. */
+const DRAW_MS = 1150;
+/* Longest pause before the draw starts so the face is decoded when the card turns. */
+const FACE_PREWAIT_MS = 250;
 const HISTORY_KEY = 'magister-oracle-history';
 const HISTORY_WINDOW_MS = 7 * 24 * 3600 * 1000;
 /* Season tints follow the suit spheres: spring, autumn, summer, winter. */
@@ -145,8 +146,8 @@ export function mountOracle(host: HTMLElement, options: OracleOptions): OracleCo
 
   const startBtn = q<HTMLButtonElement>('[data-oracle="start"]');
   const shuffleEl = q('[data-oracle="shuffle"]');
-  const ringWrap = q('[data-oracle="ring-wrap"]');
-  const ring = q<SVGCircleElement>('[data-oracle="ring"]');
+  const holdWrap = q('[data-oracle="hold-wrap"]');
+  const bar = q('[data-oracle="bar"]');
   const deck = q('[data-oracle="deck"]');
   const cue = q('[data-oracle="cue"]');
   const sub = q('[data-oracle="sub"]');
@@ -204,60 +205,159 @@ export function mountOracle(host: HTMLElement, options: OracleOptions): OracleCo
 
   /* ---------------- Shuffle: riffle while held ---------------- */
 
-  const stackPose = (i: number): string => `translate(${-i * 0.5}px, ${-i * 0.7}px)`;
+  const tr = (x: string, y: string, deg: number): string => `translate(${x}, ${y}) rotate(${deg}deg)`;
+  const stackPose = (pos: number): string => tr(`${-pos * 0.5}px`, `${-pos * 0.7}px`, 0);
   const deckCards = Array.from({ length: DECK_SIZE }, (_, i) => {
     const img = document.createElement('img');
     img.loading = 'lazy';
     img.src = options.back;
     img.alt = '';
     img.draggable = false;
-    img.style.transform = stackPose(i);
     deck.append(img);
     return img;
   });
+  /* deckOrder[pos] is the index of the card lying at stack position pos (0 = bottom). */
+  let deckOrder = deckCards.map((_, i) => i);
 
-  /* Halves split apart, then cards fall back alternately left/right, bottom first. */
-  function riffleKeyframes(i: number): Keyframe[] {
-    const side = i % 2 === 0 ? -1 : 1;
-    const base = stackPose(i);
-    const back = 0.46 + (i / (DECK_SIZE - 1)) * 0.36;
-    return [
-      { offset: 0, transform: base, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' },
-      { offset: 0.26, transform: `translate(${side * 56}%, ${-4 - i * 0.6}%) rotate(${side * 7}deg)` },
-      {
-        offset: back - 0.1,
-        transform: `translate(${side * 50}%, ${-6 - i * 0.6}%) rotate(${side * 4}deg)`,
-        easing: 'cubic-bezier(0.5, 0, 0.9, 0.6)',
-      },
-      { offset: back, transform: `${base} translateY(-3px)` },
-      { offset: 1, transform: base },
-    ];
+  function applyOrder(): void {
+    deckOrder.forEach((card, pos) => {
+      const img = deckCards[card];
+      if (!img) return;
+      img.style.transform = stackPose(pos);
+      img.style.zIndex = String(pos);
+    });
+  }
+  applyOrder();
+
+  /* Merges two piles the way thumbs release a riffle: clumps of 1-3 cards from alternating sides, bottom first. */
+  function interleave(bottom: number[], top: number[]): number[] {
+    const out: number[] = [];
+    const piles = [bottom.slice(), top.slice()];
+    let side = Math.random() < 0.5 ? 0 : 1;
+    while (piles[0]?.length || piles[1]?.length) {
+      const pile = piles[side];
+      if (pile?.length) {
+        const r = Math.random();
+        const count = Math.min(pile.length, r < 0.5 ? 1 : r < 0.85 ? 2 : 3);
+        out.push(...pile.splice(0, count));
+      }
+      side = 1 - side;
+    }
+    return out;
   }
 
-  let riffles: Animation[] = [];
+  type Cycle = { next: number[]; frames(card: number): Keyframe[] };
+
+  /* Halves lift apart, then cards peel off both halves and fall into one shuffled stack. */
+  function riffleCycle(): Cycle {
+    const n = deckOrder.length;
+    const cut = Math.round(n * (0.42 + Math.random() * 0.16));
+    const bottom = deckOrder.slice(0, cut);
+    const next = interleave(bottom, deckOrder.slice(cut));
+    const oldPos = new Map(deckOrder.map((card, pos) => [card, pos]));
+    const newPos = new Map(next.map((card, pos) => [card, pos]));
+    const inBottom = new Set(bottom);
+    return {
+      next,
+      frames(card) {
+        const from = oldPos.get(card) ?? 0;
+        const to = newPos.get(card) ?? 0;
+        const side = inBottom.has(card) ? -1 : 1;
+        const drop = 0.5 + (to / Math.max(1, n - 1)) * 0.34;
+        return [
+          { offset: 0, transform: stackPose(from), zIndex: from, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+          { offset: 0.26, transform: tr(`${side * 56}%`, `${-4 - from * 0.6}%`, side * 7), zIndex: from },
+          { offset: 0.3, transform: tr(`${side * 56}%`, `${-4 - from * 0.6}%`, side * 7), zIndex: to },
+          {
+            offset: drop - 0.1,
+            transform: tr(`${side * 50}%`, `${-6 - from * 0.6}%`, side * 4),
+            zIndex: to,
+            easing: 'cubic-bezier(0.5, 0, 0.9, 0.6)',
+          },
+          { offset: drop, transform: tr(`${-to * 0.5}px`, `${-to * 0.7 - 3}px`, 0), zIndex: to },
+          { offset: 1, transform: stackPose(to), zIndex: to },
+        ];
+      },
+    };
+  }
+
+  /* A cut: the upper part slides out, the lower part is lifted over it, so the upper part ends up underneath. */
+  function cutCycle(): Cycle {
+    const n = deckOrder.length;
+    const cut = Math.round(n * (0.35 + Math.random() * 0.25));
+    const next = deckOrder.slice(cut).concat(deckOrder.slice(0, cut));
+    const oldPos = new Map(deckOrder.map((card, pos) => [card, pos]));
+    const newPos = new Map(next.map((card, pos) => [card, pos]));
+    return {
+      next,
+      frames(card) {
+        const from = oldPos.get(card) ?? 0;
+        const to = newPos.get(card) ?? 0;
+        const wasTop = from >= cut;
+        const away = wasTop
+          ? tr('62%', `${-3 - (from - cut) * 0.5}%`, 5)
+          : tr('-12%', `${-9 - from * 0.5}%`, -3);
+        return [
+          { offset: 0, transform: stackPose(from), zIndex: from, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+          { offset: 0.3, transform: away, zIndex: from },
+          { offset: 0.34, transform: away, zIndex: to },
+          wasTop
+            ? { offset: 0.74, transform: stackPose(to), zIndex: to }
+            : { offset: 0.74, transform: tr('-3%', `${-10 - to * 0.5}%`, -1), zIndex: to, easing: 'ease-in' },
+          { offset: 0.92, transform: tr(`${-to * 0.5}px`, `${-to * 0.7 - 3}px`, 0), zIndex: to },
+          { offset: 1, transform: stackPose(to), zIndex: to },
+        ];
+      },
+    };
+  }
+
+  let riffling = false;
+  let riffleToken = 0;
+  let riffleLoop: Promise<void> = Promise.resolve();
+  let cycleAnims: Animation[] = [];
+
+  async function runCycle(kind: number): Promise<void> {
+    const cycle = kind % 3 === 2 ? cutCycle() : riffleCycle();
+    const frames = deckCards.map((_, card) => cycle.frames(card));
+    /* The final state goes into styles first; the animations start from the previous one and end on it. */
+    deckOrder = cycle.next;
+    applyOrder();
+    const anims = deckCards.map((img, card) => img.animate(frames[card] ?? [], { duration: CYCLE_MS }));
+    cycleAnims = anims;
+    /* Frames may not tick at all (background tab, throttled renderer); never wait longer than one cycle. */
+    await Promise.race([Promise.allSettled(anims.map((anim) => anim.finished)), wait(CYCLE_MS + 150)]);
+    if (cycleAnims !== anims) return;
+    anims.forEach((anim) => anim.cancel());
+    cycleAnims = [];
+  }
 
   function startRiffle(): void {
-    if (reduceMotion) return;
+    if (reduceMotion || riffling) return;
+    /* A cycle from an earlier release may still be landing; settle it before starting over. */
     stopRiffle();
-    riffles = deckCards.map((img, i) => img.animate(riffleKeyframes(i), { duration: CYCLE_MS, iterations: Infinity }));
+    riffling = true;
+    const token = ++riffleToken;
+    riffleLoop = (async () => {
+      for (let kind = 0; riffling && token === riffleToken; kind++) await runCycle(kind);
+    })();
   }
 
   /* Lets the running cycle land so the deck never snaps mid-air. */
   async function landRiffle(): Promise<void> {
-    const running = riffles;
-    if (!running.length) return;
-    const iteration = running[0]?.effect?.getComputedTiming().currentIteration ?? 0;
-    running.forEach((anim) => anim.effect?.updateTiming({ iterations: iteration + 1 }));
-    /* Frames may not tick at all (background tab, throttled renderer); never wait longer than one cycle. */
-    await Promise.race([Promise.allSettled(running.map((anim) => anim.finished)), wait(CYCLE_MS + 150)]);
-    if (riffles !== running) return;
-    running.forEach((anim) => anim.cancel());
-    riffles = [];
+    if (!riffling) return;
+    const token = riffleToken;
+    riffling = false;
+    await Promise.race([riffleLoop, wait(CYCLE_MS + 200)]);
+    if (token !== riffleToken) return;
+    stopRiffle();
   }
 
   function stopRiffle(): void {
-    riffles.forEach((anim) => anim.cancel());
-    riffles = [];
+    riffling = false;
+    riffleToken++;
+    cycleAnims.forEach((anim) => anim.cancel());
+    cycleAnims = [];
+    applyOrder();
   }
 
   let held = 0;
@@ -290,8 +390,8 @@ export function mountOracle(host: HTMLElement, options: OracleOptions): OracleCo
     cueIndex = -1;
     window.cancelAnimationFrame(tickId);
     stopRiffle();
-    ring.style.strokeDashoffset = '1';
-    ringWrap.classList.remove('is-ready');
+    bar.style.transform = 'scaleX(0)';
+    holdWrap.classList.remove('is-ready');
     shuffleEl.classList.remove('is-holding');
     sub.hidden = false;
     setCue(text, true);
@@ -305,9 +405,9 @@ export function mountOracle(host: HTMLElement, options: OracleOptions): OracleCo
     if (!holding) return;
     const total = heldNow();
     const progress = Math.min(total / HOLD_MIN_MS, 1);
-    ring.style.strokeDashoffset = String(1 - progress);
+    bar.style.transform = `scaleX(${progress})`;
     if (progress >= 1) {
-      ringWrap.classList.add('is-ready');
+      holdWrap.classList.add('is-ready');
       setCue(copy.ready);
     } else {
       let index = 0;
@@ -347,7 +447,7 @@ export function mountOracle(host: HTMLElement, options: OracleOptions): OracleCo
       return;
     }
     releasing = true;
-    ring.style.strokeDashoffset = '0';
+    bar.style.transform = 'scaleX(1)';
     /* The order is fixed at the moment of release. */
     order = cryptoShuffle(cards.map((card) => card.id));
     buzz(20);
@@ -387,8 +487,8 @@ export function mountOracle(host: HTMLElement, options: OracleOptions): OracleCo
   function measure(): Geometry {
     const W = Math.max(1, wheelEl.clientWidth || host.clientWidth);
     const H = Math.max(1, wheelEl.clientHeight || host.clientHeight);
-    /* Card height is capped at ~27% of the field so the fan fits short screens. */
-    const cardW = Math.max(96, Math.min(W * 0.38, 190, H * 0.27 * CARD_RATIO));
+    /* Card height is capped at half of the field so the fan still fits short screens. */
+    const cardW = Math.max(120, Math.min(W * 0.62, 380, H * 0.5 * CARD_RATIO));
     const cardH = cardW / CARD_RATIO;
     const R = Math.max(W * 1.35, 700);
     const spacing = cardW * 0.34;
@@ -673,12 +773,13 @@ export function mountOracle(host: HTMLElement, options: OracleOptions): OracleCo
     const wheelRect = wheelEl.getBoundingClientRect();
 
     pickFace.src = card.image;
-    /* On a slow network the card still turns; the face paints as soon as it arrives. */
-    const faceReady = Promise.race([pickFace.decode().catch(() => undefined), wait(FACE_WAIT_MS)]);
+    /* The face must be ready when the card turns edge-on; on a slow network the turn goes ahead anyway. */
+    await Promise.race([pickFace.decode().catch(() => undefined), wait(FACE_PREWAIT_MS)]);
+    if (stale()) return;
 
     fillAnswer(card);
     answer.classList.remove('is-shown');
-    pickEl.classList.remove('is-docked', 'is-flipped', 'is-waiting', 'is-glinted');
+    pickEl.classList.remove('is-docked', 'is-flipped', 'is-glinted');
     pickEl.tabIndex = -1;
     host.append(pickEl);
     resultEl.scrollTop = 0;
@@ -703,18 +804,13 @@ export function mountOracle(host: HTMLElement, options: OracleOptions): OracleCo
     if (source) source.style.opacity = '0';
     fan.classList.add('is-sunk');
     void pickEl.offsetWidth;
-    pickEl.style.transition = reduceMotion ? 'none' : `transform ${FLIGHT_MS}ms cubic-bezier(0.2, 0.85, 0.25, 1)`;
-    pickEl.style.transform = 'none';
-
-    await wait(reduceMotion ? 0 : FLIGHT_MS);
-    if (stale()) return;
-    pickEl.classList.add('is-waiting');
-    await Promise.all([faceReady, wait(reduceMotion ? 0 : 900)]);
-    if (stale()) return;
-    pickEl.classList.remove('is-waiting');
     buzz(25);
     setTint(TINTS[card.suit] ?? DEFAULT_TINT);
-    await flipCard();
+    /* One continuous motion: the card flies to its place and turns face up on the way. */
+    pickEl.style.transition = reduceMotion ? 'none' : `transform ${DRAW_MS}ms cubic-bezier(0.3, 0.7, 0.2, 1)`;
+    pickEl.style.transform = 'none';
+    const turn = turnCard();
+    await Promise.race([turn, wait(reduceMotion ? 0 : DRAW_MS + 200)]);
     if (stale()) return;
     answer.classList.add('is-shown');
     options.say(`${card.title}. ${card.message}`);
@@ -731,26 +827,25 @@ export function mountOracle(host: HTMLElement, options: OracleOptions): OracleCo
     slot.append(pickEl);
   }
 
-  /* The card rises towards the viewer, passes edge-on at 90° and lands face up. */
-  async function flipCard(): Promise<void> {
+  /* The turn runs alongside the flight: it rises towards the viewer, passes edge-on at 90° and lands face up. */
+  async function turnCard(): Promise<void> {
     pickEl.classList.add('is-flipped');
     if (reduceMotion) return;
     const flip = pickInner.animate(
       [
-        { transform: 'translateZ(0) rotateY(0deg) scale(1)', easing: 'cubic-bezier(0.55, 0, 0.75, 0.35)' },
-        { transform: 'translateZ(0) rotateY(-12deg) scale(1.02)', offset: 0.12, easing: 'cubic-bezier(0.4, 0, 0.6, 1)' },
-        { transform: 'translateZ(90px) rotateY(90deg) scale(1.1)', offset: 0.5, easing: 'cubic-bezier(0.2, 0.6, 0.3, 1.15)' },
+        { transform: 'translateZ(0) rotateY(0deg) scale(1)' },
+        { transform: 'translateZ(80px) rotateY(90deg) scale(1.06)', offset: 0.5 },
         { transform: 'translateZ(0) rotateY(180deg) scale(1)' },
       ],
-      { duration: FLIP_MS },
+      { duration: DRAW_MS, easing: 'cubic-bezier(0.45, 0, 0.3, 1)' },
     );
-    await Promise.race([flip.finished.catch(() => undefined), wait(FLIP_MS + 150)]);
+    await flip.finished.catch(() => undefined);
     flip.cancel();
   }
 
   function clearPick(): void {
     pickInner.getAnimations().forEach((anim) => anim.cancel());
-    pickEl.classList.remove('is-on', 'is-docked', 'is-flipped', 'is-waiting', 'is-glinted');
+    pickEl.classList.remove('is-on', 'is-docked', 'is-flipped', 'is-glinted');
     pickEl.style.cssText = '';
     pickEl.tabIndex = -1;
     host.append(pickEl);

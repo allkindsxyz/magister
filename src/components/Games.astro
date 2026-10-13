@@ -532,21 +532,11 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
             tabindex="-1"
             aria-label={oracleCopy.shuffle_label}
           >
-            <div class="oracle-ring-wrap" data-oracle="ring-wrap">
-              <svg class="oracle-ring" viewBox="0 0 100 100" aria-hidden="true">
-                <circle class="oracle-ring-track" cx="50" cy="50" r="49"></circle>
-                <circle
-                  class="oracle-ring-prog"
-                  data-oracle="ring"
-                  cx="50"
-                  cy="50"
-                  r="49"
-                  pathLength="1"
-                  stroke-dasharray="1"
-                  stroke-dashoffset="1"
-                ></circle>
-              </svg>
+            <div class="oracle-hold" data-oracle="hold-wrap">
               <div class="oracle-deck" data-oracle="deck" aria-hidden="true"></div>
+              <div class="oracle-bar" aria-hidden="true">
+                <span class="oracle-bar-fill" data-oracle="bar"></span>
+              </div>
             </div>
             <p class="oracle-cue" data-oracle="cue" aria-live="polite"></p>
             <p class="oracle-sub" data-oracle="sub">
@@ -3575,6 +3565,8 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
       calc(-1 * max(0.7rem, env(safe-area-inset-bottom)))
       calc(-1 * max(1rem, env(safe-area-inset-left)));
     overflow: hidden;
+    /* Container queries no longer imply layout containment; without this the card (z-index 30) paints over the zoom layer. */
+    isolation: isolate;
     container-type: size;
     color: var(--play-parchment);
     -webkit-tap-highlight-color: transparent;
@@ -3616,6 +3608,8 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
   .oracle-phase {
     position: absolute;
     inset: 0;
+    /* Keeps the fan's high z-indexes from leaking over the drawn card at the start of the flight. */
+    isolation: isolate;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3734,42 +3728,39 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     cursor: grabbing;
   }
 
-  .oracle-ring-wrap {
-    position: relative;
+  .oracle-hold {
     display: grid;
     flex: none;
-    place-items: center;
-    width: min(86cqw, 340px, 52cqh);
-    aspect-ratio: 1;
+    gap: 1.1rem;
+    justify-items: center;
+    width: min(78cqw, 340px, calc(60cqh * var(--oracle-ratio)));
   }
 
-  .oracle-ring {
-    position: absolute;
-    inset: 0;
-    transform: rotate(-90deg);
+  .oracle-bar {
+    width: 100%;
+    height: 3px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: rgba(var(--oracle-tint), 0.18);
   }
 
-  .oracle-ring circle {
-    fill: none;
-    stroke-width: 1.2;
+  .oracle-bar-fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    background: var(--play-gold-hot);
+    transform: scaleX(0);
+    transform-origin: left center;
   }
 
-  .oracle-ring-track {
-    stroke: rgba(var(--oracle-tint), 0.14);
-  }
-
-  .oracle-ring-prog {
-    stroke: var(--play-gold-hot);
-    stroke-linecap: round;
-  }
-
-  .oracle-ring-wrap.is-ready .oracle-ring-prog {
+  .oracle-hold.is-ready .oracle-bar-fill {
     animation: oracle-ready 1.6s ease-in-out infinite;
   }
 
   .oracle-deck {
     position: relative;
-    width: min(42cqw, 170px, calc(31cqh * var(--oracle-ratio)));
+    width: 100%;
     aspect-ratio: var(--oracle-ratio);
   }
 
@@ -3958,10 +3949,6 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     transform: rotateY(180deg);
   }
 
-  .oracle-pick.is-waiting .oracle-pick-inner {
-    animation: oracle-levitate 1.6s ease-in-out infinite;
-  }
-
   .oracle-face {
     position: absolute;
     inset: 0;
@@ -3984,10 +3971,6 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
       0 26px 50px rgba(0, 0, 0, 0.7);
   }
 
-  .oracle-pick.is-waiting .oracle-face--back {
-    animation: oracle-glow 1.6s ease-in-out infinite;
-  }
-
   .oracle-face--front {
     transform: rotateY(180deg);
     box-shadow: 0 0 60px rgba(var(--oracle-tint), 0.25), 0 26px 50px rgba(0, 0, 0, 0.7);
@@ -4003,7 +3986,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
   }
 
   .oracle-pick.is-flipped .oracle-face--front::after {
-    animation: oracle-glint 1.3s 0.55s ease-out both;
+    animation: oracle-glint 1.3s 0.7s ease-out both;
   }
 
   .oracle-pick.is-glinted .oracle-face--front::after {
@@ -4256,19 +4239,6 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     100% { transform: translateY(-10px); opacity: 0; }
   }
 
-  @keyframes oracle-levitate {
-    50% { transform: translateY(-6px) rotateZ(0.4deg); }
-  }
-
-  @keyframes oracle-glow {
-    50% {
-      box-shadow:
-        0 0 0 1px rgba(var(--oracle-tint), 0.7),
-        0 0 90px rgba(var(--oracle-tint), 0.6),
-        0 26px 50px rgba(0, 0, 0, 0.7);
-    }
-  }
-
   @keyframes oracle-glint {
     to { transform: translateX(100%); }
   }
@@ -4278,9 +4248,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     .oracle-motes,
     .oracle-intro-deck img,
     .oracle-hint-arrow,
-    .oracle-pick.is-waiting .oracle-pick-inner,
-    .oracle-pick.is-waiting .oracle-face--back,
-    .oracle-ring-wrap.is-ready .oracle-ring-prog {
+    .oracle-hold.is-ready .oracle-bar-fill {
       animation: none !important;
     }
 
