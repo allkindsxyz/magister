@@ -4,6 +4,7 @@ import Nav from '../../components/Nav.astro';
 import Hero from '../../components/Hero.astro';
 import DeckSku from '../../components/DeckSku.astro';
 import Worlds from '../../components/Worlds.astro';
+import PlayWays from '../../components/PlayWays.astro';
 import Games from '../../components/Games.astro';
 import Shop from '../../components/Shop.astro';
 import AuthorsCompact from '../../components/AuthorsCompact.astro';
@@ -24,6 +25,7 @@ const fromPrice = formatPrice(PRICES.standard, lang);
   <main id="main-content">
     <Hero lang={lang} />
     <Worlds lang={lang} />
+    <PlayWays lang={lang} />
     <Games lang={lang} />
     <AuthorsCompact lang={lang} />
     <DeckSku lang={lang} />
