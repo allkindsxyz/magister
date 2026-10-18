@@ -73,7 +73,7 @@
     "order": "Buy the deck",
     "close": "Close",
     "dismiss": "Dismiss",
-    "joker_note": "31 December belongs to the Joker, who sits between the Ace of Hearts and the King of Spades. Pick whichever of the two paintings feels like yours.",
+    "joker_note": "31 December belongs to the Joker — the 365th day of the year. Pick whichever of the two jokers feels like yours.",
     "missing_note": "No card found for this date."
   },
   "hero": {
@@ -137,7 +137,19 @@
     "suit_label": "Suit",
     "value_label": "Rank",
     "world_label": "World",
-    "category_label": "Motif"
+    "category_label": "Motif",
+    "filter_find": "Find a card",
+    "filter_hide": "Hide filter",
+    "filter_clear": "Clear",
+    "filter_suit": "Suit",
+    "filter_rank": "Rank",
+    "filter_order": "Order",
+    "filter_random": "Shuffled",
+    "filter_ordered": "In order",
+    "filter_jokers": "Special",
+    "joker_label": "Joker",
+    "filter_empty": "No cards match this filter",
+    "filter_summary": "Filter: {summary}"
   },
   "authors": {
     "preface_title": "Before They Became Cards",
@@ -164,14 +176,14 @@
     "zhilchik": {
       "name": "Alexander Zhilchik",
       "role": "Author of the idea",
-      "bio": "“I was lucky to be friends with a genius… and that was Dr. Klein.”",
+      "bio": "“I was lucky to be friends with a genius… and that was Vasily Pochitsky.”",
       "bio_2": "",
       "photo_alt": "Portrait of Alexander Zhilchik."
     },
     "compact_body": "Dr. Klein (real name Vasily Pochitsky, 1967–2024) was a Belarusian painter, illustrator and musician from Rechitsa. His work was exhibited from Moscow to New York, ran in the national press for nearly a decade, and illustrated books and records. Magister is his largest cycle: 54 paintings of a world he invented with his friend Alexander Zhilchik. He is gone. His world remains — in the paintings and in this deck.",
     "compact_more": "More about the authors →",
     "compact_title": "First, There Were Paintings",
-    "compact_quote": "“I was lucky to be friends with a genius… and that was Dr. Klein.”",
+    "compact_quote": "“I was lucky to be friends with a genius… and that was Vasily Pochitsky.”",
     "compact_quote_author": "Alexander Zhilchik, creator of the concept"
   },
   "next": {

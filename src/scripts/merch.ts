@@ -649,7 +649,7 @@ export function mountMerch(root: HTMLElement): void {
       note.className = 'pdp-birth__note';
       note.textContent = ui.birth_joker;
       birthResult.append(note);
-      ['ace-hearts', 'king-spades'].forEach((id) => {
+      ['joker-1', 'joker-2'].forEach((id) => {
         const card = byId.get(id);
         if (card) birthResult.append(birthCardRow(card));
       });

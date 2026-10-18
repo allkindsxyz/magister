@@ -9,12 +9,13 @@ type Suit = SuitName;
 
 type PlayCard = {
   id: string;
-  suit: Suit;
+  suit: Suit | '';
   value: string;
   title: string;
   summary: string;
   description: string;
   image: string;
+  joker?: boolean;
 };
 
 type PlayData = {
@@ -24,6 +25,7 @@ type PlayData = {
   suitLabels: Record<Suit, string>;
   symbols: Record<Suit, string>;
   cards: PlayCard[];
+  jokers?: PlayCard[];
   lore: DeepDiveResolved[];
   oracle: OracleReading[] | null;
   cardBack: string;
@@ -134,6 +136,7 @@ export function mountPlayGames(): void {
   const data = JSON.parse(dataEl.textContent) as PlayData;
   const { copy, cards, suitLabels, symbols, worlds } = data;
   const byId = new Map(cards.map((card) => [card.id, card]));
+  for (const joker of data.jokers ?? []) byId.set(joker.id, joker);
   const lorePacks = data.lore ?? [];
   const loreById = new Map(lorePacks.map((pack) => [pack.card_id, pack]));
   const loreDeck = lorePacks.flatMap((pack) => {
@@ -1627,27 +1630,29 @@ export function mountPlayGames(): void {
       img.src = card.image;
       img.alt = card.title;
     }
+    const isJoker = Boolean(card.joker) || !card.suit;
     const meta = article.querySelector<HTMLElement>('.play-reading-meta');
     if (meta) {
-      meta.dataset.suit = card.suit;
+      meta.dataset.suit = card.suit || '';
       meta.replaceChildren();
       const symbol = document.createElement('span');
       symbol.className = 'lb-suit-symbol';
       symbol.setAttribute('aria-hidden', 'true');
-      symbol.textContent = symbols[card.suit];
+      symbol.textContent = isJoker ? '★' : symbols[card.suit as Suit];
       const rank = document.createElement('span');
       rank.className = 'lb-suit-rank';
-      rank.textContent = card.value;
+      rank.textContent = isJoker ? copy.birthday.joker_title : card.value;
       meta.append(symbol, rank);
     }
     const title = article.querySelector('.play-reading-title');
     if (title) title.textContent = card.title;
     const world = article.querySelector('.play-reading-world');
-    if (world) world.textContent = worlds[card.suit].name;
+    if (world) world.textContent = isJoker ? copy.birthday.joker_title : worlds[card.suit as Suit].name;
     const sphere = article.querySelector<HTMLElement>('.play-reading-sphere');
     if (sphere) {
-      sphere.hidden = !withSphere;
-      sphere.textContent = withSphere ? copy.birthday.spheres[card.suit] : '';
+      const showSphere = withSphere && !isJoker && Boolean(card.suit);
+      sphere.hidden = !showSphere;
+      sphere.textContent = showSphere ? copy.birthday.spheres[card.suit as Suit] : '';
     }
     const summary = article.querySelector('.play-reading-summary');
     if (summary) summary.textContent = card.summary;
@@ -1675,9 +1680,9 @@ export function mountPlayGames(): void {
 
     if (result.kind === 'joker') {
       birthJoker.hidden = false;
-      for (const id of ['ace-hearts', 'king-spades']) {
+      for (const id of ['joker-1', 'joker-2']) {
         const card = byId.get(id);
-        if (card) birthCards.append(renderReading(card, true));
+        if (card) birthCards.append(renderReading(card, false));
       }
     } else {
       birthJoker.hidden = true;

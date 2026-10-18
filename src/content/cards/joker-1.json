@@ -1,0 +1,31 @@
+{
+  "id": "joker-1",
+  "joker": true,
+  "value": "Joker",
+  "category": {
+    "en": "Jokers",
+    "ru": "Джокеры",
+    "be": "Джокеры",
+    "zh": "小丑牌"
+  },
+  "title": {
+    "en": "The Joker of the Sun",
+    "ru": "Джокер Солнца",
+    "be": "Джокер Сонца",
+    "zh": "太阳小丑"
+  },
+  "summary": {
+    "en": "A red fool handstands on three elephants atop the world-turtle, balancing an ouroboros and a sun-faced sceptre.",
+    "ru": "Красный шут стоит на руках на трёх слонах на черепахе мира — балансирует уроборос и скипетр с ликом солнца.",
+    "be": "Чырвоны шут стаіць на руках на трох сланах на чарапасе свету — балансуе ўробарас і скіпетр з лікам сонца.",
+    "zh": "红衣愚者在世界龟背上的三头大象上倒立，平衡衔尾蛇与太阳权杖。"
+  },
+  "description": {
+    "en": "The joker who carries the day. He turns the world upside down and still keeps the hoop aloft — a serpent biting its own tail, the endless return. The sun on his staff watches without blinking. Where the suits speak in worlds, this card speaks in motion: balance as play, gravity as a joke told once and forever.",
+    "ru": "Джокер, который несёт день. Он переворачивает мир и всё же удерживает обруч — змею, кусающую свой хвост, вечный возврат. Солнце на жезле смотрит не мигая. Где масти говорят мирами, эта карта говорит движением: равновесие как игра, тяжесть как шутка, сказанная раз и навсегда.",
+    "be": "Джокер, які нясе дзень. Ён пераварочвае свет і ўсё ж утрымлівае абруч — змяю, што кусае свой хвост, вечны вяртанне. Сонца на жазле глядзіць не міргаючы. Дзе масці кажуць светамі, гэтая карта кажа рухам: раўнавага як гульня, цяжар як жарт, сказаны раз і назаўжды.",
+    "zh": "承载白昼的小丑。他把世界倒过来，却仍托住衔尾之环——永恒回环。杖上的太阳凝视不眨。花色以世界说话，这张牌以动作说话：平衡即游戏，重力即一句说了就永远成立的玩笑。"
+  },
+  "image": "/cards/joker-1.webp",
+  "featured": false
+}

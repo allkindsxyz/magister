@@ -15,6 +15,7 @@ const cards = defineCollection({
     suit: z.enum(['spades', 'hearts', 'diamonds', 'clubs']).optional(),
     value: z.string().optional(),
     back: z.boolean().optional(),
+    joker: z.boolean().optional(),
     category: localizedString,
     title: localizedString,
     summary: localizedString,

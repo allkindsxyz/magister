@@ -11,35 +11,146 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const allCards = await getCollection('cards');
-const suits = ['spades', 'hearts', 'diamonds', 'clubs'] as const;
+const suitOrder = ['hearts', 'diamonds', 'clubs', 'spades'] as const;
+const rankOrder = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'] as const;
 const cards = shuffle(allCards);
-const symbols: Record<string, string> = { spades: '♠', hearts: '♥', diamonds: '♦', clubs: '♣' };
+const symbols: Record<(typeof suitOrder)[number], string> = {
+  hearts: '♥',
+  diamonds: '♦',
+  clubs: '♣',
+  spades: '♠',
+};
 
 const payloads = cards.map((card) => {
-  const isBack = Boolean(card.data.back) || !card.data.suit;
-  const suit = card.data.suit as (typeof suits)[number] | undefined;
+  const isBack = Boolean(card.data.back);
+  const isJoker = Boolean(card.data.joker);
+  const suit = card.data.suit as (typeof suitOrder)[number] | undefined;
+  const value = isBack ? '' : (card.data.value ?? '');
+  const suitSymbol = isJoker ? '★' : suit ? symbols[suit] : '';
   return {
     id: card.data.id,
     title: pickLocalized(card.data.title, lang),
     description: pickLocalized(card.data.description, lang),
     suit: suit ?? '',
-    value: isBack ? '' : (card.data.value ?? ''),
+    value,
     image: card.data.image,
-    suitSymbol: isBack || !suit ? '' : symbols[suit],
-    worldLine: isBack || !suit ? '' : `${t('gallery.world_label')}: ${t(`worlds.${suit}.name`)}`,
-    metaLine:
-      isBack || !suit
+    suitSymbol,
+    worldLine: isJoker
+      ? t('gallery.joker_label')
+      : isBack || !suit
         ? ''
-        : `${t('gallery.suit_label')}: ${t(`suits.${suit}`)} · ${t('gallery.value_label')}: ${card.data.value}`,
+        : `${t('gallery.world_label')}: ${t(`worlds.${suit}.name`)}`,
+    metaLine: isJoker
+      ? t('gallery.joker_label')
+      : isBack || !suit
+        ? ''
+        : `${t('gallery.suit_label')}: ${t(`suits.${suit}`)} · ${t('gallery.value_label')}: ${value}`,
     back: isBack,
+    joker: isJoker,
   };
 });
+
+const filterCopy = {
+  find: t('gallery.filter_find'),
+  hide: t('gallery.filter_hide'),
+  clear: t('gallery.filter_clear'),
+  suit: t('gallery.filter_suit'),
+  rank: t('gallery.filter_rank'),
+  order: t('gallery.filter_order'),
+  random: t('gallery.filter_random'),
+  ordered: t('gallery.filter_ordered'),
+  jokers: t('gallery.filter_jokers'),
+  empty: t('gallery.filter_empty'),
+  summary: t('gallery.filter_summary'),
+  jokerLabel: t('gallery.joker_label'),
+  suitNames: Object.fromEntries(suitOrder.map((suit) => [suit, t(`suits.${suit}`)])) as Record<
+    (typeof suitOrder)[number],
+    string
+  >,
+};
 ---
 
 <div class="gallery" id="fifty-four" aria-labelledby="gallery-title">
   <header class="gallery-header reveal">
     <h3 id="gallery-title">{t('gallery.title')}</h3>
   </header>
+
+  <div class="gallery-filter reveal" data-gallery-filter>
+    <div class="gallery-filter__bar">
+      <button
+        class="gallery-filter__toggle"
+        type="button"
+        data-filter-toggle
+        aria-expanded="false"
+        aria-controls="gallery-filter-panel"
+      >
+        <span data-filter-toggle-label>{t('gallery.filter_find')}</span>
+      </button>
+      <button class="gallery-filter__clear" type="button" data-filter-clear hidden>
+        {t('gallery.filter_clear')}
+      </button>
+    </div>
+
+    <div class="gallery-filter__panel" id="gallery-filter-panel" data-filter-panel hidden>
+      <div class="gallery-filter__row" role="group" aria-label={t('gallery.filter_suit')}>
+        <span class="gallery-filter__label">{t('gallery.filter_suit')}</span>
+        <div class="gallery-filter__chips">
+          {suitOrder.map((suit) => (
+            <button
+              class="gallery-filter__chip"
+              type="button"
+              data-filter-suit={suit}
+              aria-pressed="false"
+              title={t(`suits.${suit}`)}
+            >
+              <span aria-hidden="true">{symbols[suit]}</span>
+              <span class="visually-hidden">{t(`suits.${suit}`)}</span>
+            </button>
+          ))}
+          <button
+            class="gallery-filter__chip gallery-filter__chip--joker"
+            type="button"
+            data-filter-suit="joker"
+            aria-pressed="false"
+            title={t('gallery.filter_jokers')}
+          >
+            <span aria-hidden="true">★</span>
+            <span class="visually-hidden">{t('gallery.filter_jokers')}</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="gallery-filter__row" role="group" aria-label={t('gallery.filter_rank')} data-rank-row>
+        <span class="gallery-filter__label">{t('gallery.filter_rank')}</span>
+        <div class="gallery-filter__chips gallery-filter__chips--ranks">
+          {rankOrder.map((rank) => (
+            <button
+              class="gallery-filter__chip gallery-filter__chip--rank"
+              type="button"
+              data-filter-rank={rank}
+              aria-pressed="false"
+            >
+              {rank}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div class="gallery-filter__row" role="group" aria-label={t('gallery.filter_order')}>
+        <span class="gallery-filter__label">{t('gallery.filter_order')}</span>
+        <div class="gallery-filter__chips">
+          <button class="gallery-filter__chip is-active" type="button" data-filter-order="random" aria-pressed="true">
+            {t('gallery.filter_random')}
+          </button>
+          <button class="gallery-filter__chip" type="button" data-filter-order="ordered" aria-pressed="false">
+            {t('gallery.filter_ordered')}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="gallery-empty" data-gallery-empty hidden>{t('gallery.filter_empty')}</p>
 
   <div class="carousel-outer">
     <div class="carousel-track" id="gallery-track">
@@ -48,6 +159,7 @@ const payloads = cards.map((card) => {
           class="carousel-card"
           type="button"
           data-index={index}
+          data-card-id={card.id}
           aria-label={`${t('gallery.open')} ${card.title}`}
         >
           <span class="carousel-card__inner">
@@ -63,7 +175,12 @@ const payloads = cards.map((card) => {
             />
             <div class="carousel-card__overlay">
               <div class="carousel-card__overlay-inner">
-                {!card.back && <span class="carousel-card__suit">{card.suitSymbol}{card.value}</span>}
+                {!card.back && (
+                  <span class="carousel-card__suit">
+                    {card.suitSymbol}
+                    {card.joker ? '' : card.value}
+                  </span>
+                )}
                 <span class="carousel-card__name">{card.title}</span>
                 <span class="carousel-card__btn">{t('gallery.open_btn')}</span>
               </div>
@@ -76,6 +193,8 @@ const payloads = cards.map((card) => {
     <div class="carousel-fade carousel-fade--right" aria-hidden="true"></div>
   </div>
 </div>
+
+<script id="gallery-filter-copy" type="application/json" set:html={JSON.stringify(filterCopy)} />
 
 <div
   class="lightbox"
@@ -153,6 +272,173 @@ const payloads = cards.map((card) => {
     font-weight: 400;
     letter-spacing: -0.02em;
     line-height: 1.15;
+  }
+
+  .gallery-filter {
+    max-width: 42rem;
+    margin: 1.15rem auto 0;
+    padding-inline: var(--page-pad);
+  }
+
+  .gallery-filter__bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem 0.85rem;
+  }
+
+  .gallery-filter__toggle,
+  .gallery-filter__clear {
+    padding: 0.45rem 0.15rem;
+    border: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 28%, transparent);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    font: 600 0.68rem/1.3 var(--sans);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .gallery-filter__toggle:hover,
+  .gallery-filter__toggle:focus-visible,
+  .gallery-filter__clear:hover,
+  .gallery-filter__clear:focus-visible {
+    border-bottom-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .gallery-filter__toggle[aria-expanded='true'] {
+    border-bottom-color: var(--ink);
+  }
+
+  .gallery-filter__clear {
+    color: var(--muted);
+    border-bottom-color: color-mix(in srgb, var(--muted) 40%, transparent);
+  }
+
+  .gallery-filter__panel {
+    margin-top: 1rem;
+    padding: 1rem 0 0.15rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .gallery-filter__panel[hidden] {
+    display: none;
+  }
+
+  .gallery-filter__row {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 0.55rem 0.85rem;
+    align-items: start;
+  }
+
+  .gallery-filter__row + .gallery-filter__row {
+    margin-top: 0.75rem;
+  }
+
+  .gallery-filter__label {
+    padding-top: 0.45rem;
+    color: var(--muted);
+    font: 600 0.58rem/1.3 var(--sans);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .gallery-filter__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .gallery-filter__chips--ranks {
+    gap: 0.28rem;
+  }
+
+  .gallery-filter__chip {
+    display: inline-grid;
+    place-items: center;
+    min-width: 2.15rem;
+    min-height: 2.15rem;
+    padding: 0.35rem 0.55rem;
+    border: 1px solid var(--line);
+    border-radius: 0.35rem;
+    background: color-mix(in srgb, var(--paper) 70%, var(--white));
+    color: var(--ink);
+    cursor: pointer;
+    font: 600 0.78rem/1 var(--sans);
+    letter-spacing: 0.02em;
+    transition:
+      border-color 160ms ease,
+      background 160ms ease,
+      color 160ms ease;
+  }
+
+  .gallery-filter__chip--rank {
+    min-width: 1.95rem;
+    padding-inline: 0.4rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .gallery-filter__chip:hover,
+  .gallery-filter__chip:focus-visible {
+    border-color: color-mix(in srgb, var(--ink) 45%, var(--line));
+  }
+
+  .gallery-filter__chip.is-active,
+  .gallery-filter__chip[aria-pressed='true'] {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  .gallery-filter__chip[data-filter-suit='hearts'].is-active,
+  .gallery-filter__chip[data-filter-suit='diamonds'].is-active,
+  .gallery-filter__chip[data-filter-suit='hearts'][aria-pressed='true'],
+  .gallery-filter__chip[data-filter-suit='diamonds'][aria-pressed='true'] {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--white);
+  }
+
+  .gallery-filter__chip--joker.is-active,
+  .gallery-filter__chip--joker[aria-pressed='true'] {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: #e8c76a;
+  }
+
+  .gallery-filter__row[data-rank-row][data-disabled='true'] {
+    opacity: 0.38;
+    pointer-events: none;
+  }
+
+  .gallery-empty {
+    margin: 1rem auto 0;
+    padding-inline: var(--page-pad);
+    color: var(--muted);
+    font: 500 0.85rem/1.4 var(--sans);
+    text-align: center;
+  }
+
+  .gallery-empty[hidden],
+  .gallery-filter__clear[hidden],
+  .carousel-card[hidden] {
+    display: none;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .carousel-outer {
@@ -793,6 +1079,15 @@ const payloads = cards.map((card) => {
   }
 
   @media (max-width: 800px) {
+    .gallery-filter__row {
+      grid-template-columns: 1fr;
+      gap: 0.4rem;
+    }
+
+    .gallery-filter__label {
+      padding-top: 0;
+    }
+
     .carousel-track {
       padding: 0.5rem var(--page-pad) 0.75rem;
       gap: 1rem;
@@ -821,11 +1116,72 @@ const payloads = cards.map((card) => {
     worldLine: string;
     metaLine: string;
     back?: boolean;
+    joker?: boolean;
   }
 
+  interface FilterCopy {
+    find: string;
+    hide: string;
+    clear: string;
+    suit: string;
+    rank: string;
+    order: string;
+    random: string;
+    ordered: string;
+    jokers: string;
+    empty: string;
+    summary: string;
+    jokerLabel: string;
+    suitNames: Record<string, string>;
+  }
+
+  const SUIT_ORDER = ['hearts', 'diamonds', 'clubs', 'spades'] as const;
+  const RANK_ORDER = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'] as const;
+  const suitRank = Object.fromEntries(SUIT_ORDER.map((suit, i) => [suit, i])) as Record<string, number>;
+  const valueRank = Object.fromEntries(RANK_ORDER.map((rank, i) => [rank, i])) as Record<string, number>;
+
   const dataNode = document.getElementById('gallery-data');
-  const cards: CardData[] = dataNode?.textContent ? JSON.parse(dataNode.textContent) : [];
+  const copyNode = document.getElementById('gallery-filter-copy');
+  const allCards: CardData[] = dataNode?.textContent ? JSON.parse(dataNode.textContent) : [];
+  const filterCopy: FilterCopy = copyNode?.textContent
+    ? JSON.parse(copyNode.textContent)
+    : {
+        find: 'Find',
+        hide: 'Hide',
+        clear: 'Clear',
+        suit: 'Suit',
+        rank: 'Rank',
+        order: 'Order',
+        random: 'Shuffled',
+        ordered: 'In order',
+        jokers: 'Jokers',
+        empty: 'No cards',
+        summary: 'Filter: {summary}',
+        jokerLabel: 'Joker',
+        suitNames: {},
+      };
   const track = document.getElementById('gallery-track') as HTMLElement | null;
+  const emptyEl = document.querySelector<HTMLElement>('[data-gallery-empty]');
+  const filterRoot = document.querySelector<HTMLElement>('[data-gallery-filter]');
+  const filterToggle = filterRoot?.querySelector<HTMLButtonElement>('[data-filter-toggle]');
+  const filterToggleLabel = filterRoot?.querySelector<HTMLElement>('[data-filter-toggle-label]');
+  const filterPanel = filterRoot?.querySelector<HTMLElement>('[data-filter-panel]');
+  const filterClear = filterRoot?.querySelector<HTMLButtonElement>('[data-filter-clear]');
+  const rankRow = filterRoot?.querySelector<HTMLElement>('[data-rank-row]');
+  const suitButtons = Array.from(filterRoot?.querySelectorAll<HTMLButtonElement>('[data-filter-suit]') ?? []);
+  const rankButtons = Array.from(filterRoot?.querySelectorAll<HTMLButtonElement>('[data-filter-rank]') ?? []);
+  const orderButtons = Array.from(filterRoot?.querySelectorAll<HTMLButtonElement>('[data-filter-order]') ?? []);
+  const buttonById = new Map<string, HTMLElement>();
+  track?.querySelectorAll<HTMLElement>('.carousel-card').forEach((el) => {
+    const id = el.dataset.cardId;
+    if (id) buttonById.set(id, el);
+  });
+
+  let visible: CardData[] = [...allCards];
+  let filterSuit: string | null = null;
+  let filterRank: string | null = null;
+  let orderMode: 'random' | 'ordered' = 'random';
+  let reshuffleToken = 0;
 
   let dragging = false;
   let moved = false;
@@ -882,6 +1238,172 @@ const payloads = cards.map((card) => {
   type ViewerContext = { cardId: string; kicker?: string; ctaLabel?: string; ctaHref?: string };
   let context: ViewerContext | null = null;
 
+  function shuffleInPlace<T>(items: T[]): T[] {
+    for (let i = items.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [items[i], items[j]] = [items[j], items[i]];
+    }
+    return items;
+  }
+
+  function cardSortKey(card: CardData): [number, number, number, string] {
+    if (card.back) return [3, 0, 0, card.id];
+    if (card.joker) return [2, 0, 0, card.id];
+    return [0, suitRank[card.suit] ?? 9, valueRank[card.value] ?? 99, card.id];
+  }
+
+  function sortCards(list: CardData[]): CardData[] {
+    return [...list].sort((a, b) => {
+      const ka = cardSortKey(a);
+      const kb = cardSortKey(b);
+      if (ka[0] !== kb[0]) return ka[0] - kb[0];
+      if (ka[1] !== kb[1]) return ka[1] - kb[1];
+      if (ka[2] !== kb[2]) return ka[2] - kb[2];
+      return ka[3].localeCompare(kb[3]);
+    });
+  }
+
+  function matchesFilter(card: CardData): boolean {
+    if (filterSuit === 'joker') return Boolean(card.joker) || Boolean(card.back);
+    if (filterSuit) {
+      if (card.suit !== filterSuit) return false;
+      if (filterRank && card.value !== filterRank) return false;
+      return true;
+    }
+    if (filterRank) return !card.back && !card.joker && card.value === filterRank;
+    return true;
+  }
+
+  function filterSummary(): string {
+    const parts: string[] = [];
+    if (filterSuit === 'joker') parts.push(filterCopy.jokers);
+    else if (filterSuit) parts.push(filterCopy.suitNames[filterSuit] ?? filterSuit);
+    if (filterRank && filterSuit !== 'joker') parts.push(filterRank);
+    return parts.join(' · ');
+  }
+
+  function setPressed(buttons: HTMLButtonElement[], attr: string, value: string | null) {
+    buttons.forEach((btn) => {
+      const active = value !== null && btn.getAttribute(attr) === value;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  function syncFilterChrome() {
+    const summary = filterSummary();
+    const active = Boolean(summary);
+    if (filterToggleLabel) {
+      if (active) filterToggleLabel.textContent = filterCopy.summary.replace('{summary}', summary);
+      else if (filterPanel && !filterPanel.hidden) filterToggleLabel.textContent = filterCopy.hide;
+      else filterToggleLabel.textContent = filterCopy.find;
+    }
+    if (filterClear) filterClear.hidden = !active;
+    if (rankRow) rankRow.dataset.disabled = filterSuit === 'joker' ? 'true' : 'false';
+    setPressed(suitButtons, 'data-filter-suit', filterSuit);
+    setPressed(rankButtons, 'data-filter-rank', filterSuit === 'joker' ? null : filterRank);
+    setPressed(orderButtons, 'data-filter-order', orderMode);
+  }
+
+  function applyView(opts?: { reshuffle?: boolean; keepScroll?: boolean }) {
+    const filtered = allCards.filter(matchesFilter);
+    if (orderMode === 'ordered') {
+      visible = sortCards(filtered);
+    } else if (opts?.reshuffle || reshuffleToken === 0) {
+      visible = shuffleInPlace([...filtered]);
+      reshuffleToken += 1;
+    } else {
+      const keep = new Set(filtered.map((card) => card.id));
+      const retained = visible.filter((card) => keep.has(card.id));
+      const missing = filtered.filter((card) => !retained.some((r) => r.id === card.id));
+      visible = retained.concat(shuffleInPlace(missing));
+    }
+
+    if (!track) return;
+    const scrollLeft = opts?.keepScroll ? track.scrollLeft : 0;
+    const frag = document.createDocumentFragment();
+    visible.forEach((card, index) => {
+      const el = buttonById.get(card.id);
+      if (!el) return;
+      el.hidden = false;
+      el.dataset.index = String(index);
+      frag.appendChild(el);
+    });
+    allCards.forEach((card) => {
+      if (visible.some((v) => v.id === card.id)) return;
+      const el = buttonById.get(card.id);
+      if (!el) return;
+      el.hidden = true;
+      el.removeAttribute('data-index');
+      frag.appendChild(el);
+    });
+    track.appendChild(frag);
+    track.scrollLeft = scrollLeft;
+    if (emptyEl) emptyEl.hidden = visible.length > 0;
+    syncFilterChrome();
+  }
+
+  function clearFilters() {
+    filterSuit = null;
+    filterRank = null;
+    applyView({ reshuffle: orderMode === 'random' });
+  }
+
+  function ensureCardVisible(id: string): number {
+    let index = visible.findIndex((card) => card.id === id);
+    if (index >= 0) return index;
+    filterSuit = null;
+    filterRank = null;
+    applyView({ reshuffle: false });
+    index = visible.findIndex((card) => card.id === id);
+    if (index >= 0) return index;
+    const full = allCards.findIndex((card) => card.id === id);
+    if (full < 0) return -1;
+    visible = [...allCards];
+    applyView({ reshuffle: false });
+    return visible.findIndex((card) => card.id === id);
+  }
+
+  filterToggle?.addEventListener('click', () => {
+    if (!filterPanel || !filterToggle) return;
+    const open = filterPanel.hidden;
+    filterPanel.hidden = !open;
+    filterToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    syncFilterChrome();
+  });
+
+  filterClear?.addEventListener('click', () => clearFilters());
+
+  suitButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const next = btn.dataset.filterSuit ?? null;
+      filterSuit = filterSuit === next ? null : next;
+      if (filterSuit === 'joker') filterRank = null;
+      applyView({ reshuffle: orderMode === 'random' });
+    });
+  });
+
+  rankButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (filterSuit === 'joker') return;
+      const next = btn.dataset.filterRank ?? null;
+      filterRank = filterRank === next ? null : next;
+      applyView({ reshuffle: orderMode === 'random' });
+    });
+  });
+
+  orderButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const next = (btn.dataset.filterOrder as 'random' | 'ordered' | undefined) ?? 'random';
+      if (orderMode === next) {
+        if (next === 'random') applyView({ reshuffle: true });
+        return;
+      }
+      orderMode = next;
+      applyView({ reshuffle: next === 'random' });
+    });
+  });
+
   function renderContext(cardId: string) {
     const active = context && context.cardId === cardId ? context : null;
     if (contextLine) {
@@ -924,9 +1446,9 @@ const payloads = cards.map((card) => {
   }
 
   function renderCard(index: number) {
-    if (!cards.length) return;
-    currentIndex = (index + cards.length) % cards.length;
-    const card = cards[currentIndex];
+    if (!visible.length) return;
+    currentIndex = (index + visible.length) % visible.length;
+    const card = visible[currentIndex];
     if (image) {
       image.src = card.image;
       image.alt = card.title;
@@ -939,7 +1461,9 @@ const payloads = cards.map((card) => {
       suitVal.hidden = !card.suitSymbol;
       suitVal.dataset.suit = card.suit;
       suitVal.innerHTML = card.suitSymbol
-        ? `<span class="lb-suit-symbol" aria-hidden="true">${card.suitSymbol}</span><span class="lb-suit-rank">${card.value}</span>`
+        ? `<span class="lb-suit-symbol" aria-hidden="true">${card.suitSymbol}</span>${
+            card.joker ? '' : `<span class="lb-suit-rank">${card.value}</span>`
+          }`
         : '';
     }
     if (title) title.textContent = card.title;
@@ -1026,7 +1550,7 @@ const payloads = cards.map((card) => {
   }
 
   async function copyCardLink() {
-    const card = cards[currentIndex];
+    const card = visible[currentIndex];
     if (!card || !share) return;
     const ok = await writeClipboard(cardLink(card.id));
     if (!ok) return;
@@ -1037,14 +1561,14 @@ const payloads = cards.map((card) => {
     shareTimer = window.setTimeout(resetShare, 1600);
   }
 
-  track?.querySelectorAll<HTMLElement>('.carousel-card').forEach((card) => {
-    card.addEventListener('click', () => {
-      if (moved) {
-        moved = false;
-        return;
-      }
-      openViewer(Number(card.dataset.index ?? 0), card);
-    });
+  track?.addEventListener('click', (event) => {
+    const card = (event.target as HTMLElement | null)?.closest?.('.carousel-card') as HTMLElement | null;
+    if (!card || card.hidden) return;
+    if (moved) {
+      moved = false;
+      return;
+    }
+    openViewer(Number(card.dataset.index ?? 0), card);
   });
 
   zoomOpen?.addEventListener('click', openZoom);
@@ -1101,23 +1625,25 @@ const payloads = cards.map((card) => {
       handled?: boolean;
     }>).detail;
     if (!detail?.id || !viewer) return;
-    const index = cards.findIndex((card) => card.id === detail.id);
+    const index = ensureCardVisible(detail.id);
     if (index < 0) return;
     context = { cardId: detail.id, kicker: detail.kicker, ctaLabel: detail.ctaLabel, ctaHref: detail.ctaHref };
     const source =
       detail.opener ??
       (document.activeElement instanceof HTMLElement ? document.activeElement : null) ??
-      track?.querySelector<HTMLElement>(`.carousel-card[data-index="${index}"]`) ??
+      buttonById.get(detail.id) ??
       document.body;
     if (zoom && !zoom.hidden) closeZoom(false);
     openViewer(index, source);
     detail.handled = true;
   });
 
+  syncFilterChrome();
+
   const requestedId = new URLSearchParams(window.location.search).get('card');
   if (requestedId) {
-    const index = cards.findIndex((card) => card.id === requestedId);
-    const source = track?.querySelector<HTMLElement>(`.carousel-card[data-index="${index}"]`);
+    const index = ensureCardVisible(requestedId);
+    const source = buttonById.get(requestedId);
     if (index >= 0 && source) openViewer(index, source);
   }
 </script>

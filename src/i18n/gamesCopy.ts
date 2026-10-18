@@ -310,7 +310,7 @@ const en: GamesCopy = {
     open_lore: 'Initiation',
     joker_title: '31 December — the Joker',
     joker_body:
-      'This is the day that brings the count to 365. Camp sets it between the Ace of Hearts and the King of Spades. Both paintings are open below.',
+      'This is the day that brings the count to 365. Both jokers of the Magister deck are open below — pick the one that feels like yours.',
     missing: 'This day is the {rank} of {suit}. That painting is not in the deck yet.',
     date_line: '{date}',
     spheres: {
@@ -561,7 +561,7 @@ const ru: GamesCopy = {
     open_lore: 'Посвящение',
     joker_title: '31 декабря — джокер',
     joker_body:
-      'Этот день доводит счёт до 365. У Кэмпа он стоит между тузом червей и королём пик. Обе картины открыты ниже.',
+      'Этот день доводит счёт до 365. Ниже оба джокера колоды Magister — выберите того, кто ближе вам.',
     missing: 'Этот день — {rank} {suit}. Такой картины в колоде пока нет.',
     date_line: '{date}',
     spheres: {
@@ -812,7 +812,7 @@ const be: GamesCopy = {
     open_lore: 'Пасвячэнне',
     joker_title: '31 снежня — джокер',
     joker_body:
-      'Гэты дзень даводзіць лік да 365. У Кэмпа ён стаіць паміж тузам чэрваў і каралём пік. Абедзве карціны адкрыты ніжэй.',
+      'Гэты дзень даводзіць лік да 365. Ніжэй абодва джокеры калоды Magister — абярыце таго, хто бліжэй вам.',
     missing: 'Гэты дзень — {rank} {suit}. Такой карціны ў калодзе пакуль няма.',
     date_line: '{date}',
     spheres: {
@@ -1061,7 +1061,7 @@ const zh: GamesCopy = {
     another: '另一个日期',
     open_lore: '授礼',
     joker_title: '12 月 31 日 — 鬼牌',
-    joker_body: '这一天把计数补成 365。坎普把它放在红桃 A 与黑桃 K 之间。两幅画都在下面。',
+    joker_body: '这一天把计数补成 365。下面是 Magister 牌组的两张小丑牌——选出更像你的那一张。',
     missing: '这一天是{suit}{rank}。这幅画还没有收入牌组。',
     date_line: '{date}',
     spheres: {

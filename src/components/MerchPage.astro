@@ -31,8 +31,20 @@ const money = (amount: number): string => formatPrice(amount, lang);
 const symbols: Record<string, string> = { hearts: '♥', diamonds: '♦', clubs: '♣', spades: '♠' };
 const allCards = hasCardPick ? await getCollection('cards') : [];
 const cards = allCards
-  .filter((card) => !card.data.back && card.data.suit && card.data.value)
+  .filter((card) => !card.data.back && ((card.data.suit && card.data.value) || card.data.joker))
   .map((card) => {
+    if (card.data.joker) {
+      return {
+        id: card.data.id,
+        title: pickLocalized(card.data.title, lang),
+        summary: pickLocalized(card.data.summary, lang),
+        suit: '',
+        value: card.data.value ?? 'Joker',
+        image: card.data.image,
+        world: t('gallery.joker_label'),
+        suitSymbol: '★',
+      };
+    }
     const suit = card.data.suit as 'hearts' | 'diamonds' | 'clubs' | 'spades';
     return {
       id: card.data.id,

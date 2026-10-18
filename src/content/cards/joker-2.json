@@ -1,0 +1,31 @@
+{
+  "id": "joker-2",
+  "joker": true,
+  "value": "Joker",
+  "category": {
+    "en": "Jokers",
+    "ru": "Джокеры",
+    "be": "Джокеры",
+    "zh": "小丑牌"
+  },
+  "title": {
+    "en": "The Joker of the Moon",
+    "ru": "Джокер Луны",
+    "be": "Джокер Месяца",
+    "zh": "月亮小丑"
+  },
+  "summary": {
+    "en": "A blue-armoured fool dances between dragons, one coiled as an ouroboros underfoot, a crescent moon on his wand.",
+    "ru": "Шут в синих доспехах пляшет между драконами: один кольцом-уроборосом под ногами, на жезле — месяц.",
+    "be": "Шут у сініх даспехах пляша між цмокамі: адзін кольцам-ўробарасам пад нагамі, на жазле — месяц.",
+    "zh": "蓝甲愚者在龙群间起舞：脚下一条衔尾之龙，杖上托着弯月。"
+  },
+  "description": {
+    "en": "The night twin. Armour instead of bells, dragons instead of beasts of burden, the moon instead of the sun — yet the same grin. He stands where the calendar breaks: the day that belongs to no suit. Between Ace of Hearts and King of Spades the year needs a hinge; this fool is that hinge, laughing in blue.",
+    "ru": "Ночной двойник. Доспехи вместо бубенцов, драконы вместо вьючных зверей, луна вместо солнца — та же улыбка. Он стоит там, где ломается календарь: день без масти. Между тузом червей и королём пик году нужна петля; этот шут — та петля, смеющаяся синим.",
+    "be": "Начны двайнік. Даспехі замест званкоў, цмокі замест цягавых звяроў, месяц замест сонца — тая ж усмешка. Ён стаіць там, дзе ламаецца каляндар: дзень без масці. Паміж тузам чэрваў і каралём пік году патрэбна пятля; гэты шут — тая пятля, што смяецца сінім.",
+    "zh": "夜之双生。盔甲取代铃铛，龙取代负重之兽，月取代日——笑意相同。他站在日历断裂处：不属于任何花色的一天。红心 A 与黑桃 K 之间，一年需要铰链；这个愚者就是那道铰链，以蓝色发笑。"
+  },
+  "image": "/cards/joker-2.webp",
+  "featured": false
+}

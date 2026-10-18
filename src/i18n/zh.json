@@ -73,7 +73,7 @@
     "order": "购买牌组",
     "close": "关闭",
     "dismiss": "关闭",
-    "joker_note": "12 月 31 日属于小丑牌，它位于红心 A 与黑桃 K 之间。在这两幅画中，选出更像你的那一幅。",
+    "joker_note": "12 月 31 日属于小丑牌——一年的第 365 天。请从两张小丑牌中选出更像你的那一张。",
     "missing_note": "未找到该日期对应的牌。"
   },
   "hero": {
@@ -137,7 +137,19 @@
     "suit_label": "花色",
     "value_label": "点数",
     "world_label": "世界",
-    "category_label": "主题"
+    "category_label": "主题",
+    "filter_find": "查找牌",
+    "filter_hide": "收起筛选",
+    "filter_clear": "清除",
+    "filter_suit": "花色",
+    "filter_rank": "点数",
+    "filter_order": "顺序",
+    "filter_random": "随机",
+    "filter_ordered": "按顺序",
+    "filter_jokers": "特殊牌",
+    "joker_label": "小丑",
+    "filter_empty": "没有符合条件的牌",
+    "filter_summary": "筛选：{summary}"
   },
   "authors": {
     "preface_title": "在成为卡牌之前",
@@ -164,14 +176,14 @@
     "zhilchik": {
       "name": "亚历山大·日尔奇克",
       "role": "创意作者",
-      "bio": "「我有幸与一位天才为友……那就是 Dr. Klein。」",
+      "bio": "「我有幸与一位天才为友……那就是瓦西里·波奇茨基。」",
       "bio_2": "",
       "photo_alt": "亚历山大·日尔奇克肖像。"
     },
     "compact_body": "Dr. Klein（真名瓦西里·波奇茨基，1967–2024）——白俄罗斯画家、插画师与音乐家，来自列奇察。他的作品从莫斯科展至纽约，近十年见于全国报刊，也为书籍与唱片绘制插图。Magister 是他规模最大的系列：54 幅画，描绘他与好友亚历山大·日尔奇克共同构想的世界。他已经离开。他的世界留了下来——在画作里，也在这副牌里。",
     "compact_more": "了解作者 →",
     "compact_title": "先有画，后有牌",
-    "compact_quote": "「我有幸与一位天才为友……那就是 Dr. Klein。」",
+    "compact_quote": "「我有幸与一位天才为友……那就是瓦西里·波奇茨基。」",
     "compact_quote_author": "亚历山大·日尔奇克，创意作者"
   },
   "next": {

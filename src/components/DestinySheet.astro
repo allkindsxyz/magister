@@ -15,7 +15,7 @@ const deckHref = getLocalizedPath('/artifacts/deck', lang);
 
 const allCards = await getCollection('cards');
 const faceCards = allCards
-  .filter((c) => !c.data.back && c.data.suit && c.data.value)
+  .filter((c) => !c.data.back && ((c.data.suit && c.data.value) || c.data.joker))
   .map((c) => ({
     id: c.data.id as string,
     title: pickLocalized(c.data.title, lang),
@@ -25,8 +25,8 @@ const faceCards = allCards
   }));
 
 const byId = Object.fromEntries(faceCards.map((c) => [c.id, c]));
-const jokerAce = byId['ace-hearts'] ?? null;
-const jokerKing = byId['king-spades'] ?? null;
+const jokerOne = byId['joker-1'] ?? null;
+const jokerTwo = byId['joker-2'] ?? null;
 
 const cardsPayload = JSON.stringify(
   Object.fromEntries(
@@ -103,8 +103,8 @@ const viewerContext = {
 <script
   define:vars={{
     cardsPayload,
-    jokerAce,
-    jokerKing,
+    jokerOne,
+    jokerTwo,
     jokerNote,
     missingNote,
     viewerContext,
@@ -232,8 +232,8 @@ const viewerContext = {
       const wrap = document.createElement('div');
       wrap.className = 'destiny-birth__joker-pair';
       const render = hasCardViewer() ? jokerChoiceHtml : cardHtml;
-      if (jokerAce) wrap.insertAdjacentHTML('beforeend', render(jokerAce));
-      if (jokerKing) wrap.insertAdjacentHTML('beforeend', render(jokerKing));
+      if (jokerOne) wrap.insertAdjacentHTML('beforeend', render(jokerOne));
+      if (jokerTwo) wrap.insertAdjacentHTML('beforeend', render(jokerTwo));
       cardMount.append(wrap);
       return true;
     }

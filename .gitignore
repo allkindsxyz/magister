@@ -27,6 +27,11 @@ data/
 import/cardsimages.zip
 import/raw-cards/
 
+# print masters — not served in production
+public/cards/*.tif
+public/cards/*.tiff
+public/cards/*.psd
+
 # jetbrains setting folder
 .idea/
 brief-for-other-model.html
