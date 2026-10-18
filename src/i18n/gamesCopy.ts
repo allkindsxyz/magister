@@ -187,7 +187,7 @@ export type GamesCopy = {
 
 const en: GamesCopy = {
   kicker: 'Play online',
-  title: 'Learn to Read the Deck',
+  title: 'Meet the Magister deck Online',
   lead: 'Three games. One deck.',
   cta: 'Play',
   back: 'Back',
@@ -438,7 +438,7 @@ const en: GamesCopy = {
 
 const ru: GamesCopy = {
   kicker: 'Игры онлайн',
-  title: 'Научитесь читать колоду',
+  title: 'Знакомьтесь с колодой Магистр Online',
   lead: 'Три игры. Одна колода.',
   cta: 'Играть',
   back: 'Назад',
@@ -689,7 +689,7 @@ const ru: GamesCopy = {
 
 const be: GamesCopy = {
   kicker: 'Гульні онлайн',
-  title: 'Навучыцеся чытаць калоду',
+  title: 'Знаёмцеся з калодай Магістр Online',
   lead: 'Тры гульні. Адна калода.',
   cta: 'Гуляць',
   back: 'Назад',
@@ -940,7 +940,7 @@ const be: GamesCopy = {
 
 const zh: GamesCopy = {
   kicker: '在线游戏',
-  title: '学会读懂这副牌',
+  title: '在线认识 Magister 牌组',
   lead: '三场游戏。一副牌。',
   cta: '开始',
   back: '返回',

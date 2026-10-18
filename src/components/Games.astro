@@ -682,8 +682,17 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
   }
 
   .play-games .section-title {
-    max-width: 10ch;
+    max-width: none;
     color: var(--play-parchment);
+    white-space: nowrap;
+    font-size: clamp(1.85rem, 4.2vw, 4.2rem);
+    line-height: 1;
+  }
+
+  @media (max-width: 720px) {
+    .play-games .section-title {
+      font-size: clamp(1.25rem, 5.6vw, 2.2rem);
+    }
   }
 
   .play-header .play-kicker {
@@ -743,7 +752,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     justify-content: center;
     flex: none;
     min-height: 0;
-    overflow: visible;
+    overflow: hidden;
     background: transparent;
   }
 
@@ -758,8 +767,8 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
 
   .poster-art {
     display: block;
-    width: 78%;
-    margin: 0 auto;
+    width: 62%;
+    margin: 0.15rem auto;
   }
 
   .poster-art img {
@@ -819,6 +828,11 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     .poster {
       gap: 0.4rem;
       padding: 0.4rem;
+    }
+
+    .poster-art {
+      width: 54%;
+      margin: 0.1rem auto;
     }
 
     .poster-title {
