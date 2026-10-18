@@ -1,6 +1,6 @@
 ---
 import type { Lang } from '../i18n/utils';
-import { pickLocalized } from '../i18n/utils';
+import { pickLocalized, getLocalizedPath } from '../i18n/utils';
 import { playWaysCopy } from '../i18n/playWaysCopy';
 import { getCollection } from 'astro:content';
 
@@ -10,6 +10,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const copy = playWaysCopy[lang];
+const deckHref = getLocalizedPath('/artifacts/deck', lang);
 
 const allCards = await getCollection('cards');
 const byId = new Map(
@@ -18,6 +19,13 @@ const byId = new Map(
     { image: card.data.image as string, title: pickLocalized(card.data.title, lang) },
   ]),
 );
+
+const ways = copy.ways.map((way) => ({
+  ...way,
+  cta: way.cta
+    ? { ...way.cta, href: way.cta.href === '__deck__' ? deckHref : way.cta.href }
+    : undefined,
+}));
 ---
 
 {copy && (
@@ -30,7 +38,7 @@ const byId = new Map(
     </header>
 
     <div class="play-ways__grid">
-      {copy.ways.map((way, index) => {
+      {ways.map((way, index) => {
         const card = byId.get(way.card);
         return (
           <article class="play-ways__way" style={`--delay:${index * 70}ms`}>
@@ -48,20 +56,52 @@ const byId = new Map(
                 </span>
               </div>
             )}
-            <h3>{way.title}</h3>
-            <p class="play-ways__format">
-              {way.format}
-              {way.soon && <span>{copy.soon}</span>}
-            </p>
-            <p>{way.body}</p>
-            <ul>
-              {way.items.map((item) => (
-                <li>{item}</li>
-              ))}
-            </ul>
-            {way.cta && (
-              <a class="text-link" href={way.cta.href}>{way.cta.label}</a>
-            )}
+            <div class="play-ways__main">
+              <div class="play-ways__copy">
+                <h3>{way.title}</h3>
+                <p class="play-ways__body">{way.body}</p>
+                {way.details && (
+                  <details class="play-ways__more">
+                    <summary
+                      data-open={way.details.toggle}
+                      data-close={way.details.toggleClose}
+                      aria-label={way.details.toggle}
+                    ></summary>
+                    <div class="play-ways__more-body">
+                      <p class="play-ways__more-headline">{way.details.headline}</p>
+                      <div class="play-ways__more-prose">
+                        {way.details.paragraphs.map((paragraph) => (
+                          <p>{paragraph}</p>
+                        ))}
+                      </div>
+                      <section class="play-ways__more-section">
+                        <h4>{way.details.conditionsTitle}</h4>
+                        <ul class="play-ways__conditions">
+                          {way.details.conditions.map((item) => (
+                            <li>{item}</li>
+                          ))}
+                        </ul>
+                      </section>
+                      <section class="play-ways__more-section">
+                        <h4>{way.details.bridgesTitle}</h4>
+                        <ul class="play-ways__bridges">
+                          {way.details.bridges.map((item) => (
+                            <li>
+                              <span class="play-ways__bridge-mark">{item.mark}</span>
+                              <span class="play-ways__bridge-name">{item.name}</span>
+                              <span class="play-ways__bridge-suits">{item.suits}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    </div>
+                  </details>
+                )}
+              </div>
+              {way.cta && (
+                <a class="text-link play-ways__cta" href={way.cta.href}>{way.cta.label}</a>
+              )}
+            </div>
           </article>
         );
       })}
@@ -88,7 +128,7 @@ const byId = new Map(
   }
 
   .play-ways__lead,
-  .play-ways__way > p:not(.play-ways__format) {
+  .play-ways__body {
     color: var(--muted);
     line-height: 1.75;
   }
@@ -107,16 +147,16 @@ const byId = new Map(
   }
 
   .play-ways__way {
-    display: grid;
-    grid-template-rows: auto auto auto auto 1fr auto;
-    gap: 0.55rem;
+    display: flex;
+    gap: 1.25rem;
+    align-items: stretch;
     padding: clamp(1.5rem, 3vw, 2.25rem);
     background: var(--paper);
   }
 
   .play-ways__visual {
-    width: min(100%, 9.5rem);
-    margin-bottom: 0.4rem;
+    flex: 0 0 clamp(7.5rem, 18vw, 9.5rem);
+    width: clamp(7.5rem, 18vw, 9.5rem);
   }
 
   .play-ways__frame {
@@ -140,7 +180,22 @@ const byId = new Map(
     transform-origin: center center;
   }
 
+  .play-ways__main {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    min-width: 0;
+  }
+
+  .play-ways__copy {
+    display: grid;
+    gap: 0.65rem;
+    min-width: 0;
+  }
+
   .play-ways__way h3 {
+    margin: 0;
     font-family: var(--display);
     font-size: clamp(1.45rem, 2.1vw, 1.9rem);
     font-weight: 400;
@@ -148,54 +203,177 @@ const byId = new Map(
     line-height: 1.15;
   }
 
-  .play-ways__format {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.45rem 0.7rem;
-    margin: 0;
-    color: var(--muted);
-    font: 600 0.68rem/1.2 var(--sans);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .play-ways__format span {
-    color: var(--accent);
-  }
-
-  .play-ways__way > p:not(.play-ways__format) {
+  .play-ways__body {
     margin: 0;
     font-size: 0.95rem;
   }
 
-  .play-ways__way ul {
-    display: flex;
-    flex-wrap: wrap;
-    align-self: end;
-    gap: 0.4rem 0.55rem;
-    margin: 0.15rem 0 0;
-    padding: 0;
-    list-style: none;
+  .play-ways__more {
+    min-width: 0;
   }
 
-  .play-ways__way li {
-    padding: 0.28rem 0.65rem;
-    border: 1px solid var(--line);
+  .play-ways__more summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: fit-content;
+    padding: 0.2rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 28%, transparent);
     color: var(--ink);
-    font: 600 0.68rem/1.2 var(--sans);
-    letter-spacing: 0.06em;
+    cursor: pointer;
+    list-style: none;
+    font: 600 0.68rem/1.3 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    user-select: none;
+  }
+
+  .play-ways__more summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .play-ways__more summary::before {
+    content: attr(data-open);
+  }
+
+  .play-ways__more[open] summary::before {
+    content: attr(data-close);
+  }
+
+  .play-ways__more summary::after {
+    content: '+';
+    font: 400 1rem/1 var(--sans);
+    letter-spacing: 0;
+  }
+
+  .play-ways__more[open] summary::after {
+    content: '−';
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .play-ways__more summary:hover,
+    .play-ways__more summary:focus-visible {
+      border-bottom-color: var(--accent);
+      color: var(--accent);
+    }
+  }
+
+  .play-ways__more-body {
+    display: grid;
+    gap: 1.15rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink);
+  }
+
+  .play-ways__more-headline {
+    margin: 0;
+    font-family: var(--display);
+    font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+
+  .play-ways__more-prose {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .play-ways__more-prose p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  .play-ways__more-section {
+    display: grid;
+    gap: 0.65rem;
+  }
+
+  .play-ways__more-section h4 {
+    margin: 0;
+    color: var(--muted);
+    font: 600 0.62rem/1.3 var(--sans);
+    letter-spacing: 0.16em;
     text-transform: uppercase;
   }
 
-  .play-ways__way .text-link {
-    margin-top: 0.35rem;
-    justify-self: start;
+  .play-ways__conditions {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .play-ways__conditions li {
+    position: relative;
+    padding-left: 1rem;
+    color: var(--ink);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .play-ways__conditions li::before {
+    content: '';
+    position: absolute;
+    top: 0.65em;
+    left: 0;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .play-ways__bridges {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .play-ways__bridges li {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+    gap: 0.15rem 0.75rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .play-ways__bridge-mark {
+    grid-row: 1 / 3;
+    align-self: start;
+    padding-top: 0.05em;
+    color: var(--ink);
+    font-family: var(--display);
+    font-size: 1.05rem;
+    line-height: 1.2;
+  }
+
+  .play-ways__bridge-name {
+    color: var(--ink);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .play-ways__bridge-suits {
+    color: var(--muted);
+    font: 600 0.68rem/1.3 var(--sans);
+    letter-spacing: 0.08em;
+  }
+
+  .play-ways__cta {
+    margin-top: auto;
+    align-self: flex-end;
+    text-align: right;
   }
 
   @media (min-width: 860px) {
     .play-ways__grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
@@ -203,28 +381,29 @@ const byId = new Map(
     .play-ways__header .section-title {
       font-size: clamp(1.35rem, 6.4vw, 2.6rem);
     }
-
-    .play-ways__way {
-      grid-template-columns: 7.5rem minmax(0, 1fr);
-      grid-template-rows: auto auto auto auto auto;
-      column-gap: 1.25rem;
-    }
-
-    .play-ways__visual {
-      grid-row: 1 / 6;
-      width: auto;
-      margin: 0;
-    }
   }
 
   @media (max-width: 520px) {
     .play-ways__way {
-      grid-template-columns: 1fr;
+      flex-direction: column;
     }
 
     .play-ways__visual {
-      grid-row: auto;
+      flex-basis: auto;
       width: min(100%, 9.5rem);
     }
   }
 </style>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>('.play-ways__more').forEach((details) => {
+    const summary = details.querySelector('summary');
+    if (!summary) return;
+    const sync = () => {
+      const label = details.open ? summary.dataset.close : summary.dataset.open;
+      if (label) summary.setAttribute('aria-label', label);
+    };
+    details.addEventListener('toggle', sync);
+    sync();
+  });
+</script>

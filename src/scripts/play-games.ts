@@ -461,6 +461,27 @@ export function mountPlayGames(): void {
   window.addEventListener('keydown', onKey);
   monthEl.addEventListener('change', fillDays);
 
+  const PLAY_HASH_GAMES = new Set(['learn', 'lore', 'oracle', 'birthday']);
+
+  function gameFromHash(hash = window.location.hash): string | null {
+    const raw = hash.replace(/^#/, '');
+    if (!raw.startsWith('play-')) return null;
+    const game = raw.slice('play-'.length);
+    return PLAY_HASH_GAMES.has(game) ? game : null;
+  }
+
+  function openFromHash(): void {
+    const game = gameFromHash();
+    if (!game) return;
+    openGame(game);
+    root.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  window.addEventListener('hashchange', openFromHash);
+  if (gameFromHash()) {
+    window.requestAnimationFrame(() => openFromHash());
+  }
+
   function must<T extends Element = HTMLElement>(scope: ParentNode, selector: string): T {
     const node = scope.querySelector<T>(selector);
     if (!node) throw new Error(`Missing ${selector}`);

@@ -3,7 +3,7 @@
     "aria_label": "Primary navigation",
     "deck": "The Deck",
     "worlds": "The Worlds",
-    "cards": "Gallery",
+    "cards": "Deck",
     "play": "Games",
     "authors": "Authors",
     "next": "Magister Artifacts",
@@ -121,7 +121,7 @@
     "clubs": "Clubs"
   },
   "gallery": {
-    "label": "Gallery",
+    "label": "Deck",
     "title": "See every card up close",
     "hint": "Tap a card to open it full size",
     "open": "Open",

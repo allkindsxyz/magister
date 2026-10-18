@@ -3,7 +3,7 @@
     "aria_label": "主导航",
     "deck": "牌组",
     "worlds": "四界",
-    "cards": "画廊",
+    "cards": "牌组",
     "play": "游戏",
     "authors": "作者",
     "next": "Magister 藏品",
@@ -121,7 +121,7 @@
     "clubs": "梅花"
   },
   "gallery": {
-    "label": "画廊",
+    "label": "牌组",
     "title": "细看每一张牌",
     "hint": "点击任意一张牌，查看大图",
     "open": "打开",
