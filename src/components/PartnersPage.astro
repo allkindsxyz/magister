@@ -2,7 +2,6 @@
 import Layout from '../layouts/Layout.astro';
 import Nav from './Nav.astro';
 import Partnership from './Partnership.astro';
-import Essen from './Essen.astro';
 import LegacyFooter from './LegacyFooter.astro';
 import type { Lang } from '../i18n/utils';
 
@@ -19,7 +18,6 @@ const { lang, title, description } = Astro.props;
   <Nav lang={lang} />
   <main id="main-content">
     <Partnership lang={lang} />
-    <Essen lang={lang} />
   </main>
   <LegacyFooter lang={lang} />
 </Layout>

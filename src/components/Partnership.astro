@@ -1,7 +1,9 @@
 ---
 import type { Lang } from '../i18n/utils';
 import { useTranslations } from '../i18n/utils';
-import { CONTACT_EMAIL } from '../lib/site';
+import { authorPhotoSrc } from '../lib/authorPhotos';
+import { BOOKING_URL } from '../lib/site';
+import SpielLogo from './SpielLogo.astro';
 
 interface Props {
   lang: Lang;
@@ -10,151 +12,265 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
-const areas = ['publishing', 'production', 'distribution', 'development'] as const;
+const have = ['art', 'games', 'shop'] as const;
+const together = ['publishing', 'promotion', 'distribution', 'development'] as const;
+const alexPhoto = authorPhotoSrc('alex-lightovy');
 ---
 
 <section class="opportunity editorial-section" id="partnership" aria-labelledby="opportunity-title">
   <div class="page-shell">
     <header class="opportunity-header reveal">
       <p class="section-label">{t('opportunity.label')}</p>
-      <h2 class="section-title" id="opportunity-title">{t('opportunity.title')}</h2>
-      <p class="lead">{t('opportunity.lead')}</p>
+      <h1 class="section-title" id="opportunity-title">{t('opportunity.title')}</h1>
+      <p class="opportunity-lead">{t('opportunity.lead')}</p>
     </header>
 
-    <div class="opportunity-body">
-      <div class="areas reveal">
-        <p class="meta">{t('opportunity.looking_for')}</p>
-        <ul>
-          {areas.map((area, index) => (
-            <li>
-              <span>{String(index + 1).padStart(2, '0')}</span>
-              {t(`opportunity.${area}`)}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div class="opportunity-copy reveal">
-        <p>{t('opportunity.body_1')}</p>
-        <p>{t('opportunity.body_2')}</p>
-        <aside>
-          <span>{t('opportunity.owner_label')}</span>
-          <strong>Alexander Zhilchik</strong>
-        </aside>
-        <div class="opportunity-actions">
-          <a
-            class="btn btn-accent"
-            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Magister partner deck')}`}
-          >
-            {t('opportunity.deck_cta')}
-          </a>
-          <a class="text-link" href="#spiel">{t('opportunity.cta')} ↓</a>
-        </div>
-      </div>
+    <div class="opportunity-block reveal">
+      <h2 class="opportunity-block__title">{t('opportunity.have_title')}</h2>
+      <ul class="opportunity-list">
+        {have.map((id) => (
+          <li>
+            <strong>{t(`opportunity.have_${id}_title`)}</strong>
+            {' '}
+            {t(`opportunity.have_${id}_body`)}
+          </li>
+        ))}
+      </ul>
     </div>
+
+    <div class="opportunity-block reveal">
+      <h2 class="opportunity-block__title">{t('opportunity.together_title')}</h2>
+      <ul class="opportunity-list">
+        {together.map((id) => (
+          <li>
+            <strong>{t(`opportunity.together_${id}_title`)}</strong>
+            {' '}
+            {t(`opportunity.together_${id}_body`)}
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="opportunity-block reveal">
+      <h2 class="opportunity-block__title">{t('opportunity.aim_title')}</h2>
+      <p class="opportunity-aim">{t('opportunity.aim_body')}</p>
+    </div>
+
+    <div class="opportunity-spiel reveal" id="spiel">
+      <h2 class="opportunity-spiel__title">
+        <SpielLogo class="opportunity-spiel__logo" width={220} height={96} />
+        <span>{t('opportunity.spiel_title')}</span>
+      </h2>
+      <p class="opportunity-spiel__date">{t('opportunity.spiel_date')}</p>
+      <p class="opportunity-spiel__body">{t('opportunity.spiel_body')}</p>
+      <article class="opportunity-person">
+        {alexPhoto && (
+          <img
+            src={alexPhoto}
+            alt={t('essen.lightovy.photo_alt')}
+            width="205"
+            height="205"
+            loading="lazy"
+            decoding="async"
+          />
+        )}
+        <div>
+          <h3>{t('essen.lightovy.name')}</h3>
+          <p class="opportunity-person__role">{t('essen.lightovy.role')}</p>
+          <p class="opportunity-person__bio">{t('essen.lightovy.bio')}</p>
+        </div>
+      </article>
+      <a
+        class="btn btn-accent"
+        href={BOOKING_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {t('opportunity.meet_cta')}
+      </a>
+    </div>
+
+    <aside class="opportunity-owner reveal">
+      <span>{t('opportunity.owner_label')}</span>
+      <strong>Alexander Zhilchik</strong>
+    </aside>
   </div>
 </section>
 
 <style>
   .opportunity {
-    background: var(--paper-deep);
+    background: var(--paper);
   }
 
   .opportunity-header {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 2.5rem 1.5rem;
-  }
-
-  .opportunity-header .section-label {
-    grid-column: 1 / -1;
+    max-width: 44rem;
   }
 
   .opportunity-header .section-title {
-    grid-column: 1 / 8;
+    max-width: none;
+    margin-top: 1rem;
+    font-size: clamp(2.2rem, 4.6vw, 4.4rem);
+    line-height: 1.05;
   }
 
-  .opportunity-header .lead {
-    grid-column: 8 / 13;
-  }
-
-  .opportunity-body {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 3rem 1.5rem;
-    margin-top: clamp(3.5rem, 7vw, 6rem);
-  }
-
-  .areas {
-    grid-column: 1 / 7;
-  }
-
-  .areas ul {
+  .opportunity-lead {
     margin-top: 1.5rem;
-    border-top: 1px solid var(--line);
-    list-style: none;
-  }
-
-  .areas li {
-    display: flex;
-    gap: 2rem;
-    padding-block: 1rem;
-    border-bottom: 1px solid var(--line);
-    font-family: var(--display);
-    font-size: clamp(1.6rem, 3vw, 3rem);
-    line-height: 1;
-  }
-
-  .areas li span {
-    color: var(--accent);
-    font: 500 0.63rem/1.8 var(--sans);
-  }
-
-  .opportunity-copy {
-    grid-column: 8 / 13;
-    display: grid;
-    gap: 1.25rem;
     color: var(--muted);
+    font-size: clamp(1.05rem, 1.5vw, 1.2rem);
     line-height: 1.75;
   }
 
-  .opportunity-copy aside {
-    display: grid;
-    gap: 0.35rem;
-    margin-block: 1rem;
-    padding: 1.25rem 0;
-    border-block: 1px solid var(--line);
+  .opportunity-block {
+    margin-top: clamp(2.75rem, 5vw, 4rem);
+    max-width: 44rem;
   }
 
-  .opportunity-copy aside span {
+  .opportunity-block__title {
+    margin: 0 0 1rem;
+    font-family: var(--display);
+    font-size: clamp(1.45rem, 2.2vw, 1.9rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+
+  .opportunity-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  .opportunity-list li {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line);
     color: var(--muted);
-    font: 500 0.63rem/1.4 var(--sans);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .opportunity-list strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .opportunity-aim {
+    margin: 0;
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.75;
+  }
+
+  .opportunity-spiel {
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    padding: clamp(1.75rem, 3vw, 2.5rem) 0 0;
+    border-top: 1px solid var(--line);
+    max-width: 44rem;
+  }
+
+  .opportunity-spiel__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.85rem 1rem;
+    margin: 0;
+    font-family: var(--display);
+    font-size: clamp(1.6rem, 2.8vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .opportunity-spiel__logo {
+    display: block;
+    width: auto;
+    height: clamp(2.1rem, 3.5vw, 2.85rem);
+  }
+
+  .opportunity-spiel__date {
+    margin: 0.85rem 0 0;
+    color: var(--accent);
+    font: 600 0.72rem/1.3 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .opportunity-spiel__body {
+    margin: 0.85rem 0 0;
+    color: var(--muted);
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+
+  .opportunity-person {
+    display: flex;
+    gap: 0.85rem;
+    align-items: flex-start;
+    margin: 1.25rem 0 1.5rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .opportunity-person img {
+    flex: 0 0 5.2rem;
+    width: 5.2rem;
+    height: 5.2rem;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 22%;
+    filter: saturate(0.88);
+  }
+
+  .opportunity-person h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-size: clamp(1.05rem, 1.6vw, 1.35rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .opportunity-person__role {
+    margin: 0.35rem 0 0;
+    color: var(--accent);
+    font: 600 0.58rem/1.45 var(--sans);
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
-  .opportunity-copy aside strong {
+  .opportunity-person__bio {
+    margin: 0.4rem 0 0;
+    color: var(--muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  .opportunity-owner {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+    padding: 1.25rem 0;
+    border-block: 1px solid var(--line);
+    max-width: 44rem;
+  }
+
+  .opportunity-owner span {
+    color: var(--muted);
+    font: 600 0.62rem/1.4 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .opportunity-owner strong {
     color: var(--ink);
     font-family: var(--display);
-    font-size: 1.6rem;
+    font-size: clamp(1.35rem, 2vw, 1.7rem);
     font-weight: 400;
   }
 
-  .opportunity-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1.25rem;
-    margin-top: 0.5rem;
-  }
-
-  @media (max-width: 800px) {
-    .opportunity-header .section-title,
-    .opportunity-header .lead,
-    .areas,
-    .opportunity-copy {
-      grid-column: 1 / -1;
+  @media (max-width: 720px) {
+    .opportunity-header .section-title {
+      font-size: clamp(1.85rem, 8vw, 2.8rem);
     }
-
   }
 </style>
