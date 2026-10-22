@@ -13,14 +13,18 @@
     "optimize:images": "node scripts/optimize-public-images.mjs",
     "import:deck": "node scripts/import-deck.mjs",
     "import:apply-en": "node scripts/patch-card-en.mjs",
+    "preorders:list": "node scripts/preorders-list.mjs",
+    "leaderboard:migrate": "node scripts/leaderboard-migrate.mjs",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/node": "^10.0.4",
     "astro": "^6.1.5",
+    "pg": "^8.23.1",
     "uqr": "^0.1.3"
   },
   "devDependencies": {
+    "@types/pg": "^8.23.1",
     "sharp": "^0.34.5"
   }
 }

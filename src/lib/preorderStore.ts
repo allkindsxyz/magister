@@ -9,9 +9,10 @@ import {
   type ApparelColor,
   type SkuId,
 } from './catalog';
+import { getPool, hasDatabase } from './db';
 import type { Lang } from '../i18n/utils';
 
-/** Point at a Railway volume, e.g. PREORDERS_FILE=/data/preorders.json */
+/** File fallback when no Postgres URL (local / volume). */
 const FILE = process.env.PREORDERS_FILE
   ? path.resolve(process.env.PREORDERS_FILE)
   : path.join(process.cwd(), 'data', 'preorders.json');
@@ -62,28 +63,63 @@ export type Preorder = {
   source: 'cart';
 };
 
-type DB = { orders: Preorder[] };
+type FileDB = { orders: Preorder[] };
 
-let queue: Promise<unknown> = Promise.resolve();
+let fileQueue: Promise<unknown> = Promise.resolve();
+let schemaReady: Promise<void> | null = null;
 
-function empty(): DB {
+export function preorderBackend(): 'postgres' | 'file' {
+  return hasDatabase() ? 'postgres' : 'file';
+}
+
+async function ensureSchema(): Promise<void> {
+  if (!schemaReady) {
+    schemaReady = (async () => {
+      const client = getPool();
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS preorders (
+          id TEXT PRIMARY KEY,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+          email TEXT NOT NULL,
+          name TEXT,
+          note TEXT,
+          lang TEXT NOT NULL,
+          currency TEXT NOT NULL DEFAULT 'EUR',
+          subtotal NUMERIC(12, 2) NOT NULL,
+          lines JSONB NOT NULL,
+          status TEXT NOT NULL DEFAULT 'new',
+          source TEXT NOT NULL DEFAULT 'cart'
+        );
+        CREATE INDEX IF NOT EXISTS preorders_created_at_idx ON preorders (created_at DESC);
+        CREATE INDEX IF NOT EXISTS preorders_email_idx ON preorders (email);
+        CREATE INDEX IF NOT EXISTS preorders_status_idx ON preorders (status);
+      `);
+    })().catch((error) => {
+      schemaReady = null;
+      throw error;
+    });
+  }
+  await schemaReady;
+}
+
+function emptyFile(): FileDB {
   return { orders: [] };
 }
 
-async function load(): Promise<DB> {
+async function loadFile(): Promise<FileDB> {
   try {
     const raw = await readFile(FILE, 'utf8');
-    const data = JSON.parse(raw) as Partial<DB>;
+    const data = JSON.parse(raw) as Partial<FileDB>;
     if (!data || !Array.isArray(data.orders)) {
       await backupCorrupt();
-      return empty();
+      return emptyFile();
     }
     return { orders: data.orders };
   } catch (error) {
     const code = (error as NodeJS.ErrnoException).code;
-    if (code === 'ENOENT') return empty();
+    if (code === 'ENOENT') return emptyFile();
     await backupCorrupt();
-    return empty();
+    return emptyFile();
   }
 }
 
@@ -95,21 +131,21 @@ async function backupCorrupt(): Promise<void> {
   }
 }
 
-async function save(db: DB): Promise<void> {
+async function saveFile(db: FileDB): Promise<void> {
   await mkdir(path.dirname(FILE), { recursive: true });
   const tmp = `${FILE}.${process.pid}.tmp`;
   await writeFile(tmp, JSON.stringify(db, null, 0), 'utf8');
   await rename(tmp, FILE);
 }
 
-function update<T>(fn: (db: DB) => T): Promise<T> {
-  const run = queue.then(async () => {
-    const db = await load();
+function updateFile<T>(fn: (db: FileDB) => T): Promise<T> {
+  const run = fileQueue.then(async () => {
+    const db = await loadFile();
     const result = fn(db);
-    await save(db);
+    await saveFile(db);
     return result;
   });
-  queue = run.then(
+  fileQueue = run.then(
     () => undefined,
     () => undefined,
   );
@@ -164,8 +200,7 @@ function parseLine(raw: unknown): PreorderLine | null {
     if ((APPAREL_SIZES as readonly string[]).includes(rawSize)) size = rawSize;
   }
 
-  const lang: Lang =
-    typeof b.lang === 'string' && LANGS.has(b.lang) ? (b.lang as Lang) : 'en';
+  const lang: Lang = typeof b.lang === 'string' && LANGS.has(b.lang) ? (b.lang as Lang) : 'en';
 
   const unitPrice = skuPrice(sku);
   return {
@@ -231,8 +266,8 @@ function newId(): string {
   return `po_${randomBytes(9).toString('base64url')}`;
 }
 
-export async function createPreorder(input: CreatePreorderInput): Promise<Preorder> {
-  const order: Preorder = {
+function buildOrder(input: CreatePreorderInput): Preorder {
+  return {
     id: newId(),
     createdAt: new Date().toISOString(),
     email: input.email,
@@ -245,16 +280,70 @@ export async function createPreorder(input: CreatePreorderInput): Promise<Preord
     status: 'new',
     source: 'cart',
   };
+}
 
-  await update((db) => {
+function rowToPreorder(row: Record<string, unknown>): Preorder {
+  return {
+    id: String(row.id),
+    createdAt: new Date(String(row.created_at)).toISOString(),
+    email: String(row.email),
+    name: row.name == null ? null : String(row.name),
+    note: row.note == null ? null : String(row.note),
+    lang: String(row.lang) as Lang,
+    currency: 'EUR',
+    subtotal: Number(row.subtotal),
+    lines: (row.lines as PreorderLine[]) || [],
+    status: String(row.status) as PreorderStatus,
+    source: 'cart',
+  };
+}
+
+async function createPreorderPg(order: Preorder): Promise<Preorder> {
+  await ensureSchema();
+  await getPool().query(
+    `INSERT INTO preorders
+      (id, created_at, email, name, note, lang, currency, subtotal, lines, status, source)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10, $11)`,
+    [
+      order.id,
+      order.createdAt,
+      order.email,
+      order.name,
+      order.note,
+      order.lang,
+      order.currency,
+      order.subtotal,
+      JSON.stringify(order.lines),
+      order.status,
+      order.source,
+    ],
+  );
+  return order;
+}
+
+async function listPreordersPg(): Promise<Preorder[]> {
+  await ensureSchema();
+  const result = await getPool().query(
+    `SELECT id, created_at, email, name, note, lang, currency, subtotal, lines, status, source
+     FROM preorders
+     ORDER BY created_at DESC`,
+  );
+  return result.rows.map((row) => rowToPreorder(row as Record<string, unknown>));
+}
+
+export async function createPreorder(input: CreatePreorderInput): Promise<Preorder> {
+  const order = buildOrder(input);
+  if (hasDatabase()) return createPreorderPg(order);
+
+  await updateFile((db) => {
     db.orders.push(order);
     return order;
   });
-
   return order;
 }
 
 export async function listPreorders(): Promise<Preorder[]> {
-  const db = await load();
+  if (hasDatabase()) return listPreordersPg();
+  const db = await loadFile();
   return [...db.orders].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
