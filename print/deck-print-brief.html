@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Magister Cards — ТЗ на печать колоды</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --paper: #f3f0e8;
+      --paper-deep: #e8e3d8;
+      --ink: #171714;
+      --muted: #69675f;
+      --accent: #8d2f24;
+      --line: rgba(23, 23, 20, 0.14);
+      --white: #fffcf6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    @page {
+      size: A4;
+      margin: 14mm 16mm;
+    }
+
+    html,
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.45;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .page {
+      max-width: 180mm;
+      margin: 0 auto;
+      padding: 12mm 0 16mm;
+    }
+
+    @media screen {
+      body {
+        background: #d9d4c8;
+      }
+      .page {
+        background: var(--paper);
+        padding: 14mm 16mm 18mm;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
+        min-height: 277mm;
+      }
+    }
+
+    header.doc-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem 1.5rem;
+      align-items: end;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .brand img {
+      width: 42px;
+      height: auto;
+      display: block;
+    }
+
+    .brand-text {
+      display: grid;
+      gap: 0.15rem;
+    }
+
+    .brand-name {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 1.55rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .doc-meta {
+      text-align: right;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.4;
+    }
+
+    .doc-meta strong {
+      display: block;
+      color: var(--ink);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 1.1rem;
+      font-family: Newsreader, Georgia, serif;
+      font-size: 1.65rem;
+      font-weight: 500;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+    }
+
+    .lead {
+      margin-top: 0.55rem;
+      max-width: 42rem;
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.55;
+    }
+
+    .lead a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+
+    h2 {
+      margin: 1.35rem 0 0.55rem;
+      font-family: Newsreader, Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    h2 .num {
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      margin-right: 0.35rem;
+    }
+
+    p,
+    li {
+      color: var(--ink);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    ul.spec-list {
+      margin: 0.35rem 0 0;
+      padding-left: 1.15rem;
+    }
+
+    ul.spec-list li + li {
+      margin-top: 0.2rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-top: 0.55rem;
+    }
+
+    .format-card {
+      border: 1px solid var(--line);
+      background: var(--white);
+      padding: 0.85rem 0.95rem 0.95rem;
+    }
+
+    .format-card__label {
+      color: var(--accent);
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .format-card__title {
+      margin-top: 0.25rem;
+      font-family: Newsreader, Georgia, serif;
+      font-size: 1.2rem;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .format-card__size {
+      margin-top: 0.35rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .format-card__note {
+      margin-top: 0.35rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .samples {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.55rem;
+      margin-top: 0.65rem;
+    }
+
+    .sample {
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .sample__frame {
+      overflow: hidden;
+      border-radius: 0.35rem;
+      background: var(--paper-deep);
+      box-shadow: 0 0.35rem 1rem rgba(23, 23, 20, 0.14);
+      aspect-ratio: 5 / 7;
+    }
+
+    .sample__frame img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    .sample figcaption {
+      color: var(--muted);
+      font-size: 0.62rem;
+      line-height: 1.3;
+    }
+
+    .sample figcaption strong {
+      display: block;
+      color: var(--ink);
+      font-size: 0.68rem;
+      font-weight: 600;
+    }
+
+    .note-box {
+      margin-top: 0.75rem;
+      padding: 0.75rem 0.85rem;
+      border-left: 3px solid var(--accent);
+      background: color-mix(in srgb, var(--white) 70%, var(--paper-deep));
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    footer.doc-foot {
+      margin-top: 1.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    footer.doc-foot a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    @media print {
+      .page {
+        max-width: none;
+        padding: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <article class="page">
+    <header class="doc-head">
+      <div class="brand">
+        <img src="assets/magister-logo.png" alt="Magister" width="84" height="84" />
+        <div class="brand-text">
+          <div class="brand-name">Magister Cards</div>
+          <div class="brand-sub">Art playing deck</div>
+        </div>
+      </div>
+      <div class="doc-meta">
+        <strong>Техническое задание</strong>
+        Печать игральной колоды<br />
+        Запрос КП по тиражам
+      </div>
+    </header>
+
+    <h1>Печать колоды Magister</h1>
+    <p class="lead">
+      Оригинальная арт-колода: 54 лицевые карты + 1 рубашка (общий оборот).
+      Масть и достоинство закодированы в сюжете картины — угловых индексов нет.
+      Полный каталог и описание:
+      <a href="https://magister.cards">https://magister.cards</a>
+    </p>
+
+    <h2><span class="num">01</span>Состав комплекта</h2>
+    <ul class="spec-list">
+      <li><strong>54 лицевые карты</strong> — 52 стандартные (4 масти × 13 достоинств) + 2 джокера</li>
+      <li><strong>1 дизайн рубашки</strong> — общий оборот для всех карт</li>
+    </ul>
+
+    <h2><span class="num">02</span>Форматы и размеры</h2>
+    <p class="muted">Рассматриваем два размера карты. Нужна калькуляция печати для каждого.</p>
+    <div class="grid-2">
+      <section class="format-card">
+        <div class="format-card__label">Формат A</div>
+        <div class="format-card__title">Poker Size / Standard</div>
+        <div class="format-card__size">63 × 88&nbsp;мм</div>
+        <p class="format-card__note">
+          Стандартный покерный размер игральной колоды.
+          Ориентир для игры за столом.
+        </p>
+      </section>
+      <section class="format-card">
+        <div class="format-card__label">Формат B</div>
+        <div class="format-card__title">Tarot / XL</div>
+        <div class="format-card__size">70 × 120&nbsp;мм</div>
+        <p class="format-card__note">
+          Увеличенный формат.
+          Ориентир для коллекционного и подарочного издания.
+        </p>
+      </section>
+    </div>
+
+    <h2><span class="num">03</span>Тиражи и материалы</h2>
+    <p class="muted">
+      В комплект входят карты и коробка. Дизайн упаковки с нашей стороны — его разрабатывать не нужно.
+      Интересуют цены (за колоду и сумма за тираж) по следующим вариантам:
+    </p>
+    <ul class="spec-list">
+      <li><strong>500</strong> стандартных (Poker Size, 63 × 88&nbsp;мм)</li>
+      <li><strong>500</strong> XL (Tarot, 70 × 120&nbsp;мм)</li>
+      <li><strong>500 + 500</strong> — 500 стандартных и 500 XL</li>
+      <li><strong>1000</strong> стандартных (Poker Size, 63 × 88&nbsp;мм)</li>
+    </ul>
+    <p class="note-box">
+      Просим в коммерческом предложении указать стоимость печати карт и коробки
+      по каждому из четырёх вариантов отдельно.
+      Также просим ваши рекомендации по материалам и отделке карт и коробки
+      (картон, покрытие, скругление углов карт и др.).
+    </p>
+
+    <h2><span class="num">04</span>Примеры карт</h2>
+    <p class="muted">Шесть образцов лицевых сторон и рубашки. Полный макет — 55 файлов (54 лица + рубашка).</p>
+    <div class="samples">
+      <figure class="sample">
+        <div class="sample__frame">
+          <img src="assets/tz-cards/ace-hearts.jpg" alt="Туз червей — Зевс и Мнемозина" width="480" height="688" />
+        </div>
+        <figcaption>
+          <strong>Туз червей</strong>
+          Зевс и Мнемозина
+        </figcaption>
+      </figure>
+      <figure class="sample">
+        <div class="sample__frame">
+          <img src="assets/tz-cards/ace-spades.jpg" alt="Туз пик — Альберт бежит со скоростью черепахи" width="480" height="688" />
+        </div>
+        <figcaption>
+          <strong>Туз пик</strong>
+          Альберт бежит…
+        </figcaption>
+      </figure>
+      <figure class="sample">
+        <div class="sample__frame">
+          <img src="assets/tz-cards/king-diamonds.jpg" alt="Король бубен — Хранитель священного храма" width="480" height="688" />
+        </div>
+        <figcaption>
+          <strong>Король бубен</strong>
+          Хранитель храма
+        </figcaption>
+      </figure>
+      <figure class="sample">
+        <div class="sample__frame">
+          <img src="assets/tz-cards/queen-clubs.jpg" alt="Дама треф — Охота Тамплиера" width="480" height="688" />
+        </div>
+        <figcaption>
+          <strong>Дама треф</strong>
+          Охота Тамплиера
+        </figcaption>
+      </figure>
+      <figure class="sample">
+        <div class="sample__frame">
+          <img src="assets/tz-cards/joker-1.jpg" alt="Джокер Солнца" width="480" height="688" />
+        </div>
+        <figcaption>
+          <strong>Джокер</strong>
+          Джокер Солнца
+        </figcaption>
+      </figure>
+      <figure class="sample">
+        <div class="sample__frame">
+          <img src="assets/tz-cards/card-back.jpg" alt="Рубашка колоды Magister" width="480" height="672" />
+        </div>
+        <figcaption>
+          <strong>Рубашка</strong>
+          Общий оборот
+        </figcaption>
+      </figure>
+    </div>
+
+    <h2><span class="num">05</span>Ссылка</h2>
+    <ul class="spec-list">
+      <li>Сайт проекта: <a href="https://magister.cards" style="color: var(--accent); font-weight: 600; text-decoration: none;">https://magister.cards</a></li>
+    </ul>
+
+    <footer class="doc-foot">
+      <span>Magister Cards · ТЗ на печать · 2026</span>
+      <a href="https://magister.cards">magister.cards</a>
+    </footer>
+  </article>
+</body>
+</html>
