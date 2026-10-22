@@ -34,6 +34,12 @@ type CartUi = {
   color_black: string;
   color_inspired: string;
   size: string;
+  preorder_submit: string;
+  preorder_submitting: string;
+  preorder_success: string;
+  preorder_error: string;
+  preorder_error_email: string;
+  preorder_error_rate: string;
 };
 
 export type CartOpenDetail = { status?: 'added' | 'full' };
@@ -67,11 +73,35 @@ export function mountCartDrawer(root: HTMLElement): void {
   const subtotalEl = root.querySelector<HTMLElement>('[data-cart-subtotal]');
   const headCount = root.querySelector<HTMLElement>('[data-cart-head-count]');
   const status = root.querySelector<HTMLElement>('[data-cart-status]');
+  const preorderForm = root.querySelector<HTMLFormElement>('[data-cart-preorder]');
+  const preorderEmail = root.querySelector<HTMLInputElement>('[data-cart-preorder-email]');
+  const preorderName = root.querySelector<HTMLInputElement>('[data-cart-preorder-name]');
+  const preorderSubmit = root.querySelector<HTMLButtonElement>('[data-cart-preorder-submit]');
+  const preorderErr = root.querySelector<HTMLElement>('[data-cart-preorder-err]');
+  const preorderOk = root.querySelector<HTMLElement>('[data-cart-preorder-ok]');
   if (!panel || !list || !empty || !foot || !ship || !meter || !subtotalEl || !headCount || !status) return;
 
   const money = (amount: number): string => formatPrice(amount, lang);
   let opener: HTMLElement | null = null;
   let closeTimer = 0;
+  let preorderBusy = false;
+  let preorderDone = false;
+
+  const setPreorderError = (message: string): void => {
+    if (!preorderErr) return;
+    preorderErr.textContent = message;
+    preorderErr.hidden = !message;
+  };
+
+  const showPreorderSuccess = (): void => {
+    preorderDone = true;
+    if (preorderForm) preorderForm.hidden = true;
+    if (preorderOk) {
+      preorderOk.hidden = false;
+      preorderOk.textContent = ui.preorder_success;
+    }
+    setPreorderError('');
+  };
 
   const syncBadges = (lines: CartLine[]): void => {
     const count = cartCount(lines);
@@ -166,12 +196,25 @@ export function mountCartDrawer(root: HTMLElement): void {
     const hasLines = lines.length > 0;
     empty.hidden = hasLines;
     foot.hidden = !hasLines;
-    if (!hasLines) return;
+    if (!hasLines) {
+      preorderDone = false;
+      if (preorderForm) preorderForm.hidden = false;
+      if (preorderOk) preorderOk.hidden = true;
+      setPreorderError('');
+      return;
+    }
     const subtotal = cartSubtotal(lines);
     const left = freeShippingRemaining(subtotal);
     subtotalEl.textContent = money(subtotal);
     ship.textContent = left > 0 ? fill(ui.shipping_left, { amount: money(left) }) : ui.shipping_free;
     meter.style.width = `${Math.min(100, Math.round((subtotal / SHIPPING.free_from) * 100))}%`;
+    if (preorderDone) {
+      if (preorderForm) preorderForm.hidden = true;
+      if (preorderOk) preorderOk.hidden = false;
+    } else {
+      if (preorderForm) preorderForm.hidden = false;
+      if (preorderOk) preorderOk.hidden = true;
+    }
   };
 
   const isOpen = (): boolean => !root.hidden && root.classList.contains('is-open');
@@ -257,6 +300,68 @@ export function mountCartDrawer(root: HTMLElement): void {
     } else if (!event.shiftKey && document.activeElement === last) {
       event.preventDefault();
       first.focus();
+    }
+  });
+
+  preorderForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (preorderBusy || preorderDone) return;
+
+    const lines = readCart();
+    if (!lines.length) return;
+
+    const email = (preorderEmail?.value || '').trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setPreorderError(ui.preorder_error_email);
+      preorderEmail?.focus();
+      return;
+    }
+
+    preorderBusy = true;
+    setPreorderError('');
+    if (preorderSubmit) {
+      preorderSubmit.disabled = true;
+      preorderSubmit.textContent = ui.preorder_submitting;
+    }
+
+    try {
+      const res = await fetch('/api/preorders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          name: (preorderName?.value || '').trim() || undefined,
+          lang,
+          lines: lines.map((line) => ({
+            sku: line.sku,
+            qty: line.qty,
+            cardId: line.cardId,
+            cardTitle: line.cardTitle,
+            image: line.image,
+            color: line.color,
+            size: line.size,
+            message: line.message,
+            previewId: line.previewId,
+            lang: line.lang,
+          })),
+        }),
+      });
+      const data = (await res.json().catch(() => null)) as { ok?: boolean; error?: string } | null;
+      if (!res.ok || !data?.ok) {
+        if (res.status === 429 || data?.error === 'rate') setPreorderError(ui.preorder_error_rate);
+        else if (data?.error === 'email') setPreorderError(ui.preorder_error_email);
+        else setPreorderError(ui.preorder_error);
+        return;
+      }
+      showPreorderSuccess();
+    } catch {
+      setPreorderError(ui.preorder_error);
+    } finally {
+      preorderBusy = false;
+      if (preorderSubmit && !preorderDone) {
+        preorderSubmit.disabled = false;
+        preorderSubmit.textContent = ui.preorder_submit;
+      }
     }
   });
 

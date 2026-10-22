@@ -42,6 +42,17 @@
     "shipping_note": "Дастаўка: EU — {ship_eu}, ЗША — {ship_us}. Бясплатна ад {free_from}.",
     "checkout_soon": "Афармленне заказу — хутка",
     "checkout_note": "Кошык захаваецца на гэтай прыладзе.",
+    "preorder_lead": "Пакіньце email — прымем прадзаказ і звяжамся, калі адкрыем аплату.",
+    "preorder_email": "Email",
+    "preorder_email_ph": "you@email.com",
+    "preorder_name": "Імя (неабавязкова)",
+    "preorder_name_ph": "Як да вас звяртацца",
+    "preorder_submit": "Пакінуць прадзаказ",
+    "preorder_submitting": "Адпраўляем…",
+    "preorder_success": "Заказ прыняты. Мы звяжамся з вамі ў бліжэйшы час.",
+    "preorder_error": "Не ўдалося адправіць. Паспрабуйце яшчэ раз.",
+    "preorder_error_email": "Укажыце карэктны email.",
+    "preorder_error_rate": "Занадта шмат спроб. Пачакайце трохі.",
     "added": "Дададзена ў кошык",
     "full": "Кошык запоўнены",
     "color_black": "Чорны",
@@ -258,7 +269,8 @@
     "mail_lead": "Напішам, калі выйдзе арт-альбом. Толькі па справе.",
     "notify": "Падпісацца",
     "on_list": "Гатова — вы ў спісе.",
-    "publishers": "Выдаўцам і партнёрам"
+    "publishers": "Выдаўцам і партнёрам",
+    "phone_whatsapp": "Тэлефон / WhatsApp"
   },
   "deck_sku": {
     "title": "Першы наклад",
@@ -309,7 +321,9 @@
     "spiel_date": "22–25 кастрычніка, Messe Essen",
     "spiel_body": "Давайце сустрэнемся на Spiel Essen 2026.",
     "meet_cta": "Прызначыць сустрэчу",
-    "owner_label": "Уладальнік IP"
+    "owner_label": "Уладальнік IP",
+    "email_label": "Email",
+    "phone_label": "Тэлефон / WhatsApp"
   },
   "legacy": {
     "hero_meta": "54 карты · 4 светы · 1 альтэрнатыўны сусвет",

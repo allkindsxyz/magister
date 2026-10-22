@@ -42,6 +42,17 @@
     "shipping_note": "Shipping: EU {ship_eu}, US {ship_us}. Free from {free_from}.",
     "checkout_soon": "Checkout opens soon",
     "checkout_note": "Your cart is saved on this device.",
+    "preorder_lead": "Leave your email — we’ll take the pre-order and reach out when checkout opens.",
+    "preorder_email": "Email",
+    "preorder_email_ph": "you@email.com",
+    "preorder_name": "Name (optional)",
+    "preorder_name_ph": "How should we address you",
+    "preorder_submit": "Place pre-order",
+    "preorder_submitting": "Sending…",
+    "preorder_success": "Order received. We’ll get in touch shortly.",
+    "preorder_error": "Couldn’t send. Please try again.",
+    "preorder_error_email": "Enter a valid email.",
+    "preorder_error_rate": "Too many attempts. Please wait a moment.",
     "added": "Added to cart",
     "full": "Your cart is full",
     "color_black": "Black",
@@ -258,7 +269,8 @@
     "mail_lead": "We’ll email you when the art album is out. News worth reading only.",
     "notify": "Subscribe",
     "on_list": "Done — you’re on the list.",
-    "publishers": "Publishers & partners"
+    "publishers": "Publishers & partners",
+    "phone_whatsapp": "Phone / WhatsApp"
   },
   "deck_sku": {
     "title": "First Edition",
@@ -309,7 +321,9 @@
     "spiel_date": "22–25 October, Messe Essen",
     "spiel_body": "Let’s meet at Spiel Essen 2026.",
     "meet_cta": "Book a meeting",
-    "owner_label": "IP owner"
+    "owner_label": "IP owner",
+    "email_label": "Email",
+    "phone_label": "Phone / WhatsApp"
   },
   "legacy": {
     "hero_meta": "54 cards · 4 worlds · 1 alternative universe",

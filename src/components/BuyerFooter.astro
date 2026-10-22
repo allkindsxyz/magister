@@ -1,7 +1,12 @@
 ---
 import type { Lang } from '../i18n/utils';
 import { useTranslations, getLocalizedPath } from '../i18n/utils';
-import { CONTACT_EMAIL } from '../lib/site';
+import {
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  CONTACT_PHONE_TEL,
+  CONTACT_WHATSAPP_URL,
+} from '../lib/site';
 import MagisterLogo from './MagisterLogo.astro';
 
 interface Props {
@@ -30,6 +35,8 @@ const partnersHref = getLocalizedPath('/partners/', lang);
       <a href={printsHref}>{t('footer.prints')}</a>
       <a href={`${home}#play`}>{t('footer.play')}</a>
       <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+      <a href={CONTACT_PHONE_TEL}>{CONTACT_PHONE}</a>
+      <a href={CONTACT_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">WhatsApp</a>
     </nav>
     <div class="buyer-footer__mail">
       <p>{t('footer.mail_lead')}</p>

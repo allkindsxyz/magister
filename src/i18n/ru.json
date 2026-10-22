@@ -42,6 +42,17 @@
     "shipping_note": "Доставка: EU — {ship_eu}, США — {ship_us}. Бесплатно от {free_from}.",
     "checkout_soon": "Оформление заказа — скоро",
     "checkout_note": "Корзина сохранится на этом устройстве.",
+    "preorder_lead": "Оставьте email — примем предзаказ и свяжемся, когда откроем оплату.",
+    "preorder_email": "Email",
+    "preorder_email_ph": "you@email.com",
+    "preorder_name": "Имя (необязательно)",
+    "preorder_name_ph": "Как к вам обращаться",
+    "preorder_submit": "Оставить предзаказ",
+    "preorder_submitting": "Отправляем…",
+    "preorder_success": "Заказ принят. Мы свяжемся с вами в ближайшее время.",
+    "preorder_error": "Не удалось отправить. Попробуйте ещё раз.",
+    "preorder_error_email": "Укажите корректный email.",
+    "preorder_error_rate": "Слишком много попыток. Подождите немного.",
     "added": "Добавлено в корзину",
     "full": "Корзина заполнена",
     "color_black": "Чёрный",
@@ -258,7 +269,8 @@
     "mail_lead": "Напишем, когда выйдет арт-альбом. Только по делу.",
     "notify": "Подписаться",
     "on_list": "Готово — вы в списке.",
-    "publishers": "Издателям и партнёрам"
+    "publishers": "Издателям и партнёрам",
+    "phone_whatsapp": "Телефон / WhatsApp"
   },
   "deck_sku": {
     "title": "Первый тираж",
@@ -309,7 +321,9 @@
     "spiel_date": "22–25 октября, Messe Essen",
     "spiel_body": "Давайте встретимся на Spiel Essen 2026.",
     "meet_cta": "Назначить встречу",
-    "owner_label": "Владелец IP"
+    "owner_label": "Владелец IP",
+    "email_label": "Email",
+    "phone_label": "Телефон / WhatsApp"
   },
   "legacy": {
     "hero_meta": "54 карты · 4 мира · 1 альтернативная вселенная",

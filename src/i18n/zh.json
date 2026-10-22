@@ -42,6 +42,17 @@
     "shipping_note": "运费：欧盟 {ship_eu}，美国 {ship_us}。满 {free_from} 包邮。",
     "checkout_soon": "即将开放下单",
     "checkout_note": "购物车会保存在这台设备上。",
+    "preorder_lead": "留下邮箱——我们会记录预订单，并在开放支付时联系你。",
+    "preorder_email": "邮箱",
+    "preorder_email_ph": "you@email.com",
+    "preorder_name": "姓名（可选）",
+    "preorder_name_ph": "如何称呼你",
+    "preorder_submit": "提交预订单",
+    "preorder_submitting": "提交中…",
+    "preorder_success": "订单已收到。我们会尽快与你联系。",
+    "preorder_error": "提交失败，请重试。",
+    "preorder_error_email": "请输入有效邮箱。",
+    "preorder_error_rate": "尝试过多，请稍后再试。",
     "added": "已加入购物车",
     "full": "购物车已满",
     "color_black": "黑色",
@@ -258,7 +269,8 @@
     "mail_lead": "艺术画册出版时，我们会发邮件告诉你。只发值得读的消息。",
     "notify": "订阅",
     "on_list": "完成——你已在名单中。",
-    "publishers": "出版方与合作伙伴"
+    "publishers": "出版方与合作伙伴",
+    "phone_whatsapp": "电话 / WhatsApp"
   },
   "deck_sku": {
     "title": "首版",
@@ -309,7 +321,9 @@
     "spiel_date": "10 月 22–25 日，Messe Essen",
     "spiel_body": "让我们在 Spiel Essen 2026 见面。",
     "meet_cta": "预约会面",
-    "owner_label": "IP 持有人"
+    "owner_label": "IP 持有人",
+    "email_label": "Email",
+    "phone_label": "电话 / WhatsApp"
   },
   "legacy": {
     "hero_meta": "54 张牌 · 4 个世界 · 1 个平行宇宙",

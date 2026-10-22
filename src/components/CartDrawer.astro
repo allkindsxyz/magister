@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import type { Lang } from '../i18n/utils';
 import { useTranslations, getLocalizedPath, pickLocalized } from '../i18n/utils';
 import { SKUS } from '../lib/catalog';
+import { fillPrices } from '../lib/pricing';
 
 interface Props {
   lang: Lang;
@@ -39,6 +40,12 @@ const uiJson = JSON.stringify({
   color_black: t('cart.color_black'),
   color_inspired: t('cart.color_inspired'),
   size: t('cart.size'),
+  preorder_submit: t('cart.preorder_submit'),
+  preorder_submitting: t('cart.preorder_submitting'),
+  preorder_success: t('cart.preorder_success'),
+  preorder_error: t('cart.preorder_error'),
+  preorder_error_email: t('cart.preorder_error_email'),
+  preorder_error_rate: t('cart.preorder_error_rate'),
 }).replace(/</g, '\\u003c');
 ---
 
@@ -79,8 +86,39 @@ const uiJson = JSON.stringify({
         <span>{t('cart.subtotal')}</span>
         <strong data-cart-subtotal></strong>
       </div>
-      <p class="cart-drawer__note">{t('cart.shipping_note')}</p>
-      <button class="btn btn-accent cart-drawer__checkout" type="button" disabled>{t('cart.checkout_soon')}</button>
+      <p class="cart-drawer__note">{fillPrices(t('cart.shipping_note'), lang)}</p>
+      <form class="cart-drawer__preorder" data-cart-preorder>
+        <p class="cart-drawer__note">{t('cart.preorder_lead')}</p>
+        <label class="visually-hidden" for="cart-preorder-email">{t('cart.preorder_email')}</label>
+        <input
+          id="cart-preorder-email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          inputmode="email"
+          maxlength="254"
+          placeholder={t('cart.preorder_email_ph')}
+          data-cart-preorder-email
+        />
+        <label class="visually-hidden" for="cart-preorder-name">{t('cart.preorder_name')}</label>
+        <input
+          id="cart-preorder-name"
+          name="name"
+          type="text"
+          autocomplete="name"
+          maxlength="80"
+          placeholder={t('cart.preorder_name_ph')}
+          data-cart-preorder-name
+        />
+        <button class="btn btn-accent cart-drawer__checkout" type="submit" data-cart-preorder-submit>
+          {t('cart.preorder_submit')}
+        </button>
+        <p class="cart-drawer__preorder-err" role="alert" data-cart-preorder-err hidden></p>
+      </form>
+      <p class="cart-drawer__preorder-ok" role="status" data-cart-preorder-ok hidden>
+        {t('cart.preorder_success')}
+      </p>
       <p class="cart-drawer__note">{t('cart.checkout_note')}</p>
     </footer>
   </section>
@@ -377,6 +415,32 @@ const uiJson = JSON.stringify({
     line-height: 1.45;
   }
 
+  .cart-drawer__preorder {
+    display: grid;
+    gap: 0.55rem;
+  }
+
+  .cart-drawer__preorder[hidden],
+  .cart-drawer__preorder-ok[hidden],
+  .cart-drawer__preorder-err[hidden] {
+    display: none !important;
+  }
+
+  .cart-drawer__preorder input {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    font: 400 0.95rem/1.4 var(--sans);
+  }
+
+  .cart-drawer__preorder input:focus {
+    outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    outline-offset: 1px;
+  }
+
   .cart-drawer__checkout {
     width: 100%;
   }
@@ -384,5 +448,34 @@ const uiJson = JSON.stringify({
   .cart-drawer__checkout:disabled {
     cursor: not-allowed;
     opacity: 0.6;
+  }
+
+  .cart-drawer__preorder-err {
+    margin: 0;
+    color: var(--accent);
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+
+  .cart-drawer__preorder-ok {
+    margin: 0;
+    padding: 0.85rem 0.95rem;
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--line));
+    background: color-mix(in srgb, var(--accent) 8%, var(--paper));
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>

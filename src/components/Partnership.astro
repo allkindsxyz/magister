@@ -2,7 +2,13 @@
 import type { Lang } from '../i18n/utils';
 import { useTranslations } from '../i18n/utils';
 import { authorPhotoSrc } from '../lib/authorPhotos';
-import { BOOKING_URL } from '../lib/site';
+import {
+  BOOKING_URL,
+  CONTACT_EMAIL,
+  CONTACT_PHONE,
+  CONTACT_PHONE_TEL,
+  CONTACT_WHATSAPP_URL,
+} from '../lib/site';
 import SpielLogo from './SpielLogo.astro';
 
 interface Props {
@@ -93,6 +99,18 @@ const alexPhoto = authorPhotoSrc('alex-lightovy');
     <aside class="opportunity-owner reveal">
       <span>{t('opportunity.owner_label')}</span>
       <strong>Alexander Zhilchik</strong>
+      <div class="opportunity-contacts">
+        <span>{t('opportunity.email_label')}</span>
+        <p class="opportunity-contacts__row">
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        </p>
+        <span>{t('opportunity.phone_label')}</span>
+        <p class="opportunity-contacts__row">
+          <a href={CONTACT_PHONE_TEL}>{CONTACT_PHONE}</a>
+          <span aria-hidden="true">·</span>
+          <a href={CONTACT_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        </p>
+      </div>
     </aside>
   </div>
 </section>
@@ -266,6 +284,51 @@ const alexPhoto = authorPhotoSrc('alex-lightovy');
     font-family: var(--display);
     font-size: clamp(1.35rem, 2vw, 1.7rem);
     font-weight: 400;
+  }
+
+  .opportunity-contacts {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: 1rem;
+  }
+
+  .opportunity-contacts > span {
+    margin-top: 0.55rem;
+    color: var(--muted);
+    font: 600 0.62rem/1.4 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .opportunity-contacts > span:first-child {
+    margin-top: 0;
+  }
+
+  .opportunity-contacts__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.45rem 0.65rem;
+    margin: 0;
+    font-size: 1.02rem;
+  }
+
+  .opportunity-contacts__row a {
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 0.22rem;
+  }
+
+  .opportunity-contacts__row a:hover {
+    color: var(--accent-dark);
+  }
+
+  .opportunity-contacts__row span[aria-hidden='true'] {
+    color: var(--muted);
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
   }
 
   @media (max-width: 720px) {

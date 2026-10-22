@@ -49,8 +49,12 @@ export function getSiteUrl(): string {
 
 export const SITE_URL = getSiteUrl();
 
-export const CONTACT_EMAIL = 'hello@magister.cards';
+export const CONTACT_EMAIL = 'info@magister.cards';
 export const PARTNERSHIP_EMAIL = 'partnership@magister.cards';
+/** Display form; same number for calls and WhatsApp. */
+export const CONTACT_PHONE = '+48 518 248 620';
+export const CONTACT_PHONE_TEL = 'tel:+48518248620';
+export const CONTACT_WHATSAPP_URL = 'https://wa.me/48518248620';
 export const SPIEL_ESSEN_URL = 'https://www.spiel-essen.de/en/';
 export const BOOKING_URL =
   String(import.meta.env.PUBLIC_CALENDLY_URL || '').trim() ||
