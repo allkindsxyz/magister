@@ -112,11 +112,8 @@ const garmentPhotos = {
 
 const slides: Slide[] = isDeck
   ? [
-      img('lifestyle', '/media/deck-lifestyle.jpg', 1024, 672),
-      img('pack', '/media/pack.webp', 1200, 800, 'contain'),
-      { ...img('scale', '/cards/queen-hearts.webp', 920, 1320), type: 'scale' },
-      { ...img('faces', '/cards/ace-spades.webp', 920, 1320), type: 'faces' },
-      img('back', '/media/card-back-600.webp', 600, 839, 'contain'),
+      img('closed', '/media/collector-box.webp', 682, 1024, 'contain'),
+      img('open', '/media/box-open.webp', 682, 1024, 'contain'),
     ]
   : isApparel
     ? [
@@ -139,7 +136,7 @@ const slides: Slide[] = isDeck
           img('spread', '/media/album-spread.jpg', 1024, 724, 'contain'),
         ];
 
-const galleryRatio = isDeck ? '5 / 4' : isAlbum ? '1 / 1' : isPrints ? '7 / 10' : '3 / 4';
+const galleryRatio = isDeck ? '2 / 3' : isAlbum ? '1 / 1' : isPrints ? '7 / 10' : '3 / 4';
 const fill = (template: string, values: Record<string, string | number>): string =>
   template.replace(/\{(\w+)\}/g, (match, key: string) => (key in values ? String(values[key]) : match));
 
@@ -791,8 +788,9 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
     height: 72%;
   }
 
+  /* Poker 63 × 88 vs XL 70 × 120 → height ≈ 73% of XL */
   .pdp-scale__card--standard {
-    height: 48%;
+    height: 53%;
   }
 
   .pdp-scale__card img {
@@ -808,7 +806,7 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
   }
 
   .pdp-scale__card--standard img {
-    aspect-ratio: 5 / 8;
+    aspect-ratio: 63 / 88;
   }
 
   .pdp-scale__card span {

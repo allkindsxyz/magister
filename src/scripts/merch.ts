@@ -463,7 +463,6 @@ export function mountMerch(root: HTMLElement): void {
       syncGarment();
       syncScale();
       if (isApparel) gallery.goTo('garment');
-      if (isDeck) gallery.goTo('scale');
     }
     if (target.name === 'private') syncMessage();
     else schedulePreview();

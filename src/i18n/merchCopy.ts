@@ -469,7 +469,7 @@ const prints: Record<Lang, MerchCopy> = {
 const deck: Record<Lang, MerchCopy> = {
   en: {
     meta_title: 'Magister Deck — 54 Paintings by Dr. Klein | First Edition',
-    meta_description: `An art deck of 54 cards where suit and rank hide inside each painting. XL 70 × 120 mm — ${price('xl', 'en')}, standard 50 × 80 mm — ${price('standard', 'en')}. Key booklet included. EU & US delivery in 10–14 days.`,
+    meta_description: `An art deck of 54 cards where suit and rank hide inside each painting. XL 70 × 120 mm — ${price('xl', 'en')}, standard 63 × 88 mm — ${price('standard', 'en')}. Key booklet included. EU & US delivery in 10–14 days.`,
     label: 'The Deck',
     title: 'A Deck You Decode First',
     sub: '54 paintings by Dr. Klein. The suit and rank of every card hide inside its scene.',
@@ -480,19 +480,13 @@ const deck: Record<Lang, MerchCopy> = {
     ],
     message_hint: 'It opens from the QR code on your copy.',
     slides: {
-      lifestyle: { alt: 'Magister XL deck on a wooden table', caption: 'XL deck: 54 cards and the key booklet in the box.' },
-      pack: {
-        alt: 'Magister deck box',
-        caption: 'The QR code on the box opens card descriptions, character backstories and game rules.',
-      },
-      scale: { alt: '', caption: 'XL and standard, in proportion to each other.' },
-      faces: { alt: 'Three cards from the Magister deck', caption: '54 paintings. Suit and rank hide inside each scene.' },
-      back: { alt: 'Back of a Magister card', caption: 'The card back.' },
+      closed: { alt: 'Closed Magister collector box', caption: 'The collector’s box, closed.' },
+      open: { alt: 'Open Magister collector box with the deck', caption: 'The box open — deck and key booklet inside.' },
     },
   },
   ru: {
     meta_title: 'Колода Magister — 54 картины Dr. Klein | Первый тираж',
-    meta_description: `Арт-колода из 54 карт: масть и ранг спрятаны в сюжете картины. XL 70 × 120 мм — ${price('xl', 'ru')}, стандартная 50 × 80 мм — ${price('standard', 'ru')}. Буклет-ключ в коробке. Доставка в EU и US за 10–14 дней.`,
+    meta_description: `Арт-колода из 54 карт: масть и ранг спрятаны в сюжете картины. XL 70 × 120 мм — ${price('xl', 'ru')}, стандартная 63 × 88 мм — ${price('standard', 'ru')}. Буклет-ключ в коробке. Доставка в EU и US за 10–14 дней.`,
     label: 'Колода',
     title: 'Колода, которую сначала разгадывают',
     sub: '54 картины Dr. Klein. Масть и ранг каждой карты спрятаны в сюжете.',
@@ -503,19 +497,13 @@ const deck: Record<Lang, MerchCopy> = {
     ],
     message_hint: 'Откроется по QR-коду на вашем экземпляре.',
     slides: {
-      lifestyle: { alt: 'Колода Magister XL на деревянном столе', caption: 'Колода XL: 54 карты и буклет-ключ в коробке.' },
-      pack: {
-        alt: 'Коробка колоды Magister',
-        caption: 'QR-код на коробке открывает описания карт, истории героев и правила игр.',
-      },
-      scale: { alt: '', caption: 'XL и стандартная — в пропорции друг к другу.' },
-      faces: { alt: 'Три карты колоды Magister', caption: '54 картины. Масть и ранг спрятаны в сюжете.' },
-      back: { alt: 'Рубашка карты Magister', caption: 'Рубашка карты.' },
+      closed: { alt: 'Закрытая коллекционная коробка Magister', caption: 'Коллекционная коробка, закрыта.' },
+      open: { alt: 'Открытая коллекционная коробка Magister с колодой', caption: 'Коробка открыта — внутри колода и буклет-ключ.' },
     },
   },
   be: {
     meta_title: 'Калода Magister — 54 карціны Dr. Klein | Першы наклад',
-    meta_description: `Арт-калода з 54 карт: масць і ранг схаваныя ў сюжэце карціны. XL 70 × 120 мм — ${price('xl', 'be')}, стандартная 50 × 80 мм — ${price('standard', 'be')}. Буклет-ключ у каробцы. Дастаўка ў EU і US за 10–14 дзён.`,
+    meta_description: `Арт-калода з 54 карт: масць і ранг схаваныя ў сюжэце карціны. XL 70 × 120 мм — ${price('xl', 'be')}, стандартная 63 × 88 мм — ${price('standard', 'be')}. Буклет-ключ у каробцы. Дастаўка ў EU і US за 10–14 дзён.`,
     label: 'Калода',
     title: 'Калода, якую спачатку разгадваюць',
     sub: '54 карціны Dr. Klein. Масць і ранг кожнай карты схаваныя ў сюжэце.',
@@ -526,19 +514,13 @@ const deck: Record<Lang, MerchCopy> = {
     ],
     message_hint: 'Адкрыецца па QR-кодзе на вашым асобніку.',
     slides: {
-      lifestyle: { alt: 'Калода Magister XL на драўляным стале', caption: 'Калода XL: 54 карты і буклет-ключ у каробцы.' },
-      pack: {
-        alt: 'Каробка калоды Magister',
-        caption: 'QR-код на каробцы адкрывае апісанні карт, гісторыі герояў і правілы гульняў.',
-      },
-      scale: { alt: '', caption: 'XL і стандартная — у прапорцыі адна да адной.' },
-      faces: { alt: 'Тры карты калоды Magister', caption: '54 карціны. Масць і ранг схаваныя ў сюжэце.' },
-      back: { alt: 'Кашуля карты Magister', caption: 'Кашуля карты.' },
+      closed: { alt: 'Закрытая калекцыйная каробка Magister', caption: 'Калекцыйная каробка, закрыта.' },
+      open: { alt: 'Адкрытая калекцыйная каробка Magister з калодай', caption: 'Каробка адкрыта — унутры калода і буклет-ключ.' },
     },
   },
   zh: {
     meta_title: 'Magister 牌组 — Dr. Klein 的 54 幅画作 | 首版',
-    meta_description: `一副 54 张的艺术扑克牌，花色与点数藏在每幅画里。XL 70 × 120 mm ${price('xl', 'zh')}，标准 50 × 80 mm ${price('standard', 'zh')}。盒内附解读小册子。发货至欧盟与美国，10–14 天送达。`,
+    meta_description: `一副 54 张的艺术扑克牌，花色与点数藏在每幅画里。XL 70 × 120 mm ${price('xl', 'zh')}，标准 63 × 88 mm ${price('standard', 'zh')}。盒内附解读小册子。发货至欧盟与美国，10–14 天送达。`,
     label: '牌组',
     title: '一副要先解读的牌',
     sub: 'Dr. Klein 的 54 幅画。每张牌的花色与点数都藏在画面里。',
@@ -549,11 +531,8 @@ const deck: Record<Lang, MerchCopy> = {
     ],
     message_hint: '扫描你这副牌上的二维码即可打开。',
     slides: {
-      lifestyle: { alt: '木桌上的 Magister XL 牌组', caption: 'XL 牌组：盒内 54 张牌与解读小册子。' },
-      pack: { alt: 'Magister 牌盒', caption: '牌盒上的二维码可打开牌面说明、角色故事与游戏规则。' },
-      scale: { alt: '', caption: 'XL 与标准尺寸的比例对照。' },
-      faces: { alt: 'Magister 牌组中的三张牌', caption: '54 幅画。花色与点数藏在画面里。' },
-      back: { alt: 'Magister 牌背', caption: '牌背。' },
+      closed: { alt: '合上的 Magister 收藏盒', caption: '收藏盒，合上。' },
+      open: { alt: '打开的 Magister 收藏盒与牌组', caption: '盒子打开——内有牌组与解读小册子。' },
     },
   },
 };
@@ -631,25 +610,25 @@ export const deckBoxCopy: Record<Lang, DeckBoxCopy> = {
     { label: 'Cards', value: '54 cards, each one a painting by Dr. Klein' },
     { label: 'Key', value: 'A booklet that explains the symbols of every suit and rank' },
     { label: 'XL', value: '70 × 120 mm · edition of 500' },
-    { label: 'Standard', value: '50 × 80 mm · edition of 100' },
+    { label: 'Standard', value: '63 × 88 mm · edition of 100' },
   ],
   ru: [
     { label: 'Карты', value: '54 карты — каждая картина Dr. Klein' },
     { label: 'Ключ', value: 'Буклет с расшифровкой символов каждой масти и ранга' },
     { label: 'XL', value: '70 × 120 мм · тираж 500' },
-    { label: 'Стандартная', value: '50 × 80 мм · тираж 100' },
+    { label: 'Стандартная', value: '63 × 88 мм · тираж 100' },
   ],
   be: [
     { label: 'Карты', value: '54 карты — кожная карціна Dr. Klein' },
     { label: 'Ключ', value: 'Буклет з расшыфроўкай сімвалаў кожнай масці і рангу' },
     { label: 'XL', value: '70 × 120 мм · наклад 500' },
-    { label: 'Стандартная', value: '50 × 80 мм · наклад 100' },
+    { label: 'Стандартная', value: '63 × 88 мм · наклад 100' },
   ],
   zh: [
     { label: '牌', value: '54 张牌，每一张都是 Dr. Klein 的画作' },
     { label: '解读', value: '一本手册，解释每种花色与点数的符号' },
     { label: 'XL', value: '70 × 120 毫米 · 限量 500 副' },
-    { label: '标准版', value: '50 × 80 毫米 · 限量 100 副' },
+    { label: '标准版', value: '63 × 88 毫米 · 限量 100 副' },
   ],
 };
 
