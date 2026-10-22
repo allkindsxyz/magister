@@ -242,6 +242,10 @@ export function removeLine(id: string): void {
   writeCart(readCart().filter((l) => l.id !== id));
 }
 
+export function clearCart(): void {
+  writeCart([]);
+}
+
 export function cartCount(lines: CartLine[]): number {
   return lines.reduce((sum, line) => sum + line.qty, 0);
 }

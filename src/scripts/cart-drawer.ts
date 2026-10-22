@@ -3,6 +3,7 @@ import {
   OPEN_EVENT,
   cartCount,
   cartSubtotal,
+  clearCart,
   lineTotal,
   onCartChange,
   readCart,
@@ -95,12 +96,17 @@ export function mountCartDrawer(root: HTMLElement): void {
 
   const showPreorderSuccess = (): void => {
     preorderDone = true;
-    if (preorderForm) preorderForm.hidden = true;
+    setPreorderError('');
     if (preorderOk) {
       preorderOk.hidden = false;
       preorderOk.textContent = ui.preorder_success;
     }
-    setPreorderError('');
+    if (preorderForm) {
+      preorderForm.hidden = true;
+      preorderForm.reset();
+    }
+    // Clear after marking success so render keeps the confirmation visible.
+    clearCart();
   };
 
   const syncBadges = (lines: CartLine[]): void => {
@@ -194,27 +200,48 @@ export function mountCartDrawer(root: HTMLElement): void {
     syncBadges(lines);
     list.replaceChildren(...lines.map(renderLine));
     const hasLines = lines.length > 0;
-    empty.hidden = hasLines;
-    foot.hidden = !hasLines;
-    if (!hasLines) {
+
+    // New items after a successful pre-order → allow another submission.
+    if (hasLines && preorderDone) {
       preorderDone = false;
-      if (preorderForm) preorderForm.hidden = false;
-      if (preorderOk) preorderOk.hidden = true;
       setPreorderError('');
+      if (preorderSubmit) {
+        preorderSubmit.disabled = false;
+        preorderSubmit.textContent = ui.preorder_submit;
+      }
+    }
+
+    empty.hidden = hasLines || preorderDone;
+    foot.hidden = !hasLines && !preorderDone;
+
+    const shipBlock = root.querySelector<HTMLElement>('.cart-drawer__ship');
+    const totalBlock = root.querySelector<HTMLElement>('.cart-drawer__total');
+    const notes = root.querySelectorAll<HTMLElement>('.cart-drawer__foot > .cart-drawer__note');
+
+    if (!hasLines) {
+      if (preorderForm) preorderForm.hidden = true;
+      if (preorderOk) preorderOk.hidden = !preorderDone;
+      if (shipBlock) shipBlock.hidden = true;
+      if (totalBlock) totalBlock.hidden = true;
+      notes.forEach((note) => {
+        note.hidden = true;
+      });
       return;
     }
+
+    if (shipBlock) shipBlock.hidden = false;
+    if (totalBlock) totalBlock.hidden = false;
+    notes.forEach((note) => {
+      note.hidden = false;
+    });
+
     const subtotal = cartSubtotal(lines);
     const left = freeShippingRemaining(subtotal);
     subtotalEl.textContent = money(subtotal);
     ship.textContent = left > 0 ? fill(ui.shipping_left, { amount: money(left) }) : ui.shipping_free;
     meter.style.width = `${Math.min(100, Math.round((subtotal / SHIPPING.free_from) * 100))}%`;
-    if (preorderDone) {
-      if (preorderForm) preorderForm.hidden = true;
-      if (preorderOk) preorderOk.hidden = false;
-    } else {
-      if (preorderForm) preorderForm.hidden = false;
-      if (preorderOk) preorderOk.hidden = true;
-    }
+    if (preorderForm) preorderForm.hidden = preorderDone;
+    if (preorderOk) preorderOk.hidden = !preorderDone;
   };
 
   const isOpen = (): boolean => !root.hidden && root.classList.contains('is-open');
