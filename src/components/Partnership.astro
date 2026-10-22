@@ -8,6 +8,8 @@ import {
   CONTACT_PHONE,
   CONTACT_PHONE_TEL,
   CONTACT_WHATSAPP_URL,
+  LIGHTOVY_EMAIL,
+  MATISON_EMAIL,
 } from '../lib/site';
 import SpielLogo from './SpielLogo.astro';
 
@@ -20,7 +22,10 @@ const t = useTranslations(lang);
 
 const have = ['art', 'games', 'shop'] as const;
 const together = ['publishing', 'promotion', 'distribution', 'development'] as const;
-const alexPhoto = authorPhotoSrc('alex-lightovy');
+const team = [
+  { key: 'matison', image: authorPhotoSrc('dmitry-matison'), email: MATISON_EMAIL },
+  { key: 'lightovy', image: authorPhotoSrc('alex-lightovy'), email: LIGHTOVY_EMAIL },
+] as const;
 ---
 
 <section class="opportunity editorial-section" id="partnership" aria-labelledby="opportunity-title">
@@ -69,23 +74,30 @@ const alexPhoto = authorPhotoSrc('alex-lightovy');
       </h2>
       <p class="opportunity-spiel__date">{t('opportunity.spiel_date')}</p>
       <p class="opportunity-spiel__body">{t('opportunity.spiel_body')}</p>
-      <article class="opportunity-person">
-        {alexPhoto && (
-          <img
-            src={alexPhoto}
-            alt={t('essen.lightovy.photo_alt')}
-            width="205"
-            height="205"
-            loading="lazy"
-            decoding="async"
-          />
-        )}
-        <div>
-          <h3>{t('essen.lightovy.name')}</h3>
-          <p class="opportunity-person__role">{t('essen.lightovy.role')}</p>
-          <p class="opportunity-person__bio">{t('essen.lightovy.bio')}</p>
-        </div>
-      </article>
+      <div class="opportunity-team">
+        {team.map((person) => (
+          <article class="opportunity-person">
+            {person.image && (
+              <img
+                src={person.image}
+                alt={t(`essen.${person.key}.photo_alt`)}
+                width="205"
+                height="205"
+                loading="lazy"
+                decoding="async"
+              />
+            )}
+            <div>
+              <h3>{t(`essen.${person.key}.name`)}</h3>
+              <p class="opportunity-person__role">{t(`essen.${person.key}.role`)}</p>
+              <p class="opportunity-person__bio">{t(`essen.${person.key}.bio`)}</p>
+              <p class="opportunity-person__email">
+                <a href={`mailto:${person.email}`}>{person.email}</a>
+              </p>
+            </div>
+          </article>
+        ))}
+      </div>
       <a
         class="btn btn-accent"
         href={BOOKING_URL}
@@ -220,13 +232,20 @@ const alexPhoto = authorPhotoSrc('alex-lightovy');
     line-height: 1.7;
   }
 
+  .opportunity-team {
+    display: grid;
+    gap: 0;
+    margin: 1.25rem 0 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
   .opportunity-person {
     display: flex;
     gap: 0.85rem;
     align-items: flex-start;
-    margin: 1.25rem 0 1.5rem;
-    padding: 0.85rem 0;
-    border-top: 1px solid var(--line);
+    margin: 0;
+    padding: 0.95rem 0;
+    border-bottom: 1px solid var(--line);
   }
 
   .opportunity-person img {
@@ -261,6 +280,22 @@ const alexPhoto = authorPhotoSrc('alex-lightovy');
     color: var(--muted);
     font-size: 0.85rem;
     line-height: 1.5;
+  }
+
+  .opportunity-person__email {
+    margin: 0.45rem 0 0;
+    font-size: 0.9rem;
+  }
+
+  .opportunity-person__email a {
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+  }
+
+  .opportunity-person__email a:hover {
+    color: var(--accent-dark);
   }
 
   .opportunity-owner {

@@ -51,6 +51,8 @@ export const SITE_URL = getSiteUrl();
 
 export const CONTACT_EMAIL = 'info@magister.cards';
 export const PARTNERSHIP_EMAIL = 'partnership@magister.cards';
+export const MATISON_EMAIL = 'dima@magister.cards';
+export const LIGHTOVY_EMAIL = 'alex@magister.cards';
 /** Display form; same number for calls and WhatsApp. */
 export const CONTACT_PHONE = '+48 518 248 620';
 export const CONTACT_PHONE_TEL = 'tel:+48518248620';
