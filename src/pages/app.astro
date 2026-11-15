@@ -1,0 +1,10 @@
+---
+const acceptLang = (Astro.request.headers.get('accept-language') || '').toLowerCase();
+const tags = acceptLang.split(',').map((part) => part.split(';')[0].trim());
+const wants = (code: string) => tags.some((tag) => tag === code || tag.startsWith(`${code}-`));
+const redirectTo = wants('zh') ? '/zh/app' : wants('be') ? '/be/app' : wants('ru') ? '/ru/app' : '/en/app';
+const target = new URL(redirectTo, Astro.url);
+target.search = Astro.url.search;
+
+return Astro.redirect(`${target.pathname}${target.search}`, 302);
+---

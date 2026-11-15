@@ -6,9 +6,11 @@ import { shuffle } from '../utils/shuffle';
 
 interface Props {
   lang: Lang;
+  variant?: 'section' | 'app';
 }
 
-const { lang } = Astro.props;
+const { lang, variant = 'section' } = Astro.props;
+const isApp = variant === 'app';
 const t = useTranslations(lang);
 const allCards = await getCollection('cards');
 const suitOrder = ['hearts', 'diamonds', 'clubs', 'spades'] as const;
@@ -70,7 +72,7 @@ const filterCopy = {
 };
 ---
 
-<div class="gallery" id="fifty-four" aria-labelledby="gallery-title">
+<div class:list={['gallery', isApp && 'gallery--app']} id="fifty-four" aria-labelledby="gallery-title">
   <header class="gallery-header reveal">
     <h3 id="gallery-title">{t('gallery.title')}</h3>
   </header>
@@ -1101,6 +1103,125 @@ const filterCopy = {
     .carousel-card {
       width: clamp(150px, 55vw, 220px);
     }
+  }
+
+  .gallery--app {
+    --ink: #f0e7d5;
+    --muted: #aaa9b5;
+    --paper: #142238;
+    --paper-deep: #080d18;
+    --white: #111b2b;
+    --line: rgba(199, 163, 106, 0.28);
+    --accent: #c7a36a;
+    --page-pad: max(0.85rem, env(safe-area-inset-right));
+    --sans: 'Manrope', 'Noto Sans SC', system-ui, sans-serif;
+    --display: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+    --card-radius: clamp(0.55rem, 4.6%, 0.9rem);
+    margin-top: 0;
+    padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+    overflow-x: clip;
+  }
+
+  .gallery--app .gallery-header {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .gallery--app .gallery-filter {
+    margin-top: 0;
+    padding-inline: max(0.85rem, env(safe-area-inset-left)) max(0.85rem, env(safe-area-inset-right));
+  }
+
+  .gallery--app .gallery-filter__toggle,
+  .gallery--app .gallery-filter__clear {
+    border-bottom-color: rgba(199, 163, 106, 0.45);
+    color: var(--play-gold-hot, #ecd09b);
+    font-family: var(--sans);
+    letter-spacing: 0.14em;
+  }
+
+  .gallery--app .gallery-filter__toggle[aria-expanded='true'] {
+    border-bottom-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .gallery--app .gallery-filter__chip {
+    border-color: rgba(199, 163, 106, 0.35);
+    background: rgba(17, 27, 43, 0.55);
+    color: var(--ink);
+  }
+
+  .gallery--app .gallery-filter__chip[aria-pressed='true'],
+  .gallery--app .gallery-filter__chip.is-active {
+    border-color: var(--accent);
+    background: rgba(199, 163, 106, 0.22);
+    color: var(--accent);
+  }
+
+  .gallery--app .gallery-filter__chip--joker[aria-pressed='true'] {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #080d18;
+  }
+
+  .gallery--app .carousel-outer {
+    margin-top: 0.85rem;
+  }
+
+  .gallery--app .carousel-track {
+    padding-inline: max(0.85rem, env(safe-area-inset-left)) max(0.85rem, env(safe-area-inset-right));
+    gap: 0.85rem;
+  }
+
+  .gallery--app .carousel-card {
+    width: clamp(9.5rem, 38vw, 12.5rem);
+  }
+
+  .gallery--app .carousel-card__inner {
+    border: 1px solid rgba(199, 163, 106, 0.22);
+    box-shadow: 0 0.85rem 1.75rem rgba(0, 0, 0, 0.45);
+  }
+
+  .gallery--app .carousel-card__img {
+    filter: none;
+  }
+
+  .gallery--app .lightbox {
+    background: color-mix(in srgb, #080d18 88%, transparent);
+  }
+
+  .gallery--app .lb-arrow,
+  .gallery--app .lb-close {
+    background: #111b2b;
+    color: var(--ink);
+    border-color: rgba(199, 163, 106, 0.35);
+  }
+
+  .gallery--app .lb-zoom {
+    background: rgba(8, 13, 24, 0.96);
+  }
+
+  .gallery--app .lb-zoom-close {
+    background: #111b2b;
+    color: var(--ink);
+  }
+
+  .gallery--app .lb-zoom-chip {
+    background: var(--accent);
+    color: #080d18;
+  }
+
+  .gallery--app .btn-accent.lb-cta {
+    border-color: var(--accent);
+    background: linear-gradient(180deg, rgba(199, 163, 106, 0.28), rgba(20, 34, 56, 0.55));
+    color: #ecd09b;
   }
 
 </style>

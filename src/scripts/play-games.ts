@@ -32,6 +32,8 @@ type PlayData = {
 };
 
 type Save = {
+  /** Four Worlds curriculum or timed board completed — unlocks the rest of the hall. */
+  worlds: boolean;
   birthday: boolean;
   destiny: boolean;
   bestMs: number | null;
@@ -60,7 +62,7 @@ const SUIT_FACE: Record<Suit, string> = {
 const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 
 function emptySave(): Save {
-  return { birthday: false, destiny: false, bestMs: null, lore: { pack: LORE_PACK, cleared: 0 } };
+  return { worlds: false, birthday: false, destiny: false, bestMs: null, lore: { pack: LORE_PACK, cleared: 0 } };
 }
 
 function parseLoreSave(raw: unknown): Save['lore'] {
@@ -115,9 +117,13 @@ function loadSave(): Save {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
     if (!raw) return emptySave();
-    const data = JSON.parse(raw) as Partial<Save>;
+    const data = JSON.parse(raw) as Partial<Save> & { worlds?: unknown };
+    const birthday = data.birthday === true;
+    /* Legacy timed unlock also counts as Four Worlds cleared. */
+    const worlds = data.worlds === true || birthday;
     return {
-      birthday: data.birthday === true,
+      worlds,
+      birthday,
       destiny: data.destiny === true,
       bestMs: typeof data.bestMs === 'number' && Number.isFinite(data.bestMs) && data.bestMs > 0 ? data.bestMs : null,
       lore: parseLoreSave((data as { lore?: unknown }).lore),
@@ -513,12 +519,41 @@ export function mountPlayGames(): void {
   function gameTitle(): string {
     const pressed = root?.querySelector<HTMLElement>('.play-menu [aria-pressed="true"]');
     const game = pressed?.dataset.game;
-    if (game === 'birthday' || game === 'oracle') return copy.menu.birth_title;
+    if (game === 'birthday') return copy.menu.birthday_title;
+    if (game === 'oracle') return copy.menu.birth_title;
     if (game === 'lore') {
       if (screen === 'lore-meet') return `${copy.menu.lore_title}: ${copy.lore.levels[loreKind()]}`;
       return copy.menu.lore_title;
     }
     return copy.menu.learn_title;
+  }
+
+  function worldsCleared(): boolean {
+    return save.worlds === true;
+  }
+
+  function markWorldsCleared(): void {
+    if (save.worlds) return;
+    save.worlds = true;
+    persist();
+    updateLocks();
+    window.dispatchEvent(new CustomEvent('magister:worlds-unlocked'));
+  }
+
+  function paintMenuLocks(): void {
+    const open = worldsCleared();
+    root?.querySelectorAll<HTMLElement>('.play-menu [data-game]').forEach((button) => {
+      const game = button.dataset.game;
+      const gated = game === 'lore' || game === 'oracle' || game === 'birthday';
+      const locked = gated && !open;
+      button.classList.toggle('is-locked', locked);
+      button.toggleAttribute('aria-disabled', locked);
+      const lock = button.querySelector<HTMLElement>('.play-lock');
+      if (lock && gated) {
+        lock.hidden = !locked;
+        if (locked) lock.textContent = copy.menu.birth_lock;
+      }
+    });
   }
 
   function updateLocks(): void {
@@ -529,6 +564,16 @@ export function mountPlayGames(): void {
       recordsBest.hidden = false;
       recordsBest.textContent = fill(copy.learn.local_best, { time: formatTime(save.bestMs) });
     }
+    paintMenuLocks();
+  }
+
+  function showWorldsGate(): void {
+    setPressed(null);
+    const title = must(root, '#play-soon-title');
+    const body = must(root, '#play-soon-body');
+    title.textContent = copy.soon.title;
+    body.textContent = copy.locked.worlds_gate;
+    show('soon');
   }
 
   function recordBest(ms: number): void {
@@ -638,6 +683,7 @@ export function mountPlayGames(): void {
       recordSheet.hidden = true;
       document.documentElement.classList.remove('play-lock');
       setPressed(null);
+      window.dispatchEvent(new CustomEvent('magister:play-closed'));
     };
     if (reduceMotion) {
       finish();
@@ -676,18 +722,39 @@ export function mountPlayGames(): void {
       return;
     }
     if (game === 'lore') {
+      if (!worldsCleared()) {
+        showWorldsGate();
+        return;
+      }
       setPressed('lore');
       show('lore-threshold');
       return;
     }
+    if (game === 'birthday') {
+      if (!worldsCleared()) {
+        showWorldsGate();
+        return;
+      }
+      setPressed('birthday');
+      show('birthday');
+      return;
+    }
     if (game === 'oracle' && oracle) {
+      if (!worldsCleared()) {
+        showWorldsGate();
+        return;
+      }
       setPressed('oracle');
       show('oracle');
       oracle.enter();
       return;
     }
-    if (game === 'oracle' || game === 'birthday') {
+    if (game === 'oracle') {
       setPressed(game);
+      const title = root.querySelector('#play-soon-title');
+      const body = root.querySelector('#play-soon-body');
+      if (title) title.textContent = copy.soon.title;
+      if (body) body.textContent = copy.soon.body;
       show('soon');
     }
   }
@@ -1392,7 +1459,10 @@ export function mountPlayGames(): void {
     }
     if (trial === 'pip') showCountCourt();
     else if (trial === 'court') startTrial('card');
-    else show('fw-spread-intro');
+    else {
+      markWorldsCleared();
+      show('fw-spread-intro');
+    }
   }
 
   function spreadLeft(): number {
@@ -1552,8 +1622,9 @@ export function mountPlayGames(): void {
     if (inTime) {
       save.birthday = true;
       persist();
-      updateLocks();
     }
+    if (laid) markWorldsCleared();
+    updateLocks();
     if (onBoard) recordBest(clientMs);
     say(doneTitle.textContent);
 
@@ -1913,4 +1984,9 @@ export function mountPlayGames(): void {
     if (form.id === 'play-birth-form') submitBirth();
     else if (form.id === 'play-claim-form') void submitClaim();
   }
+
+  window.addEventListener('magister:open-game', ((event: CustomEvent<{ game?: string }>) => {
+    const game = event.detail?.game;
+    if (typeof game === 'string' && game) openGame(game);
+  }) as EventListener);
 }

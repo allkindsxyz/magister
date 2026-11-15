@@ -1,0 +1,1126 @@
+---
+import type { Lang } from '../i18n/utils';
+import { LOCALE_LINKS, getLocalizedPath } from '../i18n/utils';
+import { appCopy, type HubDoorId } from '../i18n/appCopy';
+import { gamesCopy } from '../i18n/gamesCopy';
+import { formatPrice, PRICES } from '../lib/pricing';
+import MagisterLogo from './MagisterLogo.astro';
+import Gallery from './Gallery.astro';
+import Games from './Games.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const copy = appCopy[lang];
+const games = gamesCopy[lang];
+const price = formatPrice(PRICES.standard, lang);
+const shopHref = `${getLocalizedPath('/', lang)}?from=app#deck-sku`;
+const siteHref = getLocalizedPath('/', lang);
+const currentLang = LOCALE_LINKS.find((item) => item.code === lang) ?? LOCALE_LINKS[0];
+
+const preload = [
+  '/media/magister-logo.png',
+  '/media/card-back.jpg',
+  '/media/poster-four-worlds.webp',
+  '/media/poster-initiation.webp',
+  '/media/poster-ask-magister.webp',
+  '/media/deck-lifestyle.jpg',
+].join(',');
+
+type Door = {
+  id: HubDoorId;
+  title: string;
+  blurb: string;
+  art: string;
+  artW: number;
+  artH: number;
+  lockedUntil?: 'worlds';
+  soon?: boolean;
+  fit?: 'cover' | 'contain';
+};
+
+const doors: Door[] = [
+  {
+    id: 'cards',
+    title: copy.nav_cards,
+    blurb: copy.hub_blurbs.cards,
+    art: '/media/card-back.jpg',
+    artW: 732,
+    artH: 1024,
+  },
+  {
+    id: 'learn',
+    title: games.menu.learn_title,
+    blurb: copy.hub_blurbs.learn,
+    art: '/media/poster-four-worlds.webp',
+    artW: 669,
+    artH: 1024,
+  },
+  {
+    id: 'lore',
+    title: games.menu.lore_title,
+    blurb: copy.hub_blurbs.lore,
+    art: '/media/poster-initiation.webp',
+    artW: 656,
+    artH: 1024,
+    lockedUntil: 'worlds',
+  },
+  {
+    id: 'birthday',
+    title: games.menu.birthday_title,
+    blurb: copy.hub_blurbs.birthday,
+    art: '/media/card-back.jpg',
+    artW: 732,
+    artH: 1024,
+    lockedUntil: 'worlds',
+  },
+  {
+    id: 'oracle',
+    title: games.menu.birth_title,
+    blurb: copy.hub_blurbs.oracle,
+    art: '/media/poster-ask-magister.webp',
+    artW: 656,
+    artH: 1024,
+    lockedUntil: 'worlds',
+  },
+  {
+    id: 'online',
+    title: copy.online_title,
+    blurb: copy.hub_blurbs.online,
+    art: '/media/card-back.jpg',
+    artW: 732,
+    artH: 1024,
+    soon: true,
+  },
+  {
+    id: 'buy',
+    title: copy.buy_title,
+    blurb: copy.hub_blurbs.buy,
+    art: '/media/deck-lifestyle.jpg',
+    artW: 1024,
+    artH: 672,
+    fit: 'cover',
+  },
+];
+
+const startIndex = 0;
+---
+
+<div class="mag-app" data-app data-preload={preload}>
+  <div class="mag-app-boot" data-app-boot>
+    <div class="mag-app-boot__mark">
+      <MagisterLogo class="mag-app-boot__logo" level width={200} height={88} />
+    </div>
+    <p class="mag-app-boot__cue">{copy.boot_cue}</p>
+  </div>
+
+  <section class="mag-app-age" data-app-age hidden>
+    <MagisterLogo class="mag-app-age__logo" level width={168} height={74} />
+    <h1 class="mag-app-age__title">{copy.age_title}</h1>
+    <p class="mag-app-age__lead">{copy.age_body}</p>
+    <div class="mag-app-age__actions">
+      <button class="mag-app-btn mag-app-btn--accent" type="button" data-app-action="age-yes">
+        {copy.age_confirm}
+      </button>
+      <button class="mag-app-btn" type="button" data-app-action="age-no">
+        {copy.age_deny}
+      </button>
+    </div>
+  </section>
+
+  <section class="mag-app-age mag-app-age--blocked" data-app-age-blocked hidden>
+    <MagisterLogo class="mag-app-age__logo" level width={168} height={74} />
+    <h1 class="mag-app-age__title">{copy.age_blocked}</h1>
+    <a class="mag-app-btn" href={siteHref}>{copy.site}</a>
+  </section>
+
+  <main class="mag-app-hub" data-app-hub hidden>
+    <header class="mag-app-top">
+      <div class="mag-app-brand" aria-label="Magister">
+        <MagisterLogo class="mag-app-top__logo" level width={200} height={88} />
+      </div>
+      <div class="mag-app-lang">
+        <button
+          class="mag-app-lang__toggle"
+          type="button"
+          data-lang-toggle
+          aria-expanded="false"
+          aria-controls="mag-app-lang-menu"
+          aria-label={copy.lang_label}
+        >
+          <span class="mag-app-lang__icon" aria-hidden="true">文</span>
+          <span class="mag-app-lang__code">{currentLang.label}</span>
+        </button>
+        <div class="mag-app-lang__menu" id="mag-app-lang-menu" data-lang-menu hidden>
+          {
+            LOCALE_LINKS.map((item) => (
+              <a
+                href={getLocalizedPath('/app', item.code)}
+                class:list={{ 'is-active': item.code === lang }}
+                lang={item.code === 'zh' ? 'zh-Hans' : item.code}
+                hreflang={item.code === 'zh' ? 'zh-Hans' : item.code}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </header>
+
+    <div class="mag-app-carousel" data-carousel>
+      <div class="mag-app-intro" data-app-intro>
+        <h1 class="mag-app-kicker" data-active-title>{doors[startIndex]?.title ?? ''}</h1>
+      </div>
+
+      <div class="mag-app-carousel__stage">
+      <button class="mag-app-carousel__nav mag-app-carousel__nav--prev" type="button" data-carousel-prev aria-label={copy.prev}>
+        <span aria-hidden="true">‹</span>
+      </button>
+
+      <div class="mag-app-carousel__viewport">
+        <div
+          class="mag-app-carousel__track"
+          data-carousel-track
+          style={`--carousel-index: ${startIndex}; --carousel-drag: 0px;`}
+        >
+          {
+            doors.map((door) => (
+              <article
+                class:list={['mag-app-card', door.lockedUntil && 'is-locked', door.soon && 'is-soon']}
+                data-door={door.id}
+                data-title={door.title}
+                data-blurb={door.blurb}
+                data-lock-text={door.lockedUntil ? games.menu.birth_lock : undefined}
+                data-soon={door.soon ? '1' : undefined}
+                data-soon-text={door.soon ? copy.soon_title : undefined}
+                data-locked-until={door.lockedUntil}
+                aria-disabled={door.lockedUntil ? 'true' : undefined}
+                aria-label={door.title}
+                role="button"
+                tabindex="-1"
+              >
+                <div class="mag-app-card__frame">
+                  <div class:list={['mag-app-card__art', door.fit === 'cover' && 'mag-app-card__art--cover']} aria-hidden="true">
+                    <img src={door.art} alt="" width={door.artW} height={door.artH} decoding="async" draggable="false" />
+                  </div>
+                  {(door.lockedUntil || door.soon) && (
+                    <span class="mag-app-card__seal" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+                        <rect x="5.5" y="11" width="13" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"></rect>
+                        <path d="M8 11V8.2a4 4 0 0 1 8 0V11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+                      </svg>
+                    </span>
+                  )}
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+
+      <button class="mag-app-carousel__nav mag-app-carousel__nav--next" type="button" data-carousel-next aria-label={copy.next_slide}>
+        <span aria-hidden="true">›</span>
+      </button>
+      </div>
+
+      <div class="mag-app-carousel__dots" data-carousel-dots role="tablist" aria-label={copy.hub_kicker}>
+        {
+          doors.map((door, i) => (
+            <button
+              class:list={['mag-app-carousel__dot', i === startIndex && 'is-active']}
+              type="button"
+              data-carousel-dot={i}
+              aria-label={door.title}
+              aria-current={i === startIndex ? 'true' : 'false'}
+            />
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="mag-app-caption" data-app-caption>
+      <p class="mag-app-caption__blurb" data-active-blurb>{doors[startIndex]?.blurb ?? ''}</p>
+      <p class="mag-app-caption__lock" data-active-lock hidden></p>
+      <button class="mag-app-caption__cta" type="button" data-active-cta>
+        {copy.cta_open}
+      </button>
+    </div>
+
+    <footer class="mag-app-footer">
+      <a class="mag-app-footer__site" href={siteHref}>{copy.site}</a>
+    </footer>
+  </main>
+
+  <section class="mag-app-panel mag-app-panel--cards" data-panel="cards" hidden>
+    <section class="play-games play-games--app" aria-label={copy.nav_cards}>
+      <div class="play-app-root">
+        <div class="play-stage mag-app-cards-stage">
+          <div class="play-stage-bar">
+            <button class="play-nav-back" type="button" data-app-action="back">
+              <span class="play-nav-mark" aria-hidden="true">←</span>
+              <span class="play-nav-label">{copy.back}</span>
+            </button>
+            <p class="play-stage-name">
+              <MagisterLogo class="play-stage-logo" level width={112} height={49} />
+              <span>{copy.nav_cards}</span>
+            </p>
+          </div>
+          <Gallery lang={lang} variant="app" />
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <section class="mag-app-panel mag-app-panel--play" data-panel="play" hidden>
+    <Games lang={lang} variant="app" />
+  </section>
+
+  <section class="mag-app-panel" data-panel="online" hidden>
+    <header class="mag-app-panel__bar">
+      <button class="mag-app-back" type="button" data-app-action="back">
+        <span aria-hidden="true">←</span>
+        {copy.back}
+      </button>
+      <h2 class="mag-app-panel__title">{copy.online_title}</h2>
+    </header>
+    <div class="mag-app-panel__body mag-app-stub">
+      <img class="mag-app-stub__art" src="/media/card-back.jpg" alt="" width="220" height="308" decoding="async" />
+      <h3>{copy.online_stub_title}</h3>
+      <p>{copy.online_stub_body}</p>
+    </div>
+  </section>
+
+  <section class="mag-app-panel" data-panel="buy" hidden>
+    <header class="mag-app-panel__bar">
+      <button class="mag-app-back" type="button" data-app-action="back">
+        <span aria-hidden="true">←</span>
+        {copy.buy_back}
+      </button>
+      <h2 class="mag-app-panel__title">{copy.buy_title}</h2>
+    </header>
+    <div class="mag-app-panel__body mag-app-buy">
+      <img class="mag-app-buy__art" src="/media/deck-lifestyle.jpg" alt="" width="1024" height="672" decoding="async" />
+      <p class="mag-app-buy__blurb">{copy.buy_blurb}</p>
+      <p class="mag-app-buy__price">{price}</p>
+      <a class="mag-app-btn mag-app-btn--accent" href={shopHref}>{copy.buy_cta}</a>
+    </div>
+  </section>
+
+  <div class="mag-app-lock" data-app-lock hidden>
+    <button class="mag-app-lock__scrim" type="button" data-app-action="lock-close" aria-label={copy.back}></button>
+    <div class="mag-app-lock__card" role="dialog" aria-modal="true" aria-labelledby="mag-app-lock-title">
+      <h2 id="mag-app-lock-title" data-app-lock-title tabindex="-1">{copy.lock_title}</h2>
+      <p>{copy.lock_body}</p>
+      <div class="mag-app-lock__actions">
+        <button class="mag-app-btn" type="button" data-app-action="lock-close">{copy.back}</button>
+        <button class="mag-app-btn mag-app-btn--accent" type="button" data-app-action="lock-play">
+          {copy.lock_cta}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { mountAppShell } from '../scripts/app-shell';
+  mountAppShell();
+</script>
+
+<style is:global>
+  html.mag-app-active {
+    scroll-padding-top: 0;
+  }
+
+  body.mag-app-body {
+    background: #080d18;
+    color: #f0e7d5;
+    min-height: 100dvh;
+  }
+
+  body.mag-app-body .skip-link {
+    display: none;
+  }
+
+  .mag-app {
+    --app-ground: #080d18;
+    --app-panel: #111b2b;
+    --app-card: #142238;
+    --app-parchment: #f0e7d5;
+    --app-dim: #aaa9b5;
+    --app-gold: #c7a36a;
+    --app-gold-hot: #ecd09b;
+    --app-line: rgba(199, 163, 106, 0.28);
+    --card-radius: clamp(0.55rem, 4.6%, 0.9rem);
+    --slide-gap: 0.85rem;
+    --carousel-ease: cubic-bezier(0.22, 1.18, 0.36, 1);
+    --carousel-dur: 520ms;
+    --display: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
+    --sans: 'Manrope', 'Noto Sans SC', system-ui, sans-serif;
+    position: relative;
+    isolation: isolate;
+    min-height: 100dvh;
+    min-height: 100svh;
+    background:
+      radial-gradient(ellipse 80% 48% at 50% -8%, rgba(199, 163, 106, 0.1), transparent 56%),
+      radial-gradient(circle at 8% 82%, rgba(20, 34, 56, 0.9), transparent 44%),
+      var(--app-ground);
+    color: var(--app-parchment);
+    font-family: var(--sans);
+    overflow-x: clip;
+  }
+
+  .mag-app::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.2;
+    background:
+      radial-gradient(circle at 50% 38%, transparent 20%, rgba(199, 163, 106, 0.045) 21%, transparent 48%),
+      radial-gradient(circle at 20% 30%, transparent 0 1px, rgba(199, 163, 106, 0.22) 1px 1.5px, transparent 2px) 0 0 / 8rem 8rem;
+  }
+
+  .mag-app [hidden] {
+    display: none !important;
+  }
+
+  .mag-app-boot {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: grid;
+    place-content: center;
+    gap: 1.5rem;
+    background: var(--app-ground);
+    transition: opacity 400ms ease, visibility 400ms ease;
+  }
+
+  .mag-app-boot.is-done {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .mag-app-boot__mark {
+    display: grid;
+    place-items: center;
+  }
+
+  .mag-app-boot__logo {
+    width: min(58vw, 12.5rem);
+    height: auto;
+    animation: mag-app-breathe 2.4s ease-in-out infinite;
+  }
+
+  @keyframes mag-app-breathe {
+    0%,
+    100% {
+      opacity: 0.72;
+      transform: rotate(calc(var(--brand-wordmark-rotate-design) * -1)) scale(0.98);
+    }
+    50% {
+      opacity: 1;
+      transform: rotate(calc(var(--brand-wordmark-rotate-design) * -1)) scale(1.02);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mag-app-boot__logo {
+      animation: none;
+      opacity: 1;
+    }
+  }
+
+  .mag-app-boot__cue {
+    text-align: center;
+    color: var(--app-dim);
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+  }
+
+  .mag-app-age,
+  .mag-app-hub,
+  .mag-app-panel {
+    width: min(100%, 34rem);
+    margin: 0 auto;
+    padding:
+      max(0.85rem, env(safe-area-inset-top))
+      max(0.75rem, env(safe-area-inset-right))
+      max(1.25rem, env(safe-area-inset-bottom))
+      max(0.75rem, env(safe-area-inset-left));
+  }
+
+  .mag-app-hub {
+    --hub-w: min(100vw, 26.75rem);
+    --hub-chrome: 18.25rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    min-height: 100svh;
+    width: var(--hub-w);
+    padding:
+      max(0.45rem, env(safe-area-inset-top))
+      0
+      max(0.7rem, env(safe-area-inset-bottom));
+  }
+
+  .mag-app-age {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .mag-app-age__logo {
+    margin: 0 auto 0.35rem;
+    width: 10.5rem;
+    height: auto;
+  }
+
+  .mag-app-age__title,
+  .mag-app-panel__title,
+  .mag-app-stub h3,
+  .mag-app-lock__card h2 {
+    font-family: var(--display);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .mag-app-age__title {
+    font-size: clamp(1.75rem, 7vw, 2.4rem);
+  }
+
+  .mag-app-age__lead,
+  .mag-app-stub p,
+  .mag-app-buy__blurb,
+  .mag-app-lock__card p {
+    color: var(--app-dim);
+    line-height: 1.5;
+  }
+
+  .mag-app-age__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.65rem;
+    margin-top: 0.5rem;
+  }
+
+  .mag-app-btn {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.85rem;
+    padding: 0.7rem 1.15rem;
+    border: 1px solid var(--app-line);
+    background: transparent;
+    color: var(--app-parchment);
+    font: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .mag-app-btn--accent {
+    border-color: var(--app-gold);
+    background: linear-gradient(180deg, rgba(199, 163, 106, 0.28), rgba(20, 34, 56, 0.55));
+    color: var(--app-gold-hot);
+  }
+
+  .mag-app-btn:focus-visible,
+  .mag-app-card:focus-visible,
+  .mag-app-back:focus-visible,
+  .mag-app-carousel__nav:focus-visible,
+  .mag-app-carousel__dot:focus-visible,
+  .mag-app-lang__toggle:focus-visible {
+    outline: 2px solid var(--app-gold-hot);
+    outline-offset: 3px;
+  }
+
+  .mag-app-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 2.65rem;
+    margin: 0 0 0.55rem;
+    padding-inline: max(0.85rem, env(safe-area-inset-left)) max(0.85rem, env(safe-area-inset-right));
+  }
+
+  .mag-app-brand {
+    display: inline-flex;
+    min-width: 0;
+  }
+
+  .mag-app-top__logo {
+    width: min(42vw, 8.5rem);
+    height: auto;
+  }
+
+  .mag-app-lang {
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .mag-app-intro {
+    text-align: center;
+    margin: 0.65rem 0 0.45rem;
+    padding-inline: max(0.85rem, env(safe-area-inset-left)) max(0.85rem, env(safe-area-inset-right));
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  .mag-app-intro.is-swap {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  .mag-app-kicker {
+    margin: 0;
+    max-width: min(100%, calc(var(--slide-w, 16rem) + 1.5rem));
+    margin-inline: auto;
+    font-family: var(--display);
+    font-size: clamp(1.85rem, 8.2vw, 2.45rem);
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    line-height: 1.08;
+    color: var(--app-gold-hot);
+    text-wrap: balance;
+    text-shadow: 0 1px 0 rgba(8, 13, 24, 0.35);
+  }
+
+  .mag-app-kicker::after {
+    content: '';
+    display: block;
+    width: min(4.5rem, 38%);
+    height: 1px;
+    margin: 0.45rem auto 0;
+    background: linear-gradient(90deg, transparent, rgba(199, 163, 106, 0.85), transparent);
+    opacity: 0.9;
+  }
+
+  .mag-app-lang__toggle {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 2.2rem;
+    padding: 0.35rem 0.55rem;
+    border: 1px solid var(--app-line);
+    border-radius: 999px;
+    background: rgba(17, 27, 43, 0.85);
+    color: var(--app-gold-hot);
+    font: inherit;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+
+  .mag-app-lang__icon {
+    font-size: 0.85rem;
+    line-height: 1;
+  }
+
+  .mag-app-lang__menu {
+    position: absolute;
+    top: calc(100% + 0.4rem);
+    right: 0;
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    min-width: 5.5rem;
+    padding: 0.35rem;
+    border: 1px solid var(--app-line);
+    background: var(--app-panel);
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.45);
+  }
+
+  .mag-app-lang__menu a {
+    padding: 0.45rem 0.55rem;
+    color: var(--app-dim);
+    text-decoration: none;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+  }
+
+  .mag-app-lang__menu a.is-active,
+  .mag-app-lang__menu a:hover {
+    color: var(--app-gold-hot);
+    background: rgba(199, 163, 106, 0.1);
+  }
+
+  .mag-app-carousel {
+    --slide-w: min(
+      calc(var(--hub-w) * 0.72),
+      calc((100svh - var(--hub-chrome)) * 5 / 7.25)
+    );
+    position: relative;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    padding-inline: max(0.35rem, env(safe-area-inset-left)) max(0.35rem, env(safe-area-inset-right));
+  }
+
+  .mag-app-carousel__stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    min-height: 0;
+  }
+
+  .mag-app-carousel__viewport {
+    position: relative;
+    overflow: visible;
+    min-width: 0;
+    height: calc(var(--slide-w) * 1.45);
+  }
+
+  .mag-app-carousel__track {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--slide-gap);
+    width: max-content;
+    margin-left: calc(50% - (var(--slide-w) / 2));
+    touch-action: pan-y;
+    user-select: none;
+    transition: transform var(--carousel-dur) var(--carousel-ease);
+    transform: translate3d(
+      calc((var(--carousel-index) * -1 * (var(--slide-w) + var(--slide-gap))) + var(--carousel-drag)),
+      0,
+      0
+    );
+  }
+
+  .mag-app-carousel__track.is-instant,
+  .mag-app-carousel__track.is-dragging {
+    transition: none;
+  }
+
+  .mag-app-card {
+    --card-scale: 0.88;
+    --card-opacity: 0.55;
+    --card-bright: 0.62;
+    position: relative;
+    flex: 0 0 var(--slide-w);
+    width: var(--slide-w);
+    aspect-ratio: 5 / 7.25;
+    height: auto;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    transform: scale(var(--card-scale));
+    opacity: var(--card-opacity);
+    filter: brightness(var(--card-bright));
+    transition:
+      transform var(--carousel-dur) var(--carousel-ease),
+      opacity 360ms ease,
+      filter 360ms ease;
+    transform-origin: center center;
+  }
+
+  .mag-app-card.is-active {
+    --card-scale: 1;
+    --card-opacity: 1;
+    --card-bright: 1;
+    z-index: 2;
+    transform: scale(var(--card-scale)) translateY(-3px);
+  }
+
+  .mag-app-card[data-offset='-2'],
+  .mag-app-card[data-offset='2'] {
+    --card-scale: 0.82;
+    --card-opacity: 0.32;
+    --card-bright: 0.48;
+  }
+
+  .mag-app-card__frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--card-radius);
+    border: 1px solid rgba(240, 231, 213, 0.08);
+    background: var(--app-card);
+    box-shadow: 0 0.85rem 1.6rem rgba(0, 0, 0, 0.42);
+  }
+
+  .mag-app-card.is-active .mag-app-card__frame {
+    border-color: rgba(199, 163, 106, 0.55);
+    box-shadow:
+      0 0 0 1px rgba(199, 163, 106, 0.18),
+      0 0 1.4rem rgba(199, 163, 106, 0.16),
+      0 1rem 2rem rgba(0, 0, 0, 0.5);
+  }
+
+  .mag-app-card.is-locked .mag-app-card__art,
+  .mag-app-card.is-soon .mag-app-card__art {
+    filter: saturate(0.72) brightness(0.78);
+  }
+
+  .mag-app-card.is-locked.is-active .mag-app-card__frame,
+  .mag-app-card.is-soon.is-active .mag-app-card__frame {
+    border-color: rgba(199, 163, 106, 0.38);
+  }
+
+  .mag-app-card__art {
+    width: 100%;
+    height: 100%;
+    background: var(--app-card);
+  }
+
+  .mag-app-card__art img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+    pointer-events: none;
+  }
+
+  .mag-app-card__art--cover img {
+    object-fit: cover;
+  }
+
+  .mag-app-card__seal {
+    position: absolute;
+    top: 0.65rem;
+    right: 0.65rem;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 999px;
+    border: 1px solid rgba(199, 163, 106, 0.45);
+    background: rgba(8, 13, 24, 0.72);
+    color: var(--app-gold-hot);
+  }
+
+  .mag-app-card:not(.is-locked):not(.is-soon) .mag-app-card__seal {
+    display: none;
+  }
+
+  .mag-app-carousel__nav {
+    appearance: none;
+    position: relative;
+    z-index: 4;
+    align-self: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 999px;
+    border: 1px solid var(--app-line);
+    background: rgba(8, 13, 24, 0.62);
+    color: var(--app-gold-hot);
+    font-size: 1.45rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .mag-app-carousel__nav:disabled {
+    opacity: 0.22;
+    cursor: default;
+  }
+
+  .mag-app-carousel__dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.42rem;
+    margin: 0.15rem 0 0.25rem;
+    padding-top: 0.05rem;
+  }
+
+  .mag-app-carousel__dot {
+    appearance: none;
+    width: 0.4rem;
+    height: 0.4rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: rgba(170, 169, 181, 0.38);
+    cursor: pointer;
+  }
+
+  .mag-app-carousel__dot.is-active {
+    background: var(--app-gold);
+    width: 0.72rem;
+  }
+
+  .mag-app-caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    width: min(100%, 22.5rem);
+    margin: 0 auto;
+    padding-inline: max(0.85rem, env(safe-area-inset-left)) max(0.85rem, env(safe-area-inset-right));
+    text-align: center;
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  .mag-app-caption.is-swap {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+
+  .mag-app-caption__blurb {
+    margin: 0;
+    max-width: 17rem;
+    color: var(--app-parchment);
+    font-size: clamp(0.9rem, 3.8vw, 1rem);
+    font-weight: 600;
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+
+  .mag-app-caption__lock {
+    margin: 0;
+    color: var(--app-gold);
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .mag-app-caption__cta {
+    appearance: none;
+    margin-top: 0.35rem;
+    flex: 0 0 auto;
+    min-height: 2.85rem;
+    width: 11.25rem;
+    padding: 0.65rem 1.25rem;
+    border: 1px solid rgba(199, 163, 106, 0.55);
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(199, 163, 106, 0.2), rgba(199, 163, 106, 0.06));
+    color: var(--app-gold-hot);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+
+  .mag-app-caption__cta:active {
+    transform: scale(0.98);
+  }
+
+  .mag-app-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.45rem;
+    padding: 0.15rem max(0.85rem, env(safe-area-inset-right)) 0 max(0.85rem, env(safe-area-inset-left));
+  }
+
+  .mag-app-footer__site {
+    color: var(--app-dim);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    opacity: 0.78;
+  }
+
+  .mag-app-footer__site:hover {
+    color: var(--app-gold-hot);
+  }
+
+  .mag-app-panel {
+    width: min(100%, 42rem);
+  }
+
+  .mag-app-panel--cards,
+  .mag-app-panel--play {
+    width: 100%;
+    max-width: none;
+    padding: 0;
+  }
+
+  .mag-app-panel--cards .play-games {
+    --play-ground: #080d18;
+    --play-ink: #111b2b;
+    --play-parchment: #f0e7d5;
+    --play-dim: #aaa9b5;
+    --play-gold: #c7a36a;
+    --play-gold-hot: #ecd09b;
+    min-height: 100dvh;
+    min-height: 100svh;
+    background: var(--play-ground);
+  }
+
+  .mag-app-panel--cards .play-app-root,
+  .mag-app-panel--cards .mag-app-cards-stage {
+    min-height: 100dvh;
+    min-height: 100svh;
+  }
+
+  .mag-app-panel--cards .play-stage-bar {
+    padding:
+      max(0.65rem, env(safe-area-inset-top))
+      max(0.85rem, env(safe-area-inset-right))
+      0
+      max(0.85rem, env(safe-area-inset-left));
+    margin-bottom: 0.65rem;
+  }
+
+  @media (max-width: 520px) {
+    .mag-app-panel--cards .play-stage-bar .play-nav-back {
+      min-width: 0;
+      padding-inline: 0.85rem;
+    }
+
+    .mag-app-panel--cards .play-stage-bar .play-nav-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+  }
+
+  .mag-app-panel__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0 max(1rem, env(safe-area-inset-right)) 0.75rem max(1rem, env(safe-area-inset-left));
+  }
+
+  .mag-app-panel__title {
+    font-size: 1.25rem;
+  }
+
+  .mag-app-back {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.2rem;
+    border: 0;
+    background: transparent;
+    color: var(--app-parchment);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .mag-app-panel__body {
+    padding: 0 max(1rem, env(safe-area-inset-right)) 2rem max(1rem, env(safe-area-inset-left));
+  }
+
+  .mag-app-stub,
+  .mag-app-buy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding-top: 0.5rem;
+  }
+
+  .mag-app-stub__art,
+  .mag-app-buy__art {
+    width: min(100%, 14rem);
+    border-radius: 0.35rem;
+  }
+
+  .mag-app-stub h3 {
+    font-size: 1.65rem;
+  }
+
+  .mag-app-buy__art {
+    width: 100%;
+    max-width: 22rem;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+
+  .mag-app-buy__price {
+    font-family: var(--display);
+    font-size: 1.75rem;
+    color: var(--app-gold-hot);
+  }
+
+  .mag-app-lock {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: end center;
+    padding: 1rem;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .mag-app-lock__scrim {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(0, 0, 0, 0.62);
+    cursor: pointer;
+  }
+
+  .mag-app-lock__card {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 24rem);
+    padding: 1.25rem;
+    border: 1px solid var(--app-line);
+    background: var(--app-panel);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .mag-app-lock__card h2 {
+    font-size: 1.55rem;
+  }
+
+  .mag-app-lock__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 0.35rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .mag-app-card:hover {
+      --card-opacity: 0.82;
+      --card-bright: 0.86;
+    }
+
+    .mag-app-card.is-active:hover .mag-app-card__frame {
+      border-color: rgba(236, 208, 155, 0.72);
+    }
+
+    .mag-app-caption__cta:hover {
+      border-color: var(--app-gold-hot);
+      background: linear-gradient(180deg, rgba(199, 163, 106, 0.32), rgba(199, 163, 106, 0.1));
+    }
+  }
+
+  @media (max-height: 700px) {
+    .mag-app-hub {
+      --hub-chrome: 15.25rem;
+    }
+
+    .mag-app-caption__blurb {
+      font-size: 0.82rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mag-app-carousel__track,
+    .mag-app-card,
+    .mag-app-intro,
+    .mag-app-caption,
+    .mag-app-caption__cta {
+      transition: none;
+    }
+  }
+</style>

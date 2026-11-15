@@ -47,6 +47,8 @@ export type GamesCopy = {
     birth_title: string;
     birth_blurb: string;
     birth_lock: string;
+    birthday_title: string;
+    birthday_blurb: string;
     lore_title: string;
     lore_blurb: string;
   };
@@ -164,6 +166,7 @@ export type GamesCopy = {
   locked: {
     to_learn: string;
     to_birthday: string;
+    worlds_gate: string;
   };
   soon: {
     title: string;
@@ -203,9 +206,11 @@ const en: GamesCopy = {
     learn_blurb: 'Meet the heroes of each suit and learn to tell a card by its scene. Includes a timed mode.',
     birth_title: 'Ask the Magister',
     birth_blurb: 'The Magister deck oracle. Sometimes we need a hint. What will the Magister tell you?',
-    birth_lock: 'Opens if you lay the deck out in five minutes or less.',
+    birth_lock: 'Unlock after completing The Four Worlds',
+    birthday_title: 'Birthday Card',
+    birthday_blurb: 'Enter your date of birth and discover the card associated with that day.',
     lore_title: 'Initiation',
-    lore_blurb: 'Questions on every card in the deck, from the scene to its hidden meaning. Find out how closely you really look.',
+    lore_blurb: 'Questions about every card — from the scene itself to its hidden meanings.',
   },
   learn: {
     threshold:
@@ -351,6 +356,7 @@ const en: GamesCopy = {
   locked: {
     to_learn: 'Learn the deck',
     to_birthday: 'Open the birthday card',
+    worlds_gate: 'Complete The Four Worlds to open this path.',
   },
   soon: {
     title: 'Opening soon.',
@@ -454,9 +460,11 @@ const ru: GamesCopy = {
     learn_blurb: 'Познакомьтесь с героями каждой масти и научитесь узнавать карту по сюжету. Есть режим на время.',
     birth_title: 'Вопрос Магистру',
     birth_blurb: 'Оракул колоды Магистр. Иногда нам нужна подсказка. Что скажет тебе Магистр?',
-    birth_lock: 'Откроется, если разложить колоду за пять минут или быстрее.',
+    birth_lock: 'Откроется после прохождения «Четырёх миров»',
+    birthday_title: 'Карта рождения',
+    birthday_blurb: 'Введите дату рождения и узнайте карту, связанную с этим днём.',
     lore_title: 'Посвящение',
-    lore_blurb: 'Вопросы по каждой карте колоды: от сюжета — к скрытым смыслам. Проверьте, насколько внимательно вы смотрите.',
+    lore_blurb: 'Вопросы о каждой карте — от самого сюжета до скрытых смыслов.',
   },
   learn: {
     threshold:
@@ -602,6 +610,7 @@ const ru: GamesCopy = {
   locked: {
     to_learn: 'Узнать колоду',
     to_birthday: 'Открыть карту рождения',
+    worlds_gate: 'Пройдите «Четыре мира», чтобы открыть этот путь.',
   },
   soon: {
     title: 'Скоро откроется.',
@@ -705,9 +714,11 @@ const be: GamesCopy = {
     learn_blurb: 'Пазнаёмцеся з героямі кожнай масці і навучыцеся пазнаваць карту па сюжэце. Ёсць рэжым на час.',
     birth_title: 'Пытанне Магістру',
     birth_blurb: 'Аракул калоды Магістр. Часам нам патрэбная падказка. Што скажа табе Магістр?',
-    birth_lock: 'Адкрыецца, калі раскласці калоду за пяць хвілін або хутчэй.',
+    birth_lock: 'Адкрыецца пасля праходжання «Чатырох светаў»',
+    birthday_title: 'Карта нараджэння',
+    birthday_blurb: 'Увядзіце дату нараджэння і даведайцеся карту, звязаную з гэтым днём.',
     lore_title: 'Пасвячэнне',
-    lore_blurb: 'Пытанні па кожнай карце калоды: ад сюжэта — да схаваных сэнсаў. Праверце, наколькі ўважліва вы глядзіце.',
+    lore_blurb: 'Пытанні пра кожную карту — ад самога сюжэта да схаваных сэнсаў.',
   },
   learn: {
     threshold:
@@ -853,6 +864,7 @@ const be: GamesCopy = {
   locked: {
     to_learn: 'Даведацца калоду',
     to_birthday: 'Адкрыць карту нараджэння',
+    worlds_gate: 'Прайдзіце «Чатыры светы», каб адкрыць гэты шлях.',
   },
   soon: {
     title: 'Хутка адкрыецца.',
@@ -956,9 +968,11 @@ const zh: GamesCopy = {
     learn_blurb: '认识每种花色的主角，学会从画面认出一张牌。附限时模式。',
     birth_title: '问 Magister',
     birth_blurb: 'Magister 牌组的神谕。有时我们需要一点提示。Magister 会对你说什么？',
-    birth_lock: '在五分钟内排完牌组后开启。',
+    birth_lock: '完成「四个世界」后解锁',
+    birthday_title: '生日牌',
+    birthday_blurb: '输入你的出生日期，发现与那一天相关的牌。',
     lore_title: '授礼',
-    lore_blurb: '关于每一张牌的问题：从画面到隐藏的含义。看看你观察得有多仔细。',
+    lore_blurb: '关于每一张牌的问题——从画面本身到隐藏的含义。',
   },
   learn: {
     threshold: '每张牌上的花色与数字都不是装饰。它们是写进 Magister 四个世界里的密码。看着面前这些面孔。学会看见它们。',
@@ -1102,6 +1116,7 @@ const zh: GamesCopy = {
   locked: {
     to_learn: '认识牌组',
     to_birthday: '打开生日牌',
+    worlds_gate: '完成「四个世界」以开启此路。',
   },
   soon: {
     title: '即将开放。',

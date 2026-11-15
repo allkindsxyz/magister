@@ -9,9 +9,12 @@ import MagisterLogo from './MagisterLogo.astro';
 
 interface Props {
   lang: Lang;
+  /** Landing section vs fullscreen /app shell. */
+  variant?: 'section' | 'app';
 }
 
-const { lang } = Astro.props;
+const { lang, variant = 'section' } = Astro.props;
+const isApp = variant === 'app';
 const t = useTranslations(lang);
 const copy = gamesCopy[lang];
 
@@ -94,14 +97,21 @@ const aceArt: Record<(typeof lessonSuits)[number], string> = {
 const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
 ---
 
-<section class="play-games editorial-section" id="play" aria-labelledby="play-title">
-  <div class="page-shell">
-    <header class="play-header">
-      <p class="play-kicker">{copy.kicker}</p>
-      <h2 class="section-title" id="play-title">{copy.title}</h2>
-    </header>
+<section
+  class:list={['play-games', isApp ? 'play-games--app' : 'editorial-section']}
+  id="play"
+  aria-labelledby={isApp ? undefined : 'play-title'}
+  data-play-variant={variant}
+>
+  <div class:list={isApp ? 'play-app-root' : 'page-shell'}>
+    {!isApp && (
+      <header class="play-header">
+        <p class="play-kicker">{copy.kicker}</p>
+        <h2 class="section-title" id="play-title">{copy.title}</h2>
+      </header>
+    )}
 
-    <div class="play-menu play-posters" role="list">
+    <div class="play-menu play-posters" role="list" hidden={isApp}>
       <button class="poster" type="button" data-action="open" data-game="learn" aria-pressed="false">
         <span class="poster-title">{copy.menu.learn_title}</span>
         <span class="poster-stage">
@@ -120,6 +130,18 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
           </span>
         </span>
         <span class="poster-body">{copy.menu.lore_blurb}</span>
+        <span class="play-lock">{copy.menu.birth_lock}</span>
+        <span class="poster-play">{copy.cta}</span>
+      </button>
+      <button class="poster" type="button" data-action="open" data-game="birthday" aria-pressed="false">
+        <span class="poster-title">{copy.menu.birthday_title}</span>
+        <span class="poster-stage">
+          <span class="poster-art poster-art--print" aria-hidden="true">
+            <img src="/media/card-back.jpg" alt="" width="732" height="1024" />
+          </span>
+        </span>
+        <span class="poster-body">{copy.menu.birthday_blurb}</span>
+        <span class="play-lock">{copy.menu.birth_lock}</span>
         <span class="poster-play">{copy.cta}</span>
       </button>
       <button class="poster" type="button" data-action="open" data-game="oracle" aria-pressed="false">
@@ -130,7 +152,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
           </span>
         </span>
         <span class="poster-body">{copy.menu.birth_blurb}</span>
-        {!oracle && <span class="play-lock">{copy.soon.title} {copy.soon.body}</span>}
+        <span class="play-lock">{!oracle ? `${copy.soon.title} ${copy.soon.body}` : copy.menu.birth_lock}</span>
         <span class="poster-play">{copy.cta}</span>
       </button>
     </div>
@@ -473,7 +495,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
       </div>
 
       <div data-screen="birthday" hidden>
-        <h3 tabindex="-1">{copy.menu.birth_title}</h3>
+        <h3 tabindex="-1">{copy.menu.birthday_title}</h3>
         <p class="play-prose">{copy.birthday.intro}</p>
         <ul class="play-spheres">
           {campSuits.map((suit) => (
@@ -515,7 +537,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
 
       <div data-screen="soon" class="fw-spread-intro" hidden>
         <h3 class="fw-spread-intro-title" id="play-soon-title" tabindex="-1">{copy.soon.title}</h3>
-        <p class="fw-spread-intro-body">{copy.soon.body}</p>
+        <p class="fw-spread-intro-body" id="play-soon-body">{copy.soon.body}</p>
         <img class="fw-soon-back" src="/media/card-back.jpg" alt="" width="732" height="1024" decoding="async" />
       </div>
 
@@ -723,9 +745,33 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
 
   @media (min-width: 860px) {
     .play-posters {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       align-items: stretch;
     }
+  }
+
+  @media (min-width: 1100px) {
+    .play-posters {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .play-games--app {
+    min-height: 0;
+    padding: 0;
+    background: transparent;
+  }
+
+  .play-games--app .play-app-root {
+    min-height: 0;
+  }
+
+  .play-games--app .play-scrim {
+    display: none !important;
+  }
+
+  .poster .play-lock[hidden] {
+    display: none !important;
   }
 
   .poster {

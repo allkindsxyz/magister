@@ -1,0 +1,36 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import AppShell from '../../../components/AppShell.astro';
+import type { Lang } from '../../../i18n/utils';
+import { appCopy } from '../../../i18n/appCopy';
+
+export function getStaticPaths() {
+  const langs: Lang[] = ['en', 'ru', 'be', 'zh'];
+  return langs.map((lang) => ({ params: { lang } }));
+}
+
+const { lang: langParam } = Astro.params;
+
+if (!langParam || !['en', 'ru', 'be', 'zh'].includes(langParam)) {
+  return Astro.redirect('/en/app');
+}
+
+const lang = langParam as Lang;
+const copy = appCopy[lang];
+---
+
+<Layout lang={lang} title={copy.meta_title} description={copy.meta_description}>
+  <script is:inline>
+    document.documentElement.classList.add('mag-app-active');
+  </script>
+  <main id="main-content">
+    <AppShell lang={lang} />
+  </main>
+</Layout>
+
+<style is:global>
+  /* App owns chrome; keep Layout chrome minimal. */
+  body.mag-app-body {
+    margin: 0;
+  }
+</style>

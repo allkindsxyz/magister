@@ -9,6 +9,8 @@ interface Props {
   canonicalURL?: string;
   /** Hide from search engines (prototypes, internal previews). */
   noindex?: boolean;
+  /** Locale alternates. Off for pages that exist in one language only. */
+  alternates?: boolean;
 }
 
 const {
@@ -16,6 +18,7 @@ const {
   description = 'Magister Cards is a physical collectible art card deck built around an original alternative mythology.',
   lang,
   noindex = false,
+  alternates = true,
 } = Astro.props;
 
 const pathAfterLocale = Astro.url.pathname.replace(new RegExp(`^/${lang}`), '') || '/';
@@ -46,12 +49,15 @@ const skipLabel =
   <meta property="og:site_name" content="Magister Cards" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Alternate languages -->
-  <link rel="alternate" hreflang="en" href={localizedAbsoluteUrl('en', pathAfterLocale)} />
-  <link rel="alternate" hreflang="ru" href={localizedAbsoluteUrl('ru', pathAfterLocale)} />
-  <link rel="alternate" hreflang="be" href={localizedAbsoluteUrl('be', pathAfterLocale)} />
-  <link rel="alternate" hreflang="zh-Hans" href={localizedAbsoluteUrl('zh', pathAfterLocale)} />
-  <link rel="alternate" hreflang="x-default" href={localizedAbsoluteUrl('en', pathAfterLocale)} />
+  {alternates && (
+    <>
+      <link rel="alternate" hreflang="en" href={localizedAbsoluteUrl('en', pathAfterLocale)} />
+      <link rel="alternate" hreflang="ru" href={localizedAbsoluteUrl('ru', pathAfterLocale)} />
+      <link rel="alternate" hreflang="be" href={localizedAbsoluteUrl('be', pathAfterLocale)} />
+      <link rel="alternate" hreflang="zh-Hans" href={localizedAbsoluteUrl('zh', pathAfterLocale)} />
+      <link rel="alternate" hreflang="x-default" href={localizedAbsoluteUrl('en', pathAfterLocale)} />
+    </>
+  )}
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -60,7 +66,7 @@ const skipLabel =
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600;800&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:wght@500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600;800&family=Manrope:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@400;500;600&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap"
   />
 </head>
 <body>
