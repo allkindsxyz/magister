@@ -7,6 +7,9 @@ import { formatPrice, PRICES } from '../lib/pricing';
 import MagisterLogo from './MagisterLogo.astro';
 import Gallery from './Gallery.astro';
 import Games from './Games.astro';
+import DeckGuide from './DeckGuide.astro';
+import OnlineTable from './OnlineTable.astro';
+import { onlineCopy } from '../i18n/onlineCopy';
 
 interface Props {
   lang: Lang;
@@ -14,6 +17,7 @@ interface Props {
 
 const { lang } = Astro.props;
 const copy = appCopy[lang];
+const onlineMenu = onlineCopy[lang];
 const games = gamesCopy[lang];
 const price = formatPrice(PRICES.standard, lang);
 const shopHref = `${getLocalizedPath('/', lang)}?from=app#deck-sku`;
@@ -23,8 +27,8 @@ const currentLang = LOCALE_LINKS.find((item) => item.code === lang) ?? LOCALE_LI
 const preload = [
   '/media/magister-logo.png',
   '/media/card-back.jpg',
-  '/media/poster-four-worlds.webp',
-  '/media/poster-initiation.webp',
+  '/media/poster-four-worlds.gif',
+  '/media/poster-initiation.gif',
   '/media/poster-ask-magister.webp',
   '/media/deck-lifestyle.jpg',
 ].join(',');
@@ -54,11 +58,22 @@ const doorDefaults: Record<
 > = {
   deck: { kind: 'prose' },
   cards: { art: '/media/card-back.jpg', artW: 732, artH: 1024 },
-  lore: { art: '/media/poster-initiation.webp', artW: 656, artH: 1024, lockedUntil: 'worlds' },
-  learn: { art: '/media/poster-four-worlds.webp', artW: 669, artH: 1024 },
+  lore: {
+    art: '/media/poster-initiation.gif',
+    artW: 386,
+    artH: 439,
+    fit: 'cover',
+    lockedUntil: 'worlds',
+  },
+  learn: {
+    art: '/media/poster-four-worlds.gif',
+    artW: 403,
+    artH: 423,
+    fit: 'cover',
+  },
   birthday: { art: '/media/card-back.jpg', artW: 732, artH: 1024, lockedUntil: 'worlds' },
   oracle: { art: '/media/poster-ask-magister.webp', artW: 656, artH: 1024, lockedUntil: 'worlds' },
-  online: { art: '/media/card-back.jpg', artW: 732, artH: 1024, soon: true },
+  online: { art: '/media/card-back.jpg', artW: 732, artH: 1024 },
   buy: { art: '/media/deck-lifestyle.jpg', artW: 1024, artH: 672, fit: 'cover' },
 };
 
@@ -77,7 +92,7 @@ const doors: Door[] = hubOrder.map((id) => {
 const startIndex = 0;
 ---
 
-<div class="mag-app" data-app data-preload={preload} data-deck-link={deckLink}>
+<div class="mag-app" data-app data-preload={preload} data-deck-link={deckLink} data-shop-link={shopHref}>
   <div class="mag-app-boot" data-app-boot>
     <div class="mag-app-boot__mark">
       <MagisterLogo class="mag-app-boot__logo" level width={200} height={88} />
@@ -183,9 +198,11 @@ const startIndex = 0;
                     door.kind === 'prose' ? (
                       <div class="mag-app-card__prose">
                         <p class="mag-app-card__prose-brand">{copy.deck_intro.title}</p>
-                        {copy.deck_intro.paragraphs.map((paragraph) => (
-                          <p>{paragraph}</p>
-                        ))}
+                        <div class="mag-app-card__prose-body">
+                          {copy.deck_intro.paragraphs.map((paragraph) => (
+                            <p>{paragraph}</p>
+                          ))}
+                        </div>
                         {copy.deck_intro.signoff.trim() ? (
                           <p class="mag-app-card__prose-signoff">{copy.deck_intro.signoff}</p>
                         ) : null}
@@ -234,7 +251,7 @@ const startIndex = 0;
     <div class="mag-app-caption" data-app-caption>
       <p class="mag-app-caption__blurb" data-active-blurb>{doors[startIndex]?.blurb ?? ''}</p>
       <div class="mag-app-caption__detail" data-active-detail hidden></div>
-      <p class="mag-app-caption__lock" data-active-lock hidden></p>
+      <p class="mag-app-caption__lock is-empty" data-active-lock></p>
       <button class="mag-app-caption__cta" type="button" data-active-cta>
         {doors[startIndex]?.cta ?? copy.cta_open}
       </button>
@@ -269,19 +286,42 @@ const startIndex = 0;
     <Games lang={lang} variant="app" />
   </section>
 
-  <section class="mag-app-panel" data-panel="online" hidden>
-    <header class="mag-app-panel__bar">
-      <button class="mag-app-back" type="button" data-app-action="back">
+  <DeckGuide lang={lang} backLabel={copy.back} shopHref={shopHref} />
+
+  <section class="mag-app-panel mag-app-panel--online" data-panel="online" hidden>
+    <header class="mag-app-panel__bar mag-app-panel__bar--online">
+      <button class="mag-app-back mag-app-back--pill" type="button" data-app-action="back">
         <span aria-hidden="true">←</span>
         {copy.back}
       </button>
-      <h2 class="mag-app-panel__title">{copy.online_title}</h2>
+      <div class="mag-app-panel__brand">
+        <MagisterLogo class="mag-app-panel__logo mag-app-panel__logo--online" level width={108} height={47} />
+      </div>
+      <div class="mag-app-online-menu" data-app-online-menu>
+        <button
+          class="mag-app-online-menu__toggle"
+          type="button"
+          data-app-online-menu-toggle
+          aria-expanded="false"
+          aria-haspopup="menu"
+          aria-label={onlineMenu.menu_open}
+        >
+          <span aria-hidden="true">⋯</span>
+        </button>
+        <div class="mag-app-online-menu__panel" data-app-online-menu-panel role="menu" hidden>
+          <button type="button" role="menuitem" data-app-online-menu-copy>
+            {onlineMenu.menu_copy}
+          </button>
+          <button type="button" role="menuitem" data-app-online-menu-bot>
+            {onlineMenu.menu_add_bot}
+          </button>
+          <button type="button" role="menuitem" data-app-online-menu-restart>
+            {onlineMenu.menu_restart}
+          </button>
+        </div>
+      </div>
     </header>
-    <div class="mag-app-panel__body mag-app-stub">
-      <img class="mag-app-stub__art" src="/media/card-back.jpg" alt="" width="220" height="308" decoding="async" />
-      <h3>{copy.online_stub_title}</h3>
-      <p>{copy.online_stub_body}</p>
-    </div>
+    <OnlineTable lang={lang} backLabel={copy.back} initialRoom={null} />
   </section>
 
   <section class="mag-app-panel" data-panel="buy" hidden>
@@ -346,8 +386,8 @@ const startIndex = 0;
     --app-line: rgba(199, 163, 106, 0.28);
     --card-radius: clamp(0.55rem, 4.6%, 0.9rem);
     --slide-gap: 0.85rem;
-    --carousel-ease: cubic-bezier(0.22, 1.18, 0.36, 1);
-    --carousel-dur: 520ms;
+    --carousel-ease: cubic-bezier(0.25, 0.92, 0.35, 1);
+    --carousel-dur: 560ms;
     --display: 'Cormorant Garamond', 'Noto Serif SC', Georgia, serif;
     --sans: 'Manrope', 'Noto Sans SC', system-ui, sans-serif;
     position: relative;
@@ -561,23 +601,31 @@ const startIndex = 0;
   }
 
   .mag-app-intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
     text-align: center;
+    min-height: 4.35rem;
     margin: 0.65rem 0 0.45rem;
     padding-inline: max(0.85rem, env(safe-area-inset-left)) max(0.85rem, env(safe-area-inset-right));
-    transition: opacity 200ms ease, transform 200ms ease;
+    transition:
+      opacity calc(var(--carousel-dur) / 2) var(--carousel-ease),
+      transform calc(var(--carousel-dur) / 2) var(--carousel-ease);
   }
 
-  .mag-app-intro.is-swap {
+  .mag-app-intro.is-chrome-fade {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(6px);
   }
 
   .mag-app-kicker {
     margin: 0;
+    width: 100%;
     max-width: min(100%, calc(var(--slide-w, 16rem) + 1.5rem));
     margin-inline: auto;
+    min-height: 2.2em;
     font-family: var(--display);
-    font-size: clamp(1.85rem, 8.2vw, 2.45rem);
+    font-size: clamp(1.95rem, 8.5vw, 2.55rem);
     font-weight: 600;
     letter-spacing: -0.025em;
     line-height: 1.08;
@@ -715,8 +763,8 @@ const startIndex = 0;
       scale(var(--card-scale));
     transition:
       transform var(--carousel-dur) var(--carousel-ease),
-      opacity 360ms ease,
-      filter 360ms ease;
+      opacity var(--carousel-dur) var(--carousel-ease),
+      filter var(--carousel-dur) var(--carousel-ease);
     transform-origin: center center;
     will-change: transform;
   }
@@ -724,7 +772,7 @@ const startIndex = 0;
   .mag-app-card.is-far {
     opacity: 0;
     pointer-events: none;
-    visibility: hidden;
+    z-index: 0;
   }
 
   .mag-app-card[data-offset='-1'],
@@ -807,6 +855,8 @@ const startIndex = 0;
   }
 
   .mag-app-card--prose .mag-app-card__frame {
+    container-type: size;
+    container-name: deck-prose;
     background: linear-gradient(165deg, #142238 0%, #0d1524 48%, #080d18 100%);
     border-color: rgba(199, 163, 106, 0.42);
   }
@@ -814,41 +864,81 @@ const startIndex = 0;
   .mag-app-card__prose {
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
+    justify-content: center;
+    gap: clamp(0.4rem, 3.5cqmin, 0.7rem);
+    box-sizing: border-box;
     height: 100%;
-    padding: clamp(0.65rem, 3.2vw, 0.85rem) clamp(0.6rem, 3vw, 0.8rem);
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    min-height: 100%;
+    padding: clamp(0.75rem, 7cqmin, 1.35rem) clamp(0.65rem, 6.2cqmin, 1.15rem);
+    overflow: hidden;
     text-align: left;
     color: var(--app-parchment);
-    font-size: clamp(0.58rem, 2.35vw, 0.68rem);
-    line-height: 1.38;
-    scrollbar-width: thin;
+    font-size: clamp(0.92rem, 8.4cqmin, 1.22rem);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  @supports not (font-size: 1cqmin) {
+    .mag-app-card__prose {
+      font-size: clamp(0.88rem, 3.4vw, 1.08rem);
+      padding: clamp(0.85rem, 3.8vw, 1.15rem) clamp(0.72rem, 3.4vw, 1rem);
+    }
   }
 
   .mag-app-card__prose p {
     margin: 0;
   }
 
+  .mag-app-card__prose-body {
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(0.45rem, 4cqmin, 0.75rem);
+    padding-block: 0;
+  }
+
+  @supports not (font-size: 1cqmin) {
+    .mag-app-card__prose-body {
+      gap: 0.65rem;
+      padding-block: 0.5rem;
+    }
+  }
+
   .mag-app-card__prose-brand {
+    flex: 0 0 auto;
     font-family: var(--display);
-    font-size: clamp(1.05rem, 4.4vw, 1.3rem);
+    font-size: clamp(1.35rem, 16.5cqmin, 2rem);
     font-weight: 700;
-    letter-spacing: 0.12em;
-    line-height: 1.05;
+    letter-spacing: 0.1em;
+    line-height: 1.02;
     color: var(--app-gold-hot);
     text-align: center;
-    margin-bottom: 0.15rem !important;
+    margin: 0 !important;
+  }
+
+  @supports not (font-size: 1cqmin) {
+    .mag-app-card__prose-brand {
+      font-size: clamp(1.3rem, 5.5vw, 1.65rem);
+    }
   }
 
   .mag-app-card__prose-signoff {
-    margin-top: auto !important;
-    padding-top: 0.35rem;
+    flex: 0 0 auto;
+    margin: 0 !important;
+    padding-top: 0;
     color: var(--app-gold);
-    font-size: clamp(0.52rem, 2.1vw, 0.62rem);
+    font-size: clamp(0.72rem, 6.8cqmin, 0.98rem);
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
+    line-height: 1.35;
     text-align: center;
+  }
+
+  @supports not (font-size: 1cqmin) {
+    .mag-app-card__prose-signoff {
+      font-size: clamp(0.68rem, 2.8vw, 0.86rem);
+    }
   }
 
   .mag-app-card.is-active.mag-app-card--prose .mag-app-card__frame {
@@ -926,27 +1016,32 @@ const startIndex = 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.3rem;
-    width: min(100%, 22.5rem);
+    justify-content: flex-start;
+    gap: 0.42rem;
+    width: min(100%, 24rem);
+    min-height: 9.25rem;
     margin: 0 auto;
     padding-inline: max(0.85rem, env(safe-area-inset-left)) max(0.85rem, env(safe-area-inset-right));
     text-align: center;
-    transition: opacity 200ms ease, transform 200ms ease;
+    transition:
+      opacity calc(var(--carousel-dur) / 2) var(--carousel-ease),
+      transform calc(var(--carousel-dur) / 2) var(--carousel-ease);
   }
 
-  .mag-app-caption.is-swap {
+  .mag-app-caption.is-chrome-fade {
     opacity: 0;
-    transform: translateY(3px);
+    transform: translateY(5px);
   }
 
   .mag-app-caption__blurb {
     margin: 0;
-    max-width: 17rem;
+    max-width: 20rem;
+    min-height: 2.85em;
     color: var(--app-parchment);
-    font-size: clamp(0.9rem, 3.8vw, 1rem);
-    font-weight: 600;
-    line-height: 1.35;
-    letter-spacing: 0.01em;
+    font-size: clamp(1.05rem, 4.35vw, 1.2rem);
+    font-weight: 500;
+    line-height: 1.42;
+    letter-spacing: 0.012em;
     text-wrap: balance;
   }
 
@@ -968,26 +1063,34 @@ const startIndex = 0;
 
   .mag-app-caption__lock {
     margin: 0;
+    flex: 0 0 auto;
+    min-height: 1.35rem;
     color: var(--app-gold);
-    font-size: 0.76rem;
+    font-size: clamp(0.82rem, 3.4vw, 0.9rem);
+    font-weight: 600;
     line-height: 1.4;
+    letter-spacing: 0.03em;
+  }
+
+  .mag-app-caption__lock.is-empty {
+    visibility: hidden;
   }
 
   .mag-app-caption__cta {
     appearance: none;
-    margin-top: 0.35rem;
+    margin-top: 0.25rem;
     flex: 0 0 auto;
-    min-height: 2.85rem;
-    width: 11.25rem;
-    padding: 0.65rem 1.25rem;
+    min-height: 3rem;
+    width: min(12.5rem, 88vw);
+    padding: 0.7rem 1.35rem;
     border: 1px solid rgba(199, 163, 106, 0.55);
     border-radius: 999px;
     background: linear-gradient(180deg, rgba(199, 163, 106, 0.2), rgba(199, 163, 106, 0.06));
     color: var(--app-gold-hot);
     font: inherit;
-    font-size: 0.88rem;
+    font-size: clamp(0.94rem, 3.9vw, 1.02rem);
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.05em;
     cursor: pointer;
   }
 
@@ -1019,10 +1122,168 @@ const startIndex = 0;
   }
 
   .mag-app-panel--cards,
-  .mag-app-panel--play {
+  .mag-app-panel--play,
+  .mag-app-panel--guide,
+  .mag-app-panel--online {
     width: 100%;
     max-width: none;
     padding: 0;
+  }
+
+  .mag-app-panel--online {
+    position: fixed;
+    inset: 0;
+    z-index: 44;
+    margin: 0;
+    height: 100svh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #080d18;
+  }
+
+  .mag-app-panel__bar--online {
+    position: relative;
+    z-index: 50;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.5rem;
+    padding:
+      max(0.55rem, env(safe-area-inset-top))
+      max(0.75rem, env(safe-area-inset-right))
+      0.35rem
+      max(0.75rem, env(safe-area-inset-left));
+    background: rgba(8, 13, 24, 0.88);
+    backdrop-filter: blur(10px);
+  }
+
+  .mag-app-panel__bar--online .mag-app-back {
+    justify-self: start;
+    z-index: 2;
+  }
+
+  .mag-app-panel__bar--online .mag-app-back.mag-app-back--pill {
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid rgba(201, 169, 108, 0.45);
+    border-radius: 1.25rem;
+    padding: 0.42rem 0.9rem;
+    min-height: 2.35rem;
+    background: rgba(23, 35, 51, 0.92);
+    color: #e8d5ac;
+    font: inherit;
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 0 0.35rem 0.85rem rgba(0, 0, 0, 0.25);
+  }
+
+  .mag-app-panel__bar--online .mag-app-panel__brand {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .mag-app-panel__logo--online {
+    display: block;
+    height: clamp(2rem, 7vw, 2.35rem);
+    width: auto;
+  }
+
+  .mag-app-back--pill {
+    border: 1px solid rgba(201, 169, 108, 0.45);
+    border-radius: 1.25rem;
+    padding: 0.42rem 0.85rem;
+    min-height: 2.35rem;
+    background: rgba(23, 35, 51, 0.92);
+    color: #e8d5ac;
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+
+  .mag-app-back--pill:hover,
+  .mag-app-back--pill:focus-visible {
+    border-color: #ecd09b;
+    background: rgba(31, 45, 62, 0.95);
+  }
+
+  .mag-app-panel--online .mag-app-online-menu {
+    position: fixed;
+    top: max(0.55rem, env(safe-area-inset-top));
+    right: max(0.75rem, env(safe-area-inset-right));
+    z-index: 80;
+  }
+
+  .mag-app-online-menu__toggle {
+    appearance: none;
+    display: grid;
+    place-items: center;
+    min-width: 2.5rem;
+    min-height: 2.35rem;
+    padding: 0.35rem 0.65rem;
+    border: 1px solid rgba(201, 169, 108, 0.45);
+    border-radius: 1.25rem;
+    background: rgba(23, 35, 51, 0.92);
+    color: #e8d5ac;
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease;
+  }
+
+  .mag-app-online-menu__toggle:hover,
+  .mag-app-online-menu__toggle:focus-visible {
+    border-color: #ecd09b;
+    background: rgba(31, 45, 62, 0.95);
+  }
+
+  .mag-app-online-menu__panel {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0;
+    min-width: 11.5rem;
+    padding: 0.35rem;
+    border: 1px solid rgba(201, 169, 108, 0.35);
+    border-radius: 0.65rem;
+    background: rgba(14, 22, 36, 0.98);
+    box-shadow: 0 0.75rem 1.75rem rgba(0, 0, 0, 0.45);
+  }
+
+  .mag-app-online-menu__panel[hidden] {
+    display: none !important;
+  }
+
+  .mag-app-online-menu__panel button {
+    appearance: none;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0.55rem 0.75rem;
+    border: 0;
+    border-radius: 0.45rem;
+    background: transparent;
+    color: #e8dfd0;
+    font: inherit;
+    font-size: 0.82rem;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .mag-app-online-menu__panel button:hover,
+  .mag-app-online-menu__panel button:focus-visible {
+    background: rgba(201, 169, 108, 0.12);
+    color: #ecd09b;
   }
 
   .mag-app-panel--cards .play-games {
@@ -1190,7 +1451,7 @@ const startIndex = 0;
     }
 
     .mag-app-caption__blurb {
-      font-size: 0.82rem;
+      font-size: 0.98rem;
     }
   }
 
@@ -1199,7 +1460,8 @@ const startIndex = 0;
     .mag-app-card,
     .mag-app-intro,
     .mag-app-caption,
-    .mag-app-caption__cta {
+    .mag-app-caption__cta,
+    .mag-app-caption__blurb {
       transition: none;
     }
   }

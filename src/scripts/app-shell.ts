@@ -2,6 +2,8 @@ const AGE_COOKIE = 'magister_age_14';
 const AGE_MAX_AGE = 60 * 60 * 24 * 365 * 2;
 const BOOT_MIN_MS = 1200;
 import { HUB_DETAIL_SEP } from '../i18n/appCopy';
+import { mountAppGuide, type GuideGoTarget, type GuideViewId } from './app-guide';
+import { parseRoomFromLocation } from './online-table';
 
 const SAVE_KEY = 'magister-play-v1';
 
@@ -71,9 +73,33 @@ export function mountAppShell(): void {
   const panels = {
     cards: root.querySelector<HTMLElement>('[data-panel="cards"]'),
     play: root.querySelector<HTMLElement>('[data-panel="play"]'),
+    guide: root.querySelector<HTMLElement>('[data-panel="guide"]'),
     online: root.querySelector<HTMLElement>('[data-panel="online"]'),
     buy: root.querySelector<HTMLElement>('[data-panel="buy"]'),
   };
+
+  const guideRoot = root.querySelector<HTMLElement>('[data-guide-root]');
+  const guideTitles = guideRoot
+    ? {
+        hub: guideRoot.dataset.titleHub ?? '',
+        worlds: guideRoot.dataset.titleWorlds ?? '',
+        rank: guideRoot.dataset.titleRank ?? '',
+        path: guideRoot.dataset.titlePath ?? '',
+        history: guideRoot.dataset.titleHistory ?? '',
+      }
+    : { hub: '', worlds: '', rank: '', path: '', history: '' };
+
+  const guide = mountAppGuide(guideRoot, {
+    getBarTitle: (view: GuideViewId) => guideTitles[view] || guideTitles.hub,
+    onBackToAppHub: () => showHub(),
+    onBackToHub: () => {},
+    onOpenLock: () => openLock(),
+    worldsCleared,
+    onGo: (target: GuideGoTarget) => {
+      if (target === 'cards') showPanel('cards');
+      else openGame(target);
+    },
+  });
 
   document.documentElement.classList.add('mag-app-active');
   document.body.classList.add('mag-app-body');
@@ -85,6 +111,9 @@ export function mountAppShell(): void {
   let startX = 0;
   let dragging = false;
   let dragged = false;
+  let dragCapturing = false;
+  let doorTapGuard = false;
+  const DRAG_SLOP_PX = 10;
 
   function paintLocks(): void {
     const open = worldsCleared();
@@ -93,6 +122,21 @@ export function mountAppShell(): void {
       door.toggleAttribute('aria-disabled', !open);
     });
     paintActiveMeta();
+  }
+
+  let metaSwapTimer: ReturnType<typeof setTimeout> | undefined;
+
+  function carouselDurationMs(): number {
+    const raw = getComputedStyle(root).getPropertyValue('--carousel-dur').trim();
+    const match = raw.match(/^([\d.]+)m?s$/);
+    if (!match) return 520;
+    const value = Number(match[1]);
+    return raw.endsWith('s') && !raw.endsWith('ms') ? value * 1000 : value;
+  }
+
+  function clearChromeFade(): void {
+    intro?.classList.remove('is-chrome-fade');
+    caption?.classList.remove('is-chrome-fade');
   }
 
   function applyActiveMeta(): void {
@@ -119,7 +163,7 @@ export function mountAppShell(): void {
     if (activeLock) {
       const lockText = locked ? (slide.dataset.lockText ?? '') : soon ? (slide.dataset.soonText ?? '') : '';
       activeLock.textContent = lockText;
-      activeLock.hidden = !lockText;
+      activeLock.classList.toggle('is-empty', !lockText);
     }
   }
 
@@ -139,17 +183,29 @@ export function mountAppShell(): void {
           : [...activeDetail.querySelectorAll('p')].map((p) => p.textContent).join(HUB_DETAIL_SEP) !== nextDetail),
     );
     const ctaChanged = Boolean(activeCta && activeCta.textContent !== nextCta);
-    if (!animate || reduceMotion || (!titleChanged && !blurbChanged && !detailChanged && !ctaChanged)) {
+    const anyChanged = titleChanged || blurbChanged || detailChanged || ctaChanged;
+
+    if (metaSwapTimer !== undefined) {
+      clearTimeout(metaSwapTimer);
+      metaSwapTimer = undefined;
+    }
+
+    if (!animate || reduceMotion || !anyChanged) {
+      clearChromeFade();
       applyActiveMeta();
       return;
     }
-    if (titleChanged) intro?.classList.add('is-swap');
-    caption?.classList.add('is-swap');
-    window.setTimeout(() => {
+
+    const half = carouselDurationMs() / 2;
+    intro?.classList.add('is-chrome-fade');
+    caption?.classList.add('is-chrome-fade');
+
+    metaSwapTimer = window.setTimeout(() => {
       applyActiveMeta();
-      intro?.classList.remove('is-swap');
-      caption?.classList.remove('is-swap');
-    }, 100);
+      intro?.classList.remove('is-chrome-fade');
+      caption?.classList.remove('is-chrome-fade');
+      metaSwapTimer = undefined;
+    }, half);
   }
 
   function wrapIndex(value: number): number {
@@ -170,7 +226,8 @@ export function mountAppShell(): void {
   function paintCarousel(animate = true): void {
     if (!track || !slides.length) return;
     index = wrapIndex(index);
-    track.classList.toggle('is-instant', !animate || reduceMotion);
+    const motion = animate && !reduceMotion;
+    track.classList.toggle('is-instant', !motion);
     track.style.setProperty('--carousel-drag', `${dragX}px`);
     slides.forEach((slide, i) => {
       const offset = circularOffset(i, index);
@@ -193,7 +250,7 @@ export function mountAppShell(): void {
     const nextBtn = root.querySelector<HTMLButtonElement>('[data-carousel-next]');
     if (prevBtn) prevBtn.disabled = slides.length <= 1;
     if (nextBtn) nextBtn.disabled = slides.length <= 1;
-    paintActiveMeta(animate);
+    paintActiveMeta(motion);
   }
 
   function goTo(next: number, animate = true): void {
@@ -265,13 +322,17 @@ export function mountAppShell(): void {
       return;
     }
     if (action === 'deck') {
-      const href = root.dataset.deckLink;
-      if (href) window.location.assign(href);
+      guide.showGuide();
+      showPanel('guide');
       return;
     }
     if (action === 'cards') showPanel('cards');
     else if (action === 'online') showPanel('online');
-    else if (action === 'buy') showPanel('buy');
+    else if (action === 'buy') {
+      const href = root.dataset.shopLink;
+      if (href) window.location.assign(href);
+      return;
+    }
     else if (action === 'learn' || action === 'lore' || action === 'birthday' || action === 'oracle') {
       openGame(action);
     }
@@ -284,6 +345,14 @@ export function mountAppShell(): void {
       return;
     }
     activateDoor(door);
+  }
+
+  function invokeDoorTap(door: HTMLElement): void {
+    doorTapGuard = true;
+    onDoorClick(door);
+    window.setTimeout(() => {
+      doorTapGuard = false;
+    }, 320);
   }
 
   function confirmAge(): void {
@@ -300,10 +369,7 @@ export function mountAppShell(): void {
     const target = event.target;
     if (!(target instanceof Element)) return;
 
-    if (dragged) {
-      dragged = false;
-      return;
-    }
+    if (doorTapGuard) return;
 
     const langToggle = target.closest<HTMLElement>('[data-lang-toggle]');
     if (langToggle && root.contains(langToggle)) {
@@ -335,7 +401,7 @@ export function mountAppShell(): void {
     const door = target.closest<HTMLElement>('[data-door]');
     if (door && root.contains(door)) {
       event.preventDefault();
-      onDoorClick(door);
+      invokeDoorTap(door);
       return;
     }
 
@@ -357,6 +423,10 @@ export function mountAppShell(): void {
       return;
     }
     if (action === 'back') {
+      if (panels.guide && !panels.guide.hidden) guide.resetGuide();
+      if (panels.online && !panels.online.hidden) {
+        panels.online.dispatchEvent(new CustomEvent('magister:online-stop'));
+      }
       showHub();
       return;
     }
@@ -375,46 +445,61 @@ export function mountAppShell(): void {
       if (event.button !== 0 && event.pointerType === 'mouse') return;
       if (!(event.target instanceof Element)) return;
       if (event.target.closest('[data-carousel-prev], [data-carousel-next], [data-carousel-dot]')) return;
+      if (!event.target.closest('[data-door]')) return;
       dragging = true;
       dragged = false;
+      dragCapturing = false;
       startX = event.clientX;
       dragX = 0;
-      track.setPointerCapture(event.pointerId);
-      track.classList.add('is-dragging');
     };
 
     const onPointerMove = (event: PointerEvent): void => {
       if (!dragging) return;
       dragX = event.clientX - startX;
-      if (Math.abs(dragX) > 8) dragged = true;
-      paintCarousel(false);
+      if (!dragCapturing && Math.abs(dragX) >= DRAG_SLOP_PX) {
+        dragged = true;
+        dragCapturing = true;
+        track.setPointerCapture(event.pointerId);
+        track.classList.add('is-dragging');
+      }
+      if (dragCapturing) paintCarousel(false);
     };
 
-    const onPointerUp = (event: PointerEvent): void => {
+    const endPointerDrag = (event: PointerEvent): void => {
       if (!dragging) return;
       dragging = false;
       track.classList.remove('is-dragging');
-      try {
-        track.releasePointerCapture(event.pointerId);
-      } catch {
-        /* already released */
-      }
-      const threshold = Math.min(120, track.clientWidth * 0.18);
-      if (dragX <= -threshold) step(1);
-      else if (dragX >= threshold) step(-1);
-      else {
-        dragX = 0;
-        paintCarousel(true);
-      }
-      window.setTimeout(() => {
+
+      if (dragCapturing) {
+        dragCapturing = false;
+        try {
+          track.releasePointerCapture(event.pointerId);
+        } catch {
+          /* already released */
+        }
+        const threshold = Math.min(120, track.clientWidth * 0.18);
+        if (dragX <= -threshold) step(1);
+        else if (dragX >= threshold) step(-1);
+        else {
+          dragX = 0;
+          paintCarousel(true);
+        }
         dragged = false;
-      }, 40);
+        return;
+      }
+
+      const hit = document.elementFromPoint(event.clientX, event.clientY);
+      const door = hit?.closest<HTMLElement>('[data-door]');
+      if (door && root.contains(door)) invokeDoorTap(door);
+      dragX = 0;
+      dragged = false;
+      paintCarousel(true);
     };
 
     track.addEventListener('pointerdown', onPointerDown);
     track.addEventListener('pointermove', onPointerMove);
-    track.addEventListener('pointerup', onPointerUp);
-    track.addEventListener('pointercancel', onPointerUp);
+    track.addEventListener('pointerup', endPointerDrag);
+    track.addEventListener('pointercancel', endPointerDrag);
   }
 
   window.addEventListener('magister:play-closed', () => {
@@ -440,6 +525,7 @@ export function mountAppShell(): void {
       const openPanel = Object.values(panels).find((panel) => panel && !panel.hidden);
       if (openPanel && openPanel !== panels.play) {
         event.preventDefault();
+        if (openPanel === panels.guide) guide.resetGuide();
         showHub();
       }
       return;
@@ -478,6 +564,10 @@ export function mountAppShell(): void {
     }
     if (hasAgeGate()) {
       showHub();
+      const roomCode = parseRoomFromLocation();
+      if (roomCode) {
+        showPanel('online');
+      }
     } else if (ageGate) {
       ageGate.hidden = false;
     }
