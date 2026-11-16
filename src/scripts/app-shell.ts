@@ -355,9 +355,15 @@ export function mountAppShell(): void {
     }, 320);
   }
 
+  function openOnlineFromInviteLink(): void {
+    const roomCode = parseRoomFromLocation();
+    if (roomCode) showPanel('online');
+  }
+
   function confirmAge(): void {
     writeCookie(AGE_COOKIE, '1', AGE_MAX_AGE);
     showHub();
+    openOnlineFromInviteLink();
   }
 
   function denyAge(): void {
@@ -564,10 +570,7 @@ export function mountAppShell(): void {
     }
     if (hasAgeGate()) {
       showHub();
-      const roomCode = parseRoomFromLocation();
-      if (roomCode) {
-        showPanel('online');
-      }
+      openOnlineFromInviteLink();
     } else if (ageGate) {
       ageGate.hidden = false;
     }
