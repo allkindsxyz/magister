@@ -1,6 +1,22 @@
 import type { Lang } from './utils';
 
-export type HubDoorId = 'cards' | 'learn' | 'lore' | 'birthday' | 'oracle' | 'online' | 'buy';
+export type DeckIntroCopy = {
+  title: string;
+  paragraphs: string[];
+  signoff: string;
+};
+
+export type HubDoorId = 'deck' | 'cards' | 'learn' | 'lore' | 'birthday' | 'oracle' | 'online' | 'buy';
+
+export type HubDoorCopy = {
+  title: string;
+  blurb: string;
+  detail: string[];
+  cta: string;
+};
+
+/** Paragraph separator for `data-detail` on hub slides (not user-facing). */
+export const HUB_DETAIL_SEP = '\u001e';
 
 export type AppCopy = {
   meta_title: string;
@@ -44,7 +60,8 @@ export type AppCopy = {
   buy_back: string;
   nav_cards: string;
   nav_cards_blurb: string;
-  hub_blurbs: Record<HubDoorId, string>;
+  hub_doors: Record<HubDoorId, HubDoorCopy>;
+  deck_intro: DeckIntroCopy;
   lang_label: string;
   site: string;
 };
@@ -90,16 +107,91 @@ const en: AppCopy = {
   buy_blurb: '54 paintings. Four worlds. In your hands.',
   buy_cta: 'Buy the deck',
   buy_back: 'Back to the hall',
-  nav_cards: 'Card Navigator',
+  nav_cards: 'The deck',
   nav_cards_blurb: 'Browse every face of the deck.',
-  hub_blurbs: {
-    cards: 'All fifty-four faces. One deck.',
-    learn: 'Four suits — learn to read every scene.',
-    lore: 'Scene to symbol. How deep do you look?',
-    birthday: 'Your birth date reveals your card.',
-    oracle: 'When you need a hint — ask the Magister.',
-    online: 'A table, a link, play together.',
-    buy: 'Fifty-four paintings in your hands.',
+  deck_intro: {
+    title: 'MAGISTER',
+    paragraphs: [
+      'You see the cards. But do you see what is hidden in them?',
+      'Each card holds its own riddle. Images, symbols, and details guard secrets that do not lie on the surface. There are no familiar suit marks or ranks here — they are hidden directly in the pictures.',
+      'Some will see only pictures. Others — stories and symbols. Only those who decipher the hidden language of the cards can master the game.',
+      'The cards do not reveal their secrets to everyone. To become a Magister, you must understand them.',
+    ],
+    signoff: 'Dr. Klein’s author deck',
+  },
+  hub_doors: {
+    deck: {
+      title: 'MAGISTER',
+      blurb: 'The hidden language of the cards. Dr. Klein’s author deck.',
+      detail: [],
+      cta: 'Discover',
+    },
+    cards: {
+      title: 'The deck',
+      blurb: '54 cards. 54 stories of their own.',
+      detail: [
+        'The full MAGISTER deck is before you. Study the images, notice the details, and uncover the story hidden in each card.',
+        'Learn what lies behind the pictures and symbols, and try to decipher the language of the deck.',
+      ],
+      cta: 'Open the deck',
+    },
+    lore: {
+      title: 'Initiation',
+      blurb: 'Look closely. Seek what is hidden. Solve the cards.',
+      detail: [
+        'Every card holds more than meets the eye.',
+        'Answer questions about characters, scenes, and details in the art. Test your observation and gradually uncover the deck’s hidden meanings.',
+        'How deeply can you look?',
+      ],
+      cta: 'Begin',
+    },
+    learn: {
+      title: 'The Four Worlds',
+      blurb: 'Four suits. Four worlds. Learn the language of the deck.',
+      detail: [
+        'Behind each MAGISTER suit lies its own world — with its heroes, stories, and symbols.',
+        'Meet the characters of the four worlds, see how the deck is built, and learn to read suits and ranks from the pictures alone.',
+        'Can you learn to read the cards without familiar marks?',
+      ],
+      cta: 'Explore',
+    },
+    birthday: {
+      title: 'Birthday Card',
+      blurb: 'Find which card belongs to your birthday.',
+      detail: [
+        'Enter your birth date and find the card linked to that day.',
+        'Open its image, discover its story and symbols. You may find something meant for you alone.',
+      ],
+      cta: 'Find your card',
+    },
+    oracle: {
+      title: 'Ask the Magister',
+      blurb: 'Question about a card? Ask the Magister.',
+      detail: [
+        'Not every secret opens at first glance.',
+        'Ask the Magister about a character, a scene, or hidden symbols. Get a hint and continue your own journey through the cards.',
+      ],
+      cta: 'Ask',
+    },
+    online: {
+      title: 'Play online',
+      blurb: 'Gather friends. Open a table. Play together.',
+      detail: [
+        'MAGISTER is richer when explored together.',
+        'Invite friends, create a table, and see who has mastered the hidden language of the cards.',
+      ],
+      cta: 'Soon',
+    },
+    buy: {
+      title: 'Physical deck',
+      blurb: '54 original paintings. One uncommon deck.',
+      detail: [
+        'Discover MAGISTER beyond the screen.',
+        'Dr. Klein’s physical deck is 54 original images where suits, ranks, and stories are all concealed.',
+        'Study every detail, uncover new meanings, and play with friends.',
+      ],
+      cta: 'Order the deck',
+    },
   },
   lang_label: 'Language',
   site: 'Site',
@@ -146,16 +238,91 @@ const ru: AppCopy = {
   buy_blurb: '54 картины. Четыре мира. В ваших руках.',
   buy_cta: 'Купить колоду',
   buy_back: 'В зал',
-  nav_cards: 'Навигатор карт',
-  nav_cards_blurb: 'Листайте все лица колоды.',
-  hub_blurbs: {
-    cards: 'Все 54 карты. Одна колода.',
-    learn: 'Четыре масти — учитесь читать сюжет.',
-    lore: 'От сюжета к символу. Насколько глубоко смотрите?',
-    birthday: 'Дата рождения открывает вашу карту.',
-    oracle: 'Нужна подсказка — спросите Магистра.',
-    online: 'Стол, ссылка, игра вместе.',
-    buy: '54 картины — в ваших руках.',
+  nav_cards: 'Колода',
+  nav_cards_blurb: 'Листайте все карты колоды.',
+  deck_intro: {
+    title: 'МАГИСТР',
+    paragraphs: [
+      'Ты видишь карты. Но видишь ли ты то, что скрыто в них?',
+      'В каждой карте — своя загадка. Образы, символы и детали хранят секреты, которые не лежат на поверхности. Здесь нет привычных обозначений мастей и рангов — они спрятаны непосредственно в изображениях.',
+      'Одни увидят картины. Другие — истории и символы. И только тот, кто сумеет разгадать скрытый язык карт, сможет овладеть игрой.',
+      'Карты открывают свои тайны не каждому. Чтобы стать Магистром, их нужно понять.',
+    ],
+    signoff: 'Авторская колода Dr. Klein',
+  },
+  hub_doors: {
+    deck: {
+      title: 'МАГИСТР',
+      blurb: 'Скрытый язык карт. Авторская колода Dr. Klein.',
+      detail: [],
+      cta: 'Познакомиться',
+    },
+    cards: {
+      title: 'Колода',
+      blurb: '54 карты. 54 самостоятельные истории.',
+      detail: [
+        'Перед тобой вся колода MAGISTER. Рассматривай изображения, изучай детали и открывай истории, скрытые в каждой карте.',
+        'Узнай, что стоит за образами и символами, и попробуй разгадать язык колоды.',
+      ],
+      cta: 'Открыть колоду',
+    },
+    lore: {
+      title: 'Посвящение',
+      blurb: 'Внимательно смотри. Ищи скрытое. Разгадывай карты.',
+      detail: [
+        'Каждая карта хранит больше, чем кажется на первый взгляд.',
+        'Отвечай на вопросы о персонажах, сюжетах и деталях изображений. Проверяй свою наблюдательность и постепенно открывай скрытые смыслы колоды.',
+        'Насколько глубоко ты умеешь смотреть?',
+      ],
+      cta: 'Начать',
+    },
+    learn: {
+      title: 'Четыре мира',
+      blurb: 'Четыре масти. Четыре мира. Изучи язык колоды.',
+      detail: [
+        'За каждой мастью MAGISTER стоит свой мир, со своими героями, историями и символами.',
+        'Познакомься с персонажами четырёх миров, узнай, как устроена колода, и научись определять масти и ранги по изображениям.',
+        'Сможешь ли ты научиться читать карты без привычных обозначений?',
+      ],
+      cta: 'Исследовать',
+    },
+    birthday: {
+      title: 'Карта рождения',
+      blurb: 'Узнай, какая карта принадлежит твоему дню рождения.',
+      detail: [
+        'Введи дату рождения и найди карту, связанную с этим днём.',
+        'Открой её изображение, познакомься с историей и символами. Возможно, ты обнаружишь в ней что-то особенное для себя.',
+      ],
+      cta: 'Найти свою карту',
+    },
+    oracle: {
+      title: 'Вопрос Магистру',
+      blurb: 'Есть вопрос о карте? Спроси Магистра.',
+      detail: [
+        'Не все тайны открываются с первого взгляда.',
+        'Задай Магистру вопрос о персонаже, сюжете или скрытых символах. Получи подсказку и продолжи собственное исследование карт.',
+      ],
+      cta: 'Спросить',
+    },
+    online: {
+      title: 'Игра онлайн',
+      blurb: 'Собери друзей. Открой игровой стол. Играй вместе.',
+      detail: [
+        'MAGISTER интереснее исследовать вместе.',
+        'Приглашай друзей, создавай игровой стол и проверьте, кто лучше освоил скрытый язык карт.',
+      ],
+      cta: 'Скоро',
+    },
+    buy: {
+      title: 'Физическая колода',
+      blurb: '54 авторские картины. Одна необычная колода.',
+      detail: [
+        'Открой мир MAGISTER за пределами экрана.',
+        'Физическая колода Dr. Klein — это 54 оригинальных изображения, в которых скрыты масти, ранги и истории.',
+        'Рассматривай каждую деталь, открывай новые смыслы и играй с друзьями.',
+      ],
+      cta: 'Заказать колоду',
+    },
   },
   lang_label: 'Язык',
   site: 'Сайт',
@@ -202,16 +369,91 @@ const be: AppCopy = {
   buy_blurb: '54 карціны. Чатыры светы. У вашых руках.',
   buy_cta: 'Купіць калоду',
   buy_back: 'У залу',
-  nav_cards: 'Навігатар карт',
-  nav_cards_blurb: 'Гартайце ўсе твары калоды.',
-  hub_blurbs: {
-    cards: 'Усе 54 карты. Адна калода.',
-    learn: 'Чатыры масці — вучыцеся чытаць сюжэт.',
-    lore: 'Ад сюжэта да сімвала. Наколькі глыбока глядзіце?',
-    birthday: 'Дата нараджэння адкрывае вашу карту.',
-    oracle: 'Патрэбная падказка — спытайце Магістра.',
-    online: 'Стол, спасылка, гульня разам.',
-    buy: '54 карціны — у вашых руках.',
+  nav_cards: 'Калода',
+  nav_cards_blurb: 'Гартайце ўсе карты калоды.',
+  deck_intro: {
+    title: 'МАГІСТР',
+    paragraphs: [
+      'Ты бачыш карты. Але ці бачыш ты тое, што схавана ў іх?',
+      'У кожнай карце — свая загадка. Вобразы, сімвалы і дэталі захоўваюць сакрэты, якія не ляжаць на паверхні. Тут няма звычайных абазначэнняў мастоў і рангаў — яны схаваны непасрэдна ў выявах.',
+      'Адні ўбачаць карціны. Іншыя — гісторыі і сімвалы. І толькі той, хто зможа разгадаць схаваную мову карт, авалодае гульнёй.',
+      'Карты адкрываюць свае тайны не кожнаму. Каб стаць Магістрам, іх трэба зразумець.',
+    ],
+    signoff: 'Аўтарская калода Dr. Klein',
+  },
+  hub_doors: {
+    deck: {
+      title: 'МАГІСТР',
+      blurb: 'Схаваная мова карт. Аўтарская калода Dr. Klein.',
+      detail: [],
+      cta: 'Пазнаёміцца',
+    },
+    cards: {
+      title: 'Калода',
+      blurb: '54 карты. 54 самастойныя гісторыі.',
+      detail: [
+        'Перад табой уся калода MAGISTER. Разглядай выявы, вывучай дэталі і адкрывай гісторыі, схаваныя ў кожнай карце.',
+        'Даведайся, што стаіць за вобразамі і сімваламі, і паспрабуй разгадаць мову калоды.',
+      ],
+      cta: 'Адкрыць калоду',
+    },
+    lore: {
+      title: 'Пасвячэнне',
+      blurb: 'Уважліва глядзі. Шукай схаванае. Разгадай карты.',
+      detail: [
+        'Кожная карта захоўвае больш, чым здаецца на першы погляд.',
+        'Адказвай на пытанні пра персанажаў, сюжэты і дэталі выяў. Правярай сваю назіральнасць і паступова адкрывай схаваныя сэнсы калоды.',
+        'Наколькі глыбока ты ўмееш глядзець?',
+      ],
+      cta: 'Пачаць',
+    },
+    learn: {
+      title: 'Чатыры светы',
+      blurb: 'Чатыры масті. Чатыры светы. Вывучы мову калоды.',
+      detail: [
+        'За кожнай мастцю MAGISTER стаіць свой свет — са сваімі героямі, гісторыямі і сімваламі.',
+        'Пазнаёмся з персанажамі чатырох светаў, даведайся, як улаштавана калода, і навучыся вызначаць масті і рангі па выявах.',
+        'Ці зможаш ты навучыцца чытаць карты без звычайных абазначэнняў?',
+      ],
+      cta: 'Даследваць',
+    },
+    birthday: {
+      title: 'Карта нараджэння',
+      blurb: 'Даведайся, якая карта належыць тваему дню нараджэння.',
+      detail: [
+        'Увядзі дату нараджэння і знайдзі карту, звязаную з гэтым днём.',
+        'Адкрый яе выяву, пазнаёмся з гісторыяй і сімваламі. Магчыма, ты знойдзеш у ёй нешта асаблівае для сябе.',
+      ],
+      cta: 'Знайсці сваю карту',
+    },
+    oracle: {
+      title: 'Пытанне Магістру',
+      blurb: 'Ёсць пытанне пра карту? Спытаць Магістра.',
+      detail: [
+        'Не ўсе тайны адкрываюцца з першага погляду.',
+        'Задай Магістру пытанне пра персанажа, сюжэт або схаваныя сімвалы. Атрымай падказку і працягні ўласнае даследаванне карт.',
+      ],
+      cta: 'Спытаць',
+    },
+    online: {
+      title: 'Гульня анлайн',
+      blurb: 'Сабяры сяброў. Адкрый гульнявы стол. Гуляйце разам.',
+      detail: [
+        'MAGISTER цікавей даследаваць разам.',
+        'Запрашай сяброў, стварай гульнявы стол і праверце, хто лепш авалодзе схаванай мовай карт.',
+      ],
+      cta: 'Хутка',
+    },
+    buy: {
+      title: 'Фізічная калода',
+      blurb: '54 аўтарскія карціны. Адна незвычайная калода.',
+      detail: [
+        'Адкрый свет MAGISTER за межамі экрана.',
+        'Фізічная калода Dr. Klein — гэта 54 арыгінальныя выявы, у якіх схаваны масті, рангі і гісторыі.',
+        'Разглядай кожную дэталь, адкрывай новыя сэнсы і гуляй з сябрамі.',
+      ],
+      cta: 'Замовіць калоду',
+    },
   },
   lang_label: 'Мова',
   site: 'Сайт',
@@ -257,16 +499,91 @@ const zh: AppCopy = {
   buy_blurb: '54 幅画。四个世界。握在手中。',
   buy_cta: '购买牌组',
   buy_back: '返回厅堂',
-  nav_cards: '卡牌导航',
-  nav_cards_blurb: '浏览牌组每一张面孔。',
-  hub_blurbs: {
-    cards: '五十四张牌，一副牌组。',
-    learn: '四种花色——学会读懂每一幕。',
-    lore: '从画面到符号。你看得多深？',
-    birthday: '生日揭示属于你的牌。',
-    oracle: '需要提示——问 Magister。',
-    online: '牌桌、链接，一起游玩。',
-    buy: '五十四幅画，握在手中。',
+  nav_cards: '牌组',
+  nav_cards_blurb: '浏览牌组每一张牌。',
+  deck_intro: {
+    title: 'MAGISTER',
+    paragraphs: [
+      '你看见卡牌。但你是否看见其中隐藏的东西？',
+      '每一张牌都有自己的谜。形象、符号与细节守护着不浮于表面的秘密。这里没有惯常的花色与点数——它们就藏在画面里。',
+      '有人只会看见画面。有人会看见故事与符号。唯有能破译卡牌隐秘语言的人，才能驾驭这场游戏。',
+      '卡牌不会向所有人敞开秘密。要成为 Magister，必须先理解它们。',
+    ],
+    signoff: 'Dr. Klein 亲笔牌组',
+  },
+  hub_doors: {
+    deck: {
+      title: 'MAGISTER',
+      blurb: '卡牌的隐秘语言。Dr. Klein 亲笔牌组。',
+      detail: [],
+      cta: '了解',
+    },
+    cards: {
+      title: '牌组',
+      blurb: '54 张牌。54 个独立故事。',
+      detail: [
+        '完整的 MAGISTER 牌组就在眼前。细观画面、琢磨细节，揭开每张牌里隐藏的故事。',
+        '弄清形象与符号背后的意义，试着破译这副牌的语言。',
+      ],
+      cta: '打开牌组',
+    },
+    lore: {
+      title: '授礼',
+      blurb: '仔细看。寻找隐藏之物。解开盘上的谜。',
+      detail: [
+        '每张牌所藏不止一眼所见。',
+        '回答关于人物、情节与画面细节的问题。检验观察力，逐步揭开牌组的隐秘含义。',
+        '你能看得多深？',
+      ],
+      cta: '开始',
+    },
+    learn: {
+      title: '四个世界',
+      blurb: '四种花色。四个世界。学习牌组的语言。',
+      detail: [
+        'MAGISTER 的每种花色背后都是一个世界——各有英雄、故事与符号。',
+        '认识四界人物，了解牌组结构，学会仅凭画面辨认花色与点数。',
+        '你能否在没有惯常标记的情况下读懂卡牌？',
+      ],
+      cta: '探索',
+    },
+    birthday: {
+      title: '生日牌',
+      blurb: '找出属于你生日的那张牌。',
+      detail: [
+        '输入生日，找到与那一天相连的牌。',
+        '打开画面，了解它的故事与符号。也许你会在其中发现只属于自己的意义。',
+      ],
+      cta: '找到你的牌',
+    },
+    oracle: {
+      title: '问 Magister',
+      blurb: '关于某张牌有疑问？问 Magister。',
+      detail: [
+        '并非每个秘密一眼就能看见。',
+        '向 Magister 询问人物、情节或隐秘符号。获取提示，继续你自己的探索。',
+      ],
+      cta: '提问',
+    },
+    online: {
+      title: '在线对局',
+      blurb: '召集朋友。开一张牌桌。一起游玩。',
+      detail: [
+        'MAGISTER 一起探索更有趣。',
+        '邀请朋友、创建牌桌，看看谁更懂卡牌的隐秘语言。',
+      ],
+      cta: '即将推出',
+    },
+    buy: {
+      title: '实体牌组',
+      blurb: '54 幅原创画作。一副不寻常的牌。',
+      detail: [
+        '在屏幕之外走进 MAGISTER。',
+        'Dr. Klein 实体牌组包含 54 幅原创画面，花色、点数与故事皆隐藏其中。',
+        '细看每一处细节，发现新的含义，与朋友同玩。',
+      ],
+      cta: '订购牌组',
+    },
   },
   lang_label: '语言',
   site: '网站',

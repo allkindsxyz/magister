@@ -1,6 +1,8 @@
 const AGE_COOKIE = 'magister_age_14';
 const AGE_MAX_AGE = 60 * 60 * 24 * 365 * 2;
 const BOOT_MIN_MS = 1200;
+import { HUB_DETAIL_SEP } from '../i18n/appCopy';
+
 const SAVE_KEY = 'magister-play-v1';
 
 type AppSave = { worlds?: boolean; birthday?: boolean };
@@ -61,8 +63,9 @@ export function mountAppShell(): void {
   const caption = root.querySelector<HTMLElement>('[data-app-caption]');
   const activeTitle = root.querySelector<HTMLElement>('[data-active-title]');
   const activeBlurb = root.querySelector<HTMLElement>('[data-active-blurb]');
+  const activeDetail = root.querySelector<HTMLElement>('[data-active-detail]');
   const activeLock = root.querySelector<HTMLElement>('[data-active-lock]');
-  const activeCta = root.querySelector<HTMLElement>('[data-active-cta]');
+  const activeCta = root.querySelector<HTMLButtonElement>('[data-active-cta]');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const panels = {
@@ -101,6 +104,18 @@ export function mountAppShell(): void {
     const soon = slide.dataset.soon === '1';
     if (activeTitle) activeTitle.textContent = slide.dataset.title ?? '';
     if (activeBlurb) activeBlurb.textContent = slide.dataset.blurb ?? '';
+    if (activeDetail) {
+      const parts = (slide.dataset.detail ?? '').split(HUB_DETAIL_SEP).filter(Boolean);
+      activeDetail.replaceChildren(
+        ...parts.map((text) => {
+          const p = document.createElement('p');
+          p.textContent = text;
+          return p;
+        }),
+      );
+      activeDetail.hidden = parts.length === 0;
+    }
+    if (activeCta) activeCta.textContent = slide.dataset.cta ?? activeCta.textContent;
     if (activeLock) {
       const lockText = locked ? (slide.dataset.lockText ?? '') : soon ? (slide.dataset.soonText ?? '') : '';
       activeLock.textContent = lockText;
@@ -113,9 +128,18 @@ export function mountAppShell(): void {
     if (!slide) return;
     const nextTitle = slide.dataset.title ?? '';
     const nextBlurb = slide.dataset.blurb ?? '';
+    const nextDetail = slide.dataset.detail ?? '';
+    const nextCta = slide.dataset.cta ?? '';
     const titleChanged = Boolean(activeTitle && activeTitle.textContent !== nextTitle);
     const blurbChanged = Boolean(activeBlurb && activeBlurb.textContent !== nextBlurb);
-    if (!animate || reduceMotion || (!titleChanged && !blurbChanged)) {
+    const detailChanged = Boolean(
+      activeDetail &&
+        (activeDetail.hidden
+          ? nextDetail.length > 0
+          : [...activeDetail.querySelectorAll('p')].map((p) => p.textContent).join(HUB_DETAIL_SEP) !== nextDetail),
+    );
+    const ctaChanged = Boolean(activeCta && activeCta.textContent !== nextCta);
+    if (!animate || reduceMotion || (!titleChanged && !blurbChanged && !detailChanged && !ctaChanged)) {
       applyActiveMeta();
       return;
     }
@@ -128,16 +152,33 @@ export function mountAppShell(): void {
     }, 100);
   }
 
+  function wrapIndex(value: number): number {
+    const n = slides.length;
+    if (n <= 0) return 0;
+    return ((value % n) + n) % n;
+  }
+
+  function circularOffset(i: number, active: number): number {
+    const n = slides.length;
+    if (n <= 0) return 0;
+    let offset = i - active;
+    if (offset > n / 2) offset -= n;
+    if (offset < -n / 2) offset += n;
+    return offset;
+  }
+
   function paintCarousel(animate = true): void {
     if (!track || !slides.length) return;
-    index = Math.max(0, Math.min(slides.length - 1, index));
+    index = wrapIndex(index);
     track.classList.toggle('is-instant', !animate || reduceMotion);
-    track.style.setProperty('--carousel-index', String(index));
     track.style.setProperty('--carousel-drag', `${dragX}px`);
     slides.forEach((slide, i) => {
-      const offset = i - index;
-      slide.dataset.offset = String(offset);
+      const offset = circularOffset(i, index);
+      const visual = Math.max(-2, Math.min(2, offset));
+      slide.style.setProperty('--ring-offset', String(offset));
+      slide.dataset.offset = String(visual);
       slide.classList.toggle('is-active', offset === 0);
+      slide.classList.toggle('is-far', Math.abs(offset) > 2);
       slide.setAttribute('aria-hidden', offset === 0 ? 'false' : 'true');
       slide.tabIndex = offset === 0 ? 0 : -1;
     });
@@ -150,18 +191,19 @@ export function mountAppShell(): void {
     }
     const prevBtn = root.querySelector<HTMLButtonElement>('[data-carousel-prev]');
     const nextBtn = root.querySelector<HTMLButtonElement>('[data-carousel-next]');
-    if (prevBtn) prevBtn.disabled = index <= 0;
-    if (nextBtn) nextBtn.disabled = index >= slides.length - 1;
+    if (prevBtn) prevBtn.disabled = slides.length <= 1;
+    if (nextBtn) nextBtn.disabled = slides.length <= 1;
     paintActiveMeta(animate);
   }
 
   function goTo(next: number, animate = true): void {
-    index = next;
+    index = wrapIndex(next);
     dragX = 0;
     paintCarousel(animate);
   }
 
   function step(delta: number): void {
+    if (!slides.length) return;
     goTo(index + delta);
   }
 
@@ -220,6 +262,11 @@ export function mountAppShell(): void {
     const locked = door.classList.contains('is-locked') || door.getAttribute('aria-disabled') === 'true';
     if (locked && door.dataset.lockedUntil === 'worlds') {
       openLock();
+      return;
+    }
+    if (action === 'deck') {
+      const href = root.dataset.deckLink;
+      if (href) window.location.assign(href);
       return;
     }
     if (action === 'cards') showPanel('cards');
