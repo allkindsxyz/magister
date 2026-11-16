@@ -345,6 +345,22 @@ export function restartRoom(room: RoomState, token: string): { ok: boolean; erro
   return { ok: true };
 }
 
+/** Lobby only — clear a single bot seat before the hand starts. */
+export function removeBotAtSeat(
+  room: RoomState,
+  token: string,
+  targetSeat: number,
+): { ok: boolean; error?: string } {
+  if (room.phase !== 'lobby') return { ok: false, error: 'not_lobby' };
+  if (seatForToken(room, token) === null) return { ok: false, error: 'not_in_room' };
+  if (targetSeat < 0 || targetSeat >= SEATS) return { ok: false, error: 'bad_seat' };
+  const target = room.seats[targetSeat];
+  if (!target || !isBotToken(target.token)) return { ok: false, error: 'not_bot' };
+  room.seats[targetSeat] = null;
+  bump(room);
+  return { ok: true };
+}
+
 /** Next occupied seat clockwise (indices increase: bottom → left → center → right …). */
 function nextTurn(room: RoomState): void {
   if (room.turnSeat === null) return;
@@ -461,7 +477,7 @@ export type ClientRoomView = {
   version: number;
   events: RoomActionEvent[];
   youSeat: number | null;
-  seats: ({ name: string; handCount: number; online: boolean } | null)[];
+  seats: ({ name: string; handCount: number; online: boolean; isBot: boolean } | null)[];
   deckCount: number;
   topDiscard: DiscardTop | null;
   turnSeat: number | null;
@@ -492,6 +508,7 @@ export function toClientView(room: RoomState, token: string | null): ClientRoomV
             name: s.name,
             handCount: room.phase === 'playing' || room.phase === 'finished' ? room.hands[i].length : 0,
             online: seatIsOnline(s, now),
+            isBot: isBotToken(s.token),
           }
         : null,
     ),

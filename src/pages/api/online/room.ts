@@ -6,6 +6,7 @@ import {
   drawCard,
   playCard,
   rematchRoom,
+  removeBotAtSeat,
   restartRoom,
   seatForToken,
   touchPresence,
@@ -159,6 +160,24 @@ export const POST: APIRoute = async ({ request, url }) => {
     const result = addOneBot(room);
     if (!result.ok) return json({ ok: false, error: result.error }, 400);
     runBotTurns(room);
+    touchPresence(room, token);
+    saveRoom(room);
+    return json({ ok: true, room: toClientView(room, token) });
+  }
+
+  if (action === 'removeBot') {
+    const token = playerToken(body);
+    if (!token) return json({ ok: false, error: 'no_token' }, 400);
+    const seatRaw = body.seat;
+    const seat =
+      typeof seatRaw === 'number'
+        ? seatRaw
+        : typeof seatRaw === 'string'
+          ? Number.parseInt(seatRaw, 10)
+          : NaN;
+    if (!Number.isInteger(seat)) return json({ ok: false, error: 'bad_seat' }, 400);
+    const result = removeBotAtSeat(room, token, seat);
+    if (!result.ok) return json({ ok: false, error: result.error }, 400);
     touchPresence(room, token);
     saveRoom(room);
     return json({ ok: true, room: toClientView(room, token) });

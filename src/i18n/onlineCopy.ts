@@ -38,6 +38,7 @@ export type OnlineCopy = {
   menu_copy: string;
   menu_add_bot: string;
   menu_restart: string;
+  remove_bot: string;
   join_table: string;
   join_invite_hint: string;
   enter_name: string;
@@ -86,11 +87,12 @@ const ru: OnlineCopy = {
   menu_copy: 'Копировать ссылку',
   menu_add_bot: 'Добавить бота',
   menu_restart: 'Рестарт стола — без ботов',
+  remove_bot: 'Удалить',
   join_table: 'Войти за стол',
   join_invite_hint: 'Введите имя и нажмите «Войти за стол».',
   enter_name: 'Введите имя, чтобы войти',
   magister_crowned: '{name} — Магистр',
-  new_game_hint: 'Создайте стол и пригласите друзей. Ботов можно добавить в меню ⋯.',
+  new_game_hint: 'Создайте стол и пригласите до 3 друзей. Или играйте с ботами.',
   tap_deck_to_start: 'Коснитесь колоды, чтобы начать',
   seat_empty: 'Свободно',
   max_seats: 4,
@@ -134,11 +136,12 @@ const en: OnlineCopy = {
   menu_copy: 'Copy link',
   menu_add_bot: 'Add bot',
   menu_restart: 'Reset table — remove bots',
+  remove_bot: 'Remove',
   join_table: 'Join table',
   join_invite_hint: 'Enter your name and tap Join table.',
   enter_name: 'Enter your name to join',
   magister_crowned: '{name} — Magister',
-  new_game_hint: 'Create a table and invite friends. Add bots from the ⋯ menu.',
+  new_game_hint: 'Create a table and invite up to 3 friends — or play with bots.',
   tap_deck_to_start: 'Tap the deck to start',
   seat_empty: 'Empty',
   max_seats: 4,

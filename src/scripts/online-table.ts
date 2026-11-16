@@ -239,13 +239,16 @@ export function mountOnlineTable(
   const joinBtn = root.querySelector<HTMLButtonElement>('[data-online-join]');
   const nameInput = root.querySelector<HTMLInputElement>('[data-online-name]');
   const lobbyHint = root.querySelector<HTMLElement>('[data-online-hint]');
-  const lobbyNote = root.querySelector<HTMLElement>('.mag-online-lobby-note');
+  const lobbyIntro = root.querySelector<HTMLElement>('[data-online-lobby-intro]');
   const lobbyCodeRow = root.querySelector<HTMLElement>('.mag-online-code');
   const copyBtns = () => [...root.querySelectorAll<HTMLButtonElement>('[data-online-copy]')];
   const roomCodeEls = () => [...root.querySelectorAll<HTMLElement>('[data-online-room-code]')];
   const statusEl = root.querySelector<HTMLElement>('[data-online-status]');
   const tablePrompt = root.querySelector<HTMLElement>('[data-online-table-prompt]');
   const midEl = root.querySelector<HTMLElement>('[data-online-mid]');
+  const lobbyField = root.querySelector<HTMLElement>('[data-online-lobby-field]');
+  const lobbyCopyBtn = root.querySelector<HTMLButtonElement>('[data-online-lobby-copy]');
+  const lobbyAddBotBtn = root.querySelector<HTMLButtonElement>('[data-online-lobby-add-bot]');
   const deckBtn = root.querySelector<HTMLButtonElement>('[data-online-deck]');
   const suitPicker = root.querySelector<HTMLElement>('[data-online-suit-picker]');
   const handEl = root.querySelector<HTMLElement>('[data-online-hand]');
@@ -740,6 +743,11 @@ export function mountOnlineTable(
     const onlineDot = el.querySelector<HTMLElement>('[data-seat-online]');
     if (nameText) nameText.textContent = formatSeatLabel(seatIdx);
     if (onlineDot) onlineDot.hidden = !seat.online;
+    el.dataset.seatIndex = String(seatIdx);
+    const removeBtn = el.querySelector<HTMLButtonElement>('[data-seat-remove]');
+    if (removeBtn) {
+      removeBtn.hidden = !(view.phase === 'lobby' && seat.isBot);
+    }
     const stack = el.querySelector<HTMLElement>('[data-seat-stack]');
     if (stack && handCountOverride !== undefined) {
       const label = seat ? `${seat.name}: ${handCountOverride}` : '';
@@ -1031,6 +1039,11 @@ export function mountOnlineTable(
     const ready = view?.readyToStart ?? false;
     const filled = view?.seatedCount ?? 0;
     const max = view?.maxSeats ?? opts.copy.max_seats;
+    const waitingForPlayers = !ready;
+
+    lobbyField?.toggleAttribute('hidden', !waitingForPlayers);
+    midEl?.classList.toggle('mag-online-mid--lobby-wait', waitingForPlayers);
+    if (lobbyAddBotBtn) lobbyAddBotBtn.disabled = filled >= max;
 
     if (ready) {
       if (tablePrompt) {
@@ -1645,6 +1658,8 @@ export function mountOnlineTable(
     }
 
     showLobby(false);
+    lobbyField?.setAttribute('hidden', '');
+    midEl?.classList.remove('mag-online-mid--lobby-wait');
     deckBtn?.classList.remove('is-start-ready');
     if (deckBtn) deckBtn.setAttribute('aria-label', opts.copy.draw);
     if (!needDealIntro()) {
@@ -1839,8 +1854,9 @@ export function mountOnlineTable(
     createBtn?.removeAttribute('hidden');
     joinBtn?.setAttribute('hidden', '');
     if (lobbyHint) lobbyHint.textContent = opts.copy.join_hint;
-    if (lobbyNote) lobbyNote.hidden = false;
-    lobbyCodeRow?.removeAttribute('hidden');
+    root.querySelector<HTMLElement>('[data-online-lobby]')?.setAttribute('data-lobby-mode', 'create');
+    if (lobbyIntro) lobbyIntro.textContent = opts.copy.new_game_hint;
+    lobbyCodeRow?.setAttribute('hidden', '');
     pendingInviteRoom = null;
   }
 
@@ -1848,8 +1864,8 @@ export function mountOnlineTable(
     pendingInviteRoom = code.toUpperCase();
     createBtn?.setAttribute('hidden', '');
     joinBtn?.removeAttribute('hidden');
-    if (lobbyHint) lobbyHint.textContent = opts.copy.join_invite_hint;
-    if (lobbyNote) lobbyNote.hidden = true;
+    root.querySelector<HTMLElement>('[data-online-lobby]')?.setAttribute('data-lobby-mode', 'invite');
+    if (lobbyIntro) lobbyIntro.textContent = opts.copy.join_invite_hint;
     lobbyCodeRow?.setAttribute('hidden', '');
     setStatus('');
     const saved = localStorage.getItem(DISPLAY_NAME_KEY);
@@ -1926,18 +1942,60 @@ export function mountOnlineTable(
     })();
   });
 
-  async function copyInviteLink(): Promise<void> {
+  async function copyInviteToClipboard(): Promise<boolean> {
     const url =
       inviteUrl ||
       (roomId
         ? new URL(`/${opts.lang}/app?room=${roomId}`, window.location.origin).href
         : '');
-    if (!url) return;
+    if (!url) return false;
     try {
       await navigator.clipboard.writeText(url);
-      setStatus(opts.copy.copied);
+      return true;
     } catch {
       setStatus(url);
+      return false;
+    }
+  }
+
+  async function copyInviteLink(): Promise<void> {
+    if (await copyInviteToClipboard()) setStatus(opts.copy.copied);
+  }
+
+  async function copyInviteFromLobbyButton(btn: HTMLButtonElement): Promise<void> {
+    const defaultLabel = btn.dataset.defaultLabel ?? opts.copy.menu_copy;
+    if (!(await copyInviteToClipboard())) return;
+    btn.textContent = opts.copy.copied;
+    btn.disabled = true;
+    window.setTimeout(() => {
+      btn.textContent = defaultLabel;
+      btn.disabled = false;
+    }, 2200);
+  }
+
+  async function addBotToRoom(): Promise<void> {
+    if (!roomId) return;
+    const res = await api('addBot');
+    const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
+    if (data.room) {
+      view = data.room;
+      lastVersion = view.version;
+      paint();
+    } else if (data.error === 'full') {
+      setStatus(opts.copy.room_full);
+    } else {
+      setStatus(opts.copy.error_generic);
+    }
+  }
+
+  async function removeBotAt(seatIdx: number): Promise<void> {
+    if (!roomId) return;
+    const res = await api('removeBot', { seat: seatIdx });
+    const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
+    if (data.room) {
+      applyRoomFromServer(data.room);
+    } else {
+      setStatus(opts.copy.error_generic);
     }
   }
 
@@ -1973,21 +2031,29 @@ export function mountOnlineTable(
   });
 
   document.querySelector('[data-app-online-menu-bot]')?.addEventListener('click', () => {
-    void (async () => {
-      if (!roomId) return;
-      const res = await api('addBot');
-      const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
-      if (data.room) {
-        view = data.room;
-        lastVersion = view.version;
-        paint();
-      } else if (data.error === 'full') {
-        setStatus(opts.copy.room_full);
-      } else {
-        setStatus(opts.copy.error_generic);
-      }
-      closeTableMenu();
-    })();
+    void addBotToRoom().then(() => closeTableMenu());
+  });
+
+  if (lobbyCopyBtn) {
+    lobbyCopyBtn.dataset.defaultLabel = lobbyCopyBtn.textContent?.trim() ?? opts.copy.menu_copy;
+    lobbyCopyBtn.addEventListener('click', () => {
+      void copyInviteFromLobbyButton(lobbyCopyBtn);
+    });
+  }
+
+  lobbyAddBotBtn?.addEventListener('click', () => {
+    void addBotToRoom();
+  });
+
+  root.querySelector('[data-online-arena]')?.addEventListener('click', (event) => {
+    const btn = (event.target as Element).closest<HTMLButtonElement>('[data-seat-remove]');
+    if (!btn || btn.hidden) return;
+    event.preventDefault();
+    const player = btn.closest<HTMLElement>('[data-online-left], [data-online-center], [data-online-right]');
+    const seatRaw = player?.dataset.seatIndex;
+    const seatIdx = seatRaw !== undefined ? Number.parseInt(seatRaw, 10) : NaN;
+    if (!Number.isInteger(seatIdx)) return;
+    void removeBotAt(seatIdx);
   });
 
   document.querySelector('[data-app-online-menu-restart]')?.addEventListener('click', () => {
