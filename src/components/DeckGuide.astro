@@ -1,0 +1,557 @@
+---
+import type { Lang } from '../i18n/utils';
+import { getLocalizedPath, useTranslations } from '../i18n/utils';
+import { playWaysCopy } from '../i18n/playWaysCopy';
+import MagisterLogo from './MagisterLogo.astro';
+import { authorPhotoSrc } from '../lib/authorPhotos';
+
+interface Props {
+  lang: Lang;
+  backLabel: string;
+  shopHref: string;
+}
+
+const { lang, backLabel, shopHref } = Astro.props;
+const t = useTranslations(lang);
+const playWays = playWaysCopy[lang];
+const authorsHref = getLocalizedPath('/authors/', lang);
+const siteDeckHref = `${getLocalizedPath('/', lang)}#deck`;
+
+const suitOrder = ['hearts', 'diamonds', 'clubs', 'spades'] as const;
+const suitTilts = ['-8deg', '-3deg', '4deg', '9deg'] as const;
+const suitImages: Record<(typeof suitOrder)[number], string> = {
+  hearts: '/media/pilgrims.webp',
+  diamonds: '/media/bearer.webp',
+  clubs: '/media/lady.webp',
+  spades: '/media/merchant.webp',
+};
+
+const hubChapters = [
+  { id: 'worlds', label: t('guide.chapter_worlds'), hint: t('worlds_section.label') },
+  { id: 'rank', label: t('guide.chapter_rank'), hint: t('gallery.filter_rank') },
+  { id: 'path', label: t('guide.chapter_path'), hint: playWays.title },
+  { id: 'history', label: t('guide.chapter_history'), hint: t('authors.label') },
+] as const;
+
+const chapterArt: Record<(typeof hubChapters)[number]['id'], string> = {
+  worlds: '/media/poster-four-worlds.webp',
+  rank: '/media/card-back.jpg',
+  path: '/media/poster-initiation.webp',
+  history: '/media/deck-lifestyle.jpg',
+};
+
+const kleinPhoto = authorPhotoSrc('vasil-pochitsky');
+const zhilchikPhoto = authorPhotoSrc('alexander-zhilchik');
+const magisterPlay = playWays.ways.find((way) => way.id === 'magister');
+---
+
+<section class="mag-app-panel mag-app-panel--guide" data-panel="guide" hidden>
+  <section
+    class="play-games play-games--app mag-app-guide"
+    aria-label={t('guide.title')}
+    data-guide-root
+    data-title-hub={t('guide.title')}
+    data-title-worlds={t('guide.chapter_worlds')}
+    data-title-rank={t('guide.chapter_rank')}
+    data-title-path={t('guide.chapter_path')}
+    data-title-history={t('guide.chapter_history')}
+  >
+    <div class="play-app-root">
+      <div class="play-stage mag-app-guide-stage is-cover" data-guide-stage>
+        <div class="play-stage-bar">
+          <button class="play-nav-back" type="button" data-guide-back>
+            <span class="play-nav-mark" aria-hidden="true">←</span>
+            <span class="play-nav-label">{backLabel}</span>
+          </button>
+          <p class="play-stage-name">
+            <MagisterLogo class="play-stage-logo" level width={112} height={49} />
+            <span class="mag-guide-sr" data-guide-bar-title>{t('guide.title')}</span>
+          </p>
+        </div>
+
+        <div class="mag-guide-scroll">
+          <section class="mag-guide-screen" data-guide-view="hub" aria-label={t('guide.title')}>
+            <MagisterLogo class="fw-title-logo" level width={112} height={49} />
+            <p class="fw-kicker">{t('guide.kicker')}</p>
+            <h3 class="fw-title-name mag-guide-hub-title">{t('guide.title')}</h3>
+            <span class="fw-title-rule" aria-hidden="true"></span>
+            <p class="fw-title-lead">{t('guide.hub_lead')}</p>
+            <p class="play-prose mag-guide-hub-note">{t('hero.body')}</p>
+
+            <div class="fw-fan mag-guide-fan" aria-hidden="true">
+              {
+                suitOrder.map((suit, index) => (
+                  <img src={suitImages[suit]} alt="" style={`--tilt:${suitTilts[index]}`} loading="lazy" decoding="async" />
+                ))
+              }
+            </div>
+
+            <div class="mag-guide-menu" role="list">
+              {
+                hubChapters.map((chapter) => (
+                  <button
+                    class="poster mag-guide-poster"
+                    type="button"
+                    role="listitem"
+                    data-guide-open={chapter.id}
+                  >
+                    <span class="poster-title">{chapter.label}</span>
+                    <span class="poster-stage">
+                      <span class="poster-art poster-art--print" aria-hidden="true">
+                        <img src={chapterArt[chapter.id]} alt="" width={400} height={560} loading="lazy" decoding="async" />
+                      </span>
+                    </span>
+                    <span class="poster-body">{chapter.hint}</span>
+                    <span class="poster-play">{t('guide.open_chapter')}</span>
+                  </button>
+                ))
+              }
+            </div>
+          </section>
+
+          <section class="mag-guide-screen mag-guide-screen--scroll" data-guide-view="worlds" hidden>
+            <p class="fw-kicker">{t('worlds_section.label')}</p>
+            <h3 class="fw-worlds-title">{t('worlds_section.title')}</h3>
+            <span class="fw-title-rule" aria-hidden="true"></span>
+            <p class="fw-title-lead">{t('worlds_section.lead')}</p>
+            <p class="play-prose">{t('worlds_section.mechanic')}</p>
+
+            {
+              suitOrder.map((suit) => (
+                <article class="fw-portrait mag-guide-portrait">
+                  <div class="fw-portrait-card mag-guide-portrait-card">
+                    <img src={suitImages[suit]} alt="" width={280} height={392} loading="lazy" decoding="async" />
+                  </div>
+                  <div class="fw-portrait-copy">
+                    <div class="fw-card-id">
+                      <span class="lb-suit-val" data-suit={suit}>
+                        {t(`suits.${suit}`)} — {t(`worlds.${suit}.name`)}
+                      </span>
+                    </div>
+                    <span class="fw-card-rule" aria-hidden="true"></span>
+                    <p class="fw-suit-blurb">{t(`worlds.${suit}.blurb`)}</p>
+                  </div>
+                </article>
+              ))
+            }
+
+            <div class="fw-title-actions mag-guide-actions">
+              <button class="btn btn-accent" type="button" data-guide-go="cards">
+                {t('guide.cta_navigator')}
+              </button>
+            </div>
+          </section>
+
+          <section class="mag-guide-screen mag-guide-screen--scroll" data-guide-view="rank" hidden>
+            <p class="fw-kicker">{t('gallery.filter_rank')}</p>
+            <h3 class="fw-worlds-title">{t('guide.chapter_rank')}</h3>
+            <span class="fw-title-rule" aria-hidden="true"></span>
+            <p class="fw-title-lead">{t('guide.rank_lead')}</p>
+
+            <div class="mag-guide-prose-stack">
+              <p class="fw-meet-brief">{t('guide.rank_numeric')}</p>
+              <p class="fw-meet-brief">{t('guide.rank_faces')}</p>
+              <p class="fw-meet-brief">{t('guide.rank_jokers')}</p>
+            </div>
+
+            <p class="play-prose mag-guide-footnote">{t('guide.rank_box_note')}</p>
+            <p class="play-prose mag-guide-footnote">{t('footer.ready_line')}</p>
+
+            <div class="fw-title-actions mag-guide-actions">
+              <button class="btn btn-accent" type="button" data-guide-go="cards">
+                {t('guide.cta_navigator')}
+              </button>
+            </div>
+          </section>
+
+          <section class="mag-guide-screen mag-guide-screen--scroll" data-guide-view="path" hidden>
+            <p class="fw-kicker">{playWays.title}</p>
+            <h3 class="fw-worlds-title">{t('guide.chapter_path')}</h3>
+            <span class="fw-title-rule" aria-hidden="true"></span>
+            <p class="fw-title-lead">{t('guide.path_lead')}</p>
+
+            <article class="mag-guide-step">
+              <h4 class="fw-suit-name mag-guide-step-title">{t('guide.path_step_2_title')}</h4>
+              <p class="fw-meet-brief">{t('guide.path_step_2_body')}</p>
+              <div class="fw-title-actions">
+                <button class="btn btn-accent" type="button" data-guide-go="learn">
+                  {t('guide.cta_four_worlds')}
+                </button>
+              </div>
+            </article>
+
+            <article class="mag-guide-step">
+              <h4 class="fw-suit-name mag-guide-step-title">{t('guide.path_step_1_title')}</h4>
+              <p class="fw-meet-brief">{t('guide.path_step_1_body')}</p>
+              <div class="fw-title-actions">
+                <button class="btn btn-accent" type="button" data-guide-go="lore" data-guide-locked="worlds">
+                  {t('guide.cta_initiation')}
+                </button>
+              </div>
+            </article>
+
+            <article class="mag-guide-step mag-guide-step--gold">
+              <h4 class="fw-suit-name mag-guide-step-title">{t('guide.path_step_3_title')}</h4>
+              <p class="fw-meet-brief">{magisterPlay?.body ?? t('guide.path_step_3_body')}</p>
+              <p class="play-prose mag-guide-footnote">{t('guide.path_step_3_note')}</p>
+              <div class="fw-title-actions">
+                <a class="btn btn-accent" href={shopHref}>{t('guide.cta_magister_deck')}</a>
+              </div>
+            </article>
+
+            <article class="mag-guide-step">
+              <h4 class="fw-suit-name mag-guide-step-title">{t('guide.path_step_4_title')}</h4>
+              <p class="fw-meet-brief">{t('guide.path_step_4_body')}</p>
+              <div class="fw-title-actions mag-guide-actions-row">
+                <button class="btn fw-title-timed" type="button" data-guide-go="cards">
+                  {t('guide.cta_navigator')}
+                </button>
+                <button class="btn fw-title-timed" type="button" data-guide-go="birthday" data-guide-locked="worlds">
+                  {t('guide.cta_birthday')}
+                </button>
+                <button class="btn fw-title-timed" type="button" data-guide-go="oracle" data-guide-locked="worlds">
+                  {t('guide.cta_oracle')}
+                </button>
+              </div>
+            </article>
+          </section>
+
+          <section class="mag-guide-screen mag-guide-screen--scroll" data-guide-view="history" hidden>
+            <p class="fw-kicker">{t('authors.label')}</p>
+            <h3 class="fw-worlds-title">{t('guide.chapter_history')}</h3>
+            <span class="fw-title-rule" aria-hidden="true"></span>
+            <p class="fw-title-lead">{t('guide.history_lead')}</p>
+
+            <div class="mag-guide-prose-stack play-prose">
+              <p>{t('authors.preface_p1')}</p>
+              <p>{t('authors.preface_p2')}</p>
+              <p>{t('authors.preface_p3')}</p>
+              <p>{t('authors.preface_p4')}</p>
+            </div>
+
+            <article class="fw-portrait mag-guide-portrait">
+              {
+                kleinPhoto && (
+                  <div class="fw-portrait-card mag-guide-portrait-card mag-guide-portrait-card--photo">
+                    <img src={kleinPhoto} alt={t('authors.pochitsky.photo_alt')} width={160} height={200} loading="lazy" decoding="async" />
+                  </div>
+                )
+              }
+              <div class="fw-portrait-copy">
+                <div class="fw-card-id">
+                  <span class="lb-suit-val">{t('authors.pochitsky.name')}</span>
+                </div>
+                <p class="fw-kicker mag-guide-role">{t('guide.history_klein_role')}</p>
+                <p class="fw-meet-brief">{t('authors.pochitsky.bio')}</p>
+                <p class="fw-meet-brief">{t('authors.pochitsky.bio_2')}</p>
+              </div>
+            </article>
+
+            <article class="fw-portrait mag-guide-portrait">
+              {
+                zhilchikPhoto && (
+                  <div class="fw-portrait-card mag-guide-portrait-card mag-guide-portrait-card--photo">
+                    <img src={zhilchikPhoto} alt={t('authors.zhilchik.photo_alt')} width={160} height={200} loading="lazy" decoding="async" />
+                  </div>
+                )
+              }
+              <div class="fw-portrait-copy">
+                <div class="fw-card-id">
+                  <span class="lb-suit-val">{t('authors.zhilchik.name')}</span>
+                </div>
+                <p class="fw-kicker mag-guide-role">{t('guide.history_zhilchik_role')}</p>
+                <p class="fw-meet-brief mag-guide-quote">{t('authors.zhilchik.bio')}</p>
+              </div>
+            </article>
+
+            <div class="fw-title-actions mag-guide-actions-row">
+              <a class="btn fw-title-timed" href={authorsHref}>{t('guide.authors_page')}</a>
+              <a class="btn fw-title-timed" href={siteDeckHref}>{t('guide.site_history')}</a>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </section>
+</section>
+
+<style is:global>
+  .mag-app-panel--guide {
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    height: 100dvh;
+    height: 100svh;
+    max-height: 100svh;
+    overflow: hidden;
+  }
+
+  .mag-app-panel--guide .mag-app-guide.play-games--app,
+  .mag-app-panel--guide .play-app-root {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: 100%;
+    max-height: 100%;
+  }
+
+  .mag-app-panel--guide .mag-app-guide.play-games--app {
+    --play-ground: #080d18;
+    --play-ink: #111b2b;
+    --play-parchment: #f0e7d5;
+    --play-dim: #aaa9b5;
+    --play-gold: #c7a36a;
+    --play-gold-hot: #ecd09b;
+    background: var(--play-ground);
+    color: var(--play-parchment);
+  }
+
+  .mag-app-panel--guide .mag-app-guide-stage.play-stage {
+    position: relative;
+    inset: auto;
+    z-index: auto;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    max-height: 100%;
+    transform: none;
+    border: 0;
+    box-shadow: none;
+    overflow: hidden;
+    overscroll-behavior: contain;
+    padding:
+      max(0.55rem, env(safe-area-inset-top))
+      max(0.85rem, env(safe-area-inset-right))
+      max(0.65rem, env(safe-area-inset-bottom))
+      max(0.85rem, env(safe-area-inset-left));
+  }
+
+  .mag-app-panel--guide .play-stage-bar {
+    margin-bottom: 0.35rem;
+  }
+
+  @media (max-width: 859px) {
+    .mag-app-panel--guide .play-stage-bar .play-nav-back {
+      min-width: 0;
+      min-height: calc(3.35rem * 0.75);
+      padding: 0 calc(0.7rem * 0.75);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .mag-app-panel--guide .play-stage-bar .play-nav-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+  }
+
+  .mag-app-panel--guide .play-stage-bar {
+    flex: 0 0 auto;
+  }
+
+  .mag-app-panel--guide .mag-guide-scroll {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .mag-app-panel--guide .mag-guide-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 1.25rem;
+  }
+
+  .mag-app-panel--guide .mag-guide-screen[hidden] {
+    display: none !important;
+  }
+
+  .mag-app-panel--guide .mag-guide-screen:not([hidden]) {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    animation: mag-guide-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes mag-guide-enter {
+    from {
+      opacity: 0;
+      transform: translateY(0.35rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mag-app-panel--guide .mag-guide-screen:not([hidden]) {
+      animation: none;
+    }
+  }
+
+  .mag-app-panel--guide .mag-guide-screen--scroll {
+    align-items: stretch;
+    text-align: left;
+  }
+
+  .mag-app-panel--guide .mag-guide-screen--scroll > .fw-kicker,
+  .mag-app-panel--guide .mag-guide-screen--scroll > .fw-worlds-title,
+  .mag-app-panel--guide .mag-guide-screen--scroll > .fw-title-rule,
+  .mag-app-panel--guide .mag-guide-screen--scroll > .fw-title-lead {
+    align-self: center;
+    text-align: center;
+  }
+
+  .mag-app-panel--guide .mag-guide-hub-title.fw-title-name {
+    font-size: clamp(2.6rem, 11vw, 4.2rem);
+    line-height: 0.96;
+  }
+
+  .mag-app-panel--guide .mag-guide-hub-note {
+    max-width: 22rem;
+    margin-inline: auto;
+    text-align: center;
+    color: var(--play-dim);
+  }
+
+  .mag-app-panel--guide .mag-guide-fan.fw-fan {
+    margin: 0.5rem 0 0.85rem;
+  }
+
+  .mag-app-panel--guide .mag-guide-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: min(100%, 22.5rem);
+    margin: 0.35rem auto 0;
+  }
+
+  .mag-app-panel--guide .mag-guide-poster.poster {
+    width: 100%;
+    text-align: left;
+    border-color: rgba(176, 144, 79, 0.55);
+    background: var(--play-ink);
+  }
+
+  .mag-app-panel--guide .mag-guide-poster .poster-art {
+    width: 42%;
+  }
+
+  .mag-app-panel--guide .mag-guide-poster .poster-title {
+    font-size: clamp(1.45rem, 5.5vw, 1.85rem);
+  }
+
+  .mag-app-panel--guide .mag-guide-portrait.fw-portrait {
+    margin-top: 1.15rem;
+    padding-top: 0.35rem;
+    border-top: 1px solid rgba(176, 144, 79, 0.22);
+  }
+
+  .mag-app-panel--guide .mag-guide-portrait-card {
+    width: min(100%, 11.5rem);
+    margin-inline: auto;
+  }
+
+  .mag-app-panel--guide .mag-guide-portrait-card--photo img {
+    border-radius: 0.35rem;
+    border: 1px solid rgba(176, 144, 79, 0.4);
+  }
+
+  .mag-app-panel--guide .mag-guide-screen--scroll .fw-portrait-copy {
+    text-align: left;
+  }
+
+  .mag-app-panel--guide .mag-guide-prose-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin: 1rem 0 0.5rem;
+  }
+
+  .mag-app-panel--guide .mag-guide-footnote {
+    margin: 0.65rem 0 0;
+    color: var(--play-dim);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .mag-app-panel--guide .mag-guide-step {
+    margin-top: 1.35rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid rgba(176, 144, 79, 0.28);
+  }
+
+  .mag-app-panel--guide .mag-guide-step--gold {
+    padding: 1rem 0.85rem;
+    border: 1px solid rgba(176, 144, 79, 0.45);
+    background: rgba(17, 27, 43, 0.55);
+  }
+
+  .mag-app-panel--guide .mag-guide-step-title.fw-suit-name {
+    font-size: clamp(1.65rem, 5vw, 2.15rem);
+    text-align: left;
+  }
+
+  .mag-app-panel--guide .mag-guide-actions.fw-title-actions,
+  .mag-app-panel--guide .mag-guide-step .fw-title-actions {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    align-items: stretch;
+  }
+
+  .mag-app-panel--guide .mag-guide-actions-row.fw-title-actions {
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .mag-app-panel--guide .mag-guide-actions-row .btn {
+    width: 100%;
+  }
+
+  .mag-app-panel--guide .mag-guide-role {
+    margin: 0.25rem 0 0.55rem;
+    text-align: left;
+  }
+
+  .mag-app-panel--guide .mag-guide-quote {
+    font-style: italic;
+    color: var(--play-dim);
+  }
+
+  .mag-app-panel--guide .mag-guide-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+  }
+
+  .mag-app-panel--guide .play-stage.is-title > .mag-guide-scroll > .mag-guide-screen:not([hidden]) {
+    align-items: stretch;
+  }
+
+  .mag-app-panel--guide .play-stage.is-title .fw-worlds-title {
+    max-width: 16em;
+  }
+</style>
