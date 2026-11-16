@@ -1,7 +1,3 @@
-import { readFileSync, readdirSync } from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
 export type PlaySuit = 'hearts' | 'diamonds' | 'clubs' | 'spades';
 export type PlayCard = {
   id: string;
@@ -10,21 +6,24 @@ export type PlayCard = {
   image: string;
 };
 
-const here = path.dirname(fileURLToPath(import.meta.url));
-const cardsDir = path.join(here, '../content/cards');
+type CardJson = {
+  id?: string;
+  suit?: PlaySuit;
+  joker?: boolean;
+  value?: string;
+  image?: string;
+};
+
+const cardModules = import.meta.glob<CardJson>('../content/cards/*.json', {
+  eager: true,
+  import: 'default',
+});
 
 function loadDeck(): PlayCard[] {
-  const files = readdirSync(cardsDir).filter((f) => f.endsWith('.json') && f !== 'card-back.json');
   const cards: PlayCard[] = [];
-  for (const file of files) {
-    const raw = JSON.parse(readFileSync(path.join(cardsDir, file), 'utf8')) as {
-      id?: string;
-      suit?: PlaySuit;
-      joker?: boolean;
-      value?: string;
-      image?: string;
-    };
-    if (!raw.id) continue;
+  for (const [file, raw] of Object.entries(cardModules)) {
+    if (file.endsWith('card-back.json')) continue;
+    if (!raw?.id) continue;
     if (raw.joker) {
       cards.push({
         id: raw.id,
