@@ -202,14 +202,14 @@ const en: GamesCopy = {
   zoom: 'Enlarge',
   zoom_close: 'Close',
   menu: {
-    learn_title: 'The Four Worlds',
+    learn_title: 'Initiation',
     learn_blurb: 'Meet the heroes of each suit and learn to tell a card by its scene. Includes a timed mode.',
     birth_title: 'Ask the Magister',
     birth_blurb: 'The Magister deck oracle. Sometimes we need a hint. What will the Magister tell you?',
-    birth_lock: 'Unlock after completing The Four Worlds',
+    birth_lock: 'Unlock after completing Initiation',
     birthday_title: 'Birthday Card',
     birthday_blurb: 'Enter your date of birth and discover the card associated with that day.',
-    lore_title: 'Initiation',
+    lore_title: 'The Four Worlds',
     lore_blurb: 'Questions about every card — from the scene itself to its hidden meanings.',
   },
   learn: {
@@ -356,7 +356,7 @@ const en: GamesCopy = {
   locked: {
     to_learn: 'Learn the deck',
     to_birthday: 'Open the birthday card',
-    worlds_gate: 'Complete The Four Worlds to open this path.',
+    worlds_gate: 'Complete Initiation to open this path.',
   },
   soon: {
     title: 'Opening soon.',
@@ -456,14 +456,14 @@ const ru: GamesCopy = {
   zoom: 'Увеличить',
   zoom_close: 'Закрыть',
   menu: {
-    learn_title: 'Четыре мира',
+    learn_title: 'Инициация',
     learn_blurb: 'Познакомьтесь с героями каждой масти и научитесь узнавать карту по сюжету. Есть режим на время.',
     birth_title: 'Вопрос Магистру',
     birth_blurb: 'Оракул колоды Магистр. Иногда нам нужна подсказка. Что скажет тебе Магистр?',
-    birth_lock: 'Откроется после прохождения «Четырёх миров»',
+    birth_lock: 'Откроется после прохождения «Инициации»',
     birthday_title: 'Карта рождения',
     birthday_blurb: 'Введите дату рождения и узнайте карту, связанную с этим днём.',
-    lore_title: 'Посвящение',
+    lore_title: 'Четыре мира',
     lore_blurb: 'Вопросы о каждой карте — от самого сюжета до скрытых смыслов.',
   },
   learn: {
@@ -610,7 +610,7 @@ const ru: GamesCopy = {
   locked: {
     to_learn: 'Узнать колоду',
     to_birthday: 'Открыть карту рождения',
-    worlds_gate: 'Пройдите «Четыре мира», чтобы открыть этот путь.',
+    worlds_gate: 'Пройдите «Инициацию», чтобы открыть этот путь.',
   },
   soon: {
     title: 'Скоро откроется.',
@@ -710,14 +710,14 @@ const be: GamesCopy = {
   zoom: 'Павялічыць',
   zoom_close: 'Закрыць',
   menu: {
-    learn_title: 'Чатыры светы',
+    learn_title: 'Ініцыяцыя',
     learn_blurb: 'Пазнаёмцеся з героямі кожнай масці і навучыцеся пазнаваць карту па сюжэце. Ёсць рэжым на час.',
     birth_title: 'Пытанне Магістру',
     birth_blurb: 'Аракул калоды Магістр. Часам нам патрэбная падказка. Што скажа табе Магістр?',
-    birth_lock: 'Адкрыецца пасля праходжання «Чатырох светаў»',
+    birth_lock: 'Адкрыецца пасля праходжання «Ініцыяцыі»',
     birthday_title: 'Карта нараджэння',
     birthday_blurb: 'Увядзіце дату нараджэння і даведайцеся карту, звязаную з гэтым днём.',
-    lore_title: 'Пасвячэнне',
+    lore_title: 'Чатыры светы',
     lore_blurb: 'Пытанні пра кожную карту — ад самога сюжэта да схаваных сэнсаў.',
   },
   learn: {
@@ -864,7 +864,7 @@ const be: GamesCopy = {
   locked: {
     to_learn: 'Даведацца калоду',
     to_birthday: 'Адкрыць карту нараджэння',
-    worlds_gate: 'Прайдзіце «Чатыры светы», каб адкрыць гэты шлях.',
+    worlds_gate: 'Прайдзіце «Ініцыяцыю», каб адкрыць гэты шлях.',
   },
   soon: {
     title: 'Хутка адкрыецца.',
@@ -964,14 +964,14 @@ const zh: GamesCopy = {
   zoom: '放大',
   zoom_close: '关闭',
   menu: {
-    learn_title: '四个世界',
+    learn_title: '入门',
     learn_blurb: '认识每种花色的主角，学会从画面认出一张牌。附限时模式。',
     birth_title: '问 Magister',
     birth_blurb: 'Magister 牌组的神谕。有时我们需要一点提示。Magister 会对你说什么？',
-    birth_lock: '完成「四个世界」后解锁',
+    birth_lock: '完成「入门」后解锁',
     birthday_title: '生日牌',
     birthday_blurb: '输入你的出生日期，发现与那一天相关的牌。',
-    lore_title: '授礼',
+    lore_title: '四个世界',
     lore_blurb: '关于每一张牌的问题——从画面本身到隐藏的含义。',
   },
   learn: {
@@ -1116,7 +1116,7 @@ const zh: GamesCopy = {
   locked: {
     to_learn: '认识牌组',
     to_birthday: '打开生日牌',
-    worlds_gate: '完成「四个世界」以开启此路。',
+    worlds_gate: '完成「入门」以开启此路。',
   },
   soon: {
     title: '即将开放。',

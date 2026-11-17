@@ -27,8 +27,12 @@ const currentLang = LOCALE_LINKS.find((item) => item.code === lang) ?? LOCALE_LI
 const preload = [
   '/media/magister-logo.png',
   '/media/card-back.jpg',
-  '/media/poster-four-worlds.gif',
+  '/media/hub-cards-floral-orbit-still.jpg',
+  '/media/hub-cards-floral-orbit.gif',
+  '/media/poster-initiation-still.jpg',
   '/media/poster-initiation.gif',
+  '/media/poster-four-worlds-still.jpg',
+  '/media/poster-four-worlds.gif',
   '/media/poster-ask-magister.webp',
   '/media/deck-lifestyle.jpg',
 ].join(',');
@@ -41,6 +45,8 @@ type Door = {
   cta: string;
   kind?: 'prose';
   art?: string;
+  /** Animated cover; plays only when the slide is centered. */
+  artMotion?: string;
   artW?: number;
   artH?: number;
   lockedUntil?: 'worlds';
@@ -50,26 +56,34 @@ type Door = {
 
 const deckLink = `${getLocalizedPath('/', lang)}#deck`;
 
-const hubOrder: HubDoorId[] = ['deck', 'cards', 'lore', 'learn', 'birthday', 'oracle', 'online', 'buy'];
+const hubOrder: HubDoorId[] = ['deck', 'cards', 'learn', 'lore', 'birthday', 'oracle', 'online', 'buy'];
 
 const doorDefaults: Record<
   HubDoorId,
   Omit<Door, 'id' | 'title' | 'blurb' | 'detail' | 'cta'>
 > = {
   deck: { kind: 'prose' },
-  cards: { art: '/media/card-back.jpg', artW: 732, artH: 1024 },
-  lore: {
-    art: '/media/poster-initiation.gif',
+  cards: {
+    art: '/media/hub-cards-floral-orbit-still.jpg',
+    artMotion: '/media/hub-cards-floral-orbit.gif',
+    artW: 349,
+    artH: 490,
+    fit: 'cover',
+  },
+  learn: {
+    art: '/media/poster-initiation-still.jpg',
+    artMotion: '/media/poster-initiation.gif',
     artW: 386,
     artH: 439,
     fit: 'cover',
-    lockedUntil: 'worlds',
   },
-  learn: {
-    art: '/media/poster-four-worlds.gif',
+  lore: {
+    art: '/media/poster-four-worlds-still.jpg',
+    artMotion: '/media/poster-four-worlds.gif',
     artW: 403,
     artH: 423,
     fit: 'cover',
+    lockedUntil: 'worlds',
   },
   birthday: { art: '/media/card-back.jpg', artW: 732, artH: 1024, lockedUntil: 'worlds' },
   oracle: { art: '/media/poster-ask-magister.webp', artW: 656, artH: 1024, lockedUntil: 'worlds' },
@@ -209,7 +223,17 @@ const startIndex = 0;
                       </div>
                     ) : (
                       <div class:list={['mag-app-card__art', door.fit === 'cover' && 'mag-app-card__art--cover']} aria-hidden="true">
-                        <img src={door.art} alt="" width={door.artW} height={door.artH} decoding="async" draggable="false" />
+                        <img
+                          src={door.art}
+                          alt=""
+                          width={door.artW}
+                          height={door.artH}
+                          decoding="async"
+                          draggable="false"
+                          data-hub-art={door.artMotion ? '' : undefined}
+                          data-art-still={door.artMotion ? door.art : undefined}
+                          data-art-motion={door.artMotion}
+                        />
                       </div>
                     )
                   }

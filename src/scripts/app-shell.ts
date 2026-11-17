@@ -223,6 +223,19 @@ export function mountAppShell(): void {
     return offset;
   }
 
+  function syncHubCoverMotion(): void {
+    slides.forEach((slide) => {
+      const img = slide.querySelector<HTMLImageElement>('img[data-hub-art]');
+      if (!img) return;
+      const still = img.dataset.artStill;
+      const motion = img.dataset.artMotion;
+      if (!still || !motion) return;
+      const playMotion = slide.classList.contains('is-active') && !reduceMotion;
+      const next = playMotion ? motion : still;
+      if (img.getAttribute('src') !== next) img.setAttribute('src', next);
+    });
+  }
+
   function paintCarousel(animate = true): void {
     if (!track || !slides.length) return;
     index = wrapIndex(index);
@@ -250,6 +263,7 @@ export function mountAppShell(): void {
     const nextBtn = root.querySelector<HTMLButtonElement>('[data-carousel-next]');
     if (prevBtn) prevBtn.disabled = slides.length <= 1;
     if (nextBtn) nextBtn.disabled = slides.length <= 1;
+    syncHubCoverMotion();
     paintActiveMeta(motion);
   }
 

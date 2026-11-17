@@ -92,8 +92,8 @@ const en: AppCopy = {
   next_slide: 'Next',
   back: 'Back',
   lock_title: 'Still closed',
-  lock_body: 'Complete The Four Worlds to open this path.',
-  lock_cta: 'Play The Four Worlds',
+  lock_body: 'Complete Initiation to open this path.',
+  lock_cta: 'Play Initiation',
   soon_title: 'Coming soon',
   soon_body: 'The next game is being prepared. The hall will open it when it is ready.',
   online_title: 'Play online',
@@ -130,13 +130,13 @@ const en: AppCopy = {
       detail: [],
       cta: 'Open the deck',
     },
-    lore: {
+    learn: {
       title: 'Initiation',
       blurb: 'Start getting to know all 54 cards.',
       detail: [],
       cta: 'Begin',
     },
-    learn: {
+    lore: {
       title: 'The Four Worlds',
       blurb: 'Stories, characters, and symbols of the four worlds.',
       detail: [],
@@ -197,8 +197,8 @@ const ru: AppCopy = {
   next_slide: 'Дальше',
   back: 'Назад',
   lock_title: 'Ещё закрыто',
-  lock_body: 'Пройдите «Четыре мира», чтобы открыть этот путь.',
-  lock_cta: 'Играть в Четыре мира',
+  lock_body: 'Пройдите «Инициацию», чтобы открыть этот путь.',
+  lock_cta: 'Играть в Инициацию',
   soon_title: 'Скоро',
   soon_body: 'Следующая игра готовится. Зал откроет её, когда всё будет готово.',
   online_title: 'Игра онлайн',
@@ -235,13 +235,13 @@ const ru: AppCopy = {
       detail: [],
       cta: 'Открыть колоду',
     },
-    lore: {
+    learn: {
       title: 'Инициация',
       blurb: 'Начни знакомство со всеми 54 картами.',
       detail: [],
       cta: 'Начать',
     },
-    learn: {
+    lore: {
       title: 'Четыре мира',
       blurb: 'Истории, персонажи и символы четырёх миров.',
       detail: [],
@@ -261,7 +261,7 @@ const ru: AppCopy = {
     },
     online: {
       title: 'Игра онлайн',
-      blurb: 'Собери друзей и играйте вместе.',
+      blurb: 'Собери друзей и играйте вместе онлайн.',
       detail: [],
       cta: 'Играть',
     },
@@ -302,8 +302,8 @@ const be: AppCopy = {
   next_slide: 'Далей',
   back: 'Назад',
   lock_title: 'Яшчэ закрыта',
-  lock_body: 'Прайдзіце «Чатыры светы», каб адкрыць гэты шлях.',
-  lock_cta: 'Гуляць у Чатыры светы',
+  lock_body: 'Прайдзіце «Ініцыяцыю», каб адкрыць гэты шлях.',
+  lock_cta: 'Гуляць у Ініцыяцыю',
   soon_title: 'Хутка',
   soon_body: 'Наступная гульня рыхтуецца. Зала адкрые яе, калі ўсё будзе гатова.',
   online_title: 'Гульня анлайн',
@@ -340,13 +340,13 @@ const be: AppCopy = {
       detail: [],
       cta: 'Адкрыць калоду',
     },
-    lore: {
+    learn: {
       title: 'Ініцыяцыя',
       blurb: 'Пачні знаёмства са ўсімі 54 картамі.',
       detail: [],
       cta: 'Пачаць',
     },
-    learn: {
+    lore: {
       title: 'Чатыры светы',
       blurb: 'Гісторыі, персанажы і сімвалы чатырох светаў.',
       detail: [],
@@ -407,8 +407,8 @@ const zh: AppCopy = {
   next_slide: '下一张',
   back: '返回',
   lock_title: '尚未开启',
-  lock_body: '完成「四个世界」以开启此路。',
-  lock_cta: '游玩四个世界',
+  lock_body: '完成「入门」以开启此路。',
+  lock_cta: '游玩入门',
   soon_title: '即将到来',
   soon_body: '下一款游戏正在筹备。厅堂会在准备就绪时打开它。',
   online_title: '在线对局',
@@ -444,13 +444,13 @@ const zh: AppCopy = {
       detail: [],
       cta: '打开牌组',
     },
-    lore: {
+    learn: {
       title: '入门',
       blurb: '从这里认识全部 54 张牌。',
       detail: [],
       cta: '开始',
     },
-    learn: {
+    lore: {
       title: '四个世界',
       blurb: '四界的故事、人物与符号。',
       detail: [],
