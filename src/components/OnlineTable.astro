@@ -480,9 +480,14 @@ const copy = onlineCopy[lang];
   .mag-online-fly-starter {
     position: fixed;
     z-index: 63;
-    perspective: 900px;
+    perspective: 1200px;
     pointer-events: none;
     transform-origin: top left;
+    will-change: transform;
+  }
+
+  .mag-online-fly-starter--deal {
+    filter: drop-shadow(0 0.85rem 1.65rem rgba(0, 0, 0, 0.62));
   }
 
   .mag-online-fly-starter__flip {
@@ -491,12 +496,16 @@ const copy = onlineCopy[lang];
     height: 100%;
     transform-style: preserve-3d;
     transform: rotateY(0deg);
-    transition: transform calc(0.42s * var(--online-motion, 1)) cubic-bezier(0.22, 0.92, 0.28, 1);
+    transition: none;
     will-change: transform;
   }
 
+  .mag-online-fly-starter.is-at-center .mag-online-fly-starter__flip {
+    transition: transform 350ms cubic-bezier(0.34, 1.22, 0.42, 1);
+  }
+
   .mag-online-fly-starter__flip.is-revealed {
-    transform: rotateY(180deg);
+    transform: rotateY(180deg) scale(1.03);
   }
 
   .mag-online-fly-starter__face {
@@ -513,6 +522,48 @@ const copy = onlineCopy[lang];
 
   .mag-online-fly-starter__face--front {
     transform: rotateY(180deg);
+  }
+
+  .mag-online-deck-hit.is-starter-launch {
+    animation: mag-online-deck-starter-kick 0.62s cubic-bezier(0.34, 1.05, 0.48, 1);
+  }
+
+  @keyframes mag-online-deck-starter-kick {
+    0%,
+    100% {
+      transform: translateX(0) scale(1);
+      filter: brightness(1);
+    }
+    38% {
+      transform: translateX(5px) scale(0.96);
+      filter: brightness(0.92);
+    }
+    68% {
+      transform: translateX(-2px) scale(1.02);
+      filter: brightness(1.05);
+    }
+  }
+
+  .mag-online-discard-shell.is-starter-reveal .mag-online-discard {
+    animation: mag-online-starter-pop 0.52s cubic-bezier(0.34, 1.15, 0.48, 1);
+  }
+
+  @keyframes mag-online-starter-pop {
+    0% {
+      transform: scale(1);
+      filter: brightness(1);
+    }
+    42% {
+      transform: scale(1.1);
+      filter: brightness(1.18);
+      box-shadow:
+        0 0.65rem 1.4rem rgba(0, 0, 0, 0.5),
+        0 0 0 3px rgba(236, 208, 155, 0.42);
+    }
+    100% {
+      transform: scale(1);
+      filter: brightness(1);
+    }
   }
 
   @keyframes mag-online-turn-pop {

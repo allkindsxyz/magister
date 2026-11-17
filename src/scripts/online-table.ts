@@ -170,61 +170,84 @@ function flyDrawToHand(
   });
 }
 
-/** Starter on the discard: fly (back, scale up) then flip face at center. */
+/** First discard after the deal: slide from the draw pile (~0.58s), flip at center (~0.35s). */
+const STARTER_SLIDE_MS = 580;
+const STARTER_HOLD_MS = 80;
+const STARTER_FLIP_MS = 350;
+
 function flyStarterToDiscard(
   layer: HTMLElement,
   from: DOMRect,
   to: DOMRect,
   faceSrc: string,
-  moveMs = motionMs(520),
-  flipMs = motionMs(420),
 ): Promise<void> {
   if (reducedMotion() || from.width === 0 || to.width === 0) return Promise.resolve();
 
-  return flyCard(layer, from, to, CARD_BACK_SRC, moveMs).then(
-    () =>
-      new Promise((resolve) => {
-        const shell = document.createElement('div');
-        shell.className = 'mag-online-fly-starter';
-        shell.style.left = `${to.left}px`;
-        shell.style.top = `${to.top}px`;
-        shell.style.width = `${to.width}px`;
-        shell.style.height = `${to.height}px`;
+  return new Promise((resolve) => {
+    const shell = document.createElement('div');
+    shell.className = 'mag-online-fly-starter mag-online-fly-starter--deal';
+    shell.style.left = `${from.left}px`;
+    shell.style.top = `${from.top}px`;
+    shell.style.width = `${from.width}px`;
+    shell.style.height = `${from.height}px`;
 
-        const flip = document.createElement('div');
-        flip.className = 'mag-online-fly-starter__flip';
+    const flip = document.createElement('div');
+    flip.className = 'mag-online-fly-starter__flip';
 
-        const back = document.createElement('img');
-        back.className = 'mag-online-fly-starter__face mag-online-fly-starter__face--back';
-        back.src = CARD_BACK_SRC;
-        back.alt = '';
+    const back = document.createElement('img');
+    back.className = 'mag-online-fly-starter__face mag-online-fly-starter__face--back';
+    back.src = CARD_BACK_SRC;
+    back.alt = '';
 
-        const front = document.createElement('img');
-        front.className = 'mag-online-fly-starter__face mag-online-fly-starter__face--front';
-        front.src = faceSrc;
-        front.alt = '';
+    const front = document.createElement('img');
+    front.className = 'mag-online-fly-starter__face mag-online-fly-starter__face--front';
+    front.src = faceSrc;
+    front.alt = '';
+    front.loading = 'eager';
+    front.decoding = 'async';
 
-        flip.append(back, front);
-        shell.append(flip);
-        layer.appendChild(shell);
+    flip.append(back, front);
+    shell.append(flip);
+    layer.appendChild(shell);
 
-        let finished = false;
-        const done = (): void => {
-          if (finished) return;
-          finished = true;
-          shell.remove();
-          resolve();
-        };
+    const dx = to.left - from.left;
+    const dy = to.top - from.top;
+    const s = uniformFlyScale(from, to);
+    const radius = flyBorderRadius(from.width, from.height);
+    shell.style.borderRadius = radius;
+    flip.querySelectorAll('img').forEach((face) => {
+      (face as HTMLElement).style.borderRadius = radius;
+    });
 
-        flip.addEventListener('transitionend', done, { once: true });
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            flip.classList.add('is-revealed');
-          });
-        });
-        window.setTimeout(done, flipMs + motionMs(100));
-      }),
-  );
+    let finished = false;
+    const done = (): void => {
+      if (finished) return;
+      finished = true;
+      shell.remove();
+      resolve();
+    };
+
+    const slideEasing = 'cubic-bezier(0.22, 1.08, 0.36, 1)';
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        shell.style.transition = `transform ${STARTER_SLIDE_MS}ms ${slideEasing}`;
+        shell.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(${s})`;
+      });
+    });
+
+    window.setTimeout(() => {
+      shell.classList.add('is-at-center');
+      flip.classList.add('is-revealed');
+
+      const onFlipEnd = (): void => {
+        flip.removeEventListener('transitionend', onFlipEnd);
+        done();
+      };
+      flip.addEventListener('transitionend', onFlipEnd);
+      window.setTimeout(done, STARTER_FLIP_MS + 120);
+    }, STARTER_SLIDE_MS + STARTER_HOLD_MS);
+  });
 }
 
 export function mountOnlineTable(
@@ -485,6 +508,47 @@ export function mountOnlineTable(
     displayedCenterImage = null;
     if (handEl) handEl.innerHTML = '';
     clearCenterDiscard();
+  }
+
+  /** Drop stale paints and show lobby-at-table (copy link / add bot) immediately. */
+  function snapRoomToLobbyAtTable(room: ClientRoomView): void {
+    view = room;
+    lastVersion = room.version;
+    lastActionVersion = -1;
+    actionsBootstrapped = false;
+    lastTurnSeat = null;
+    lastHandKey = '';
+    dealIntroPlayed = true;
+    discardRenderHold = 0;
+    displayedCenterImage = null;
+    roomPaintBusy = false;
+    queuedRoomView = null;
+    paintQueue = Promise.resolve();
+
+    if (endPanel) endPanel.hidden = true;
+    table?.classList.remove(
+      'is-finished',
+      'mag-online-table--turn-you',
+      'mag-online-table--turn-left',
+      'mag-online-table--turn-center',
+      'mag-online-table--turn-right',
+    );
+    deckBtn?.classList.remove('is-start-ready', 'is-ready', 'is-active', 'is-shuffling', 'is-starter-launch');
+    if (suitPicker) {
+      suitPicker.hidden = true;
+      suitPicker.classList.remove('is-closing');
+    }
+    setHandPlayHintsEnabled(false);
+    handFrame?.classList.remove('is-active');
+
+    showLobby(false);
+    if (handEl) handEl.innerHTML = '';
+    clearCenterDiscard();
+    clearFlyLayer();
+    hideTablePrompt();
+    syncHintsModeChrome();
+    paintLobbyAtTable();
+    paintHandHeader();
   }
 
   function handCardMetrics(): { w: number; h: number; gap: number } {
@@ -1455,6 +1519,10 @@ export function mountOnlineTable(
   }
 
   async function runDealIntro(): Promise<void> {
+    if (!view || view.phase !== 'playing') {
+      dealIntroPlayed = true;
+      return;
+    }
     if (handEl) handEl.innerHTML = '';
     clearCenterDiscard();
 
@@ -1472,6 +1540,10 @@ export function mountOnlineTable(
     }
 
     await slideDeckToPlayPosition();
+    if (!view || view.phase !== 'playing') {
+      dealIntroPlayed = true;
+      return;
+    }
 
     syncOpponentArenaLayout();
     const occ = occupiedOpponentSeats();
@@ -1500,21 +1572,32 @@ export function mountOnlineTable(
       await dealHandToYou(view);
     }
 
+    if (!view || view.phase !== 'playing') {
+      dealIntroPlayed = true;
+      return;
+    }
+
     if (you !== null) {
       paintAllOpponents(view.turnSeat, () => HAND_SIZE);
     }
 
     const starter = view.topDiscard;
     if (starter) {
+      await sleep(140);
       const to =
         root.querySelector<HTMLElement>('.mag-online-discard-shell')?.getBoundingClientRect() ??
         discardTargetRect();
+      const discardShell = root.querySelector<HTMLElement>('.mag-online-discard-shell');
       discardRenderHold += 1;
+      deckBtn?.classList.add('is-starter-launch');
       try {
         await flyStarterToDiscard(flyLayer, deckRect(), to, starter.image);
         displayedCenterImage = null;
         setCenterDiscard(starter.image, starter.suit === 'joker' ? starter.chosenSuit : null);
+        discardShell?.classList.add('is-starter-reveal');
+        window.setTimeout(() => discardShell?.classList.remove('is-starter-reveal'), 520);
       } finally {
+        deckBtn?.classList.remove('is-starter-launch');
         discardRenderHold = Math.max(0, discardRenderHold - 1);
       }
     }
@@ -1664,7 +1747,7 @@ export function mountOnlineTable(
         lastTurnSeat = null;
         actionsBootstrapped = false;
         lastActionVersion = -1;
-        dealIntroPlayed = false;
+        dealIntroPlayed = true;
         roomPaintBusy = false;
         return;
       }
@@ -1676,7 +1759,7 @@ export function mountOnlineTable(
       lastTurnSeat = null;
       actionsBootstrapped = false;
       lastActionVersion = -1;
-      dealIntroPlayed = false;
+      dealIntroPlayed = true;
       roomPaintBusy = false;
       return;
     }
@@ -1954,9 +2037,7 @@ export function mountOnlineTable(
         setStatus(opts.copy.error_generic);
         return;
       }
-      resetDealPlaybackFlags();
-      applyRoomFromServer(data.room);
-      await whenPainted();
+      snapRoomToLobbyAtTable(data.room);
       startPoll();
     })();
   });
@@ -2091,10 +2172,7 @@ export function mountOnlineTable(
       const res = await api('restart');
       const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
       if (data.room) {
-        resetDealPlaybackFlags();
-        if (endPanel) endPanel.hidden = true;
-        applyRoomFromServer(data.room);
-        await whenPainted();
+        snapRoomToLobbyAtTable(data.room);
         startPoll();
       } else {
         setStatus(opts.copy.error_generic);
