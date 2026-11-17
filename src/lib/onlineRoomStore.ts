@@ -12,11 +12,11 @@ function prune(): void {
   }
 }
 
-export function createOnlineRoom(lang: string): RoomState {
+export function createOnlineRoom(lang: string, hintsEnabled = true): RoomState {
   prune();
   let id = createRoomId();
   while (rooms.has(id)) id = createRoomId();
-  const room = newRoom(id, lang);
+  const room = newRoom(id, lang, hintsEnabled);
   rooms.set(id, room);
   return room;
 }
@@ -24,6 +24,7 @@ export function createOnlineRoom(lang: string): RoomState {
 export function getOnlineRoom(id: string): RoomState | undefined {
   const room = rooms.get(id.toUpperCase());
   if (room && (!room.wins || room.wins.length !== 3)) room.wins = [0, 0, 0];
+  if (room && room.hintsEnabled === undefined) room.hintsEnabled = true;
   return room;
 }
 

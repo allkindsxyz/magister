@@ -54,7 +54,8 @@ export const POST: APIRoute = async ({ request, url }) => {
 
   if (action === 'create') {
     const lang = typeof body.lang === 'string' ? body.lang : 'ru';
-    const room = createOnlineRoom(lang);
+    const hintsEnabled = body.hintsEnabled !== false && body.hintsEnabled !== 'false';
+    const room = createOnlineRoom(lang, hintsEnabled);
     const token = playerToken(body) ?? crypto.randomUUID();
     const name = typeof body.name === 'string' ? body.name : 'Host';
     const join = tryJoinRoom(room.id, token, name);

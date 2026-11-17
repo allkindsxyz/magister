@@ -610,13 +610,15 @@ export function mountOnlineTable(
     return { cardW, step: cardW / 3 };
   }
 
+  function roomHintsEnabled(): boolean {
+    return view?.hintsEnabled !== false;
+  }
+
   function refreshHandPlayableState(): void {
     if (!handEl || !view?.yourHand) return;
-    const gate =
-      handPlayHintsEnabled &&
-      view.phase === 'playing' &&
-      view.isYourTurn &&
-      !view.needChooseSuit;
+    const yourTurnGate =
+      view.phase === 'playing' && view.isYourTurn && !view.needChooseSuit;
+    const hintGate = handPlayHintsEnabled && yourTurnGate;
     const ids = new Set(view.yourHand.map((c) => c.id));
     handEl.querySelectorAll<HTMLButtonElement>('.mag-online-hand-card').forEach((btn) => {
       const id = btn.dataset.cardId ?? '';
@@ -626,10 +628,33 @@ export function mountOnlineTable(
       }
       const card = view!.yourHand!.find((c) => c.id === id);
       if (!card) return;
-      const playable = gate && canPlayOnView(card, view!);
+      const playable = hintGate && canPlayOnView(card, view!);
       btn.classList.toggle('is-playable', playable);
-      btn.disabled = !playable;
+      btn.disabled = handPlayHintsEnabled ? !playable : !yourTurnGate;
     });
+  }
+
+  function rejectIllegalCardPlay(btn: HTMLButtonElement): void {
+    btn.classList.remove('is-rejected');
+    void btn.offsetWidth;
+    btn.classList.add('is-rejected');
+    btn.addEventListener(
+      'animationend',
+      () => {
+        btn.classList.remove('is-rejected');
+      },
+      { once: true },
+    );
+  }
+
+  function readCreateHintsEnabled(): boolean {
+    const off = root.querySelector<HTMLInputElement>('[data-online-hints-value="off"]');
+    return !off?.checked;
+  }
+
+  function syncHintsModeChrome(): void {
+    const noHints = view?.hintsEnabled === false;
+    table?.classList.toggle('mag-online-table--no-hints', noHints);
   }
 
   function setHandPlayHintsEnabled(enabled: boolean): void {
@@ -778,7 +803,7 @@ export function mountOnlineTable(
       deckBtn.classList.toggle('is-active', yourTurn);
     }
     if (updateHandHints) {
-      setHandPlayHintsEnabled(yourTurn);
+      setHandPlayHintsEnabled(yourTurn && roomHintsEnabled());
     }
     const playing = view.phase === 'playing';
     table?.classList.toggle('mag-online-table--turn-you', turnSeat === you && playing);
@@ -1630,6 +1655,8 @@ export function mountOnlineTable(
     roomCodeEls().forEach((el) => {
       el.textContent = view!.id;
     });
+    syncHintsModeChrome();
+
     if (view.phase === 'lobby') {
       if (view.youSeat !== null) {
         showLobby(false);
@@ -1824,7 +1851,7 @@ export function mountOnlineTable(
     const name = nameInput?.value?.trim() ?? '';
     if (name) localStorage.setItem(DISPLAY_NAME_KEY, name);
     setStatus('…');
-    const res = await api('create');
+    const res = await api('create', { hintsEnabled: readCreateHintsEnabled() });
     const data = (await res.json()) as {
       ok?: boolean;
       roomId?: string;
@@ -2159,6 +2186,15 @@ export function mountOnlineTable(
     void (async () => {
       const cardId = btn.dataset.cardId!;
       const cardMeta = view?.yourHand?.find((c) => c.id === cardId);
+      if (
+        cardMeta &&
+        view &&
+        view.hintsEnabled === false &&
+        !canPlayOnView(cardMeta, view)
+      ) {
+        rejectIllegalCardPlay(btn);
+        return;
+      }
       const { from, src: flySrc } = handCardFlySource(btn);
       const src = flySrc || cardMeta?.image || '';
       const to = centerTargetForFly();

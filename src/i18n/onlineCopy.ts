@@ -47,6 +47,9 @@ export type OnlineCopy = {
   tap_deck_to_start: string;
   seat_empty: string;
   max_seats: number;
+  hints_mode_label: string;
+  hints_with: string;
+  hints_without: string;
 };
 
 const ru: OnlineCopy = {
@@ -96,6 +99,9 @@ const ru: OnlineCopy = {
   tap_deck_to_start: 'Коснитесь колоды, чтобы начать',
   seat_empty: 'Свободно',
   max_seats: 4,
+  hints_mode_label: 'Режим игры',
+  hints_with: 'С подсказками',
+  hints_without: 'Без подсказок',
 };
 
 const en: OnlineCopy = {
@@ -145,6 +151,9 @@ const en: OnlineCopy = {
   tap_deck_to_start: 'Tap the deck to start',
   seat_empty: 'Empty',
   max_seats: 4,
+  hints_mode_label: 'Game mode',
+  hints_with: 'With hints',
+  hints_without: 'No hints',
 };
 
 const be: OnlineCopy = {

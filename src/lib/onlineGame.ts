@@ -63,6 +63,8 @@ export type RoomState = {
   events: RoomActionEvent[];
   /** Wins per seat index; persists across rematches in the same room. */
   wins: number[];
+  /** Highlight playable cards in hand; when false, player picks without hints. */
+  hintsEnabled: boolean;
 };
 
 export function createRoomId(): string {
@@ -74,7 +76,7 @@ export function createRoomId(): string {
   return out;
 }
 
-export function newRoom(id: string, lang: string): RoomState {
+export function newRoom(id: string, lang: string, hintsEnabled = true): RoomState {
   return {
     id,
     createdAt: Date.now(),
@@ -91,6 +93,7 @@ export function newRoom(id: string, lang: string): RoomState {
     version: 0,
     events: [],
     wins: [0, 0, 0, 0],
+    hintsEnabled,
   };
 }
 
@@ -491,6 +494,7 @@ export type ClientRoomView = {
   seatedCount: number;
   maxSeats: number;
   wins: number[];
+  hintsEnabled: boolean;
 };
 
 export function toClientView(room: RoomState, token: string | null): ClientRoomView {
@@ -527,5 +531,6 @@ export function toClientView(room: RoomState, token: string | null): ClientRoomV
       room.wins?.length >= SEATS
         ? room.wins.slice(0, SEATS)
         : [...room.wins, ...Array(Math.max(0, SEATS - room.wins.length)).fill(0)],
+    hintsEnabled: room.hintsEnabled !== false,
   };
 }

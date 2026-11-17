@@ -19,6 +19,19 @@ const copy = onlineCopy[lang];
       <span>{copy.your_name}</span>
       <input type="text" data-online-name maxlength="24" autocomplete="nickname" />
     </label>
+    <fieldset class="mag-online-hints-mode" data-online-hints-mode>
+      <legend class="mag-online-hints-mode__label">{copy.hints_mode_label}</legend>
+      <div class="mag-online-hints-segment" role="radiogroup" aria-label={copy.hints_mode_label}>
+        <label class="mag-online-hints-segment__opt">
+          <input type="radio" name="online-hints" value="on" checked data-online-hints-value="on" />
+          <span>{copy.hints_with}</span>
+        </label>
+        <label class="mag-online-hints-segment__opt">
+          <input type="radio" name="online-hints" value="off" data-online-hints-value="off" />
+          <span>{copy.hints_without}</span>
+        </label>
+      </div>
+    </fieldset>
     <button class="btn btn-accent mag-online-create" type="button" data-online-create>
       {copy.create}
     </button>
@@ -107,7 +120,7 @@ const copy = onlineCopy[lang];
           <button class="btn btn-accent mag-online-lobby-field__btn" type="button" data-online-lobby-copy>
             {copy.menu_copy}
           </button>
-          <button class="btn fw-title-timed mag-online-lobby-field__btn" type="button" data-online-lobby-add-bot>
+          <button class="btn btn-accent mag-online-lobby-field__btn" type="button" data-online-lobby-add-bot>
             {copy.menu_add_bot}
           </button>
         </div>
@@ -244,8 +257,76 @@ const copy = onlineCopy[lang];
 
   .mag-online-lobby[data-lobby-mode='invite'] .mag-online-hint,
   .mag-online-lobby[data-lobby-mode='invite'] .mag-online-status,
-  .mag-online-lobby[data-lobby-mode='invite'] .mag-online-code {
+  .mag-online-lobby[data-lobby-mode='invite'] .mag-online-code,
+  .mag-online-lobby[data-lobby-mode='invite'] .mag-online-hints-mode {
     display: none !important;
+  }
+
+  .mag-online-hints-mode {
+    width: min(100%, 18rem);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    text-align: left;
+  }
+
+  .mag-online-hints-mode__label {
+    margin: 0 0 0.4rem;
+    padding: 0;
+    font-size: 0.88rem;
+    color: #e8dfd0;
+    font-weight: normal;
+  }
+
+  .mag-online-hints-segment {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.15rem;
+    padding: 0.22rem;
+    border: 1px solid rgba(199, 163, 106, 0.45);
+    border-radius: 0.35rem;
+    background: rgba(17, 27, 43, 0.88);
+  }
+
+  .mag-online-hints-segment__opt {
+    position: relative;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .mag-online-hints-segment__opt input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .mag-online-hints-segment__opt span {
+    display: block;
+    padding: 0.55rem 0.35rem;
+    font-size: 0.68rem;
+    line-height: 1.25;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+    color: #aaa9b5;
+    border-radius: 0.25rem;
+    transition:
+      background 0.15s ease,
+      color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .mag-online-hints-segment__opt input:checked + span {
+    background: rgba(201, 169, 108, 0.22);
+    color: #ecd09b;
+    box-shadow: inset 0 0 0 1px rgba(201, 169, 108, 0.45);
+  }
+
+  .mag-online-hints-segment__opt input:focus-visible + span {
+    outline: 2px solid #ecd09b;
+    outline-offset: 1px;
   }
 
   .mag-online-lobby[hidden],
@@ -730,15 +811,36 @@ const copy = onlineCopy[lang];
     display: none !important;
   }
 
-  .mag-online-lobby-field__btn {
+  .mag-online-lobby-field .btn.btn-accent {
     width: 100%;
     margin: 0;
-    font-size: 0.88rem;
+    min-height: 2.85rem;
+    padding: 0.7rem 1rem;
+    border-color: var(--online-gold);
+    background: var(--online-gold);
+    color: #fdf8ef;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 0;
+    box-shadow: 0 0.35rem 0.85rem rgba(0, 0, 0, 0.28);
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
   }
 
-  .mag-online-lobby-field__btn:disabled {
-    opacity: 0.85;
+  .mag-online-lobby-field .btn.btn-accent:hover,
+  .mag-online-lobby-field .btn.btn-accent:focus-visible {
+    border-color: var(--online-gold2);
+    background: var(--online-gold2);
+    color: #111b2b;
+  }
+
+  .mag-online-lobby-field .btn.btn-accent:disabled {
+    opacity: 0.72;
     cursor: default;
+    color: #fdf8ef;
   }
 
   .mag-online-bot-remove {
@@ -972,7 +1074,7 @@ const copy = onlineCopy[lang];
 
   .mag-online-suit-picker {
     flex: 0 0 auto;
-    max-height: 14rem;
+    max-height: 9rem;
     overflow: hidden;
     padding: 0.65rem 0.5rem 0.5rem;
     text-align: center;
@@ -1000,29 +1102,34 @@ const copy = onlineCopy[lang];
   }
 
   .mag-online-suit-kicker {
-    margin: 0 0 0.65rem;
+    margin: 0 0 0.5rem;
     font-family: 'Spectral', Georgia, serif;
-    font-size: clamp(0.9rem, 2.8vw, 1.05rem);
+    font-size: clamp(0.85rem, 2.8vw, 1.05rem);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: #ecd09b;
   }
 
   .mag-online-suit-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: clamp(0.5rem, 3vw, 0.85rem);
-    width: min(100%, 24rem);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: center;
+    gap: clamp(0.35rem, 2.4vw, 0.7rem);
+    width: min(100%, 22rem);
     margin-inline: auto;
   }
 
   .mag-online-suit-pick {
     appearance: none;
+    flex: 1 1 0;
+    min-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 4.25rem;
-    padding: 0.55rem;
+    min-height: clamp(3.1rem, 16vw, 4rem);
+    padding: clamp(0.35rem, 2vw, 0.55rem);
     border: 1px solid rgba(199, 163, 106, 0.45);
     border-radius: 0.5rem;
     background: rgba(17, 27, 43, 0.92);
@@ -1036,7 +1143,7 @@ const copy = onlineCopy[lang];
 
   .mag-online-suit-glyph {
     display: block;
-    font-size: clamp(2.85rem, 14vw, 3.75rem);
+    font-size: clamp(1.9rem, 9.5vw, 3.1rem);
     line-height: 1;
     font-family: Georgia, 'Spectral', serif;
   }
@@ -1048,7 +1155,7 @@ const copy = onlineCopy[lang];
 
   .mag-online-suit-glyph--clubs,
   .mag-online-suit-glyph--spades {
-    color: #1e2836;
+    color: #b8c4d4;
   }
 
   .mag-online-suit-pick:hover,
@@ -1211,6 +1318,34 @@ const copy = onlineCopy[lang];
     cursor: default;
   }
 
+  .mag-online-table--no-hints .mag-online-hand-card:not(.is-playable):not(:disabled) {
+    filter: none;
+    cursor: pointer;
+  }
+
+  @keyframes mag-online-card-reject {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    18% {
+      transform: translateX(-5px) rotate(-1.2deg);
+    }
+    36% {
+      transform: translateX(5px) rotate(1.2deg);
+    }
+    54% {
+      transform: translateX(-3px);
+    }
+    72% {
+      transform: translateX(3px);
+    }
+  }
+
+  .mag-online-hand-card.is-rejected {
+    animation: mag-online-card-reject calc(0.45s * var(--online-motion, 1)) ease;
+  }
+
   .mag-online-hand-card.is-playable:not(:disabled):hover,
   .mag-online-hand-card.is-playable:not(:disabled):focus-visible {
     transform: translateY(-0.35rem);
@@ -1293,8 +1428,43 @@ const copy = onlineCopy[lang];
     gap: 0.5rem;
   }
 
-  .mag-online-end-actions .btn {
+  .mag-online-lobby .btn.btn-accent,
+  .mag-online-lobby .mag-online-create,
+  .mag-online-lobby .mag-online-join,
+  .mag-online-end-actions .btn.btn-accent {
+    width: min(100%, 18rem);
+    min-height: 2.85rem;
+    border-color: var(--online-gold);
+    background: var(--online-gold);
+    color: #fdf8ef;
+    border-radius: 0;
+  }
+
+  .mag-online-lobby .btn.btn-accent:hover,
+  .mag-online-lobby .btn.btn-accent:focus-visible,
+  .mag-online-end-actions .btn.btn-accent:hover,
+  .mag-online-end-actions .btn.btn-accent:focus-visible {
+    border-color: var(--online-gold2);
+    background: var(--online-gold2);
+    color: #111b2b;
+  }
+
+  .mag-online-end-actions .btn.fw-title-timed {
     width: 100%;
-    min-height: 2.75rem;
+    min-height: 2.85rem;
+    border: 1px solid var(--online-gold);
+    border-radius: 0;
+    background: transparent;
+    color: var(--online-gold2);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .mag-online-end-actions .btn.fw-title-timed:hover,
+  .mag-online-end-actions .btn.fw-title-timed:focus-visible {
+    border-color: var(--online-gold2);
+    background: rgba(201, 169, 108, 0.12);
+    color: #ecd09b;
   }
 </style>
