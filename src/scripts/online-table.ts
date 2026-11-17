@@ -1568,7 +1568,7 @@ export function mountOnlineTable(
     if (!actionsBootstrapped && !afterDealIntro) {
       actionsBootstrapped = true;
       const maxEv = view.events.reduce((m, e) => Math.max(m, e.version), -1);
-      lastActionVersion = Math.max(lastActionVersion, maxEv, view.version);
+      lastActionVersion = Math.max(lastActionVersion, maxEv);
       return { opponentReplayed: false, discardReplayed: false };
     }
     if (afterDealIntro) {
@@ -1616,9 +1616,6 @@ export function mountOnlineTable(
         }
       }
 
-      if (discardReplayed) {
-        renderDiscard();
-      }
       paintActiveTurn(view.turnSeat);
       return { opponentReplayed: true, discardReplayed };
     } finally {
@@ -1687,7 +1684,12 @@ export function mountOnlineTable(
 
     if (!view.topDiscard && discardEl) {
       discardEl.innerHTML = '';
-    } else if (!discardReplayed && discardRenderHold === 0 && !dealIntroJustFinished) {
+    } else if (
+      !discardReplayed &&
+      discardRenderHold === 0 &&
+      !dealIntroJustFinished &&
+      pendingOpponentEvents().length === 0
+    ) {
       renderDiscard();
     }
 
