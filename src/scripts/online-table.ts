@@ -274,6 +274,7 @@ export function mountOnlineTable(
   const hintsMode = root.querySelector<HTMLElement>('[data-online-hints-mode]');
   const lobbyCopyBtn = root.querySelector<HTMLButtonElement>('[data-online-lobby-copy]');
   const lobbyAddBotBtn = root.querySelector<HTMLButtonElement>('[data-online-lobby-add-bot]');
+  const lobbyStartBtn = root.querySelector<HTMLButtonElement>('[data-online-lobby-start]');
   const deckBtn = root.querySelector<HTMLButtonElement>('[data-online-deck]');
   const suitPicker = root.querySelector<HTMLElement>('[data-online-suit-picker]');
   const handEl = root.querySelector<HTMLElement>('[data-online-hand]');
@@ -1278,8 +1279,18 @@ export function mountOnlineTable(
   }
 
   function hideTablePrompt(): void {
-    if (tablePrompt) tablePrompt.hidden = true;
+    if (tablePrompt) {
+      tablePrompt.hidden = true;
+      tablePrompt.classList.remove('mag-online-table-prompt--waiting');
+    }
     deckBtn?.classList.remove('is-start-ready');
+  }
+
+  function showWaitingPlayersPrompt(): void {
+    if (!tablePrompt) return;
+    tablePrompt.textContent = opts.copy.waiting;
+    tablePrompt.classList.add('mag-online-table-prompt--waiting');
+    tablePrompt.hidden = false;
   }
 
   function setMidDeckCentered(centered: boolean): void {
@@ -1339,25 +1350,22 @@ export function mountOnlineTable(
     const max = view?.maxSeats ?? opts.copy.max_seats;
     const waitingForPlayers = !ready;
 
-    lobbyField?.toggleAttribute('hidden', !waitingForPlayers);
+    lobbyField?.removeAttribute('hidden');
     midEl?.classList.toggle('mag-online-mid--lobby-wait', waitingForPlayers);
+    lobbyStartBtn?.toggleAttribute('hidden', !ready);
     if (lobbyAddBotBtn) lobbyAddBotBtn.disabled = filled >= max;
     syncHintsRadiosFromView();
 
     if (ready) {
-      if (tablePrompt) {
-        tablePrompt.textContent = opts.copy.tap_deck_to_start;
-        tablePrompt.hidden = false;
-      }
+      hideTablePrompt();
       if (deckBtn) {
-        deckBtn.disabled = false;
-        deckBtn.classList.add('is-start-ready');
-        deckBtn.classList.remove('is-ready', 'is-active');
-        deckBtn.setAttribute('aria-label', opts.copy.tap_deck_to_start);
+        deckBtn.disabled = true;
+        deckBtn.classList.remove('is-start-ready', 'is-ready', 'is-active');
+        deckBtn.setAttribute('aria-label', opts.copy.deck);
       }
-      setStatus(opts.copy.tap_deck_to_start);
+      setStatus('');
     } else {
-      if (tablePrompt) tablePrompt.hidden = true;
+      showWaitingPlayersPrompt();
       if (deckBtn) {
         deckBtn.disabled = true;
         deckBtn.classList.remove('is-start-ready', 'is-ready', 'is-active');
@@ -2381,9 +2389,7 @@ export function mountOnlineTable(
     const res = await api('addBot');
     const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
     if (data.room) {
-      view = data.room;
-      lastVersion = view.version;
-      paint();
+      applyRoomFromServer(data.room, { force: true });
     } else if (data.error === 'full') {
       setStatus(opts.copy.room_full);
     } else {
@@ -2465,6 +2471,10 @@ export function mountOnlineTable(
     void addBotToRoom();
   });
 
+  lobbyStartBtn?.addEventListener('click', () => {
+    void startLobbyGame();
+  });
+
   root.querySelector('[data-online-arena]')?.addEventListener('click', (event) => {
     const btn = (event.target as Element).closest<HTMLButtonElement>('[data-seat-remove]');
     if (!btn || btn.hidden) return;
@@ -2476,18 +2486,21 @@ export function mountOnlineTable(
     void removeBotAt(seatIdx);
   });
 
-  document.querySelector('[data-app-online-menu-restart]')?.addEventListener('click', () => {
+  document.querySelector('[data-app-online-menu-close]')?.addEventListener('click', () => {
     void (async () => {
       if (!roomId) return;
-      const res = await api('restart');
-      const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
-      if (data.room) {
-        snapRoomToLobbyAtTable(data.room);
-        startPoll();
-      } else {
-        setStatus(opts.copy.error_generic);
-      }
+      stopPoll();
+      const res = await api('close');
+      const data = (await res.json()) as { ok?: boolean; closed?: boolean; error?: string };
       closeTableMenu();
+      if (!data.ok) {
+        setStatus(opts.copy.error_generic);
+        startPoll();
+        return;
+      }
+      returnToLobby();
+      showCreateLobbyUi();
+      setStatus('');
     })();
   });
 
@@ -2551,16 +2564,26 @@ export function mountOnlineTable(
     paint();
   };
 
-  const onDeckClick = async (): Promise<void> => {
-    if (!roomId || !view) return;
-    if (view.phase === 'lobby' && view.readyToStart) {
+  const startLobbyGame = async (): Promise<void> => {
+    if (!roomId || !view || view.phase !== 'lobby' || !view.readyToStart) return;
+    if (lobbyStartBtn) lobbyStartBtn.disabled = true;
+    try {
       const res = await api('start');
       const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView };
       if (data.room) {
         resetDealPlaybackFlags();
-        applyRoomFromServer(data.room);
+        applyRoomFromServer(data.room, { force: true });
         await whenPainted();
       }
+    } finally {
+      if (lobbyStartBtn && view?.phase === 'lobby') lobbyStartBtn.disabled = false;
+    }
+  };
+
+  const onDeckClick = async (): Promise<void> => {
+    if (!roomId || !view) return;
+    if (view.phase === 'lobby' && view.readyToStart) {
+      await startLobbyGame();
       return;
     }
     await onDraw();

@@ -26,11 +26,18 @@ export function getOnlineRoom(id: string): RoomState | undefined {
   if (room && (!room.wins || room.wins.length !== 3)) room.wins = [0, 0, 0];
   if (room && room.hintsEnabled === undefined) room.hintsEnabled = true;
   if (room && !room.pendingMidGameJoins) room.pendingMidGameJoins = [];
+  if (room && room.rematchAtTable === undefined) room.rematchAtTable = [];
+  if (room && room.rematchGathering === undefined) room.rematchGathering = false;
   return room;
 }
 
 export function saveRoom(room: RoomState): void {
   rooms.set(room.id, room);
+}
+
+export function deleteOnlineRoom(id: string): boolean {
+  prune();
+  return rooms.delete(id.toUpperCase());
 }
 
 export function tryJoinRoom(id: string, token: string, name: string) {

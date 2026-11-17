@@ -84,6 +84,9 @@ export type RoomState = {
   createdAt: number;
   lang: string;
   phase: RoomPhase;
+  /** After a finished hand, humans must tap rematch before the table deals again. */
+  rematchGathering?: boolean;
+  rematchAtTable?: string[];
   seats: (PlayerSeat | null)[];
   hands: PlayCard[][];
   drawPile: PlayCard[];
@@ -136,6 +139,8 @@ export function newRoom(id: string, lang: string, hintsEnabled = true): RoomStat
 function crownWinner(room: RoomState, seat: number): void {
   room.winnerSeat = seat;
   room.phase = 'finished';
+  room.rematchGathering = false;
+  room.rematchAtTable = [];
   room.pendingSuitSeat = null;
   if (room.wins.length < SEATS) {
     room.wins = [...room.wins, ...Array(SEATS - room.wins.length).fill(0)];
@@ -201,7 +206,7 @@ function seatIsOnline(seat: PlayerSeat, now = Date.now()): boolean {
 
 export function beginGame(room: RoomState, token: string): { ok: boolean; error?: string } {
   if (room.phase !== 'lobby') return { ok: false, error: 'not_lobby' };
-  if (seatedCount(room) < MIN_PLAYERS) return { ok: false, error: 'need_players' };
+  if (!lobbyReadyToDeal(room)) return { ok: false, error: 'need_players' };
   const seat = seatForToken(room, token);
   if (seat === null) return { ok: false, error: 'not_in_room' };
   startGame(room, seat);
@@ -350,25 +355,75 @@ export function startGame(room: RoomState, firstTurnSeat?: number): void {
   bump(room);
 }
 
-export function rematchRoom(room: RoomState, token: string): { ok: boolean; error?: string } {
-  const seat = seatForToken(room, token);
-  if (seat === null) return { ok: false, error: 'not_in_room' };
-  if (room.phase !== 'finished') return { ok: false, error: 'not_finished' };
-  returnRoomToLobby(room);
-  return { ok: true };
+function humanSeats(room: RoomState): PlayerSeat[] {
+  return room.seats.filter((s): s is PlayerSeat => Boolean(s && !isBotToken(s.token)));
 }
 
-function returnRoomToLobby(room: RoomState): void {
-  room.phase = 'lobby';
+function allHumansRematchAcked(room: RoomState): boolean {
+  const humans = humanSeats(room);
+  if (!humans.length) return false;
+  const ack = new Set(room.rematchAtTable ?? []);
+  return humans.every((h) => ack.has(h.token));
+}
+
+function lobbyReadyToDeal(room: RoomState): boolean {
+  if (seatedCount(room) < MIN_PLAYERS) return false;
+  if (humanSeats(room).length < 1) return false;
+  if (room.rematchGathering) return allHumansRematchAcked(room);
+  return true;
+}
+
+function clientPhase(room: RoomState, token: string | null): RoomPhase {
+  if (
+    room.phase === 'finished' &&
+    room.rematchGathering &&
+    token &&
+    room.rematchAtTable?.includes(token)
+  ) {
+    return 'lobby';
+  }
+  return room.phase;
+}
+
+function clearTableForLobby(room: RoomState): void {
   room.events = [];
   room.hands = Array.from({ length: SEATS }, () => []);
   room.drawPile = [];
   room.discard = [];
   room.discardTop = null;
   room.turnSeat = null;
-  room.winnerSeat = null;
   room.pendingSuitSeat = null;
   clearMidGameJoinState(room);
+}
+
+export function rematchRoom(room: RoomState, token: string): { ok: boolean; error?: string } {
+  const seat = seatForToken(room, token);
+  if (seat === null) return { ok: false, error: 'not_in_room' };
+  if (room.phase !== 'finished') return { ok: false, error: 'not_finished' };
+
+  if (!room.rematchGathering) {
+    room.rematchGathering = true;
+    room.rematchAtTable = [];
+  }
+
+  if (!room.rematchAtTable?.includes(token)) {
+    room.rematchAtTable = [...(room.rematchAtTable ?? []), token];
+  }
+
+  if (allHumansRematchAcked(room)) {
+    returnRoomToLobby(room);
+  } else {
+    bump(room);
+  }
+  return { ok: true };
+}
+
+function returnRoomToLobby(room: RoomState): void {
+  room.phase = 'lobby';
+  room.rematchGathering = false;
+  room.rematchAtTable = [];
+  clearTableForLobby(room);
+  room.winnerSeat = null;
   bump(room);
 }
 
@@ -615,9 +670,15 @@ export function toClientView(room: RoomState, token: string | null): ClientRoomV
     !isBotToken(youSeatData.token) &&
     !youWaitingNextHand;
 
+  const phase = clientPhase(room, token);
+  const viewerInRematchLobby =
+    room.rematchGathering === true && token !== null && (room.rematchAtTable ?? []).includes(token);
+  const showHandCounts =
+    room.phase === 'playing' || (room.phase === 'finished' && !viewerInRematchLobby);
+
   return {
     id: room.id,
-    phase: room.phase,
+    phase,
     version: room.version,
     events: room.events.map((e) => ({ ...e })),
     youSeat,
@@ -625,7 +686,7 @@ export function toClientView(room: RoomState, token: string | null): ClientRoomV
       s
         ? {
             name: s.name,
-            handCount: room.phase === 'playing' || room.phase === 'finished' ? room.hands[i].length : 0,
+            handCount: showHandCounts ? room.hands[i].length : 0,
             online: seatIsOnline(s, now),
             isBot: isBotToken(s.token),
             waitingNextHand: s.waitingNextHand === true,
@@ -640,7 +701,7 @@ export function toClientView(room: RoomState, token: string | null): ClientRoomV
     yourHand: youSeat !== null ? room.hands[youSeat].map((c) => ({ ...c })) : null,
     isYourTurn: youSeat !== null && room.turnSeat === youSeat && room.phase === 'playing',
     needChooseSuit: youSeat !== null && room.pendingSuitSeat === youSeat,
-    readyToStart: room.phase === 'lobby' && seatedCount(room) >= MIN_PLAYERS,
+    readyToStart: phase === 'lobby' && lobbyReadyToDeal(room),
     seatedCount: seatedCount(room),
     maxSeats: SEATS,
     wins:

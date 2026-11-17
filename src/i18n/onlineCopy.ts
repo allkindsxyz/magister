@@ -37,7 +37,7 @@ export type OnlineCopy = {
   menu_open: string;
   menu_copy: string;
   menu_add_bot: string;
-  menu_restart: string;
+  menu_close: string;
   remove_bot: string;
   join_table: string;
   join_invite_hint: string;
@@ -45,6 +45,7 @@ export type OnlineCopy = {
   magister_crowned: string;
   new_game_hint: string;
   tap_deck_to_start: string;
+  start_game: string;
   seat_empty: string;
   max_seats: number;
   hints_mode_label: string;
@@ -68,7 +69,7 @@ const ru: OnlineCopy = {
   copy_link: 'Копировать ссылку на стол',
   copied: 'Скопировано',
   your_name: 'Ваше имя',
-  waiting: 'Ждём игроков…',
+  waiting: 'Ждем игроков',
   need_players: 'Нужно минимум 2 игрока',
   you: 'Вы',
   deck: 'Колода',
@@ -98,7 +99,7 @@ const ru: OnlineCopy = {
   menu_open: 'Меню стола',
   menu_copy: 'Копировать ссылку',
   menu_add_bot: 'Добавить бота',
-  menu_restart: 'Рестарт стола — без ботов',
+  menu_close: 'Закрыть стол',
   remove_bot: 'Удалить',
   join_table: 'Войти за стол',
   join_invite_hint: 'Введите имя и нажмите «Войти за стол».',
@@ -106,6 +107,7 @@ const ru: OnlineCopy = {
   magister_crowned: '{name} — Магистр',
   new_game_hint: 'Создайте стол и пригласите до 3 друзей. Или играйте с ботами.',
   tap_deck_to_start: 'Коснитесь колоды, чтобы начать',
+  start_game: 'Начать',
   seat_empty: 'Свободно',
   max_seats: 4,
   hints_mode_label: 'Режим игры',
@@ -159,7 +161,7 @@ const en: OnlineCopy = {
   menu_open: 'Table menu',
   menu_copy: 'Copy link',
   menu_add_bot: 'Add bot',
-  menu_restart: 'Reset table — remove bots',
+  menu_close: 'Close table',
   remove_bot: 'Remove',
   join_table: 'Join table',
   join_invite_hint: 'Enter your name and tap Join table.',
@@ -167,6 +169,7 @@ const en: OnlineCopy = {
   magister_crowned: '{name} — Magister',
   new_game_hint: 'Create a table and invite up to 3 friends — or play with bots.',
   tap_deck_to_start: 'Tap the deck to start',
+  start_game: 'Start',
   seat_empty: 'Empty',
   max_seats: 4,
   hints_mode_label: 'Game mode',
@@ -212,6 +215,7 @@ const be: OnlineCopy = {
   turn_named: 'Ход',
   your_turn_short: 'Ваш ход',
   tap_deck_to_start: 'Дакраніце калоду, каб пачаць',
+  start_game: 'Пачаць',
   seat_empty: 'Вольна',
   max_seats: 4,
 };
@@ -245,6 +249,7 @@ const zh: OnlineCopy = {
   turn_named: '回合',
   your_turn_short: '你的回合',
   tap_deck_to_start: '触摸牌堆开始',
+  start_game: '开始',
   seat_empty: '空位',
   max_seats: 4,
 };

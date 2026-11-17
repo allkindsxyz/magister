@@ -17,6 +17,7 @@ import {
 import { addOneBot, runBotTurns } from '../../../lib/onlineBots';
 import {
   createOnlineRoom,
+  deleteOnlineRoom,
   getOnlineRoom,
   saveRoom,
   tryJoinRoom,
@@ -166,6 +167,16 @@ export const POST: APIRoute = async ({ request, url }) => {
     touchPresence(room, token);
     saveRoom(room);
     return json({ ok: true, room: toClientView(room, token) });
+  }
+
+  if (action === 'close') {
+    const token = playerToken(body);
+    if (!token) return json({ ok: false, error: 'no_token' }, 400);
+    if (seatForToken(room, token) === null) {
+      return json({ ok: false, error: 'not_in_room' }, 403);
+    }
+    deleteOnlineRoom(roomId);
+    return json({ ok: true, closed: true });
   }
 
   if (action === 'addBot') {
