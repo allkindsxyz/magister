@@ -214,6 +214,7 @@ const copy = onlineCopy[lang];
     </div>
 
     <div class="mag-online-end" data-online-end hidden>
+      <div class="mag-online-end-fireworks" data-online-end-fireworks aria-hidden="true" hidden></div>
       <div class="mag-online-end-card">
         <p class="mag-online-end-kicker" data-online-end-kicker>{copy.game_over}</p>
         <p class="mag-online-end-title" data-online-end-title></p>
@@ -1647,10 +1648,51 @@ const copy = onlineCopy[lang];
     padding: 1rem;
     background: rgba(4, 8, 16, 0.72);
     backdrop-filter: blur(4px);
+    overflow: hidden;
   }
 
   .mag-online-end[hidden] {
     display: none !important;
+  }
+
+  .mag-online-end-fireworks {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .mag-online-end-fireworks[hidden] {
+    display: none !important;
+  }
+
+  .mag-online-firework {
+    position: absolute;
+    width: 0.35rem;
+    height: 0.35rem;
+    border-radius: 50%;
+    background: var(--fx-c, #ecd09b);
+    box-shadow:
+      0 0 0.35rem var(--fx-c, #ecd09b),
+      0 0 0.75rem color-mix(in srgb, var(--fx-c, #ecd09b) 55%, transparent);
+    opacity: 0;
+    transform: translate(0, 0) scale(0.2);
+    animation: mag-online-firework-burst var(--fx-d, 1s) ease-out var(--fx-delay, 0s) both;
+  }
+
+  @keyframes mag-online-firework-burst {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0.25);
+    }
+    12% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--fx-tx, 0), var(--fx-ty, 0)) scale(1);
+    }
   }
 
   .mag-online-table.is-finished .mag-online-footer,
@@ -1660,6 +1702,8 @@ const copy = onlineCopy[lang];
   }
 
   .mag-online-end-card {
+    position: relative;
+    z-index: 1;
     width: min(100%, 20rem);
     padding: 1.15rem 1rem 1rem;
     text-align: center;

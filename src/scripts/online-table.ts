@@ -304,8 +304,11 @@ export function mountOnlineTable(
   const joinAlertActions = root.querySelector<HTMLElement>('[data-online-join-alert-actions]');
   const joinRestartBtn = root.querySelector<HTMLButtonElement>('[data-online-join-restart]');
   const joinFinishBtn = root.querySelector<HTMLButtonElement>('[data-online-join-finish]');
+  const endFireworks = root.querySelector<HTMLElement>('[data-online-end-fireworks]');
 
   let playerToken = localStorage.getItem(PLAYER_KEY) ?? '';
+  let createBusy = false;
+  let endRevealTimer: number | null = null;
   if (!playerToken) {
     playerToken = crypto.randomUUID();
     localStorage.setItem(PLAYER_KEY, playerToken);
@@ -404,9 +407,9 @@ export function mountOnlineTable(
     }
   }
 
-  function applyRoomFromServer(room: ClientRoomView): void {
+  function applyRoomFromServer(room: ClientRoomView, options?: { force?: boolean }): void {
     view = room;
-    if (view.version !== lastVersion) {
+    if (options?.force || view.version !== lastVersion) {
       lastVersion = view.version;
       paint();
     }
@@ -461,7 +464,14 @@ export function mountOnlineTable(
   }
 
   function setStatus(text: string): void {
-    if (statusEl) statusEl.textContent = text;
+    if (!statusEl) return;
+    if (text) {
+      statusEl.removeAttribute('hidden');
+      statusEl.textContent = text;
+    } else {
+      statusEl.textContent = '';
+      statusEl.setAttribute('hidden', '');
+    }
   }
 
   function showLobby(show: boolean): void {
@@ -539,7 +549,7 @@ export function mountOnlineTable(
     queuedRoomView = null;
     paintQueue = Promise.resolve();
 
-    if (endPanel) endPanel.hidden = true;
+    hideEndScreen();
     if (joinAlertPanel) joinAlertPanel.hidden = true;
     table?.classList.remove(
       'is-finished',
@@ -607,7 +617,7 @@ export function mountOnlineTable(
     showLobby(true);
     if (message) setStatus(message);
     else setStatus(opts.copy.need_players);
-    if (endPanel) endPanel.hidden = true;
+    hideEndScreen();
     if (joinAlertPanel) joinAlertPanel.hidden = true;
     table?.classList.remove('is-finished');
   }
@@ -661,13 +671,42 @@ export function mountOnlineTable(
     }
   }
 
-  function paintEndScreen(): void {
-    if (!view || !endPanel) return;
-    const finished = view.phase === 'finished';
-    table?.classList.toggle('is-finished', finished);
-    endPanel.hidden = !finished;
-    if (!finished) return;
+  function clearEndRevealTimer(): void {
+    if (endRevealTimer !== null) {
+      window.clearTimeout(endRevealTimer);
+      endRevealTimer = null;
+    }
+  }
 
+  function stopEndFireworks(): void {
+    if (!endFireworks) return;
+    endFireworks.hidden = true;
+    endFireworks.innerHTML = '';
+  }
+
+  function startEndFireworks(): void {
+    if (!endFireworks || reducedMotion()) return;
+    stopEndFireworks();
+    endFireworks.hidden = false;
+    const colors = ['#ecd09b', '#c9a96c', '#f4a27a', '#8eb5ff', '#9de8b8', '#e8a0d8'];
+    for (let i = 0; i < 32; i += 1) {
+      const piece = document.createElement('span');
+      piece.className = 'mag-online-firework';
+      const angle = (i / 32) * Math.PI * 2 + Math.random() * 0.35;
+      const dist = 22 + Math.random() * 38;
+      piece.style.setProperty('--fx-tx', `${Math.cos(angle) * dist}vmin`);
+      piece.style.setProperty('--fx-ty', `${Math.sin(angle) * dist * 0.85}vmin`);
+      piece.style.setProperty('--fx-d', `${0.75 + Math.random() * 0.55}s`);
+      piece.style.setProperty('--fx-delay', `${Math.random() * 0.2}s`);
+      piece.style.setProperty('--fx-c', colors[i % colors.length]!);
+      piece.style.left = `${38 + Math.random() * 24}%`;
+      piece.style.top = `${32 + Math.random() * 22}%`;
+      endFireworks.appendChild(piece);
+    }
+  }
+
+  function fillEndScreenContent(): void {
+    if (!view) return;
     const youWon = view.winnerSeat !== null && view.winnerSeat === view.youSeat;
     const winnerName =
       view.winnerSeat !== null ? (view.seats[view.winnerSeat]?.name ?? '—') : null;
@@ -694,6 +733,56 @@ export function mountOnlineTable(
         endWins.textContent = '';
       }
     }
+  }
+
+  function hideEndScreen(): void {
+    clearEndRevealTimer();
+    stopEndFireworks();
+    table?.classList.remove('is-finished');
+    if (endPanel) endPanel.hidden = true;
+  }
+
+  function revealEndScreenNow(): void {
+    if (!view || !endPanel || view.phase !== 'finished') return;
+    fillEndScreenContent();
+    table?.classList.add('is-finished');
+    endPanel.hidden = false;
+    startEndFireworks();
+  }
+
+  function paintEndScreen(): void {
+    if (!view || !endPanel) return;
+    if (view.phase !== 'finished') {
+      hideEndScreen();
+      return;
+    }
+
+    if (discardRenderHold > 0) {
+      table?.classList.remove('is-finished');
+      endPanel.hidden = true;
+      if (endRevealTimer === null) {
+        endRevealTimer = window.setTimeout(() => {
+          endRevealTimer = null;
+          paintEndScreen();
+        }, motionMs(48));
+      }
+      return;
+    }
+
+    clearEndRevealTimer();
+    table?.classList.remove('is-finished');
+    endPanel.hidden = true;
+
+    const delay = reducedMotion() ? 0 : motionMs(280);
+    endRevealTimer = window.setTimeout(() => {
+      endRevealTimer = null;
+      if (!view || view.phase !== 'finished') return;
+      if (discardRenderHold > 0) {
+        paintEndScreen();
+        return;
+      }
+      revealEndScreenNow();
+    }, delay);
   }
 
   function stopPoll(): void {
@@ -1987,10 +2076,11 @@ export function mountOnlineTable(
       }
     }
 
-    paintEndScreen();
     paintMidGameJoinAlert();
     } finally {
       roomPaintBusy = false;
+      if (view?.phase === 'finished') paintEndScreen();
+      else if (view && view.phase !== 'finished') hideEndScreen();
       if (queuedRoomView && queuedRoomView.version !== view?.version) {
         const next = queuedRoomView;
         queuedRoomView = null;
@@ -2001,7 +2091,11 @@ export function mountOnlineTable(
 
   function paint(): void {
     if (!view) return;
-    paintQueue = paintQueue.then(() => paintInner()).catch(() => {});
+    paintQueue = paintQueue
+      .then(() => paintInner())
+      .catch((error) => {
+        console.error('mag-online paint failed', error);
+      });
   }
 
   function whenPainted(): Promise<void> {
@@ -2088,35 +2182,53 @@ export function mountOnlineTable(
   }
 
   async function createRoom(): Promise<void> {
+    if (createBusy) return;
     const name = nameInput?.value?.trim() ?? '';
-    if (name) localStorage.setItem(DISPLAY_NAME_KEY, name);
-    setStatus('…');
-    const res = await api('create', { hintsEnabled: readHintsPreference() });
-    const data = (await res.json()) as {
-      ok?: boolean;
-      roomId?: string;
-      inviteUrl?: string;
-      playerToken?: string;
-      error?: string;
-    };
-    if (!data.ok || !data.roomId) {
-      setStatus(opts.copy.error_generic);
+    if (!name) {
+      setStatus(opts.copy.enter_name);
+      nameInput?.focus();
       return;
     }
-    roomId = data.roomId;
-    rememberInviteUrl(data.inviteUrl ?? buildInviteUrl(roomId));
-    if (data.playerToken) {
-      playerToken = data.playerToken;
-      localStorage.setItem(PLAYER_KEY, playerToken);
+    createBusy = true;
+    try {
+      localStorage.setItem(DISPLAY_NAME_KEY, name);
+      setStatus('…');
+      const res = await api('create', { hintsEnabled: readHintsPreference() });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        roomId?: string;
+        inviteUrl?: string;
+        playerToken?: string;
+        room?: ClientRoomView;
+        error?: string;
+      };
+      if (!data.ok || !data.roomId) {
+        setStatus(opts.copy.error_generic);
+        return;
+      }
+      roomId = data.roomId;
+      rememberInviteUrl(data.inviteUrl ?? buildInviteUrl(roomId));
+      if (data.playerToken) {
+        playerToken = data.playerToken;
+        localStorage.setItem(PLAYER_KEY, playerToken);
+      }
+      const url = new URL(window.location.href);
+      url.searchParams.set('room', roomId);
+      window.history.replaceState({}, '', url);
+      lastVersion = -1;
+      actionsBootstrapped = false;
+      lastActionVersion = -1;
+      if (data.room) {
+        applyRoomFromServer(data.room, { force: true });
+        await whenPainted();
+      } else {
+        await refresh();
+      }
+      startPoll();
+      setStatus('');
+    } finally {
+      createBusy = false;
     }
-    const url = new URL(window.location.href);
-    url.searchParams.set('room', roomId);
-    window.history.replaceState({}, '', url);
-    lastVersion = -1;
-    actionsBootstrapped = false;
-    lastActionVersion = -1;
-    await refresh();
-    startPoll();
   }
 
   function showCreateLobbyUi(): void {
@@ -2537,6 +2649,10 @@ export function mountOnlineTable(
           if (suitPicker) suitPicker.hidden = true;
           paintActiveTurn(view.turnSeat);
           if (!playedJoker) renderDiscard();
+        }
+        if (view.phase === 'finished') {
+          discardEl?.classList.add('is-hit');
+          window.setTimeout(() => discardEl?.classList.remove('is-hit'), motionMs(360));
         }
         paintEndScreen();
       }
