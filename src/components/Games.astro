@@ -1203,7 +1203,7 @@ const payloadJson = JSON.stringify(payload).replace(/</g, '\\u003c');
     white-space: nowrap;
   }
 
-  .play-games .play-stage-name img.play-stage-logo {
+  .play-games .play-stage-name:not(.play-stage-name--logo-only) img.play-stage-logo {
     display: block;
     flex: none;
     width: auto;

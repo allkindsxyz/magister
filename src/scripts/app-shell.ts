@@ -341,7 +341,10 @@ export function mountAppShell(): void {
       return;
     }
     if (action === 'cards') showPanel('cards');
-    else if (action === 'online') showPanel('online');
+    else if (action === 'online') {
+      showPanel('online');
+      panels.online?.dispatchEvent(new CustomEvent('magister:online-resume'));
+    }
     else if (action === 'buy') {
       const href = root.dataset.shopLink;
       if (href) window.location.assign(href);
@@ -371,7 +374,10 @@ export function mountAppShell(): void {
 
   function openOnlineFromInviteLink(): void {
     const roomCode = parseRoomFromLocation();
-    if (roomCode) showPanel('online');
+    if (roomCode) {
+      showPanel('online');
+      panels.online?.dispatchEvent(new CustomEvent('magister:online-resume'));
+    }
   }
 
   function confirmAge(): void {

@@ -77,23 +77,23 @@ const filterCopy = {
     <h3 id="gallery-title">{t('gallery.title')}</h3>
   </header>
 
-  <div class="gallery-filter reveal" data-gallery-filter>
+  <div class="gallery-filter reveal" data-gallery-filter data-filter-default-open={isApp ? 'true' : undefined}>
     <div class="gallery-filter__bar">
       <button
         class="gallery-filter__toggle"
         type="button"
         data-filter-toggle
-        aria-expanded="false"
+        aria-expanded={isApp ? 'true' : 'false'}
         aria-controls="gallery-filter-panel"
       >
-        <span data-filter-toggle-label>{t('gallery.filter_find')}</span>
+        <span data-filter-toggle-label>{isApp ? t('gallery.filter_hide') : t('gallery.filter_find')}</span>
       </button>
       <button class="gallery-filter__clear" type="button" data-filter-clear hidden>
         {t('gallery.filter_clear')}
       </button>
     </div>
 
-    <div class="gallery-filter__panel" id="gallery-filter-panel" data-filter-panel hidden>
+    <div class="gallery-filter__panel" id="gallery-filter-panel" data-filter-panel hidden={!isApp}>
       <div class="gallery-filter__row" role="group" aria-label={t('gallery.filter_suit')}>
         <span class="gallery-filter__label">{t('gallery.filter_suit')}</span>
         <div class="gallery-filter__chips">
@@ -175,18 +175,41 @@ const filterCopy = {
               decoding="async"
               draggable="false"
             />
-            <div class="carousel-card__overlay">
-              <div class="carousel-card__overlay-inner">
-                {!card.back && (
-                  <span class="carousel-card__suit">
-                    {card.suitSymbol}
-                    {card.joker ? '' : card.value}
-                  </span>
-                )}
-                <span class="carousel-card__name">{card.title}</span>
-                <span class="carousel-card__btn">{t('gallery.open_btn')}</span>
-              </div>
-            </div>
+            {
+              isApp ? (
+                <div class="carousel-card__overlay carousel-card__overlay--caption">
+                  <div class="carousel-card__overlay-inner">
+                    {!card.back && card.suitSymbol ? (
+                      <p
+                        class="lb-suit-val"
+                        data-suit={card.joker ? 'joker' : card.suit}
+                      >
+                        {!card.joker && card.value ? (
+                          <span class="lb-suit-rank">{card.value}</span>
+                        ) : null}
+                        <span class="lb-suit-symbol" aria-hidden="true">
+                          {card.suitSymbol}
+                        </span>
+                      </p>
+                    ) : null}
+                    <span class="carousel-card__name">{card.title}</span>
+                  </div>
+                </div>
+              ) : (
+                <div class="carousel-card__overlay">
+                  <div class="carousel-card__overlay-inner">
+                    {!card.back && (
+                      <span class="carousel-card__suit">
+                        {card.suitSymbol}
+                        {card.joker ? '' : card.value}
+                      </span>
+                    )}
+                    <span class="carousel-card__name">{card.title}</span>
+                    <span class="carousel-card__btn">{t('gallery.open_btn')}</span>
+                  </div>
+                </div>
+              )
+            }
           </span>
         </button>
       ))}
@@ -1182,15 +1205,115 @@ const filterCopy = {
 
   .gallery--app .carousel-card {
     width: clamp(9.5rem, 38vw, 12.5rem);
+    text-transform: none;
+    letter-spacing: normal;
   }
 
   .gallery--app .carousel-card__inner {
+    display: grid;
+    grid-template: 1fr / 1fr;
     border: 1px solid rgba(199, 163, 106, 0.22);
     box-shadow: 0 0.85rem 1.75rem rgba(0, 0, 0, 0.45);
   }
 
   .gallery--app .carousel-card__img {
+    grid-area: 1 / 1;
+    width: 100%;
+  }
+
+  .gallery--app .carousel-card__img {
     filter: none;
+  }
+
+  .gallery--app .carousel-card__overlay.carousel-card__overlay--caption {
+    position: relative;
+    grid-area: 1 / 1;
+    z-index: 2;
+    align-self: stretch;
+    justify-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    min-height: 100%;
+    inset: unset;
+    display: flex;
+    align-items: flex-end;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.94) 0%,
+      rgba(0, 0, 0, 0.82) 38%,
+      rgba(0, 0, 0, 0.52) 62%,
+      rgba(0, 0, 0, 0.22) 82%,
+      transparent 100%
+    );
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 350ms ease;
+    writing-mode: horizontal-tb;
+  }
+
+  .gallery--app .carousel-card:hover .carousel-card__overlay--caption,
+  .gallery--app .carousel-card:focus .carousel-card__overlay--caption,
+  .gallery--app .carousel-card:focus-visible .carousel-card__overlay--caption {
+    opacity: 1;
+  }
+
+  .gallery--app .carousel-card__overlay--caption .carousel-card__overlay-inner {
+    padding: clamp(0.85rem, 4.5vw, 1.2rem) clamp(0.75rem, 3.8vw, 1rem)
+      clamp(0.95rem, 4.8vw, 1.35rem);
+  }
+
+  .gallery--app .carousel-card__overlay--caption .lb-suit-val {
+    flex: none;
+    margin: 0 0 0.32rem;
+    padding-top: 0;
+    color: var(--ink);
+    font-size: clamp(0.95rem, 4.2vw, 1.18rem);
+    line-height: 1;
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.42),
+      0 1px 1px rgba(255, 255, 255, 0.16);
+  }
+
+  .gallery--app .carousel-card__overlay--caption .lb-suit-val[data-suit='hearts'],
+  .gallery--app .carousel-card__overlay--caption .lb-suit-val[data-suit='diamonds'] {
+    color: #c45656;
+    text-shadow: none;
+  }
+
+  .gallery--app .carousel-card__overlay--caption .lb-suit-val[data-suit='hearts'] :global(.lb-suit-rank),
+  .gallery--app .carousel-card__overlay--caption .lb-suit-val[data-suit='hearts'] :global(.lb-suit-symbol),
+  .gallery--app .carousel-card__overlay--caption .lb-suit-val[data-suit='diamonds'] :global(.lb-suit-rank),
+  .gallery--app .carousel-card__overlay--caption .lb-suit-val[data-suit='diamonds'] :global(.lb-suit-symbol) {
+    color: #c45656;
+  }
+
+  .gallery--app .lb-suit-val[data-suit='hearts'],
+  .gallery--app .lb-suit-val[data-suit='diamonds'] {
+    color: #c45656;
+  }
+
+  .gallery--app .carousel-card__overlay--caption .lb-suit-val :global(.lb-suit-symbol) {
+    padding-top: 0.06em;
+    vertical-align: -0.05em;
+  }
+
+  .gallery--app .carousel-card__overlay--caption .lb-suit-val :global(.lb-suit-rank) {
+    margin-left: 0;
+    margin-right: 0.12em;
+  }
+
+  .gallery--app .carousel-card__overlay--caption .carousel-card__name {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    color: #ffffff;
+    font: 500 clamp(0.58rem, 2.6vw, 0.68rem) / 1.35 var(--sans);
+    letter-spacing: 0.16em;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
   }
 
   .gallery--app .lightbox {
@@ -1484,6 +1607,14 @@ const filterCopy = {
     visible = [...allCards];
     applyView({ reshuffle: false });
     return visible.findIndex((card) => card.id === id);
+  }
+
+  const filterDefaultOpen = filterRoot?.dataset.filterDefaultOpen === 'true';
+
+  if (filterDefaultOpen && filterPanel && filterToggle) {
+    filterPanel.hidden = false;
+    filterToggle.setAttribute('aria-expanded', 'true');
+    syncFilterChrome();
   }
 
   filterToggle?.addEventListener('click', () => {

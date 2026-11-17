@@ -821,6 +821,86 @@ export function mountOnlineTable(
     if (typeof url === 'string' && url.length > 8) inviteUrl = url;
   }
 
+  function roomCodeFromContext(): string | null {
+    const code = roomId || pendingInviteRoom || parseRoomFromLocation();
+    return code ? code.toUpperCase() : null;
+  }
+
+  function fillSavedName(): boolean {
+    const saved = localStorage.getItem(DISPLAY_NAME_KEY)?.trim();
+    if (saved && nameInput && !nameInput.value.trim()) nameInput.value = saved;
+    return Boolean(nameInput?.value?.trim());
+  }
+
+  async function enterSeatedRoom(room: ClientRoomView, invite?: string): Promise<void> {
+    rememberInviteUrl(invite);
+    pendingInviteRoom = null;
+    showCreateLobbyUi();
+    applyRoomFromServer(room, { force: true });
+    await whenPainted();
+    startPoll();
+    setStatus('');
+  }
+
+  /** Rejoin an existing table when URL/token/name are already known (host or returning player). */
+  async function resumeActiveRoom(): Promise<boolean> {
+    const code = roomCodeFromContext();
+    if (!code) return false;
+    roomId = code;
+    fillSavedName();
+
+    const stateRes = await api('state');
+    const stateData = (await stateRes.json()) as {
+      ok?: boolean;
+      room?: ClientRoomView;
+      error?: string;
+      inviteUrl?: string;
+    };
+
+    if (!stateData.ok || !stateData.room) {
+      if (stateData.error === 'missing') {
+        roomId = '';
+        pendingInviteRoom = null;
+        clearRoomFromUrl();
+        resetSessionState();
+        return false;
+      }
+      return false;
+    }
+
+    rememberInviteUrl(stateData.inviteUrl);
+
+    if (stateData.room.youSeat !== null) {
+      await enterSeatedRoom(stateData.room, stateData.inviteUrl);
+      return true;
+    }
+
+    if (!fillSavedName()) return false;
+
+    const joinRes = await api('join');
+    const joinData = (await joinRes.json()) as {
+      ok?: boolean;
+      room?: ClientRoomView;
+      error?: string;
+      inviteUrl?: string;
+    };
+    if (!joinData.ok || !joinData.room) {
+      if (joinData.error === 'full') setStatus(opts.copy.room_full);
+      else if (joinData.error === 'missing') {
+        roomId = '';
+        pendingInviteRoom = null;
+        clearRoomFromUrl();
+      } else if (joinData.error !== undefined) setStatus(opts.copy.error_generic);
+      return false;
+    }
+
+    const url = new URL(window.location.href);
+    url.searchParams.set('room', roomId);
+    window.history.replaceState({}, '', url);
+    await enterSeatedRoom(joinData.room, joinData.inviteUrl);
+    return true;
+  }
+
   async function refresh(): Promise<void> {
     if (!roomId) return;
     const res = await api('state');
@@ -2263,6 +2343,7 @@ export function mountOnlineTable(
   }
 
   async function joinRoom(id: string): Promise<void> {
+    fillSavedName();
     const name = nameInput?.value?.trim() ?? '';
     if (!name) {
       setStatus(opts.copy.enter_name);
@@ -2272,7 +2353,12 @@ export function mountOnlineTable(
     localStorage.setItem(DISPLAY_NAME_KEY, name);
     roomId = id.toUpperCase();
     const res = await api('join');
-    const data = (await res.json()) as { ok?: boolean; error?: string; inviteUrl?: string };
+    const data = (await res.json()) as {
+      ok?: boolean;
+      error?: string;
+      inviteUrl?: string;
+      room?: ClientRoomView;
+    };
     if (!data.ok) {
       if (data.error === 'full') setStatus(opts.copy.room_full);
       else if (data.error === 'missing') returnToLobby(opts.copy.room_missing);
@@ -2286,6 +2372,10 @@ export function mountOnlineTable(
     lastVersion = -1;
     actionsBootstrapped = false;
     lastActionVersion = -1;
+    if (data.room) {
+      await enterSeatedRoom(data.room, data.inviteUrl);
+      return;
+    }
     showCreateLobbyUi();
     await refresh();
     startPoll();
@@ -2295,7 +2385,11 @@ export function mountOnlineTable(
 
   joinBtn?.addEventListener('click', () => {
     const id = pendingInviteRoom ?? roomId;
-    if (id) void joinRoom(id);
+    if (id) {
+      void joinRoom(id);
+      return;
+    }
+    void resumeActiveRoom();
   });
 
   nameInput?.addEventListener('keydown', (event) => {
@@ -2746,19 +2840,38 @@ export function mountOnlineTable(
     if (discardZoom && !discardZoom.hidden) closeDiscardZoom();
   });
 
-  if (opts.initialRoom) {
-    showLobby(true);
-    showInviteJoinUi(opts.initialRoom);
-  } else {
+  void (async () => {
+    const urlRoom = opts.initialRoom ?? parseRoomFromLocation();
+    if (urlRoom) {
+      roomId = urlRoom.toUpperCase();
+      pendingInviteRoom = roomId;
+      showLobby(true);
+      const resumed = await resumeActiveRoom();
+      if (!resumed) {
+        showInviteJoinUi(urlRoom);
+        fillSavedName();
+      }
+      return;
+    }
     showLobby(true);
     showCreateLobbyUi();
     syncHintsRadiosFromView();
-    const saved = localStorage.getItem(DISPLAY_NAME_KEY);
-    if (saved && nameInput && !nameInput.value.trim()) nameInput.value = saved;
-  }
+    fillSavedName();
+  })();
 
   root.addEventListener('magister:online-stop', () => {
     stopPoll();
+  });
+
+  root.addEventListener('magister:online-resume', () => {
+    if (view?.youSeat !== null && roomId) {
+      startPoll();
+      void refresh();
+      return;
+    }
+    void resumeActiveRoom().then((resumed) => {
+      if (!resumed && roomCodeFromContext()) showInviteJoinUi(roomCodeFromContext()!);
+    });
   });
 }
 

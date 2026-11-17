@@ -33,6 +33,8 @@ const preload = [
   '/media/poster-initiation.gif',
   '/media/poster-four-worlds-still.jpg',
   '/media/poster-four-worlds.gif',
+  '/media/hub-online-golden-signal-still.jpg',
+  '/media/hub-online-golden-signal.gif',
   '/media/poster-ask-magister.webp',
   '/media/deck-lifestyle.jpg',
 ].join(',');
@@ -87,7 +89,13 @@ const doorDefaults: Record<
   },
   birthday: { art: '/media/card-back.jpg', artW: 732, artH: 1024, lockedUntil: 'worlds' },
   oracle: { art: '/media/poster-ask-magister.webp', artW: 656, artH: 1024, lockedUntil: 'worlds' },
-  online: { art: '/media/card-back.jpg', artW: 732, artH: 1024 },
+  online: {
+    art: '/media/hub-online-golden-signal-still.jpg',
+    artMotion: '/media/hub-online-golden-signal.gif',
+    artW: 390,
+    artH: 439,
+    fit: 'cover',
+  },
   buy: { art: '/media/deck-lifestyle.jpg', artW: 1024, artH: 672, fit: 'cover' },
 };
 
@@ -290,15 +298,18 @@ const startIndex = 0;
     <section class="play-games play-games--app" aria-label={copy.nav_cards}>
       <div class="play-app-root">
         <div class="play-stage mag-app-cards-stage">
-          <div class="play-stage-bar">
+          <div class="play-stage-bar mag-app-cards-bar">
             <button class="play-nav-back" type="button" data-app-action="back">
               <span class="play-nav-mark" aria-hidden="true">←</span>
               <span class="play-nav-label">{copy.back}</span>
             </button>
-            <p class="play-stage-name">
-              <MagisterLogo class="play-stage-logo" level width={112} height={49} />
-              <span>{copy.nav_cards}</span>
+            <p class="play-stage-name play-stage-name--logo-only">
+              <MagisterLogo class="play-stage-logo" level width={704} height={308} />
             </p>
+            <span class="play-nav-back play-stage-bar__mirror" aria-hidden="true">
+              <span class="play-nav-mark" aria-hidden="true">←</span>
+              <span class="play-nav-label">{copy.back}</span>
+            </span>
           </div>
           <Gallery lang={lang} variant="app" />
         </div>
@@ -1380,7 +1391,11 @@ const startIndex = 0;
     min-height: 100svh;
   }
 
-  .mag-app-panel--cards .play-stage-bar {
+  .mag-app-panel--cards .mag-app-cards-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.75rem;
     padding:
       max(0.65rem, env(safe-area-inset-top))
       max(0.85rem, env(safe-area-inset-right))
@@ -1389,13 +1404,60 @@ const startIndex = 0;
     margin-bottom: 0.65rem;
   }
 
+  .mag-app-panel--cards .mag-app-cards-bar .play-nav-back {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+
+  .mag-app-panel--cards .mag-app-cards-bar .play-stage-name--logo-only {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    gap: 0;
+    min-width: 0;
+    max-width: none;
+    overflow: visible;
+    white-space: normal;
+    transform: none;
+  }
+
+  .mag-app-panel--cards .mag-app-cards-bar .play-stage-bar__mirror {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    visibility: hidden;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .mag-app-panel--cards .play-stage-name--logo-only :global(.magister-logo),
+  .mag-app-panel--cards .play-stage-name--logo-only :global(.play-stage-logo),
+  .mag-app-panel--cards .play-stage-name--logo-only :global(img) {
+    display: block;
+    flex: none;
+    width: auto;
+    height: clamp(13.5rem, 44vw, 18.5rem);
+    max-width: min(92vw, 56rem);
+    max-height: none;
+    object-fit: contain;
+    --nav-mark-height: clamp(13.5rem, 44vw, 18.5rem);
+  }
+
+  @media (max-width: 859px) {
+    .mag-app-panel--cards .mag-app-cards-bar {
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    }
+  }
+
   @media (max-width: 520px) {
-    .mag-app-panel--cards .play-stage-bar .play-nav-back {
+    .mag-app-panel--cards .mag-app-cards-bar .play-nav-back,
+    .mag-app-panel--cards .mag-app-cards-bar .play-stage-bar__mirror {
       min-width: 0;
       padding-inline: 0.85rem;
     }
 
-    .mag-app-panel--cards .play-stage-bar .play-nav-label {
+    .mag-app-panel--cards .mag-app-cards-bar .play-nav-label {
       position: absolute;
       width: 1px;
       height: 1px;
