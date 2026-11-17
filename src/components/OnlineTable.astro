@@ -314,6 +314,7 @@ const copy = onlineCopy[lang];
 
   .mag-online-hints-mode {
     width: min(100%, 18rem);
+    min-width: 0;
     margin: 0;
     padding: 0;
     border: 0;
@@ -369,10 +370,6 @@ const copy = onlineCopy[lang];
   }
 
   @media (min-width: 640px) {
-    .mag-online-lobby-field {
-      width: min(100%, 21.5rem);
-    }
-
     .mag-online-hints-segment {
       gap: 0.35rem;
       padding: 0.3rem;
@@ -955,6 +952,7 @@ const copy = onlineCopy[lang];
   }
 
   .mag-online-lobby-field {
+    --online-lobby-w: 18rem;
     grid-column: 2;
     grid-row: 1;
     z-index: 4;
@@ -962,7 +960,17 @@ const copy = onlineCopy[lang];
     flex-direction: column;
     align-items: stretch;
     gap: 0.65rem;
-    width: min(100%, 17.5rem);
+    box-sizing: border-box;
+    width: min(100%, var(--online-lobby-w));
+    max-width: min(100%, var(--online-lobby-w));
+    min-width: 0;
+    justify-self: center;
+  }
+
+  @media (min-width: 640px) {
+    .mag-online-lobby-field {
+      --online-lobby-w: 21.5rem;
+    }
   }
 
   .mag-online-lobby-field[hidden] {
@@ -971,7 +979,13 @@ const copy = onlineCopy[lang];
 
   .mag-online-lobby-field .mag-online-hints-mode {
     width: 100%;
-    max-width: none;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .mag-online-lobby-field .mag-online-hints-segment {
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .mag-online-hints-mode--table .mag-online-hints-mode__label {
@@ -995,10 +1009,14 @@ const copy = onlineCopy[lang];
     display: none !important;
   }
 
-  .mag-online-lobby-field .btn.btn-accent {
+  .mag-online-lobby-field .mag-online-lobby-field__btn.btn.btn-accent {
+    display: flex;
     width: 100%;
+    max-width: 100%;
+    min-width: 0;
     margin: 0;
     box-sizing: border-box;
+    align-self: stretch;
     min-height: 2.75rem;
     padding: 0.62rem 0.5rem;
     border: 1px solid var(--online-gold);
@@ -1018,7 +1036,7 @@ const copy = onlineCopy[lang];
   }
 
   @media (min-width: 640px) {
-    .mag-online-lobby-field .btn.btn-accent {
+    .mag-online-lobby-field .mag-online-lobby-field__btn.btn.btn-accent {
       min-height: 2.85rem;
       padding: 0.68rem 0.85rem;
       font-size: 0.8rem;
@@ -1026,14 +1044,14 @@ const copy = onlineCopy[lang];
     }
   }
 
-  .mag-online-lobby-field .btn.btn-accent:hover,
-  .mag-online-lobby-field .btn.btn-accent:focus-visible {
+  .mag-online-lobby-field .mag-online-lobby-field__btn.btn.btn-accent:hover,
+  .mag-online-lobby-field .mag-online-lobby-field__btn.btn.btn-accent:focus-visible {
     border-color: var(--online-gold2);
     background: var(--online-gold2);
     color: #111b2b;
   }
 
-  .mag-online-lobby-field .btn.btn-accent:disabled {
+  .mag-online-lobby-field .mag-online-lobby-field__btn.btn.btn-accent:disabled {
     opacity: 0.72;
     cursor: default;
     color: #fdf8ef;

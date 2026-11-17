@@ -1,0 +1,666 @@
+---
+import type { Lang } from '../i18n/utils';
+import { instructionCardsCopy } from '../i18n/instructionCardsCopy';
+import MagisterLogo from './MagisterLogo.astro';
+
+interface Props {
+  lang: Lang;
+  backLabel: string;
+}
+
+const { lang, backLabel } = Astro.props;
+const copy = instructionCardsCopy(lang);
+
+const card1a = copy.cards.find((c) => c.id === '1a')!;
+const card1b = copy.cards.find((c) => c.id === '1b')!;
+const card2a = copy.cards.find((c) => c.id === '2a')!;
+const card2b = copy.cards.find((c) => c.id === '2b')!;
+
+const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
+  hearts: '/media/pilgrims.webp',
+  diamonds: '/media/bearer.webp',
+  clubs: '/media/lady.webp',
+  spades: '/media/merchant.webp',
+};
+---
+
+<section class="mag-app-panel mag-app-panel--instructions" data-panel="instructions" hidden>
+  <div
+    class="mag-instr"
+    data-instruction-root
+    aria-label={copy.aria}
+  >
+    <header class="play-stage-bar mag-instr__bar">
+      <button class="play-nav-back" type="button" data-app-action="back">
+        <span class="play-nav-mark" aria-hidden="true">←</span>
+        <span class="play-nav-label">{backLabel}</span>
+      </button>
+      <p class="play-stage-name play-stage-name--logo-only">
+        <MagisterLogo class="play-stage-logo mag-instr__bar-logo" level width={704} height={308} />
+      </p>
+      <span class="play-nav-back play-stage-bar__mirror" aria-hidden="true">
+        <span class="play-nav-mark" aria-hidden="true">←</span>
+        <span class="play-nav-label">{backLabel}</span>
+      </span>
+    </header>
+
+    <div class="mag-instr__stage">
+      <button
+        class="mag-instr__nav mag-instr__nav--prev"
+        type="button"
+        data-instruction-prev
+        aria-label={copy.prev}
+      >
+        ‹
+      </button>
+
+      <div class="mag-instr__viewport">
+        <article class="mag-instr-card mag-instr-card--1a is-active" data-instruction-card>
+          <span class="mag-instr-card__frame" aria-hidden="true"></span>
+          <MagisterLogo class="mag-instr-card__logo" level width={360} height={150} />
+          <div class="mag-instr-ornament"><span class="mag-instr-star">✦</span></div>
+          <header class="mag-instr-intro">
+            <h2 class="mag-instr-kicker">{card1a.kicker}</h2>
+          </header>
+          <div class="mag-instr-teaser">
+            {
+              card1a.paragraphs.map((paragraph, i) => (
+                <p class:list={['mag-instr-p', i === 0 && 'mag-instr-p--hook', i === card1a.paragraphs.length - 1 && 'mag-instr-p--byline']}>
+                  {paragraph}
+                </p>
+              ))
+            }
+          </div>
+        </article>
+
+        <article class="mag-instr-card mag-instr-card--1b" data-instruction-card>
+          <span class="mag-instr-card__frame" aria-hidden="true"></span>
+          <div class="mag-instr-ornament"><span class="mag-instr-star">✦</span></div>
+          <header class="mag-instr-intro">
+            <h2 class="mag-instr-kicker">{card1b.kicker}</h2>
+            <p class="mag-instr-highlight"><strong>{card1b.highlight}</strong></p>
+            <p class="mag-instr-copy">{card1b.subtitle}</p>
+          </header>
+          <section class="mag-instr-suits">
+            {
+              card1b.suits.map((suit) => (
+                <div class="mag-instr-suit">
+                  <img
+                    class="mag-instr-suit__thumb"
+                    src={suitThumb[suit.id]}
+                    alt=""
+                    width={120}
+                    height={168}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div class="mag-instr-suit__meta">
+                    <span class="mag-instr-suit__sym" aria-hidden="true">{suit.symbol}</span>
+                    <span class="mag-instr-suit__text">
+                      <strong>{suit.title}</strong> — {suit.body}
+                    </span>
+                  </div>
+                </div>
+              ))
+            }
+          </section>
+          <p class="mag-instr-copy mag-instr-copy--rank">{card1b.rankHint}</p>
+        </article>
+
+        <article class="mag-instr-card mag-instr-card--2a" data-instruction-card>
+          <span class="mag-instr-card__frame" aria-hidden="true"></span>
+          <div class="mag-instr-ornament"><span class="mag-instr-star">✦</span></div>
+          <header class="mag-instr-intro">
+            <h2 class="mag-instr-kicker">{card2a.kicker}</h2>
+          </header>
+          <div class="mag-instr-rules">
+            <p class="mag-instr-goal">
+              <strong>{card2a.goalLabel}:</strong> {card2a.goalText}
+            </p>
+            <section class="mag-instr-section">
+              <h3 class="mag-instr-section__title">{card2a.howTitle}</h3>
+              <ol class="mag-instr-steps">
+                {card2a.steps.map((step) => (
+                  <li set:html={step} />
+                ))}
+              </ol>
+            </section>
+          </div>
+        </article>
+
+        <article class="mag-instr-card mag-instr-card--2b" data-instruction-card>
+          <span class="mag-instr-card__frame" aria-hidden="true"></span>
+          <header class="mag-instr-intro">
+            <h2 class="mag-instr-kicker">{card2b.kicker}</h2>
+          </header>
+          <div class="mag-instr-rules">
+            <p class="mag-instr-lede">{card2b.players}</p>
+            <p class="mag-instr-lede mag-instr-lede--goal">{card2b.goal}</p>
+            <p class="mag-instr-p">{card2b.deal}</p>
+            <section class="mag-instr-section">
+              <h3 class="mag-instr-section__title">{card2b.turnTitle}</h3>
+              <p class="mag-instr-p">{card2b.turnBody}</p>
+            </section>
+            <section class="mag-instr-section">
+              <h3 class="mag-instr-section__title">{card2b.drawTitle}</h3>
+              <p class="mag-instr-p">{card2b.drawBody}</p>
+            </section>
+            <section class="mag-instr-section">
+              <h3 class="mag-instr-section__title">{card2b.specialTitle}</h3>
+              <ul class="mag-instr-list">
+                {card2b.specialItems.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </section>
+            <section class="mag-instr-section">
+              <h3 class="mag-instr-section__title">{card2b.winTitle}</h3>
+              <p class="mag-instr-p">{card2b.winBody}</p>
+            </section>
+            {card2b.footnote ? <p class="mag-instr-footnote">{card2b.footnote}</p> : null}
+          </div>
+        </article>
+      </div>
+
+      <button
+        class="mag-instr__nav mag-instr__nav--next"
+        type="button"
+        data-instruction-next
+        aria-label={copy.next}
+      >
+        ›
+      </button>
+    </div>
+
+    <div class="mag-instr__dots" role="tablist" aria-label={copy.aria}>
+      {
+        copy.cards.map((card, i) => (
+          <button
+            class:list={['mag-instr__dot', i === 0 && 'is-active']}
+            type="button"
+            data-instruction-dot={i}
+            aria-label={card.id}
+            aria-current={i === 0 ? 'true' : 'false'}
+          />
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .mag-app-panel--instructions {
+    display: flex;
+    flex-direction: column;
+    min-height: 100dvh;
+    min-height: 100svh;
+    background: #080d18;
+    color: #f7efd9;
+    --play-ground: #080d18;
+    --play-gold: #c7a36a;
+    --play-gold-hot: #ecd09b;
+    --play-parchment: #f0e7d5;
+  }
+
+  .mag-instr {
+    --instr-navy: #061a3b;
+    --instr-gold: #e8c878;
+    --instr-ivory: #f7efd9;
+    --instr-display: 'Cormorant Garamond', Georgia, serif;
+    --instr-body: 'Manrope', system-ui, sans-serif;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding:
+      max(0.55rem, env(safe-area-inset-top))
+      max(0.65rem, env(safe-area-inset-right))
+      max(0.75rem, env(safe-area-inset-bottom))
+      max(0.65rem, env(safe-area-inset-left));
+  }
+
+  .mag-instr__bar.play-stage-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.75rem;
+    margin-bottom: 0.55rem;
+    padding-inline: 0;
+  }
+
+  .mag-instr__bar .play-nav-back {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.525rem;
+    min-width: 0;
+    min-height: calc(3.35rem * 0.75);
+    padding: 0 calc(0.7rem * 0.75);
+    border: 1px solid var(--play-gold);
+    background: var(--play-ground);
+    color: var(--play-gold);
+    cursor: pointer;
+    font: 600 calc(0.72rem * 0.75) / 1 'Spectral', Georgia, serif;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .mag-instr__bar .play-nav-back:hover,
+  .mag-instr__bar .play-nav-back:focus-visible {
+    border-color: var(--play-gold-hot);
+    color: var(--play-gold-hot);
+  }
+
+  .mag-instr__bar .play-stage-name--logo-only {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+    margin: 0;
+    gap: 0;
+  }
+
+  .mag-instr__bar .play-stage-bar__mirror {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    visibility: hidden;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .mag-instr__bar-logo,
+  .mag-instr__bar-logo:global(img) {
+    display: block;
+    width: auto;
+    height: clamp(2.35rem, 8.5vw, 3.15rem);
+    max-width: min(62vw, 14rem);
+    object-fit: contain;
+  }
+
+  .mag-instr__stage {
+    flex: 1 1 auto;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 0;
+  }
+
+  .mag-instr__viewport {
+    position: relative;
+    display: block;
+    width: min(100%, calc((100svh - 8.25rem) * 63 / 88), 26rem);
+    max-height: min(calc(100svh - 8.25rem), 36rem);
+    aspect-ratio: 63 / 88;
+    margin-inline: auto;
+    min-width: 0;
+    perspective: 1100px;
+  }
+
+  .mag-instr__nav {
+    appearance: none;
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.75rem;
+    border: 1px solid rgba(199, 163, 106, 0.45);
+    border-radius: 0.35rem;
+    background: rgba(17, 27, 43, 0.92);
+    color: #ecd09b;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .mag-instr__nav:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .mag-instr-card {
+    position: absolute;
+    inset: 0;
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-height: 100%;
+    aspect-ratio: 63 / 88;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(14%) rotateY(-22deg) scale(0.97);
+    transform-origin: center center;
+    transition:
+      transform 0.42s cubic-bezier(0.22, 0.92, 0.28, 1),
+      opacity 0.32s ease;
+    will-change: transform, opacity;
+    padding: clamp(1.05rem, 4.2vw, 1.75rem) clamp(0.95rem, 4vw, 1.45rem) clamp(0.9rem, 3.5vw, 1.2rem);
+    border-radius: clamp(0.65rem, 3.5vw, 1.1rem);
+    color: var(--instr-ivory);
+    text-align: center;
+    font-family: var(--instr-body);
+    font-size: clamp(0.72rem, 3.05vw, 0.9rem);
+    line-height: 1.42;
+    box-shadow:
+      0 0.85rem 1.75rem rgba(0, 0, 0, 0.45),
+      inset 0 0 0 1px rgba(201, 170, 91, 0.28);
+    isolation: isolate;
+    background-color: var(--instr-navy);
+  }
+
+  .mag-instr-card.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0) rotateY(0) scale(1);
+    z-index: 3;
+  }
+
+  .mag-instr-card.is-before {
+    opacity: 0;
+    transform: translateX(-18%) rotateY(20deg) scale(0.96);
+    z-index: 1;
+  }
+
+  .mag-instr-card.is-after {
+    opacity: 0;
+    transform: translateX(18%) rotateY(-20deg) scale(0.96);
+    z-index: 1;
+  }
+
+  .mag-instr-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background-image: url('/media/card-back-600.webp');
+    background-position: center;
+    background-size: cover;
+    transform: scale(1.08);
+    filter: blur(8px) brightness(0.72);
+    pointer-events: none;
+  }
+
+  .mag-instr-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background:
+      linear-gradient(180deg, rgba(4, 8, 16, 0.42) 0%, rgba(2, 5, 10, 0.58) 100%),
+      rgba(3, 8, 18, 0.45);
+    pointer-events: none;
+  }
+
+  .mag-instr-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .mag-instr-card__frame {
+    pointer-events: none;
+    position: absolute;
+    inset: clamp(0.45rem, 2.2vw, 0.85rem);
+    border: 1px solid rgba(201, 170, 91, 0.35);
+    border-radius: clamp(0.45rem, 2vw, 0.75rem);
+    z-index: 1;
+  }
+
+  .mag-instr-card__logo {
+    display: block;
+    width: auto;
+    height: clamp(2.65rem, 10.5vw, 3.65rem);
+    margin: 0 auto 0.4rem;
+    object-fit: contain;
+  }
+
+  .mag-instr-ornament {
+    color: var(--instr-gold);
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin: 0.2rem 0 0.45rem;
+  }
+
+  .mag-instr-ornament::before,
+  .mag-instr-ornament::after {
+    content: '';
+    height: 1px;
+    background: var(--instr-gold);
+    opacity: 0.85;
+    flex: 1;
+  }
+
+  .mag-instr-star {
+    font-size: 0.85rem;
+    line-height: 1;
+  }
+
+  .mag-instr-kicker {
+    margin: 0 0 0.4rem;
+    font-family: var(--instr-display);
+    font-size: clamp(1.2rem, 5.1vw, 1.65rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.18;
+  }
+
+  .mag-instr-intro {
+    margin: 0 0 0.35rem;
+  }
+
+  .mag-instr-highlight {
+    margin: 0 0 0.4rem;
+    font-size: clamp(0.78rem, 3.2vw, 0.92rem);
+    line-height: 1.32;
+  }
+
+  .mag-instr-highlight strong {
+    font-weight: 600;
+  }
+
+  .mag-instr-copy {
+    margin: 0;
+    padding: 0 0.1rem;
+    font-size: clamp(0.74rem, 3vw, 0.88rem);
+    line-height: 1.36;
+  }
+
+  .mag-instr-teaser {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: clamp(0.35rem, 1.8vw, 0.55rem);
+    text-align: left;
+    padding: 0.15rem 0.05rem 0;
+  }
+
+  .mag-instr-p {
+    margin: 0;
+    text-align: left;
+  }
+
+  .mag-instr-p--hook {
+    font-weight: 600;
+  }
+
+  .mag-instr-p--byline {
+    margin-top: 0.15rem;
+    text-align: center;
+    font-style: italic;
+    opacity: 0.92;
+  }
+
+  .mag-instr-suits {
+    text-align: left;
+    width: 92%;
+    margin: 0 auto 0.4rem;
+  }
+
+  .mag-instr-suit {
+    display: flex;
+    gap: 0.45rem;
+    align-items: center;
+    margin: 0.3rem 0;
+    line-height: 1.34;
+    font-size: clamp(0.68rem, 2.75vw, 0.82rem);
+  }
+
+  .mag-instr-suit__thumb {
+    flex: none;
+    display: block;
+    width: clamp(2.15rem, 9.5vw, 2.75rem);
+    height: auto;
+    aspect-ratio: 63 / 88;
+    object-fit: cover;
+    border-radius: 0.18rem;
+    box-shadow: 0 0.22rem 0.55rem rgba(0, 0, 0, 0.45);
+  }
+
+  .mag-instr-suit__meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.12rem;
+    min-width: 0;
+    text-align: left;
+  }
+
+  .mag-instr-suit__sym {
+    flex: none;
+    color: var(--instr-gold);
+    font-size: 0.95em;
+    line-height: 1;
+  }
+
+  .mag-instr-suit__text strong {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .mag-instr-rules {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: clamp(0.25rem, 1.2vw, 0.4rem);
+    text-align: left;
+    overflow-y: auto;
+    min-height: 0;
+    padding-right: 0.1rem;
+    font-size: clamp(0.72rem, 2.95vw, 0.88rem);
+  }
+
+  .mag-instr-lede {
+    margin: 0;
+    text-align: center;
+    font-weight: 600;
+    font-size: clamp(0.76rem, 3.05vw, 0.92rem);
+  }
+
+  .mag-instr-lede--goal {
+    margin-bottom: 0.15rem;
+  }
+
+  .mag-instr-goal {
+    margin: 0 0 0.3rem;
+    font-size: clamp(0.72rem, 2.95vw, 0.88rem);
+    line-height: 1.38;
+  }
+
+  .mag-instr-section {
+    margin: 0.18rem 0 0;
+  }
+
+  .mag-instr-section__title {
+    margin: 0 0 0.22rem;
+    font-family: var(--instr-display);
+    font-size: clamp(0.8rem, 3.2vw, 0.96rem);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: center;
+  }
+
+  .mag-instr-steps,
+  .mag-instr-list {
+    margin: 0;
+    padding-left: 1.15rem;
+  }
+
+  .mag-instr-steps li,
+  .mag-instr-list li {
+    margin: 0.24rem 0;
+    line-height: 1.4;
+  }
+
+  .mag-instr-footnote {
+    margin: 0.4rem 0 0;
+    font-size: clamp(0.68rem, 2.8vw, 0.82rem);
+    text-align: center;
+    opacity: 0.92;
+  }
+
+  .mag-instr-card--1b {
+    padding-top: clamp(0.85rem, 3.5vw, 1.2rem);
+  }
+
+  .mag-instr__dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.45rem;
+    margin-top: 0.55rem;
+  }
+
+  .mag-instr__dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    padding: 0;
+    border: 1px solid rgba(199, 163, 106, 0.55);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .mag-instr__dot.is-active {
+    background: #c7a36a;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mag-instr-card {
+      transition: opacity 0.2s ease;
+      transform: none;
+    }
+
+    .mag-instr-card.is-before,
+    .mag-instr-card.is-after {
+      transform: none;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .mag-instr__nav {
+      width: 1.65rem;
+      font-size: 1.15rem;
+    }
+
+    .mag-instr__bar .play-nav-back,
+    .mag-instr__bar .play-stage-bar__mirror {
+      min-width: 0;
+      padding-inline: 0.85rem;
+    }
+
+    .mag-instr__bar .play-nav-label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+    }
+  }
+</style>

@@ -2,7 +2,7 @@ const AGE_COOKIE = 'magister_age_14';
 const AGE_MAX_AGE = 60 * 60 * 24 * 365 * 2;
 const BOOT_MIN_MS = 1200;
 import { HUB_DETAIL_SEP } from '../i18n/appCopy';
-import { mountAppGuide, type GuideGoTarget, type GuideViewId } from './app-guide';
+import { mountInstructionCards } from './instruction-cards';
 import { parseRoomFromLocation } from './online-table';
 
 const SAVE_KEY = 'magister-play-v1';
@@ -73,33 +73,12 @@ export function mountAppShell(): void {
   const panels = {
     cards: root.querySelector<HTMLElement>('[data-panel="cards"]'),
     play: root.querySelector<HTMLElement>('[data-panel="play"]'),
-    guide: root.querySelector<HTMLElement>('[data-panel="guide"]'),
+    instructions: root.querySelector<HTMLElement>('[data-panel="instructions"]'),
     online: root.querySelector<HTMLElement>('[data-panel="online"]'),
     buy: root.querySelector<HTMLElement>('[data-panel="buy"]'),
   };
 
-  const guideRoot = root.querySelector<HTMLElement>('[data-guide-root]');
-  const guideTitles = guideRoot
-    ? {
-        hub: guideRoot.dataset.titleHub ?? '',
-        worlds: guideRoot.dataset.titleWorlds ?? '',
-        rank: guideRoot.dataset.titleRank ?? '',
-        path: guideRoot.dataset.titlePath ?? '',
-        history: guideRoot.dataset.titleHistory ?? '',
-      }
-    : { hub: '', worlds: '', rank: '', path: '', history: '' };
-
-  const guide = mountAppGuide(guideRoot, {
-    getBarTitle: (view: GuideViewId) => guideTitles[view] || guideTitles.hub,
-    onBackToAppHub: () => showHub(),
-    onBackToHub: () => {},
-    onOpenLock: () => openLock(),
-    worldsCleared,
-    onGo: (target: GuideGoTarget) => {
-      if (target === 'cards') showPanel('cards');
-      else openGame(target);
-    },
-  });
+  const instructions = mountInstructionCards(root.querySelector<HTMLElement>('[data-instruction-root]'));
 
   document.documentElement.classList.add('mag-app-active');
   document.body.classList.add('mag-app-body');
@@ -336,8 +315,8 @@ export function mountAppShell(): void {
       return;
     }
     if (action === 'deck') {
-      guide.showGuide();
-      showPanel('guide');
+      instructions.show();
+      showPanel('instructions');
       return;
     }
     if (action === 'cards') showPanel('cards');
@@ -449,7 +428,7 @@ export function mountAppShell(): void {
       return;
     }
     if (action === 'back') {
-      if (panels.guide && !panels.guide.hidden) guide.resetGuide();
+      if (panels.instructions && !panels.instructions.hidden) instructions.reset();
       if (panels.online && !panels.online.hidden) {
         panels.online.dispatchEvent(new CustomEvent('magister:online-stop'));
       }
@@ -551,7 +530,7 @@ export function mountAppShell(): void {
       const openPanel = Object.values(panels).find((panel) => panel && !panel.hidden);
       if (openPanel && openPanel !== panels.play) {
         event.preventDefault();
-        if (openPanel === panels.guide) guide.resetGuide();
+        if (openPanel === panels.instructions) instructions.reset();
         showHub();
       }
       return;

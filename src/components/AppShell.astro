@@ -7,7 +7,7 @@ import { formatPrice, PRICES } from '../lib/pricing';
 import MagisterLogo from './MagisterLogo.astro';
 import Gallery from './Gallery.astro';
 import Games from './Games.astro';
-import DeckGuide from './DeckGuide.astro';
+import InstructionCards from './InstructionCards.astro';
 import OnlineTable from './OnlineTable.astro';
 import { onlineCopy } from '../i18n/onlineCopy';
 
@@ -321,7 +321,7 @@ const startIndex = 0;
     <Games lang={lang} variant="app" />
   </section>
 
-  <DeckGuide lang={lang} backLabel={copy.back} shopHref={shopHref} />
+  <InstructionCards lang={lang} backLabel={copy.back} />
 
   <section class="mag-app-panel mag-app-panel--online" data-panel="online" hidden>
     <header class="mag-app-panel__bar mag-app-panel__bar--online">
