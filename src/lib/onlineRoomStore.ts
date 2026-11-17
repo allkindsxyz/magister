@@ -25,6 +25,7 @@ export function getOnlineRoom(id: string): RoomState | undefined {
   const room = rooms.get(id.toUpperCase());
   if (room && (!room.wins || room.wins.length !== 3)) room.wins = [0, 0, 0];
   if (room && room.hintsEnabled === undefined) room.hintsEnabled = true;
+  if (room && !room.pendingMidGameJoins) room.pendingMidGameJoins = [];
   return room;
 }
 

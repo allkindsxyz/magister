@@ -21,6 +21,37 @@ export function occupiedSeatIndices(room: RoomState): number[] {
   return out;
 }
 
+function seatInCurrentHand(room: RoomState, seatIdx: number): boolean {
+  const seat = room.seats[seatIdx];
+  if (!seat) return false;
+  return !seat.waitingNextHand;
+}
+
+function activeHandSeatIndices(room: RoomState): number[] {
+  return occupiedSeatIndices(room).filter((i) => seatInCurrentHand(room, i));
+}
+
+function clearMidGameJoinState(room: RoomState): void {
+  room.pendingMidGameJoins = [];
+  for (let i = 0; i < room.seats.length; i += 1) {
+    const s = room.seats[i];
+    if (s?.waitingNextHand) {
+      room.seats[i] = { ...s, waitingNextHand: false };
+    }
+  }
+}
+
+/** If turn landed on a waiting seat, advance to the next active player. */
+function ensureActiveTurn(room: RoomState): void {
+  if (room.phase !== 'playing' || room.turnSeat === null) return;
+  if (seatInCurrentHand(room, room.turnSeat)) return;
+  nextTurn(room);
+}
+
+export function syncActiveTurnSeat(room: RoomState): void {
+  ensureActiveTurn(room);
+}
+
 export type DiscardTop = PlayCard & {
   chosenSuit: PlaySuit | null;
 };
@@ -44,6 +75,8 @@ export type PlayerSeat = {
   connectedAt: number;
   /** Updated on poll and actions; used for presence dots. */
   lastSeenAt: number;
+  /** Joined during an active hand — waits for the next deal. */
+  waitingNextHand?: boolean;
 };
 
 export type RoomState = {
@@ -65,6 +98,8 @@ export type RoomState = {
   wins: number[];
   /** Highlight playable cards in hand; when false, player picks without hints. */
   hintsEnabled: boolean;
+  /** Seat indices that joined mid-hand until the table chooses an outcome. */
+  pendingMidGameJoins: number[];
 };
 
 export function createRoomId(): string {
@@ -94,6 +129,7 @@ export function newRoom(id: string, lang: string, hintsEnabled = true): RoomStat
     events: [],
     wins: [0, 0, 0, 0],
     hintsEnabled,
+    pendingMidGameJoins: [],
   };
 }
 
@@ -132,12 +168,19 @@ export function joinRoom(room: RoomState, token: string, name: string): { ok: tr
   }
   const seat = firstFreeSeat(room);
   if (seat === null) return { ok: false, error: 'full' };
+  const midGame = room.phase === 'playing';
   room.seats[seat] = {
     token,
     name: name.trim() || `Player ${seat + 1}`,
     connectedAt: now,
     lastSeenAt: now,
+    waitingNextHand: midGame ? true : undefined,
   };
+  if (midGame) {
+    if (!room.pendingMidGameJoins) room.pendingMidGameJoins = [];
+    if (!room.pendingMidGameJoins.includes(seat)) room.pendingMidGameJoins.push(seat);
+    ensureActiveTurn(room);
+  }
   bump(room);
   return { ok: true, seat };
 }
@@ -276,6 +319,7 @@ function pickRandomSuit(): PlaySuit {
 
 export function startGame(room: RoomState, firstTurnSeat?: number): void {
   if (room.phase !== 'lobby' && room.phase !== 'finished' && room.phase !== 'playing') return;
+  clearMidGameJoinState(room);
   const occ = occupiedSeatIndices(room);
   if (occ.length < MIN_PLAYERS) return;
 
@@ -324,7 +368,34 @@ function returnRoomToLobby(room: RoomState): void {
   room.turnSeat = null;
   room.winnerSeat = null;
   room.pendingSuitSeat = null;
+  clearMidGameJoinState(room);
   bump(room);
+}
+
+export function resolveMidGameJoin(
+  room: RoomState,
+  token: string,
+  mode: 'restart' | 'wait_next',
+): { ok: boolean; error?: string } {
+  if (room.phase !== 'playing') return { ok: false, error: 'not_playing' };
+  if (!room.pendingMidGameJoins?.length) return { ok: false, error: 'no_pending' };
+
+  const seat = seatForToken(room, token);
+  if (seat === null) return { ok: false, error: 'not_in_room' };
+  const self = room.seats[seat];
+  if (!self || isBotToken(self.token)) return { ok: false, error: 'not_in_room' };
+  if (self.waitingNextHand) return { ok: false, error: 'waiting' };
+
+  if (mode === 'restart') {
+    clearMidGameJoinState(room);
+    returnRoomToLobby(room);
+    return { ok: true };
+  }
+
+  room.pendingMidGameJoins = [];
+  ensureActiveTurn(room);
+  bump(room);
+  return { ok: true };
 }
 
 function isBotToken(token: string): boolean {
@@ -345,6 +416,22 @@ export function restartRoom(room: RoomState, token: string): { ok: boolean; erro
 
   room.wins = [0, 0, 0, 0];
   returnRoomToLobby(room);
+  return { ok: true };
+}
+
+/** Lobby only — any seated human can change hint mode before the deal. */
+export function setRoomHints(
+  room: RoomState,
+  token: string,
+  hintsEnabled: boolean,
+): { ok: boolean; error?: string } {
+  if (room.phase !== 'lobby') return { ok: false, error: 'not_lobby' };
+  const seat = seatForToken(room, token);
+  if (seat === null) return { ok: false, error: 'not_in_room' };
+  const self = room.seats[seat];
+  if (!self || isBotToken(self.token)) return { ok: false, error: 'not_in_room' };
+  room.hintsEnabled = hintsEnabled;
+  bump(room);
   return { ok: true };
 }
 
@@ -369,7 +456,7 @@ function nextTurn(room: RoomState): void {
   if (room.turnSeat === null) return;
   let seat = (room.turnSeat + 1) % SEATS;
   for (let step = 0; step < SEATS; step += 1) {
-    if (room.seats[seat]) {
+    if (room.seats[seat] && seatInCurrentHand(room, seat)) {
       room.turnSeat = seat;
       return;
     }
@@ -390,6 +477,7 @@ export function drawCard(room: RoomState, token: string): { ok: boolean; error?:
   if (room.phase !== 'playing') return { ok: false, error: 'not_playing' };
   const seat = seatForToken(room, token);
   if (seat === null) return { ok: false, error: 'not_in_room' };
+  if (!seatInCurrentHand(room, seat)) return { ok: false, error: 'waiting' };
   if (room.pendingSuitSeat !== null) return { ok: false, error: 'choose_suit' };
   if (room.turnSeat !== seat) return { ok: false, error: 'not_your_turn' };
   drawOne(room, seat);
@@ -407,6 +495,7 @@ export function playCard(
   if (room.phase !== 'playing') return { ok: false, error: 'not_playing' };
   const seat = seatForToken(room, token);
   if (seat === null) return { ok: false, error: 'not_in_room' };
+  if (!seatInCurrentHand(room, seat)) return { ok: false, error: 'waiting' };
   if (room.pendingSuitSeat !== null && room.pendingSuitSeat !== seat) {
     return { ok: false, error: 'choose_suit' };
   }
@@ -480,7 +569,13 @@ export type ClientRoomView = {
   version: number;
   events: RoomActionEvent[];
   youSeat: number | null;
-  seats: ({ name: string; handCount: number; online: boolean; isBot: boolean } | null)[];
+  seats: ({
+    name: string;
+    handCount: number;
+    online: boolean;
+    isBot: boolean;
+    waitingNextHand: boolean;
+  } | null)[];
   deckCount: number;
   topDiscard: DiscardTop | null;
   turnSeat: number | null;
@@ -495,11 +590,31 @@ export type ClientRoomView = {
   maxSeats: number;
   wins: number[];
   hintsEnabled: boolean;
+  pendingMidGameJoins: { seat: number; name: string }[];
+  youWaitingNextHand: boolean;
+  needsMidGameJoinChoice: boolean;
 };
 
 export function toClientView(room: RoomState, token: string | null): ClientRoomView {
   const youSeat = token ? seatForToken(room, token) : null;
   const now = Date.now();
+  const pending = (room.pendingMidGameJoins ?? [])
+    .map((seatIdx) => {
+      const s = room.seats[seatIdx];
+      if (!s) return null;
+      return { seat: seatIdx, name: s.name };
+    })
+    .filter((x): x is { seat: number; name: string } => x !== null);
+  const youSeatData = youSeat !== null ? room.seats[youSeat] : null;
+  const youWaitingNextHand = youSeatData?.waitingNextHand === true;
+  const needsMidGameJoinChoice =
+    room.phase === 'playing' &&
+    pending.length > 0 &&
+    youSeat !== null &&
+  youSeatData !== null &&
+    !isBotToken(youSeatData.token) &&
+    !youWaitingNextHand;
+
   return {
     id: room.id,
     phase: room.phase,
@@ -513,6 +628,7 @@ export function toClientView(room: RoomState, token: string | null): ClientRoomV
             handCount: room.phase === 'playing' || room.phase === 'finished' ? room.hands[i].length : 0,
             online: seatIsOnline(s, now),
             isBot: isBotToken(s.token),
+            waitingNextHand: s.waitingNextHand === true,
           }
         : null,
     ),
@@ -532,5 +648,8 @@ export function toClientView(room: RoomState, token: string | null): ClientRoomV
         ? room.wins.slice(0, SEATS)
         : [...room.wins, ...Array(Math.max(0, SEATS - room.wins.length)).fill(0)],
     hintsEnabled: room.hintsEnabled !== false,
+    pendingMidGameJoins: pending,
+    youWaitingNextHand,
+    needsMidGameJoinChoice,
   };
 }

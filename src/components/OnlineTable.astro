@@ -20,19 +20,6 @@ const copy = onlineCopy[lang];
       <span>{copy.your_name}</span>
       <input type="text" data-online-name maxlength="24" autocomplete="nickname" />
     </label>
-    <fieldset class="mag-online-hints-mode" data-online-hints-mode>
-      <legend class="mag-online-hints-mode__label">{copy.hints_mode_label}</legend>
-      <div class="mag-online-hints-segment" role="radiogroup" aria-label={copy.hints_mode_label}>
-        <label class="mag-online-hints-segment__opt">
-          <input type="radio" name="online-hints" value="on" checked data-online-hints-value="on" />
-          <span>{copy.hints_with}</span>
-        </label>
-        <label class="mag-online-hints-segment__opt">
-          <input type="radio" name="online-hints" value="off" data-online-hints-value="off" />
-          <span>{copy.hints_without}</span>
-        </label>
-      </div>
-    </fieldset>
     <button class="btn btn-accent mag-online-create" type="button" data-online-create>
       {copy.create}
     </button>
@@ -125,12 +112,27 @@ const copy = onlineCopy[lang];
           <div class="mag-online-discard" data-online-discard></div>
         </div>
         <div class="mag-online-lobby-field" data-online-lobby-field hidden>
-          <button class="btn btn-accent mag-online-lobby-field__btn" type="button" data-online-lobby-copy>
-            {copy.menu_copy}
-          </button>
-          <button class="btn btn-accent mag-online-lobby-field__btn" type="button" data-online-lobby-add-bot>
-            {copy.menu_add_bot}
-          </button>
+          <fieldset class="mag-online-hints-mode mag-online-hints-mode--table" data-online-hints-mode>
+            <legend class="mag-online-hints-mode__label">{copy.hints_mode_label}</legend>
+            <div class="mag-online-hints-segment" role="radiogroup" aria-label={copy.hints_mode_label}>
+              <label class="mag-online-hints-segment__opt">
+                <input type="radio" name="online-hints" value="on" checked data-online-hints-value="on" />
+                <span>{copy.hints_with}</span>
+              </label>
+              <label class="mag-online-hints-segment__opt">
+                <input type="radio" name="online-hints" value="off" data-online-hints-value="off" />
+                <span>{copy.hints_without}</span>
+              </label>
+            </div>
+          </fieldset>
+          <div class="mag-online-lobby-actions" data-online-lobby-actions>
+            <button class="btn btn-accent mag-online-lobby-field__btn" type="button" data-online-lobby-copy>
+              {copy.menu_copy}
+            </button>
+            <button class="btn btn-accent mag-online-lobby-field__btn" type="button" data-online-lobby-add-bot>
+              {copy.menu_add_bot}
+            </button>
+          </div>
         </div>
         <button
           class="mag-online-deck-hit"
@@ -193,6 +195,22 @@ const copy = onlineCopy[lang];
       >
         <img data-online-discard-zoom-img alt="" decoding="async" />
       </button>
+    </div>
+
+    <div class="mag-online-join-alert" data-online-join-alert hidden>
+      <div class="mag-online-join-alert-card">
+        <p class="mag-online-join-alert-title" data-online-join-alert-title></p>
+        <p class="mag-online-join-alert-hint" data-online-join-alert-hint>{copy.mid_game_join_hint}</p>
+        <p class="mag-online-join-alert-wait" data-online-join-alert-wait hidden></p>
+        <div class="mag-online-join-alert-actions" data-online-join-alert-actions>
+          <button type="button" class="btn btn-accent" data-online-join-restart>
+            {copy.mid_game_join_restart}
+          </button>
+          <button type="button" class="btn fw-title-timed" data-online-join-finish>
+            {copy.mid_game_join_wait}
+          </button>
+        </div>
+      </div>
     </div>
 
     <div class="mag-online-end" data-online-end hidden>
@@ -286,8 +304,7 @@ const copy = onlineCopy[lang];
 
   .mag-online-lobby[data-lobby-mode='invite'] .mag-online-hint,
   .mag-online-lobby[data-lobby-mode='invite'] .mag-online-status,
-  .mag-online-lobby[data-lobby-mode='invite'] .mag-online-code,
-  .mag-online-lobby[data-lobby-mode='invite'] .mag-online-hints-mode {
+  .mag-online-lobby[data-lobby-mode='invite'] .mag-online-code {
     display: none !important;
   }
 
@@ -905,10 +922,34 @@ const copy = onlineCopy[lang];
     flex-direction: column;
     align-items: stretch;
     gap: 0.65rem;
-    width: min(100%, 14.5rem);
+    width: min(100%, 15.5rem);
   }
 
   .mag-online-lobby-field[hidden] {
+    display: none !important;
+  }
+
+  .mag-online-lobby-field .mag-online-hints-mode {
+    width: 100%;
+  }
+
+  .mag-online-hints-mode--table .mag-online-hints-mode__label {
+    text-align: center;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #c7a36a;
+  }
+
+  .mag-online-lobby-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    width: 100%;
+  }
+
+  .mag-online-lobby-actions[hidden] {
     display: none !important;
   }
 
@@ -1536,6 +1577,66 @@ const copy = onlineCopy[lang];
     }
   }
 
+  .mag-online-join-alert {
+    position: absolute;
+    inset: 0;
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(4, 8, 16, 0.78);
+    backdrop-filter: blur(4px);
+  }
+
+  .mag-online-join-alert[hidden] {
+    display: none !important;
+  }
+
+  .mag-online-join-alert-card {
+    width: min(100%, 21rem);
+    padding: 1.1rem 1rem 1rem;
+    text-align: center;
+    border-radius: 0.55rem;
+    border: 1px solid rgba(199, 163, 106, 0.5);
+    background: linear-gradient(180deg, rgba(28, 40, 58, 0.98), rgba(11, 17, 28, 0.96));
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.55);
+  }
+
+  .mag-online-join-alert-title {
+    margin: 0 0 0.45rem;
+    font-family: 'Spectral', Georgia, serif;
+    font-size: 1.2rem;
+    color: #ecd09b;
+    line-height: 1.35;
+  }
+
+  .mag-online-join-alert-hint {
+    margin: 0 0 1rem;
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: #aaa9b5;
+  }
+
+  .mag-online-join-alert-hint[hidden],
+  .mag-online-join-alert-wait[hidden],
+  .mag-online-join-alert-actions[hidden] {
+    display: none !important;
+  }
+
+  .mag-online-join-alert-wait {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.4;
+    color: #c7a36a;
+  }
+
+  .mag-online-join-alert-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
   .mag-online-end {
     position: absolute;
     inset: 0;
@@ -1603,6 +1704,27 @@ const copy = onlineCopy[lang];
   .mag-online-lobby .btn.btn-accent,
   .mag-online-lobby .mag-online-create,
   .mag-online-lobby .mag-online-join,
+  .mag-online-join-alert-actions .btn.btn-accent {
+    width: min(100%, 18rem);
+    min-height: 2.85rem;
+    border-color: var(--online-gold);
+    background: var(--online-gold);
+    color: #fdf8ef;
+    border-radius: 0;
+  }
+
+  .mag-online-join-alert-actions .btn.btn-accent:hover,
+  .mag-online-join-alert-actions .btn.btn-accent:focus-visible {
+    border-color: var(--online-gold2);
+    background: var(--online-gold2);
+    color: #111b2b;
+  }
+
+  .mag-online-join-alert-actions .btn.fw-title-timed {
+    width: min(100%, 18rem);
+    min-height: 2.85rem;
+  }
+
   .mag-online-end-actions .btn.btn-accent {
     width: min(100%, 18rem);
     min-height: 2.85rem;

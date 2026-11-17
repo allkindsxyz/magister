@@ -5,6 +5,7 @@ import type { ClientRoomView, RoomActionEvent } from '../lib/onlineGame';
 
 const PLAYER_KEY = 'magister-online-player';
 const DISPLAY_NAME_KEY = 'magister-online-display-name';
+const HINTS_PREF_KEY = 'magister-online-hints';
 const MOTION_SCALE = 1.5;
 
 type Suit = PlaySuit;
@@ -270,6 +271,7 @@ export function mountOnlineTable(
   const tablePrompt = root.querySelector<HTMLElement>('[data-online-table-prompt]');
   const midEl = root.querySelector<HTMLElement>('[data-online-mid]');
   const lobbyField = root.querySelector<HTMLElement>('[data-online-lobby-field]');
+  const hintsMode = root.querySelector<HTMLElement>('[data-online-hints-mode]');
   const lobbyCopyBtn = root.querySelector<HTMLButtonElement>('[data-online-lobby-copy]');
   const lobbyAddBotBtn = root.querySelector<HTMLButtonElement>('[data-online-lobby-add-bot]');
   const deckBtn = root.querySelector<HTMLButtonElement>('[data-online-deck]');
@@ -295,6 +297,13 @@ export function mountOnlineTable(
   const endWins = root.querySelector<HTMLElement>('[data-online-end-wins]');
   const rematchBtn = root.querySelector<HTMLButtonElement>('[data-online-rematch]');
   const newGameBtn = root.querySelector<HTMLButtonElement>('[data-online-new-game]');
+  const joinAlertPanel = root.querySelector<HTMLElement>('[data-online-join-alert]');
+  const joinAlertTitle = root.querySelector<HTMLElement>('[data-online-join-alert-title]');
+  const joinAlertHint = root.querySelector<HTMLElement>('[data-online-join-alert-hint]');
+  const joinAlertWait = root.querySelector<HTMLElement>('[data-online-join-alert-wait]');
+  const joinAlertActions = root.querySelector<HTMLElement>('[data-online-join-alert-actions]');
+  const joinRestartBtn = root.querySelector<HTMLButtonElement>('[data-online-join-restart]');
+  const joinFinishBtn = root.querySelector<HTMLButtonElement>('[data-online-join-finish]');
 
   let playerToken = localStorage.getItem(PLAYER_KEY) ?? '';
   if (!playerToken) {
@@ -531,6 +540,7 @@ export function mountOnlineTable(
     paintQueue = Promise.resolve();
 
     if (endPanel) endPanel.hidden = true;
+    if (joinAlertPanel) joinAlertPanel.hidden = true;
     table?.classList.remove(
       'is-finished',
       'mag-online-table--turn-you',
@@ -598,7 +608,57 @@ export function mountOnlineTable(
     if (message) setStatus(message);
     else setStatus(opts.copy.need_players);
     if (endPanel) endPanel.hidden = true;
+    if (joinAlertPanel) joinAlertPanel.hidden = true;
     table?.classList.remove('is-finished');
+  }
+
+  function formatMidGameJoinTitle(
+    pending: { seat: number; name: string }[],
+  ): string {
+    if (pending.length < 1) return '';
+    if (pending.length === 1) {
+      return opts.copy.mid_game_join_one.replace('{name}', pending[0]!.name);
+    }
+    const names = pending.map((p) => p.name).join(', ');
+    return opts.copy.mid_game_join_many.replace('{names}', names);
+  }
+
+  function paintMidGameJoinAlert(): void {
+    if (!view || !joinAlertPanel) return;
+    const pending = view.pendingMidGameJoins ?? [];
+    const showChoice = view.needsMidGameJoinChoice && pending.length > 0;
+    const showJoinerWait = view.youWaitingNextHand && pending.length > 0;
+
+    if (showChoice) {
+      joinAlertPanel.hidden = false;
+      if (joinAlertTitle) joinAlertTitle.textContent = formatMidGameJoinTitle(pending);
+      joinAlertHint?.removeAttribute('hidden');
+      joinAlertWait?.setAttribute('hidden', '');
+      joinAlertActions?.removeAttribute('hidden');
+      return;
+    }
+
+    if (showJoinerWait) {
+      joinAlertPanel.hidden = false;
+      if (joinAlertTitle) joinAlertTitle.textContent = formatMidGameJoinTitle(pending);
+      joinAlertHint?.setAttribute('hidden', '');
+      if (joinAlertWait) {
+        joinAlertWait.hidden = false;
+        joinAlertWait.textContent = opts.copy.mid_game_join_you_wait;
+      }
+      joinAlertActions?.setAttribute('hidden', '');
+      return;
+    }
+
+    joinAlertPanel.hidden = true;
+
+    if (
+      view.phase === 'playing' &&
+      view.youWaitingNextHand &&
+      pending.length < 1
+    ) {
+      setStatus(opts.copy.mid_game_join_next_hand);
+    }
   }
 
   function paintEndScreen(): void {
@@ -749,14 +809,36 @@ export function mountOnlineTable(
     );
   }
 
-  function readCreateHintsEnabled(): boolean {
+  function readHintsEnabledFromUi(): boolean {
     const off = root.querySelector<HTMLInputElement>('[data-online-hints-value="off"]');
     return !off?.checked;
+  }
+
+  function readHintsPreference(): boolean {
+    return localStorage.getItem(HINTS_PREF_KEY) !== 'off';
+  }
+
+  function persistHintsPreference(enabled: boolean): void {
+    localStorage.setItem(HINTS_PREF_KEY, enabled ? 'on' : 'off');
+  }
+
+  let hintsRadiosSyncSilent = false;
+
+  function syncHintsRadiosFromView(): void {
+    const on = root.querySelector<HTMLInputElement>('[data-online-hints-value="on"]');
+    const off = root.querySelector<HTMLInputElement>('[data-online-hints-value="off"]');
+    if (!on || !off) return;
+    const enabled = view ? view.hintsEnabled !== false : readHintsPreference();
+    hintsRadiosSyncSilent = true;
+    on.checked = enabled;
+    off.checked = !enabled;
+    hintsRadiosSyncSilent = false;
   }
 
   function syncHintsModeChrome(): void {
     const noHints = view?.hintsEnabled === false;
     table?.classList.toggle('mag-online-table--no-hints', noHints);
+    syncHintsRadiosFromView();
   }
 
   function setHandPlayHintsEnabled(enabled: boolean): void {
@@ -1171,6 +1253,7 @@ export function mountOnlineTable(
     lobbyField?.toggleAttribute('hidden', !waitingForPlayers);
     midEl?.classList.toggle('mag-online-mid--lobby-wait', waitingForPlayers);
     if (lobbyAddBotBtn) lobbyAddBotBtn.disabled = filled >= max;
+    syncHintsRadiosFromView();
 
     if (ready) {
       if (tablePrompt) {
@@ -1905,6 +1988,7 @@ export function mountOnlineTable(
     }
 
     paintEndScreen();
+    paintMidGameJoinAlert();
     } finally {
       roomPaintBusy = false;
       if (queuedRoomView && queuedRoomView.version !== view?.version) {
@@ -2007,7 +2091,7 @@ export function mountOnlineTable(
     const name = nameInput?.value?.trim() ?? '';
     if (name) localStorage.setItem(DISPLAY_NAME_KEY, name);
     setStatus('…');
-    const res = await api('create', { hintsEnabled: readCreateHintsEnabled() });
+    const res = await api('create', { hintsEnabled: readHintsPreference() });
     const data = (await res.json()) as {
       ok?: boolean;
       roomId?: string;
@@ -2099,6 +2183,28 @@ export function mountOnlineTable(
     if (pendingInviteRoom) void joinRoom(pendingInviteRoom);
     else if (!roomId) void createRoom();
   });
+
+  const resolveMidGameJoin = (mode: 'restart' | 'wait_next'): void => {
+    void (async () => {
+      if (!roomId) return;
+      if (joinAlertPanel) joinAlertPanel.hidden = true;
+      const res = await api('resolveJoin', { mode });
+      const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
+      if (!data.ok || !data.room) {
+        paintMidGameJoinAlert();
+        setStatus(opts.copy.error_generic);
+        return;
+      }
+      if (mode === 'restart') {
+        snapRoomToLobbyAtTable(data.room);
+      } else {
+        applyRoomFromServer(data.room);
+      }
+    })();
+  };
+
+  joinRestartBtn?.addEventListener('click', () => resolveMidGameJoin('restart'));
+  joinFinishBtn?.addEventListener('click', () => resolveMidGameJoin('wait_next'));
 
   rematchBtn?.addEventListener('click', () => {
     void (async () => {
@@ -2217,6 +2323,23 @@ export function mountOnlineTable(
 
   document.querySelector('[data-app-online-menu-bot]')?.addEventListener('click', () => {
     void addBotToRoom().then(() => closeTableMenu());
+  });
+
+  hintsMode?.addEventListener('change', () => {
+    if (hintsRadiosSyncSilent) return;
+    const enabled = readHintsEnabledFromUi();
+    persistHintsPreference(enabled);
+    if (!roomId || view?.phase !== 'lobby') return;
+    void (async () => {
+      const res = await api('setHints', { hintsEnabled: enabled });
+      const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
+      if (data.ok && data.room) {
+        applyRoomFromServer(data.room);
+        return;
+      }
+      syncHintsRadiosFromView();
+      setStatus(opts.copy.error_generic);
+    })();
   });
 
   if (lobbyCopyBtn) {
@@ -2490,6 +2613,7 @@ export function mountOnlineTable(
   } else {
     showLobby(true);
     showCreateLobbyUi();
+    syncHintsRadiosFromView();
     const saved = localStorage.getItem(DISPLAY_NAME_KEY);
     if (saved && nameInput && !nameInput.value.trim()) nameInput.value = saved;
   }

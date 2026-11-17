@@ -5,6 +5,7 @@ import {
   firstFreeSeat,
   joinRoom,
   playCard,
+  syncActiveTurnSeat,
   type RoomState,
 } from './onlineGame';
 import type { PlayCard, PlaySuit } from './onlineDeck';
@@ -76,6 +77,7 @@ export function fillTestBots(room: RoomState): void {
  */
 export function runBotTurns(room: RoomState, maxSteps = 64): void {
   if (!AUTO_FILL_BOTS || room.phase !== 'playing') return;
+  syncActiveTurnSeat(room);
 
   for (let step = 0; step < maxSteps; step += 1) {
     if (room.phase !== 'playing') return;

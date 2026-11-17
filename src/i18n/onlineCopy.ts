@@ -52,6 +52,13 @@ export type OnlineCopy = {
   hints_without: string;
   discard_zoom_open: string;
   discard_zoom_close: string;
+  mid_game_join_one: string;
+  mid_game_join_many: string;
+  mid_game_join_hint: string;
+  mid_game_join_restart: string;
+  mid_game_join_wait: string;
+  mid_game_join_you_wait: string;
+  mid_game_join_next_hand: string;
 };
 
 const ru: OnlineCopy = {
@@ -106,6 +113,13 @@ const ru: OnlineCopy = {
   hints_without: 'Без подсказок',
   discard_zoom_open: 'Увеличить карту в центре',
   discard_zoom_close: 'Закрыть',
+  mid_game_join_one: '{name} зашёл за стол',
+  mid_game_join_many: '{names} зашли за стол',
+  mid_game_join_hint: 'Пересобрать стол или доиграть партию без новичков.',
+  mid_game_join_restart: 'Пересобрать стол',
+  mid_game_join_wait: 'Доиграть партию',
+  mid_game_join_you_wait: 'Партия идёт — ждите, стол выбирает',
+  mid_game_join_next_hand: 'Вы в следующей партии',
 };
 
 const en: OnlineCopy = {
@@ -160,6 +174,13 @@ const en: OnlineCopy = {
   hints_without: 'No hints',
   discard_zoom_open: 'Enlarge center card',
   discard_zoom_close: 'Close',
+  mid_game_join_one: '{name} joined the table',
+  mid_game_join_many: '{names} joined the table',
+  mid_game_join_hint: 'Reset the table or finish this hand without them.',
+  mid_game_join_restart: 'Reset table',
+  mid_game_join_wait: 'Finish this hand',
+  mid_game_join_you_wait: 'Game in progress — the table is deciding',
+  mid_game_join_next_hand: 'You are in for the next hand',
 };
 
 const be: OnlineCopy = {

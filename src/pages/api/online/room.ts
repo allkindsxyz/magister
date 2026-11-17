@@ -7,8 +7,10 @@ import {
   playCard,
   rematchRoom,
   removeBotAtSeat,
+  resolveMidGameJoin,
   restartRoom,
   seatForToken,
+  setRoomHints,
   touchPresence,
   toClientView,
 } from '../../../lib/onlineGame';
@@ -175,6 +177,31 @@ export const POST: APIRoute = async ({ request, url }) => {
     const result = addOneBot(room);
     if (!result.ok) return json({ ok: false, error: result.error }, 400);
     runBotTurns(room);
+    touchPresence(room, token);
+    saveRoom(room);
+    return json({ ok: true, room: toClientView(room, token) });
+  }
+
+  if (action === 'resolveJoin') {
+    const token = playerToken(body);
+    if (!token) return json({ ok: false, error: 'no_token' }, 400);
+    const rawMode = body.mode;
+    const mode = rawMode === 'restart' || rawMode === 'wait_next' ? rawMode : null;
+    if (!mode) return json({ ok: false, error: 'bad_mode' }, 400);
+    const result = resolveMidGameJoin(room, token, mode);
+    if (!result.ok) return json({ ok: false, error: result.error }, 400);
+    runBotTurns(room);
+    touchPresence(room, token);
+    saveRoom(room);
+    return json({ ok: true, room: toClientView(room, token) });
+  }
+
+  if (action === 'setHints') {
+    const token = playerToken(body);
+    if (!token) return json({ ok: false, error: 'no_token' }, 400);
+    const hintsEnabled = body.hintsEnabled !== false && body.hintsEnabled !== 'false';
+    const result = setRoomHints(room, token, hintsEnabled);
+    if (!result.ok) return json({ ok: false, error: result.error }, 400);
     touchPresence(room, token);
     saveRoom(room);
     return json({ ok: true, room: toClientView(room, token) });
