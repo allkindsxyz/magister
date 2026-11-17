@@ -1,0 +1,867 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Вопрос Магистру — прототип</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Newsreader:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ground: #0d0b09;
+    --panel: #17130f;
+    --parchment: #e9e0c8;
+    --dim: #a89b7d;
+    --gold: #d9b56a;
+    --display: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+    --sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --tint: 217, 181, 106;
+    --card-ratio: 0.6975;
+    --radius: 0.7rem;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; background: var(--ground); color: var(--parchment); font-family: var(--sans); }
+  body { overflow: hidden; -webkit-tap-highlight-color: transparent; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  img { display: block; user-select: none; -webkit-user-drag: none; }
+  [hidden] { display: none !important; }
+
+  .app { position: fixed; inset: 0; overflow: hidden; }
+
+  .ambient {
+    position: absolute; inset: -20%;
+    background:
+      radial-gradient(40% 32% at 50% 46%, rgba(var(--tint), 0.16), transparent 70%),
+      radial-gradient(60% 50% at 50% 110%, rgba(var(--tint), 0.08), transparent 70%);
+    transition: background 1.6s ease;
+    animation: breathe 9s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes breathe { 50% { transform: scale(1.06); opacity: 0.8; } }
+
+  .motes { position: absolute; inset: 0; pointer-events: none; opacity: 0.5; }
+  .motes i {
+    position: absolute; width: 2px; height: 2px; border-radius: 50%;
+    background: rgba(var(--tint), 0.9); box-shadow: 0 0 6px rgba(var(--tint), 0.8);
+    animation: drift linear infinite;
+  }
+  @keyframes drift {
+    from { transform: translate3d(0, 10vh, 0); opacity: 0; }
+    15%, 85% { opacity: 1; }
+    to { transform: translate3d(3vw, -110vh, 0); opacity: 0; }
+  }
+
+  .screen {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: max(1.5rem, env(safe-area-inset-top)) 1.25rem max(1.5rem, env(safe-area-inset-bottom));
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.7s ease, visibility 0s linear 0.7s;
+  }
+  .app[data-screen='intro'] .intro,
+  .app[data-screen='shuffle'] .shuffle,
+  .app[data-screen='wheel'] .wheel,
+  .app[data-screen='result'] .result {
+    opacity: 1; visibility: visible; pointer-events: auto;
+    transition: opacity 0.7s ease, visibility 0s;
+  }
+
+  .kicker { color: var(--gold); font: 600 0.68rem/1.2 var(--sans); letter-spacing: 0.18em; text-transform: uppercase; }
+  .title { font: 400 clamp(2.2rem, 10vw, 3.6rem)/1.05 var(--display); letter-spacing: -0.02em; text-align: center; }
+  .lead { color: var(--dim); line-height: 1.6; text-align: center; max-width: 22rem; }
+  .cue { min-height: 2.8em; font: italic 400 clamp(1.3rem, 5.6vw, 1.65rem)/1.35 var(--display); text-align: center; max-width: 21rem; transition: opacity 0.5s ease; }
+  .cue.is-out { opacity: 0; }
+  .sub { color: var(--dim); font-size: 0.82rem; letter-spacing: 0.06em; }
+
+  .btn {
+    min-height: 52px; padding: 0 1.75rem; border: 1px solid rgba(var(--tint), 0.55); border-radius: 999px;
+    background: rgba(var(--tint), 0.08); letter-spacing: 0.04em;
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+  .btn:hover { background: rgba(var(--tint), 0.18); }
+  .btn:active { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.4; cursor: default; }
+  .link-btn { min-height: 44px; padding: 0 0.5rem; border: 0; background: none; color: var(--gold); letter-spacing: 0.04em; text-decoration: underline; text-underline-offset: 0.3em; text-decoration-color: rgba(var(--tint), 0.4); }
+
+  /* Intro */
+  .intro { gap: 1rem; }
+  .intro-deck { position: relative; width: min(50vw, 200px, calc(34svh * var(--card-ratio))); aspect-ratio: var(--card-ratio); margin-bottom: 1.5rem; }
+  .intro-deck img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.6), 0 0 60px rgba(var(--tint), 0.12);
+  }
+  .intro-deck img:nth-child(1) { transform: translate(-7px, 7px) rotate(-4deg); filter: brightness(0.6); }
+  .intro-deck img:nth-child(2) { transform: translate(6px, 3px) rotate(3deg); filter: brightness(0.75); }
+  .intro-deck img:nth-child(3) { animation: hover 4.5s ease-in-out infinite; }
+  @keyframes hover { 50% { transform: translateY(-8px); } }
+  .intro .btn { margin-top: 1rem; }
+
+  /* Shuffle */
+  .shuffle { gap: 1.5rem; touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
+  .shuffle.is-holding { cursor: grabbing; }
+  .ring-wrap { position: relative; width: min(86vw, 340px, 50svh); aspect-ratio: 1; display: grid; place-items: center; }
+  .ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 1.2; }
+  .ring .track { stroke: rgba(var(--tint), 0.14); }
+  .ring .prog { stroke: var(--gold); stroke-linecap: round; }
+  .ring-wrap.is-ready .prog { animation: ready 1.6s ease-in-out infinite; }
+  @keyframes ready { 50% { opacity: 0.45; } }
+  .deck { position: relative; width: min(42vw, 170px, calc(30svh * var(--card-ratio))); aspect-ratio: var(--card-ratio); }
+  .deck img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+    will-change: transform;
+  }
+
+  /* Wheel */
+  .wheel { touch-action: none; user-select: none; -webkit-user-select: none; padding: 0; justify-content: flex-start; }
+  .fan { position: absolute; inset: 0; transition: transform 0.8s cubic-bezier(0.5, 0, 0.75, 0), opacity 0.6s ease; }
+  .fan.is-sunk { transform: translateY(45%); opacity: 0; }
+  .fc { position: absolute; left: 0; top: 0; padding: 0; border: 0; background: none; border-radius: var(--radius); will-change: transform; }
+  .fc img { width: 100%; height: 100%; object-fit: cover; border-radius: var(--radius); box-shadow: -6px 10px 22px rgba(0, 0, 0, 0.55); pointer-events: none; }
+  .fc .shade { position: absolute; inset: 0; border-radius: var(--radius); background: #000; opacity: var(--dim, 0); pointer-events: none; }
+  .fc.is-focus img { box-shadow: 0 0 0 1px rgba(var(--tint), 0.5), 0 0 34px rgba(var(--tint), 0.45), 0 18px 34px rgba(0, 0, 0, 0.6); }
+  .fc:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+  .fan.is-dealing .fc { transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1); transition-delay: var(--deal, 0ms); }
+  .wheel-copy { position: absolute; left: 0; right: 0; top: max(2rem, env(safe-area-inset-top)); display: grid; gap: 0.5rem; justify-items: center; padding: 0 1.5rem; pointer-events: none; }
+  .wheel-hint {
+    position: absolute; left: 0; right: 0; bottom: max(1.75rem, env(safe-area-inset-bottom)); text-align: center;
+    color: var(--dim); font-size: 0.85rem; letter-spacing: 0.04em; transition: opacity 0.6s; pointer-events: none; padding: 0 1.5rem;
+  }
+  .wheel-hint.is-out { opacity: 0; }
+  .swipe-arrow { display: block; margin: 0 auto 0.5rem; width: 1px; height: 26px; background: linear-gradient(transparent, var(--gold)); animation: arrow 1.8s ease-in-out infinite; }
+  @keyframes arrow { 0% { transform: translateY(10px); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-10px); opacity: 0; } }
+
+  /* Drawn card */
+  .pick { position: fixed; z-index: 30; perspective: 1400px; pointer-events: none; display: none; padding: 0; border: 0; background: none; }
+  .pick.is-on { display: block; }
+  .pick.is-docked { position: absolute; inset: 0; width: 100%; height: 100%; transform: none !important; pointer-events: auto; cursor: zoom-in; }
+  .pick-inner { position: absolute; inset: 0; transform-style: preserve-3d; }
+  .pick.is-flipped .pick-inner { transform: rotateY(180deg); }
+  .pick.is-waiting .pick-inner { animation: levitate 1.6s ease-in-out infinite; }
+  @keyframes levitate { 50% { transform: translateY(-6px) rotateZ(0.4deg); } }
+  .face { position: absolute; inset: 0; border-radius: var(--radius); overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .face img { width: 100%; height: 100%; object-fit: cover; }
+  .face--back { box-shadow: 0 0 0 1px rgba(var(--tint), 0.4), 0 0 50px rgba(var(--tint), 0.35), 0 26px 50px rgba(0, 0, 0, 0.7); }
+  .pick.is-waiting .face--back { animation: glow 1.6s ease-in-out infinite; }
+  @keyframes glow { 50% { box-shadow: 0 0 0 1px rgba(var(--tint), 0.7), 0 0 90px rgba(var(--tint), 0.6), 0 26px 50px rgba(0, 0, 0, 0.7); } }
+  .face--front { transform: rotateY(180deg); box-shadow: 0 0 60px rgba(var(--tint), 0.25), 0 26px 50px rgba(0, 0, 0, 0.7); }
+  .face--front::after {
+    content: ''; position: absolute; inset: -40%;
+    background: linear-gradient(115deg, transparent 40%, rgba(255, 245, 220, 0.55) 50%, transparent 60%);
+    transform: translateX(-100%); pointer-events: none;
+  }
+  .pick.is-flipped .face--front::after { animation: glint 1.3s 0.55s ease-out both; }
+  .pick.is-glinted .face--front::after { animation: none; transform: translateX(100%); }
+  @keyframes glint { to { transform: translateX(100%); } }
+
+  /* Result */
+  .result { justify-content: flex-start; overflow-y: auto; gap: 1.5rem; padding-top: max(1.75rem, env(safe-area-inset-top)); }
+  .slot { position: relative; flex: none; width: min(70vw, 320px, calc(50svh * var(--card-ratio))); aspect-ratio: var(--card-ratio); }
+  .answer { display: grid; gap: 0.8rem; justify-items: center; text-align: center; max-width: 26rem; padding-bottom: 2rem; }
+  .answer > * { opacity: 0; transform: translateY(10px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .answer.is-shown > * { opacity: 1; transform: none; }
+  .answer.is-shown > *:nth-child(2) { transition-delay: 0.2s; }
+  .answer.is-shown > *:nth-child(3) { transition-delay: 0.9s; }
+  .answer.is-shown > *:nth-child(4) { transition-delay: 1.3s; }
+  .answer.is-shown > *:nth-child(5) { transition-delay: 1.5s; }
+  .answer.is-shown > *:nth-child(6) { transition-delay: 1.8s; }
+  .answer.is-shown > *:nth-child(7) { transition-delay: 2.1s; }
+  .ask-self { display: grid; gap: 0.35rem; padding: 0.85rem 1rem; border: 1px solid rgba(var(--tint), 0.25); border-radius: 0.6rem; line-height: 1.45; }
+  .ask-self span:first-child { color: var(--gold); font: 600 0.62rem/1 var(--sans); letter-spacing: 0.16em; text-transform: uppercase; }
+  .verdict { font: 400 clamp(1.9rem, 8.5vw, 2.6rem)/1.1 var(--display); letter-spacing: -0.015em; color: #f6efdc; }
+  .hint { font: italic 400 clamp(1.15rem, 4.6vw, 1.35rem)/1.45 var(--display); color: var(--parchment); }
+  .card-line { color: var(--dim); font-size: 0.8rem; letter-spacing: 0.06em; line-height: 1.5; }
+  .card-line b { color: var(--parchment); font-weight: 400; }
+  .repeat { color: var(--gold); font-size: 0.85rem; }
+  .actions { display: grid; gap: 0.25rem; justify-items: center; margin-top: 0.5rem; }
+
+  @media (min-width: 860px), (orientation: landscape) and (min-width: 600px) {
+    .result { flex-direction: row; justify-content: center; align-items: center; gap: clamp(2rem, 5vw, 4rem); }
+    .slot { width: min(32vw, 360px, calc(78svh * var(--card-ratio))); }
+    .answer { justify-items: start; text-align: left; }
+    .actions { justify-items: start; }
+  }
+
+  /* Story sheet */
+  .sheet { position: fixed; inset: 0; z-index: 60; visibility: hidden; transition: visibility 0s linear 0.45s; }
+  .sheet.is-open { visibility: visible; transition: visibility 0s; }
+  .sheet-backdrop { position: absolute; inset: 0; border: 0; background: rgba(0, 0, 0, 0.6); opacity: 0; transition: opacity 0.45s ease; cursor: pointer; }
+  .sheet.is-open .sheet-backdrop { opacity: 1; }
+  .sheet-panel {
+    position: absolute; left: 50%; bottom: 0; width: min(100%, 40rem); max-height: 88svh; overflow-y: auto; overscroll-behavior: contain;
+    padding: 1.25rem 1.5rem calc(2rem + env(safe-area-inset-bottom));
+    border-radius: 1.1rem 1.1rem 0 0; background: var(--panel); box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.5);
+    transform: translate(-50%, 100%); transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .sheet.is-open .sheet-panel { transform: translate(-50%, 0); }
+  .sheet-head { display: flex; justify-content: space-between; align-items: start; gap: 1rem; }
+  .sheet-close { flex: none; width: 44px; height: 44px; margin: -0.5rem -0.75rem 0 0; border: 0; background: none; color: var(--dim); font-size: 1.6rem; line-height: 1; }
+  .sheet h3 { margin-top: 0.5rem; font: 400 clamp(1.5rem, 6vw, 2rem)/1.15 var(--display); }
+  .sheet-body { margin-top: 1rem; display: grid; gap: 0.9rem; color: #d8cfb8; line-height: 1.7; font-size: 1rem; }
+
+  /* Zoom */
+  .zoom { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 1rem; border: 0; background: rgba(5, 4, 3, 0.94); opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0s linear 0.3s; cursor: zoom-out; }
+  .zoom.is-open { opacity: 1; visibility: visible; transition: opacity 0.3s ease, visibility 0s; }
+  .zoom img { max-width: 100%; max-height: 100%; border-radius: var(--radius); object-fit: contain; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ambient, .motes, .intro-deck img, .swipe-arrow { animation: none !important; }
+    .pick-inner { transition-duration: 0.01s; }
+    .pick.is-waiting .pick-inner, .pick.is-waiting .face--back { animation: none; }
+  }
+
+  .proto-badge { position: fixed; right: 0.6rem; bottom: 0.5rem; z-index: 50; color: #5c5446; font-size: 0.65rem; letter-spacing: 0.08em; pointer-events: none; }
+</style>
+</head>
+<body>
+<div class="app" id="app" data-screen="intro">
+  <div class="ambient" aria-hidden="true"></div>
+  <div class="motes" id="motes" aria-hidden="true"></div>
+
+  <section class="screen intro" aria-labelledby="intro-title">
+    <div class="intro-deck" aria-hidden="true">
+      <img src="../../public/media/card-back.jpg" alt="" />
+      <img src="../../public/media/card-back.jpg" alt="" />
+      <img src="../../public/media/card-back.jpg" alt="" />
+    </div>
+    <p class="kicker">Оракул колоды Магистр</p>
+    <h1 class="title" id="intro-title">Вопрос Магистру</h1>
+    <p class="lead">Подумай о вопросе и вытяни карту.</p>
+    <button class="btn" type="button" id="start" disabled>Задать вопрос</button>
+  </section>
+
+  <section class="screen shuffle" id="shuffle" aria-label="Тасование колоды">
+    <div class="ring-wrap" id="ring-wrap">
+      <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+        <circle class="track" cx="50" cy="50" r="49" />
+        <circle class="prog" id="ring" cx="50" cy="50" r="49" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1" />
+      </svg>
+      <div class="deck" id="deck" aria-hidden="true"></div>
+    </div>
+    <p class="cue" id="cue" aria-live="polite"></p>
+    <p class="sub" id="sub">Нажми и держи · пробел на клавиатуре</p>
+  </section>
+
+  <section class="screen wheel" id="wheel" aria-label="Выбор карты">
+    <div class="wheel-copy">
+      <p class="kicker" id="wheel-kicker">Колода разложена</p>
+      <p class="cue" style="min-height:0">Выбери свою карту</p>
+    </div>
+    <div class="fan" id="fan"></div>
+    <p class="wheel-hint" id="wheel-hint"><span class="swipe-arrow" aria-hidden="true"></span>Листай веер · потяни карту вверх или вниз, чтобы вытянуть</p>
+  </section>
+
+  <section class="screen result" id="result" aria-live="polite">
+    <div class="slot" id="slot"></div>
+    <div class="answer" id="answer">
+      <p class="kicker">Магистр отвечает</p>
+      <p class="hint" id="r-message"></p>
+      <p class="card-line" id="r-line"></p>
+      <p class="repeat" id="r-repeat" hidden>Эта карта приходит к тебе не в первый раз. Прислушайся.</p>
+      <div class="actions">
+        <button class="btn" type="button" id="again">Новый вопрос</button>
+        <button class="link-btn" type="button" id="story-open">Читать историю карты</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- A div, not a button: Safari flattens preserve-3d inside <button>, which breaks the flip. -->
+  <div class="pick" id="pick" role="button" aria-label="Рассмотреть карту" tabindex="-1">
+    <div class="pick-inner">
+      <div class="face face--back"><img src="../../public/media/card-back.jpg" alt="" /></div>
+      <div class="face face--front"><img id="pick-face" alt="" /></div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+  <button class="sheet-backdrop" type="button" data-close-sheet aria-label="Закрыть"></button>
+  <div class="sheet-panel" tabindex="-1">
+    <div class="sheet-head">
+      <div>
+        <p class="kicker" id="sheet-kicker"></p>
+        <h3 id="sheet-title"></h3>
+      </div>
+      <button class="sheet-close" type="button" data-close-sheet aria-label="Закрыть">×</button>
+    </div>
+    <div class="sheet-body" id="sheet-body"></div>
+  </div>
+</div>
+
+<button class="zoom" id="zoom" type="button" aria-label="Закрыть увеличение"><img id="zoom-img" alt="" /></button>
+<p class="proto-badge">PROTOTYPE</p>
+
+<script type="module">
+  const ASSETS = '../../public';
+  const BACK = `${ASSETS}/media/card-back.jpg`;
+  /* Season tints follow the suit spheres used on the site: spring, autumn, summer, winter. */
+  const TINTS = { hearts: '214, 132, 140', diamonds: '214, 150, 84', clubs: '222, 196, 110', spades: '132, 164, 214' };
+  const DEFAULT_TINT = '217, 181, 106';
+  const RANKS = { A: 'Туз', J: 'Валет', Q: 'Дама', K: 'Король' };
+  const HOLD_MIN_MS = 3000;
+  const HISTORY_KEY = 'proto.askMagister.history';
+  const HISTORY_WINDOW_MS = 7 * 24 * 3600 * 1000;
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const $ = (id) => document.getElementById(id);
+  const app = $('app');
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  const setScreen = (name) => { app.dataset.screen = name; };
+  const setTint = (rgb) => document.documentElement.style.setProperty('--tint', rgb);
+  const buzz = (ms) => { try { navigator.vibrate?.(ms); } catch { /* unsupported */ } };
+  const capture = (el, e) => { try { el.setPointerCapture(e.pointerId); } catch { /* synthetic or released pointer */ } };
+
+  function cryptoShuffle(list) {
+    const a = list.slice();
+    const buf = new Uint32Array(1);
+    for (let i = a.length - 1; i > 0; i--) {
+      crypto.getRandomValues(buf);
+      const j = buf[0] % (i + 1);
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const CARDS = await fetch('./data.json').then((r) => r.json());
+  const byId = new Map(CARDS.map((c) => [c.id, c]));
+  const N = CARDS.length;
+  $('start').disabled = false;
+
+  (() => {
+    const box = $('motes');
+    for (let i = 0; i < 18; i++) {
+      const m = document.createElement('i');
+      m.style.left = `${Math.random() * 100}%`;
+      m.style.bottom = `${Math.random() * -20}%`;
+      m.style.animationDuration = `${14 + Math.random() * 16}s`;
+      m.style.animationDelay = `${-Math.random() * 30}s`;
+      box.append(m);
+    }
+  })();
+
+  /* ---------------- Shuffle: riffle while held ---------------- */
+  const DECK_SIZE = 10;
+  const CYCLE_MS = 1350;
+  const deck = $('deck');
+  const deckCards = Array.from({ length: DECK_SIZE }, (_, i) => {
+    const img = document.createElement('img');
+    img.src = BACK; img.alt = '';
+    img.style.transform = stackPose(i);
+    deck.append(img);
+    return img;
+  });
+
+  function stackPose(i) { return `translate(${-i * 0.5}px, ${-i * 0.7}px)`; }
+
+  /* Halves split apart, then cards fall back alternately left/right, bottom first. */
+  function riffleKeyframes(i) {
+    const left = i % 2 === 0;
+    const side = left ? -1 : 1;
+    const base = stackPose(i);
+    const split = `translate(${side * 56}%, ${-4 - i * 0.6}%) rotate(${side * 7}deg)`;
+    const bend = `translate(${side * 50}%, ${-6 - i * 0.6}%) rotate(${side * 4}deg)`;
+    const back = 0.46 + (i / (DECK_SIZE - 1)) * 0.36;
+    return [
+      { offset: 0, transform: base, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' },
+      { offset: 0.26, transform: split },
+      { offset: back - 0.1, transform: bend, easing: 'cubic-bezier(0.5, 0, 0.9, 0.6)' },
+      { offset: back, transform: `${base} translateY(-3px)` },
+      { offset: 1, transform: base },
+    ];
+  }
+
+  let riffles = [];
+  function startRiffle() {
+    if (reduceMotion) return;
+    stopRiffle();
+    riffles = deckCards.map((img, i) => img.animate(riffleKeyframes(i), { duration: CYCLE_MS, iterations: Infinity }));
+  }
+  /* Let the running cycle land so the deck never snaps mid-air. */
+  async function landRiffle() {
+    if (!riffles.length) return;
+    const current = riffles[0].effect.getComputedTiming().currentIteration ?? 0;
+    riffles.forEach((a) => a.effect.updateTiming({ iterations: current + 1 }));
+    await Promise.allSettled(riffles.map((a) => a.finished));
+    riffles = [];
+  }
+  function stopRiffle() { riffles.forEach((a) => a.cancel()); riffles = []; }
+
+  /* [text, shown from ms]; the reframing cue is long, so it gets the most time before the deck is ready. */
+  const CUES = [['Подумай о том, что тебе важно', 0], ['Спроси не «да или нет», а «что мне важно знать?»', 1000]];
+  const shuffleEl = $('shuffle');
+  const ringWrap = $('ring-wrap');
+  const ring = $('ring');
+  const cue = $('cue');
+  const sub = $('sub');
+  let held = 0;
+  let holding = false;
+  let holdStart = 0;
+  let cueIndex = -1;
+  let releasing = false;
+  let order = [];
+
+  function setCue(text) {
+    if (cue.textContent === text) return;
+    cue.classList.add('is-out');
+    setTimeout(() => { cue.textContent = text; cue.classList.remove('is-out'); }, 250);
+  }
+
+  function resetShuffle() {
+    held = 0; holding = false; releasing = false; cueIndex = -1;
+    stopRiffle();
+    ring.style.strokeDashoffset = '1';
+    ringWrap.classList.remove('is-ready');
+    shuffleEl.classList.remove('is-holding');
+    cue.textContent = 'Удерживай колоду, чтобы перетасовать';
+    sub.hidden = false;
+  }
+
+  /* Held time comes from the clock, not from frames: rAF can be throttled. */
+  const heldNow = () => (holding ? held + (performance.now() - holdStart) : held);
+
+  function tick() {
+    if (!holding) return;
+    const total = heldNow();
+    const p = Math.min(total / HOLD_MIN_MS, 1);
+    ring.style.strokeDashoffset = String(1 - p);
+    if (p >= 1) {
+      ringWrap.classList.add('is-ready');
+      setCue('Отпусти, когда вопрос прозвучит');
+    } else {
+      const idx = CUES.findLastIndex(([, from]) => total >= from);
+      if (idx !== cueIndex) { cueIndex = idx; setCue(CUES[idx][0]); }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function startHold() {
+    if (app.dataset.screen !== 'shuffle' || holding || releasing) return;
+    holding = true;
+    sub.hidden = true;
+    shuffleEl.classList.add('is-holding');
+    holdStart = performance.now();
+    startRiffle();
+    buzz(8);
+    requestAnimationFrame(tick);
+  }
+
+  async function endHold() {
+    if (!holding) return;
+    held = heldNow();
+    holding = false;
+    shuffleEl.classList.remove('is-holding');
+    if (held < HOLD_MIN_MS) {
+      cueIndex = -1;
+      setCue('Не торопись — вопрос должен прозвучать');
+      await landRiffle();
+      return;
+    }
+    releasing = true;
+    /* The order is fixed at the moment of release. */
+    order = cryptoShuffle(CARDS.map((c) => c.id));
+    buzz(20);
+    setCue('Колода слышит тебя');
+    await landRiffle();
+    await wait(reduceMotion ? 150 : 350);
+    releasing = false;
+    openWheel('Колода разложена');
+  }
+
+  shuffleEl.addEventListener('pointerdown', (e) => { capture(shuffleEl, e); startHold(); });
+  shuffleEl.addEventListener('pointerup', endHold);
+  shuffleEl.addEventListener('pointercancel', endHold);
+  shuffleEl.addEventListener('contextmenu', (e) => e.preventDefault());
+
+  /* ---------------- Wheel ---------------- */
+  const wheelEl = $('wheel');
+  const fan = $('fan');
+  const hint = $('wheel-hint');
+  let els = [];
+  let geo = null;
+  let offset = Math.floor((N - 1) / 2);
+  let vel = 0;
+  let dragLift = 0;
+  let mode = 'idle'; /* idle | dealing | drag | inertia | snap | pulling */
+  let snapTarget = null;
+  let rafId = 0;
+  let interacted = false;
+
+  function measure() {
+    const W = innerWidth;
+    const H = innerHeight;
+    /* Card height is capped at ~27% of the viewport so the fan fits short screens. */
+    const cardW = Math.max(96, Math.min(W * 0.38, 190, H * 0.27 * 0.6975));
+    const cardH = cardW / 0.6975;
+    const R = Math.max(W * 1.35, 700);
+    const spacing = cardW * 0.34;
+    geo = { W, H, cardW, cardH, R, spacing, step: spacing / R, px: W / 2, py: H * 0.53 + R, lift: cardH * 0.15 };
+    els.forEach((el) => { el.style.width = `${cardW}px`; el.style.height = `${cardH}px`; });
+  }
+
+  function cardPose(i, o = offset) {
+    const { R, step, px, py, cardW, cardH, lift } = geo;
+    const d = i - o;
+    const a = d * step;
+    const focus = Math.max(0, 1 - Math.abs(d));
+    const r = R + focus * lift + (i === Math.round(o) ? dragLift : 0);
+    return { d, a, x: px + Math.sin(a) * r - cardW / 2, y: py - Math.cos(a) * r - cardH / 2 };
+  }
+
+  const clampOffset = (o) => Math.min(N - 1, Math.max(0, o));
+  const rubber = (o) => (o < 0 ? o * 0.3 : o > N - 1 ? N - 1 + (o - (N - 1)) * 0.3 : o);
+
+  function render() {
+    const focus = Math.round(clampOffset(offset));
+    const maxA = Math.asin(Math.min(1, (geo.W / 2 + geo.cardW) / geo.R)) + 0.05;
+    for (let i = 0; i < N; i++) {
+      const el = els[i];
+      const p = cardPose(i);
+      const visible = Math.abs(p.a) < maxA;
+      el.style.visibility = visible ? 'visible' : 'hidden';
+      if (!visible) continue;
+      el.style.transform = `translate3d(${p.x}px, ${p.y}px, 0) rotate(${p.a}rad)`;
+      el.style.zIndex = String(1000 - Math.round(Math.abs(p.d) * 10));
+      el.style.setProperty('--dim', String(Math.min(Math.abs(p.d) * 0.08, 0.6)));
+      el.classList.toggle('is-focus', i === focus && mode !== 'dealing');
+      el.tabIndex = i === focus ? 0 : -1;
+    }
+  }
+
+  function loop() {
+    rafId = 0;
+    if (mode === 'inertia') {
+      offset += vel * 16;
+      vel *= 0.95;
+      if (offset < 0 || offset > N - 1) vel *= 0.6;
+      if (Math.abs(vel) < 0.0015) { mode = 'snap'; snapTarget = Math.round(clampOffset(offset)); }
+    }
+    if (mode === 'snap') {
+      const t = snapTarget ?? Math.round(clampOffset(offset));
+      offset += (t - offset) * 0.16;
+      if (Math.abs(t - offset) < 0.002) { offset = t; mode = 'idle'; snapTarget = null; buzz(4); }
+    }
+    if (mode !== 'drag' && mode !== 'pulling' && dragLift !== 0) {
+      dragLift *= 0.75;
+      if (Math.abs(dragLift) < 0.5) dragLift = 0;
+    }
+    render();
+    if (mode === 'inertia' || mode === 'snap' || dragLift !== 0) schedule();
+  }
+  const schedule = () => { if (!rafId) rafId = requestAnimationFrame(loop); };
+
+  function buildFan() {
+    fan.replaceChildren();
+    els = order.map((_, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'fc';
+      b.dataset.i = String(i);
+      b.setAttribute('aria-label', 'Карта рубашкой вверх');
+      b.innerHTML = `<img src="${BACK}" alt="" draggable="false" /><span class="shade"></span>`;
+      fan.append(b);
+      return b;
+    });
+  }
+
+  async function openWheel(kicker) {
+    $('wheel-kicker').textContent = kicker;
+    buildFan();
+    fan.style.transition = 'none';
+    fan.classList.remove('is-sunk');
+    fan.getBoundingClientRect();
+    fan.style.transition = '';
+    measure();
+    offset = Math.floor((N - 1) / 2);
+    vel = 0; dragLift = 0; interacted = false;
+    hint.classList.remove('is-out');
+    setScreen('wheel');
+    mode = 'dealing';
+    /* Deal: every card starts stacked at the deck position, then flies out from the centre. */
+    const sx = geo.W / 2 - geo.cardW / 2;
+    const sy = geo.H * 0.45 - geo.cardH / 2;
+    els.forEach((el) => { el.style.transform = `translate3d(${sx}px, ${sy}px, 0)`; el.style.visibility = 'visible'; });
+    fan.getBoundingClientRect();
+    fan.classList.add('is-dealing');
+    els.forEach((el, i) => el.style.setProperty('--deal', `${Math.abs(i - offset) * 14}ms`));
+    render();
+    await wait(reduceMotion ? 50 : 1150);
+    fan.classList.remove('is-dealing');
+    mode = 'idle';
+    render();
+    els[Math.round(offset)]?.focus({ preventScroll: true });
+  }
+
+  let start = null;
+  let samples = [];
+
+  wheelEl.addEventListener('pointerdown', (e) => {
+    if (mode === 'dealing' || mode === 'pulling' || app.dataset.screen !== 'wheel') return;
+    capture(wheelEl, e);
+    const target = e.target.closest?.('.fc');
+    start = { x: e.clientX, y: e.clientY, offset, axis: null, target: target ? Number(target.dataset.i) : null };
+    samples = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
+    vel = 0;
+    if (mode === 'inertia' || mode === 'snap') mode = 'idle';
+  });
+
+  wheelEl.addEventListener('pointermove', (e) => {
+    if (!start) return;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    if (!start.axis && Math.hypot(dx, dy) > 8) {
+      start.axis = Math.abs(dy) > Math.abs(dx) * 1.2 ? 'y' : 'x';
+      mode = 'drag';
+      if (!interacted) { interacted = true; hint.classList.add('is-out'); }
+    }
+    samples.push({ x: e.clientX, y: e.clientY, t: performance.now() });
+    if (samples.length > 6) samples.shift();
+    if (start.axis === 'x') { offset = rubber(start.offset - dx / geo.spacing); dragLift = 0; }
+    /* Vertical drag in either direction pulls the card out: up away from the fan, or down towards you. */
+    else if (start.axis === 'y') dragLift = -dy;
+    render();
+  });
+
+  function endPointer() {
+    if (!start) return;
+    const s = start;
+    start = null;
+    const first = samples[0];
+    const last = samples[samples.length - 1];
+    const dt = Math.max(1, last.t - first.t);
+    if (!s.axis) {
+      mode = 'idle';
+      if (s.target == null) return;
+      const focus = Math.round(clampOffset(offset));
+      if (s.target === focus) pull(focus);
+      else { mode = 'snap'; snapTarget = s.target; schedule(); }
+      return;
+    }
+    if (s.axis === 'y') {
+      const vy = (last.y - first.y) / dt;
+      if (Math.abs(dragLift) > geo.H * 0.1 || Math.abs(vy) > 0.6) { pull(Math.round(clampOffset(offset))); return; }
+      mode = 'idle';
+      schedule();
+      return;
+    }
+    vel = Math.max(-0.06, Math.min(0.06, -((last.x - first.x) / dt) / geo.spacing));
+    mode = 'inertia';
+    schedule();
+  }
+  wheelEl.addEventListener('pointerup', endPointer);
+  wheelEl.addEventListener('pointercancel', endPointer);
+
+  let wheelIdle = 0;
+  wheelEl.addEventListener('wheel', (e) => {
+    if (mode === 'dealing' || mode === 'pulling') return;
+    e.preventDefault();
+    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    offset = rubber(offset + (delta / geo.spacing) * 0.35);
+    mode = 'idle';
+    if (!interacted) { interacted = true; hint.classList.add('is-out'); }
+    render();
+    clearTimeout(wheelIdle);
+    wheelIdle = setTimeout(() => { mode = 'snap'; snapTarget = null; schedule(); }, 120);
+  }, { passive: false });
+
+  wheelEl.addEventListener('keydown', (e) => {
+    if (mode === 'dealing' || mode === 'pulling') return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      snapTarget = Math.round(clampOffset((snapTarget ?? offset) + (e.key === 'ArrowRight' ? 1 : -1)));
+      mode = 'snap';
+      schedule();
+      const next = snapTarget;
+      requestAnimationFrame(() => els[next]?.focus({ preventScroll: true }));
+    } else if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      pull(Math.round(clampOffset(offset)));
+    }
+  });
+
+  /* ---------------- Pull & reveal ---------------- */
+  const pickEl = $('pick');
+  const pickFace = $('pick-face');
+  const slot = $('slot');
+  const answer = $('answer');
+  let current = null;
+  let pullGen = 0;
+
+  function readHistory() {
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch { return []; }
+  }
+  function pushHistory(id) {
+    const now = Date.now();
+    const list = readHistory().filter((h) => now - h.t < HISTORY_WINDOW_MS);
+    const seen = list.some((h) => h.id === id);
+    list.push({ id, t: now });
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list.slice(-50))); } catch { /* private mode */ }
+    return seen;
+  }
+
+  function fillAnswer(card) {
+    const rank = card.code.slice(0, -1);
+    $('r-message').textContent = card.message;
+    const line = $('r-line');
+    line.replaceChildren();
+    const name = document.createElement('b');
+    name.textContent = card.title;
+    line.append(name, ` · ${RANKS[rank] ?? rank} ${card.code.slice(-1)} · ${card.world}`);
+    $('r-repeat').hidden = !pushHistory(card.id);
+    pickFace.alt = card.title;
+  }
+
+  async function pull(i) {
+    if (mode === 'pulling') return;
+    mode = 'pulling';
+    const gen = ++pullGen;
+    const stale = () => gen !== pullGen;
+    buzz(15);
+    const card = byId.get(order[i]);
+    current = card;
+    const pose = cardPose(i);
+
+    pickFace.src = `${ASSETS}${card.image}`;
+    const faceReady = pickFace.decode().catch(() => {});
+
+    fillAnswer(card);
+    answer.classList.remove('is-shown');
+    pickEl.classList.remove('is-docked', 'is-flipped', 'is-waiting', 'is-glinted');
+    pickEl.tabIndex = -1;
+    app.append(pickEl);
+    setScreen('result');
+    const r = slot.getBoundingClientRect();
+    Object.assign(pickEl.style, { left: `${r.left}px`, top: `${r.top}px`, width: `${r.width}px`, height: `${r.height}px`, transition: 'none' });
+    const scale = geo.cardW / r.width;
+    const cx = pose.x + geo.cardW / 2;
+    const cy = pose.y + geo.cardH / 2;
+    pickEl.style.transform = `translate(${cx - (r.left + r.width / 2)}px, ${cy - (r.top + r.height / 2)}px) rotate(${pose.a}rad) scale(${scale})`;
+    pickEl.classList.add('is-on');
+    els[i].style.opacity = '0';
+    fan.classList.add('is-sunk');
+    pickEl.getBoundingClientRect();
+    pickEl.style.transition = reduceMotion ? 'none' : 'transform 0.9s cubic-bezier(0.2, 0.85, 0.25, 1)';
+    pickEl.style.transform = 'none';
+
+    await wait(reduceMotion ? 0 : 900);
+    if (stale()) return;
+    pickEl.classList.add('is-waiting');
+    await Promise.all([faceReady, wait(reduceMotion ? 0 : 900)]);
+    if (stale()) return;
+    pickEl.classList.remove('is-waiting');
+    buzz(25);
+    setTint(TINTS[card.suit] ?? DEFAULT_TINT);
+    await flipCard();
+    if (stale()) return;
+    answer.classList.add('is-shown');
+    await wait(reduceMotion ? 0 : 1200);
+    if (stale()) return;
+    /* Dock into the scrollable layout so the card scrolls with the text; reparenting restarts CSS animations. */
+    pickEl.classList.add('is-glinted', 'is-docked');
+    pickEl.style.transition = 'none';
+    pickEl.style.left = pickEl.style.top = pickEl.style.width = pickEl.style.height = '';
+    pickEl.tabIndex = 0;
+    slot.append(pickEl);
+  }
+
+  /* The card rises towards the viewer, passes edge-on at 90° and lands face up. */
+  const FLIP_MS = 1150;
+  async function flipCard() {
+    const inner = pickEl.querySelector('.pick-inner');
+    pickEl.classList.add('is-flipped');
+    if (reduceMotion) return;
+    const flip = inner.animate(
+      [
+        { transform: 'translateZ(0) rotateY(0deg) scale(1)', easing: 'cubic-bezier(0.55, 0, 0.75, 0.35)' },
+        { transform: 'translateZ(0) rotateY(-12deg) scale(1.02)', offset: 0.12, easing: 'cubic-bezier(0.4, 0, 0.6, 1)' },
+        { transform: 'translateZ(90px) rotateY(90deg) scale(1.1)', offset: 0.5, easing: 'cubic-bezier(0.2, 0.6, 0.3, 1.15)' },
+        { transform: 'translateZ(0) rotateY(180deg) scale(1)' },
+      ],
+      { duration: FLIP_MS },
+    );
+    await flip.finished.catch(() => {});
+  }
+
+  function clearPick() {
+    pullGen++;
+    pickEl.querySelector('.pick-inner').getAnimations().forEach((a) => a.cancel());
+    pickEl.classList.remove('is-on', 'is-docked', 'is-flipped', 'is-waiting', 'is-glinted');
+    pickEl.style.cssText = '';
+    pickEl.tabIndex = -1;
+    app.append(pickEl);
+    answer.classList.remove('is-shown');
+    setTint(DEFAULT_TINT);
+    $('result').scrollTop = 0;
+  }
+
+  /* New question: back to the shuffle, so every question gets its own ritual. */
+  $('again').addEventListener('click', () => {
+    closeSheet(); closeZoom();
+    clearPick();
+    mode = 'idle';
+    resetShuffle();
+    cue.textContent = 'Подумай о новом вопросе и удерживай колоду';
+    setScreen('shuffle');
+  });
+
+  /* ---------------- Story sheet & zoom ---------------- */
+  const sheet = $('sheet');
+  let sheetReturn = null;
+
+  function openSheet() {
+    if (!current) return;
+    const rank = current.code.slice(0, -1);
+    $('sheet-kicker').textContent = `${current.world} · ${RANKS[rank] ?? rank} ${current.code.slice(-1)}`;
+    $('sheet-title').textContent = current.title;
+    $('sheet-body').replaceChildren(...current.story.map((t) => { const p = document.createElement('p'); p.textContent = t; return p; }));
+    sheetReturn = document.activeElement;
+    sheet.classList.add('is-open');
+    sheet.querySelector('.sheet-panel').scrollTop = 0;
+    sheet.querySelector('.sheet-close').focus({ preventScroll: true });
+  }
+  function closeSheet() {
+    if (!sheet.classList.contains('is-open')) return;
+    sheet.classList.remove('is-open');
+    sheetReturn?.focus?.({ preventScroll: true });
+    sheetReturn = null;
+  }
+  $('story-open').addEventListener('click', openSheet);
+  sheet.addEventListener('click', (e) => { if (e.target.closest('[data-close-sheet]')) closeSheet(); });
+
+  const zoom = $('zoom');
+  function openZoom() {
+    if (!current || !pickEl.classList.contains('is-docked')) return;
+    $('zoom-img').src = pickFace.src;
+    $('zoom-img').alt = current.title;
+    zoom.classList.add('is-open');
+    zoom.focus({ preventScroll: true });
+  }
+  function closeZoom() {
+    if (!zoom.classList.contains('is-open')) return;
+    zoom.classList.remove('is-open');
+    pickEl.focus({ preventScroll: true });
+  }
+  pickEl.addEventListener('click', openZoom);
+  zoom.addEventListener('click', closeZoom);
+
+  /* ---------------- Global ---------------- */
+  $('start').addEventListener('click', () => { resetShuffle(); setScreen('shuffle'); });
+
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeZoom(); closeSheet(); }
+    if (e.code === 'Space' && app.dataset.screen === 'shuffle') { e.preventDefault(); if (!e.repeat) startHold(); }
+  });
+  addEventListener('keyup', (e) => {
+    if (e.code === 'Space' && app.dataset.screen === 'shuffle') endHold();
+  });
+  addEventListener('resize', () => {
+    if (!geo) return;
+    measure();
+    if (app.dataset.screen === 'wheel' && mode !== 'dealing') render();
+  });
+
+  resetShuffle();
+</script>
+</body>
+</html>

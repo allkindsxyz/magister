@@ -50,6 +50,8 @@ export type OnlineCopy = {
   hints_mode_label: string;
   hints_with: string;
   hints_without: string;
+  discard_zoom_open: string;
+  discard_zoom_close: string;
 };
 
 const ru: OnlineCopy = {
@@ -102,6 +104,8 @@ const ru: OnlineCopy = {
   hints_mode_label: 'Режим игры',
   hints_with: 'С подсказками',
   hints_without: 'Без подсказок',
+  discard_zoom_open: 'Увеличить карту в центре',
+  discard_zoom_close: 'Закрыть',
 };
 
 const en: OnlineCopy = {
@@ -154,6 +158,8 @@ const en: OnlineCopy = {
   hints_mode_label: 'Game mode',
   hints_with: 'With hints',
   hints_without: 'No hints',
+  discard_zoom_open: 'Enlarge center card',
+  discard_zoom_close: 'Close',
 };
 
 const be: OnlineCopy = {

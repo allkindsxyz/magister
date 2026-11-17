@@ -1,0 +1,674 @@
+/**
+ * Instruction cards — layout from reference exports; background = card back.
+ * --card-back-image should be set in each HTML (url() resolves vs that file).
+ * Fallback below works when HTML and this CSS both live under print/.
+ *
+ * Type: Cormorant Garamond (titles) + Manrope (body). Avoid Cormorant under ~22px.
+ */
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;600;700&display=swap");
+
+:root {
+  --navy: #061a3b;
+  --gold: #e8c878;
+  --ivory: #f7efd9;
+  --card-back-image: url("assets/media/card-back-600.webp");
+  --font-display: "Cormorant Garamond", "Times New Roman", Georgia, serif;
+  --font-body: "Manrope", system-ui, -apple-system, sans-serif;
+  /* Instruction faces: display (Cormorant), body (Manrope) */
+  --instruction-deck-title: 32px;
+  --instruction-text-lg: 26px;
+  --instruction-text-sm: 22px;
+  /* Back face: slightly smaller body, looser lines */
+  --instruction-rules-text: 24px;
+  --instruction-rules-line: 1.48;
+  --card-back-blur: 10px;
+  --card-back-dim-opacity: 0.2;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  background: #e9e9e9;
+}
+
+/* Poker aspect ≈ 63:88 (reference 750 × 1050) */
+.card {
+  position: relative;
+  width: 750px;
+  height: 1050px;
+  overflow: hidden;
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--ivory);
+  text-align: center;
+  padding: 44px 52px 34px;
+  border-radius: 30px;
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.2),
+    inset 0 0 0 1px rgba(201, 170, 91, 0.28);
+  isolation: isolate;
+  background-color: var(--navy);
+}
+
+/* Blurred deck back (so fine illustration doesn't fight typography) */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background-image: var(--card-back-image);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* Scale hides soft transparent fringe from blur at card edges */
+  transform: scale(1.08);
+  transform-origin: center;
+  filter: blur(var(--card-back-blur));
+}
+
+/* 20% darken over blurred back (screen + print) */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: rgba(0, 0, 0, var(--card-back-dim-opacity));
+}
+
+.card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.card-frame {
+  pointer-events: none;
+  position: absolute;
+  inset: 18px;
+  border: 1px solid rgba(201, 170, 91, 0.35);
+  border-radius: 20px;
+  z-index: 1;
+}
+
+.logo {
+  display: block;
+  width: 360px;
+  max-height: 150px;
+  object-fit: contain;
+  margin: 0 auto 20px;
+}
+
+/* Tighter vertical room around logo */
+.card.face-1a .logo,
+.card.back.back--with-logo .logo {
+  margin: 0 auto 10px;
+}
+
+/* Key face (1B): no logo — title leads */
+.card.front.front--no-logo {
+  padding-top: 40px;
+  padding-bottom: 18px;
+}
+
+.card.front.front--no-logo > .ornament:first-child {
+  margin-top: 0;
+  margin-bottom: 18px;
+}
+
+.card.front.front--no-logo .intro {
+  margin-bottom: 14px;
+}
+
+.card.front.front--no-logo .intro-kicker {
+  margin-bottom: 10px;
+}
+
+.card.front.front--no-logo .intro-copy {
+  padding: 0 4px;
+}
+
+.card.front.front--no-logo .suits {
+  margin-bottom: 16px;
+}
+
+.card.front.front--no-logo .suit {
+  margin: 7px 0;
+}
+
+.card.front.front--no-logo .copy {
+  margin: 8px 0 0;
+  padding: 0 6px;
+}
+
+/* Push divider + CTA + QR toward bottom; flex gap above ornament */
+.card.front.front--no-logo > .copy + .ornament {
+  margin-top: auto;
+  padding-top: 20px;
+  margin-bottom: 12px;
+}
+
+.card.front.front--no-logo .footer {
+  flex: 0 0 auto;
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.card.front.front--no-logo .footer-line {
+  margin: 0 0 16px;
+}
+
+.card.front.front--no-logo .footer-qr {
+  margin-top: 2px;
+}
+
+.card.back.back--with-logo .intro {
+  margin-bottom: 10px;
+}
+
+.card.back.back--with-logo > .logo + .ornament {
+  margin: 6px 0 12px;
+}
+
+.card.back.back--with-logo .rules-lede {
+  margin-bottom: 10px;
+}
+
+.card.back.back--with-logo .rules-section {
+  margin-bottom: 12px;
+}
+
+.ornament {
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 10px 0 20px;
+}
+
+.ornament::before,
+.ornament::after {
+  content: "";
+  height: 1px;
+  background: var(--gold);
+  opacity: 0.85;
+  flex: 1;
+}
+
+.star {
+  font-size: 30px;
+  line-height: 1;
+  font-family: var(--font-body);
+}
+
+h1 {
+  font-size: 48px;
+  letter-spacing: 3px;
+  margin: 10px 0 12px;
+  font-family: var(--font-display);
+  font-weight: 500;
+}
+
+.lead {
+  font-size: 25px;
+  line-height: 1.3;
+  margin: 0 0 24px;
+}
+
+/* Instruction faces — intro block */
+.card.front .intro,
+.card.back .intro,
+.card.face-1a .intro {
+  text-align: center;
+  margin: 0 0 14px;
+}
+
+/* Title — Cormorant Garamond Bold (same on front & back) */
+.card.front .intro-kicker,
+.card.back .intro-kicker,
+.card.face-1a .intro-kicker {
+  font-family: var(--font-display);
+  font-size: var(--instruction-deck-title);
+  letter-spacing: 2px;
+  line-height: 1.25;
+  margin: 0 0 12px;
+  font-weight: 700;
+}
+
+.front .intro-highlight,
+.face-1a .intro-highlight {
+  font-size: var(--instruction-text-sm);
+  line-height: 1.3;
+  margin: 0 0 14px;
+}
+
+/* Accent stat — Manrope SemiBold (not Cormorant at tiny sizes) */
+.front .intro-highlight strong,
+.face-1a .intro-highlight strong {
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.front .intro-copy {
+  font-size: var(--instruction-text-sm);
+  line-height: 1.3;
+  margin: 0;
+  padding: 0 8px;
+}
+
+.suits {
+  text-align: left;
+  width: 88%;
+  margin: 0 auto 22px;
+}
+
+.suit {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  font-family: var(--font-body);
+  font-size: 27px;
+  line-height: 1.3;
+  margin: 8px 0;
+}
+
+/* Description — Manrope Regular */
+.suit > span:last-child {
+  flex: 1;
+  min-width: 0;
+  font-weight: 400;
+}
+
+/* Pip column — vertical center aligns with multi-line copy */
+.symbol {
+  flex: 0 0 72px;
+  width: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 64px;
+  line-height: 1;
+}
+
+/* Suit name — Manrope Bold */
+.suit strong {
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.copy {
+  font-size: 22px;
+  line-height: 1.3;
+  margin: 15px 0;
+}
+
+.footer {
+  position: absolute;
+  left: 45px;
+  right: 45px;
+  bottom: 35px;
+  font-size: 21px;
+}
+
+.footer strong {
+  color: var(--gold);
+  font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.front .lead {
+  font-size: 25px;
+}
+
+.front .copy {
+  font-size: var(--instruction-text-lg);
+  line-height: 1.3;
+  text-align: center;
+  margin: 10px 0 9px;
+}
+
+/* Card 1A — teaser (no QR) */
+.card.face-1a {
+  display: flex;
+  flex-direction: column;
+  padding-top: 22px;
+  padding-left: 38px;
+  padding-right: 38px;
+}
+
+.card.face-1a .intro--teaser {
+  margin-bottom: 6px;
+}
+
+.card.face-1a .teaser-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: center;
+  padding: 0 6px 8px;
+}
+
+.card.face-1a .teaser-p {
+  font-size: 21px;
+  line-height: 1.36;
+  margin: 0 0 14px;
+  font-weight: 400;
+}
+
+.card.face-1a .teaser-p--hook {
+  font-size: var(--instruction-text-sm);
+  line-height: 1.38;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.card.face-1a .teaser-p--byline {
+  margin-top: 6px;
+  margin-bottom: 0;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  color: rgba(247, 239, 217, 0.88);
+}
+
+.card.face-1a .teaser-p strong {
+  font-weight: 600;
+}
+
+.card.face-1a .ornament {
+  margin: 6px 0 12px;
+}
+
+.card.face-1a .footer-line--hint {
+  opacity: 0.82;
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+/* Shared layout: both instruction faces (blur + dim + footer + QR) */
+.card.front,
+.card.back {
+  display: flex;
+  flex-direction: column;
+  padding-top: 22px;
+  padding-left: 38px;
+  padding-right: 38px;
+}
+
+.front .suits {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.front .suit {
+  align-items: center;
+  gap: 16px;
+  font-size: var(--instruction-text-lg);
+  line-height: 1.3;
+}
+
+.card.front .ornament .star,
+.card.back .ornament .star,
+.card.face-1a .ornament .star {
+  font-size: var(--instruction-text-sm);
+}
+
+/*
+ * Divider before footer — front: after rank copy.
+ */
+.card.front > .copy + .ornament {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.card.back .ornament {
+  margin: 8px 0 12px;
+}
+
+.card.back .back-bottom .ornament {
+  margin-top: 4px;
+  margin-bottom: 6px;
+}
+
+/* Rules column — left aligned, smaller type + looser leading */
+.card.back .rules-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  text-align: left;
+  width: 100%;
+}
+
+.card.back .rules-lede,
+.card.back .rules-p {
+  font-family: var(--font-body);
+  font-size: var(--instruction-rules-text);
+  line-height: var(--instruction-rules-line);
+  margin: 0 0 12px;
+}
+
+.card.back .rules-p {
+  font-weight: 400;
+}
+
+.card.back .rules-lede {
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.card.back .rules-lede-block .rules-lede {
+  margin-bottom: 6px;
+}
+
+.card.back .rules-lede-block .rules-lede--goal {
+  margin-bottom: 14px;
+}
+
+.card.back .rules-section {
+  margin: 0 0 14px;
+}
+
+.card.back .rules-section:last-child {
+  margin-bottom: 0;
+}
+
+.card.back .rules-section__title {
+  font-family: var(--font-body);
+  font-size: var(--instruction-text-sm);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  margin: 0 0 8px;
+  color: var(--gold);
+}
+
+.card.back .rules-list {
+  margin: 0;
+  padding: 0 0 0 22px;
+  font-family: var(--font-body);
+  font-size: var(--instruction-rules-text);
+  line-height: var(--instruction-rules-line);
+}
+
+.card.back .rules-list li {
+  margin: 0 0 8px;
+}
+
+.card.back .rules-list li:last-child {
+  margin-bottom: 0;
+}
+
+.card.back .rules-p--goal {
+  margin-bottom: 16px;
+}
+
+.card.back .rules-p--note {
+  text-align: center;
+  margin-top: 4px;
+  margin-bottom: 0;
+  font-size: 22px;
+  line-height: 1.4;
+}
+
+.card.back .rules-steps {
+  margin: 0;
+  padding: 0 0 0 22px;
+  font-family: var(--font-body);
+  font-size: var(--instruction-rules-text);
+  line-height: var(--instruction-rules-line);
+}
+
+.card.back .rules-steps li {
+  margin: 0 0 10px;
+}
+
+.card.back .rules-steps li:last-child {
+  margin-bottom: 0;
+}
+
+.card.back .footer-line--hint {
+  opacity: 0.82;
+  font-size: 20px;
+}
+
+.card.back .back-bottom {
+  flex: 0 0 auto;
+  margin-top: auto;
+  width: 100%;
+}
+
+.card.front .footer,
+.card.back .footer,
+.card.face-1a .footer {
+  position: static;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  margin-top: 0;
+  padding-bottom: 8px;
+  font-family: var(--font-body);
+  font-size: var(--instruction-text-sm);
+  font-weight: 400;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.card.front .footer-line,
+.card.back .footer-line,
+.card.face-1a .footer-line {
+  margin: 0 0 5px;
+  white-space: nowrap;
+}
+
+.card.face-1a .footer {
+  flex: 0 0 auto;
+  margin-top: auto;
+}
+
+.card.front .footer strong,
+.card.back .footer strong {
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.card.back .footer--back .footer-line {
+  margin-bottom: 12px;
+}
+
+.card.back .footer-line--secondary {
+  margin-top: 2px;
+  margin-bottom: 0;
+  font-size: 20px;
+  line-height: 1.4;
+  opacity: 0.82;
+  white-space: normal;
+}
+
+.card.back .back-more-games {
+  margin-top: 4px;
+  padding: 12px 10px 0;
+  border-top: 1px solid rgba(201, 170, 91, 0.28);
+}
+
+.card.back .back-more-games__title {
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.35;
+  margin: 0 0 8px;
+  color: rgba(247, 239, 217, 0.88);
+}
+
+.card.back .back-more-games__tagline {
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.45;
+  margin: 0;
+  color: rgba(247, 239, 217, 0.8);
+}
+
+.card.back .back-more-games__extra {
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.45;
+  margin: 10px 0 0;
+  color: rgba(247, 239, 217, 0.75);
+}
+
+.card.front .footer-qr {
+  display: inline-block;
+  line-height: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.card.front .footer-qr img {
+  display: block;
+  width: 158px;
+  height: 158px;
+}
+
+@media print {
+  body {
+    background: white;
+    padding: 0;
+  }
+
+  .card {
+    box-shadow: none;
+    page-break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Sharper print: full-detail back; dim layer stays for readability */
+  .card::before {
+    filter: none;
+    transform: none;
+  }
+}

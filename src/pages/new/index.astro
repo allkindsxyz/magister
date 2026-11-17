@@ -1,0 +1,24 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CartDrawer from '../../components/CartDrawer.astro';
+import NewLanding from '../../components/NewLanding.astro';
+import { absoluteUrl } from '../../lib/site';
+import { PRICES, formatPrice } from '../../lib/pricing';
+
+const artPrice = formatPrice(PRICES.xl, 'en');
+
+// The site forces a locale prefix. This header tells that check to leave /new alone.
+Astro.response.headers.set('X-Astro-Reroute', 'yes');
+---
+
+<Layout
+  lang="en"
+  noindex
+  alternates={false}
+  canonicalURL={absoluteUrl('/new')}
+  title="Magister — An art deck of 54 playing cards"
+  description={`An art deck of 54 playing cards. Four worlds, one hidden code. Art Edition ${artPrice}, 70 × 120 mm, guide included. Ships to the EU and US.`}
+>
+  <NewLanding />
+  <CartDrawer lang="en" />
+</Layout>

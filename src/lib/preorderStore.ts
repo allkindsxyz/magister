@@ -60,7 +60,9 @@ export type Preorder = {
   subtotal: number;
   lines: PreorderLine[];
   status: PreorderStatus;
-  source: 'cart';
+  source: 'cart' | 'waitlist';
+  /** Set on Players’ Edition waitlist signups. Null on cart orders. */
+  twoDeck: boolean | null;
 };
 
 type FileDB = { orders: Preorder[] };
@@ -93,6 +95,10 @@ async function ensureSchema(): Promise<void> {
         CREATE INDEX IF NOT EXISTS preorders_created_at_idx ON preorders (created_at DESC);
         CREATE INDEX IF NOT EXISTS preorders_email_idx ON preorders (email);
         CREATE INDEX IF NOT EXISTS preorders_status_idx ON preorders (status);
+        ALTER TABLE preorders ADD COLUMN IF NOT EXISTS two_deck BOOLEAN;
+        CREATE UNIQUE INDEX IF NOT EXISTS preorders_waitlist_email_idx
+          ON preorders (email)
+          WHERE source = 'waitlist';
       `);
     })().catch((error) => {
       schemaReady = null;
@@ -279,6 +285,7 @@ function buildOrder(input: CreatePreorderInput): Preorder {
     lines: input.lines,
     status: 'new',
     source: 'cart',
+    twoDeck: null,
   };
 }
 
@@ -294,7 +301,8 @@ function rowToPreorder(row: Record<string, unknown>): Preorder {
     subtotal: Number(row.subtotal),
     lines: (row.lines as PreorderLine[]) || [],
     status: String(row.status) as PreorderStatus,
-    source: 'cart',
+    source: row.source === 'waitlist' ? 'waitlist' : 'cart',
+    twoDeck: row.two_deck == null ? null : row.two_deck === true,
   };
 }
 
@@ -324,7 +332,7 @@ async function createPreorderPg(order: Preorder): Promise<Preorder> {
 async function listPreordersPg(): Promise<Preorder[]> {
   await ensureSchema();
   const result = await getPool().query(
-    `SELECT id, created_at, email, name, note, lang, currency, subtotal, lines, status, source
+    `SELECT id, created_at, email, name, note, lang, currency, subtotal, lines, status, source, two_deck
      FROM preorders
      ORDER BY created_at DESC`,
   );
@@ -346,4 +354,114 @@ export async function listPreorders(): Promise<Preorder[]> {
   if (hasDatabase()) return listPreordersPg();
   const db = await loadFile();
   return [...db.orders].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+export type WaitlistInput = {
+  email: string;
+  lang: Lang;
+  twoDeck: boolean;
+};
+
+function waitlistNote(twoDeck: boolean): string {
+  return twoDeck
+    ? 'Players’ Edition waitlist. Also wants a two-deck set (Art + Players’).'
+    : 'Players’ Edition waitlist.';
+}
+
+function buildWaitlist(input: WaitlistInput): Preorder {
+  return {
+    id: `wl_${randomBytes(9).toString('base64url')}`,
+    createdAt: new Date().toISOString(),
+    email: input.email,
+    name: null,
+    note: waitlistNote(input.twoDeck),
+    lang: input.lang,
+    currency: 'EUR',
+    subtotal: 0,
+    lines: [],
+    status: 'new',
+    source: 'waitlist',
+    twoDeck: input.twoDeck,
+  };
+}
+
+export function validateWaitlistBody(body: unknown):
+  | { ok: true; value: WaitlistInput }
+  | { ok: false; error: string } {
+  if (!body || typeof body !== 'object') return { ok: false, error: 'bad_json' };
+  const b = body as Record<string, unknown>;
+  const email = cleanText(b.email, 254).toLowerCase();
+  if (!email || !EMAIL_RE.test(email) || email.length > 254) return { ok: false, error: 'email' };
+  const lang: Lang = typeof b.lang === 'string' && LANGS.has(b.lang) ? (b.lang as Lang) : 'en';
+  return { ok: true, value: { email, lang, twoDeck: b.twoDeck === true || b.twoDeck === 'on' || b.twoDeck === 'true' } };
+}
+
+async function saveWaitlistPg(order: Preorder): Promise<Preorder> {
+  await ensureSchema();
+  const existing = await getPool().query(
+    `SELECT id, created_at FROM preorders WHERE source = 'waitlist' AND email = $1 ORDER BY created_at DESC LIMIT 1`,
+    [order.email],
+  );
+  if (existing.rows[0]) {
+    const id = String(existing.rows[0].id);
+    await getPool().query(`UPDATE preorders SET two_deck = $1, note = $2 WHERE id = $3`, [
+      order.twoDeck,
+      order.note,
+      id,
+    ]);
+    return {
+      ...order,
+      id,
+      createdAt: new Date(String(existing.rows[0].created_at)).toISOString(),
+    };
+  }
+  try {
+    await getPool().query(
+      `INSERT INTO preorders
+        (id, created_at, email, name, note, lang, currency, subtotal, lines, status, source, two_deck)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10, $11, $12)`,
+      [
+        order.id,
+        order.createdAt,
+        order.email,
+        order.name,
+        order.note,
+        order.lang,
+        order.currency,
+        order.subtotal,
+        JSON.stringify(order.lines),
+        order.status,
+        order.source,
+        order.twoDeck,
+      ],
+    );
+  } catch (error) {
+    if ((error as { code?: string }).code !== '23505') throw error;
+    await getPool().query(`UPDATE preorders SET two_deck = $1, note = $2 WHERE source = 'waitlist' AND email = $3`, [
+      order.twoDeck,
+      order.note,
+      order.email,
+    ]);
+  }
+  return order;
+}
+
+/** One row per email. A later signup updates the two-deck flag and keeps the first date. */
+export async function createWaitlist(input: WaitlistInput): Promise<Preorder> {
+  const order = buildWaitlist(input);
+  if (hasDatabase()) return saveWaitlistPg(order);
+
+  let saved = order;
+  await updateFile((db) => {
+    const existing = db.orders.find((item) => item.source === 'waitlist' && item.email === order.email);
+    if (existing) {
+      existing.twoDeck = order.twoDeck;
+      existing.note = order.note;
+      saved = existing;
+      return existing;
+    }
+    db.orders.push(order);
+    return order;
+  });
+  return saved;
 }

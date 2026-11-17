@@ -27,6 +27,7 @@ function printOrders(orders, source) {
     console.log(
       [
         order.id,
+        order.source || 'cart',
         order.status,
         order.createdAt,
         order.email,

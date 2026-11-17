@@ -1,0 +1,846 @@
+:root {
+  --paper: #f3f0e8;
+  --paper-deep: #e8e3d8;
+  --ink: #171714;
+  --muted: #69675f;
+  --line: rgba(23, 23, 20, 0.16);
+  --accent: #8d2f24;
+  --white: #fffcf6;
+  --display: "Newsreader", Georgia, serif;
+  --sans: Inter, system-ui, sans-serif;
+  --card-w: 63mm;
+  --card-h: 88mm;
+  --radius: 3.2mm;
+  --hearts: #8d2f24;
+  --diamonds: #8d2f24;
+  --clubs: #171714;
+  --spades: #171714;
+  --accent-dark: #642019;
+  --brand-blue: #2a4484;
+  /* Match site wordmark (global.css) */
+  --brand-wordmark-rotate-design: -7.27deg;
+  /* Instruction cards on dark photo background */
+  --rules-gold: #d4b44a;
+  --rules-ink-on-dark: #faf8f2;
+  --rules-muted-on-dark: rgba(250, 248, 242, 0.82);
+  --rules-serif: "Cormorant Garamond", "Times New Roman", Times, serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background: #c9c4b8;
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10mm;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12mm;
+}
+
+@media screen {
+  .preview {
+    transform: scale(1.65);
+    transform-origin: top center;
+    padding-bottom: 80mm;
+  }
+}
+
+.preview__label {
+  width: 100%;
+  max-width: calc(var(--card-w) * 2 + 10mm);
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.preview__label strong {
+  color: var(--ink);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: var(--card-w);
+  height: var(--card-h);
+  padding: 2.4mm 2.6mm 2.4mm;
+  border: 0.35mm solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: 0 1.2mm 4mm rgba(23, 23, 20, 0.18);
+  overflow: hidden;
+}
+
+.card-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2mm;
+  padding-bottom: 1.4mm;
+  border-bottom: 0.25mm solid var(--line);
+}
+
+.card-head .suit {
+  color: var(--hearts);
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.card-head h2 {
+  font-family: var(--display);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+.card--pips .card-head {
+  flex: 0 0 auto;
+  padding-bottom: 1mm;
+}
+
+.grid-pips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 0.75mm 1mm;
+  flex: 1 1 0;
+  min-height: 0;
+  margin-top: 0.9mm;
+}
+
+.pip {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 0.25mm;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+
+.card--world {
+  gap: 0;
+  min-height: 0;
+  --inner-w: calc(var(--card-w) - 5.2mm);
+  --court-gap: 0.75mm;
+  --court-slot: calc((var(--inner-w) - 2 * var(--court-gap)) / 3);
+  /* было ~80% слота → +25% ≈ полная треть поля */
+  --court-thumb: min(var(--court-slot), calc(var(--court-slot) * 0.8 * 1.25));
+  --court-thumb-h: calc(var(--court-thumb) * 7 / 5);
+}
+
+.pip__frame {
+  position: relative;
+  flex: 0 1 auto;
+  min-height: 0;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(100% - 3.6mm);
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 0.55mm;
+  background: var(--paper-deep);
+  box-shadow: inset 0 0 0 0.15mm rgba(23, 23, 20, 0.08);
+  aspect-ratio: 5 / 7;
+  align-self: center;
+}
+
+.pip__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pip__label {
+  display: grid;
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  gap: 0.05mm;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  line-height: 1.08;
+}
+
+.card--pips .card-index {
+  font-size: 0.46rem;
+  line-height: 1.05;
+}
+
+.court__label {
+  display: grid;
+  gap: 0.1mm;
+  margin: 0;
+  line-height: 1.12;
+}
+
+.court__label--center {
+  text-align: center;
+}
+
+.court__label--center .card-index,
+.court__label--center .court__name {
+  text-align: center;
+}
+
+.card-index {
+  color: var(--ink);
+  font: 700 0.5rem/1.1 var(--sans);
+  font-variant-numeric: tabular-nums;
+}
+
+.card-index__suit {
+  color: var(--hearts);
+  font-weight: 700;
+}
+
+.pip__name {
+  color: var(--muted);
+  font: 500 0.34rem/1.08 var(--sans);
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+.court__name {
+  color: var(--muted);
+  font: 500 0.4rem/1.12 var(--sans);
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+/* —— world face —— */
+
+.world-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+  margin-top: 1mm;
+  gap: 0;
+}
+
+.world-top {
+  display: grid;
+  grid-template-columns: 22mm 1fr;
+  gap: 1.2mm 2mm;
+  align-items: start;
+  flex: 0 0 auto;
+}
+
+.world-ace {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35mm;
+  margin: 0;
+  min-width: 0;
+}
+
+.world-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85mm;
+  min-width: 0;
+}
+
+.courts--rest {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--court-gap);
+  flex: 0 0 auto;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 1.2mm;
+}
+
+.world-ace__frame {
+  overflow: hidden;
+  border-radius: 0.65mm;
+  background: var(--paper-deep);
+  box-shadow: 0 0.25mm 0.7mm rgba(23, 23, 20, 0.12);
+  aspect-ratio: 5 / 7;
+  width: 100%;
+}
+
+.world-ace__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.world-ace .court__label {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.world-ace .court__name {
+  font-size: 0.38rem;
+  line-height: 1.1;
+}
+
+.blurb {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.5rem;
+  line-height: 1.35;
+}
+
+.world-tips {
+  margin: 0;
+  padding-top: 0.65mm;
+  border-top: 0.25mm solid var(--line);
+  color: var(--muted);
+  font-size: 0.44rem;
+  line-height: 1.32;
+}
+
+.world-tips__lead {
+  color: var(--hearts);
+  font-weight: 700;
+}
+
+.courts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1mm;
+}
+
+.court {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3mm;
+  min-width: 0;
+}
+
+.courts--rest .court {
+  flex: 0 0 var(--court-slot);
+  width: var(--court-slot);
+  max-width: var(--court-slot);
+  align-items: center;
+}
+
+.courts--rest .court__frame {
+  flex: 0 0 auto;
+  width: var(--court-thumb);
+  height: var(--court-thumb-h);
+  margin: 0;
+  aspect-ratio: unset;
+  overflow: hidden;
+  border-radius: 0.55mm;
+  background: var(--paper-deep);
+}
+
+.courts--rest .court__label {
+  width: 100%;
+  min-height: 5.2mm;
+  align-content: start;
+}
+
+.courts--rest .court__name {
+  font-size: 0.36rem;
+  line-height: 1.08;
+}
+
+.court__frame {
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 0.55mm;
+  background: var(--paper-deep);
+  aspect-ratio: 5 / 7;
+  width: 92%;
+  margin: 0 auto;
+}
+
+.court__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* —— full deck key (26 + 26) —— */
+
+.card-index__suit--hearts,
+.card-index__suit--diamonds {
+  color: var(--hearts);
+}
+
+.card-index__suit--clubs,
+.card-index__suit--spades {
+  color: var(--clubs);
+}
+
+.card--deck-index {
+  padding: 2mm 2.2mm 2mm;
+}
+
+.card-head--deck {
+  flex: 0 0 auto;
+  padding-bottom: 0.75mm;
+}
+
+.card-head--deck h2 {
+  font-size: 0.6rem;
+  line-height: 1.12;
+}
+
+.deck-body {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 0.55mm;
+  min-height: 0;
+  margin-top: 0.25mm;
+}
+
+.deck-suit-block {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.deck-suit-layout {
+  display: grid;
+  height: 100%;
+  min-height: 0;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 0.35mm;
+  align-items: start;
+}
+
+.deck-cell__frame--text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.2mm;
+  padding: 0.35mm 0.32mm;
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 0.15mm rgba(23, 23, 20, 0.1);
+}
+
+.deck-suit-intro__title {
+  font-family: var(--display);
+  font-size: 0.34rem;
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+.deck-suit-intro__symbol {
+  font-family: var(--sans);
+  font-size: 0.32rem;
+  font-weight: 700;
+}
+
+.deck-suit-block--hearts .deck-suit-intro__symbol,
+.deck-suit-block--diamonds .deck-suit-intro__symbol {
+  color: var(--hearts);
+}
+
+.deck-suit-block--clubs .deck-suit-intro__symbol,
+.deck-suit-block--spades .deck-suit-intro__symbol {
+  color: var(--clubs);
+}
+
+.deck-suit-intro__blurb {
+  color: var(--muted);
+  font-size: 0.26rem;
+  line-height: 1.26;
+}
+
+.deck-cell__label--align {
+  visibility: hidden;
+}
+
+.deck-cell__label-ph {
+  display: block;
+  min-height: 0.32rem;
+}
+
+.deck-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0.15mm;
+  min-width: 0;
+  width: 100%;
+  min-height: 0;
+}
+
+.deck-cell__frame {
+  flex: 0 0 auto;
+  width: 100%;
+  aspect-ratio: 5 / 7;
+  height: auto;
+  overflow: hidden;
+  border-radius: 0.35mm;
+  background: var(--paper-deep);
+  box-shadow: inset 0 0 0 0.12mm rgba(23, 23, 20, 0.08);
+}
+
+.deck-cell__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.deck-cell__label {
+  display: grid;
+  width: 100%;
+  flex: 0 0 auto;
+  gap: 0;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.card--deck-index .card-index {
+  font-size: 0.32rem;
+  line-height: 1.05;
+}
+
+.deck-cell__name {
+  color: var(--muted);
+  font: 500 0.27rem/1.06 var(--sans);
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+
+.preview__label--wide {
+  max-width: calc(var(--card-w) * 4 + 30mm);
+}
+
+/* —— instruction + rules card (63 × 88 mm) —— */
+
+.card--rules {
+  position: relative;
+  isolation: isolate;
+  padding: 1.65mm;
+  overflow: hidden;
+  color: var(--rules-ink-on-dark);
+  box-shadow: 0 1.2mm 4mm rgba(0, 0, 0, 0.35);
+}
+
+/* Photo background + dim overlay (variant A: back, B: jokers) */
+.card--rules--dark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: inherit;
+}
+
+.card--rules-bg-back::before {
+  background-image: url("assets/media/card-back-600.webp");
+}
+
+.card--rules-bg-joker.card--rules-about::before {
+  background-image: url("assets/deck/joker-1.webp");
+}
+
+.card--rules-bg-joker.card--rules-game::before {
+  background-image: url("assets/deck/joker-2.webp");
+}
+
+.card--rules--dark::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  /* Легче по центру, чтобы арт фона читался как в референсе */
+  background:
+    radial-gradient(ellipse 100% 85% at 50% 42%, rgba(10, 16, 36, 0.42) 0%, rgba(8, 12, 28, 0.78) 58%, rgba(5, 8, 18, 0.92) 100%),
+    linear-gradient(180deg, rgba(8, 14, 32, 0.82) 0%, rgba(10, 18, 40, 0.55) 38%, rgba(6, 10, 22, 0.88) 100%);
+  box-shadow: inset 0 0 0 0.15mm rgba(212, 180, 74, 0.28);
+  pointer-events: none;
+}
+
+.rules-card__frame {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 0;
+  gap: 0;
+}
+
+.rules-card__head--ref {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35mm;
+  margin-bottom: 0.25mm;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.rules-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26mm;
+  max-width: 100%;
+  padding: 0.5mm 2mm 0.55mm;
+  background: linear-gradient(165deg, rgba(36, 58, 118, 0.96) 0%, rgba(26, 42, 92, 0.98) 100%);
+  border-radius: 0.55mm;
+  box-shadow: 0 0.2mm 0.5mm rgba(0, 0, 0, 0.35);
+}
+
+.rules-badge__logo {
+  display: block;
+  width: auto;
+  height: 5.2mm;
+  max-width: 100%;
+  object-fit: contain;
+  filter: brightness(1.35) contrast(1.06) saturate(0.95);
+}
+
+.rules-rule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6mm;
+  width: 100%;
+  color: var(--rules-gold);
+  font-size: 0.45rem;
+  line-height: 1;
+}
+
+.rules-rule::before,
+.rules-rule::after {
+  content: "";
+  flex: 1 1 0;
+  height: 0.12mm;
+  max-width: 12mm;
+  background: linear-gradient(90deg, transparent, var(--rules-gold), transparent);
+  opacity: 0.85;
+}
+
+.rules-rule--narrow::before,
+.rules-rule--narrow::after {
+  max-width: 8mm;
+}
+
+.rules-rule__star {
+  flex: 0 0 auto;
+  opacity: 0.95;
+  text-shadow: 0 0 0.4mm rgba(0, 0, 0, 0.4);
+}
+
+.rules-hero {
+  margin: 0 0 0.15mm;
+  font-family: var(--rules-serif);
+  font-size: 0.62rem;
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--rules-ink-on-dark);
+}
+
+.rules-dek {
+  margin: 0 0 0.35mm;
+  font-family: var(--rules-serif);
+  font-size: 0.38rem;
+  font-weight: 500;
+  line-height: 1.28;
+  text-align: center;
+  color: var(--rules-muted-on-dark);
+}
+
+.rules-dek-strong {
+  font-weight: 600;
+  color: var(--rules-ink-on-dark);
+}
+
+.rules-card__main--ref-about {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.28mm;
+  min-height: 0;
+  padding: 0.15mm 0 0;
+  overflow: hidden;
+}
+
+.rules-card__main--ref-game {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.32mm;
+  justify-content: flex-start;
+  min-height: 0;
+  padding: 0.2mm 0 0;
+  overflow: hidden;
+}
+
+.rules-suits-block {
+  width: 100%;
+  max-width: 42mm;
+  margin: 0;
+  padding: 0.35mm 0.5mm 0.4mm;
+  list-style: none;
+  border-radius: 0.45mm;
+  background: rgba(6, 10, 24, 0.45);
+  box-shadow: inset 0 0 0 0.1mm rgba(250, 248, 242, 0.12);
+  font-family: var(--sans);
+  font-size: 0.34rem;
+  font-weight: 500;
+  line-height: 1.28;
+  color: var(--rules-ink-on-dark);
+}
+
+.rules-suits-block li {
+  display: flex;
+  gap: 0.5mm;
+  align-items: baseline;
+}
+
+.rules-suits-block li + li {
+  margin-top: 0.18mm;
+}
+
+.rules-suit-glyph {
+  flex: 0 0 2.2mm;
+  font-size: 0.42rem;
+  line-height: 1;
+  text-align: center;
+}
+
+.rules-suits-block li:nth-child(1) .rules-suit-glyph,
+.rules-suits-block li:nth-child(2) .rules-suit-glyph {
+  color: #f0c8a8;
+}
+
+.rules-suits-block li:nth-child(3) .rules-suit-glyph,
+.rules-suits-block li:nth-child(4) .rules-suit-glyph {
+  color: #c8d0e0;
+}
+
+.rules-suit-name {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.32rem;
+}
+
+.rules-prose {
+  width: 100%;
+  max-width: 42mm;
+  margin-top: 0.15mm;
+  text-align: left;
+}
+
+.rules-prose__p {
+  margin: 0 0 0.28mm;
+  font-family: var(--rules-serif);
+  font-size: 0.35rem;
+  font-weight: 500;
+  line-height: 1.34;
+  color: var(--rules-ink-on-dark);
+  hyphens: auto;
+}
+
+.rules-prose__p--last {
+  margin-bottom: 0;
+}
+
+.rules-prose--game .rules-prose__p {
+  text-align: left;
+  font-size: 0.36rem;
+  line-height: 1.32;
+}
+
+.rules-card__foot--ref {
+  margin-top: auto;
+  padding-top: 0.35mm;
+  border-top: none;
+}
+
+.rules-card__foot-line {
+  margin: 0.15mm 0 0;
+  font-family: var(--rules-serif);
+  font-size: 0.34rem;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: center;
+  color: var(--rules-muted-on-dark);
+}
+
+.rules-card__url-inline {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 0.36rem;
+  letter-spacing: 0.02em;
+  color: var(--rules-gold);
+}
+
+.preview__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10mm;
+  justify-content: center;
+  width: 100%;
+}
+
+@media print {
+  body {
+    background: white;
+  }
+
+  .preview {
+    padding: 0;
+  }
+
+  .preview__label {
+    display: none;
+  }
+
+  .card {
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
+
+  .card--rules--dark {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .card + .card {
+    margin-left: 0;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 15mm;
+}

@@ -1,0 +1,1260 @@
+---
+import MagisterLogo from './MagisterLogo.astro';
+import { CONTACT_EMAIL } from '../lib/site';
+import { PRICES, SHIPPING, formatPrice } from '../lib/pricing';
+
+const lang = 'en' as const;
+const artPrice = formatPrice(PRICES.xl, lang);
+const playersPrice = formatPrice(PRICES.standard, lang);
+const shipEu = formatPrice(SHIPPING.eu, lang);
+const shipUs = formatPrice(SHIPPING.us, lang);
+const freeFrom = formatPrice(SHIPPING.free_from, lang);
+const joined = Astro.url.searchParams.get('waitlist') === '1';
+const waitlistError = Astro.url.searchParams.get('waitlist');
+const waitlistFailed = waitlistError === 'email' || waitlistError === 'rate' || waitlistError === 'store';
+
+type Card = { src: string; title: string };
+
+const fan: Card[] = [
+  { src: '/cards/queen-hearts.webp', title: 'Aphrodite' },
+  { src: '/cards/ace-diamonds.webp', title: 'Diogenes' },
+  { src: '/cards/queen-clubs.webp', title: 'The Templar Hunt' },
+  { src: '/cards/ace-spades.webp', title: 'Albert Runs at the Speed of a Turtle' },
+  { src: '/cards/king-hearts.webp', title: 'Dionysus' },
+];
+const lead: Card = { src: '/cards/ace-hearts.webp', title: 'Zeus and Mnemosyne' };
+
+const worlds: { id: string; mark: string; name: string; text: string; cards: Card[] }[] = [
+  {
+    id: 'hearts',
+    mark: '♥',
+    name: 'Olympian Gods',
+    text: 'Zeus and Mnemosyne, Persephone, Aphrodite, Dionysus. Myths of love, power and transformation.',
+    cards: [
+      { src: '/cards/ace-hearts.webp', title: 'Zeus and Mnemosyne' },
+      { src: '/cards/10-hearts.webp', title: 'Persephone' },
+      { src: '/cards/queen-hearts.webp', title: 'Aphrodite' },
+      { src: '/cards/king-hearts.webp', title: 'Dionysus' },
+    ],
+  },
+  {
+    id: 'diamonds',
+    mark: '♦',
+    name: 'Keepers of Secrets',
+    text: 'Initiates, mystics and wanderers, and Diogenes with his lantern. Secrets kept in plain sight.',
+    cards: [
+      { src: '/cards/ace-diamonds.webp', title: 'Diogenes' },
+      { src: '/cards/king-diamonds.webp', title: 'Keeper of the Sacred Temple' },
+      { src: '/cards/10-diamonds.webp', title: 'The Barrel-Bearer' },
+      { src: '/cards/queen-diamonds.webp', title: 'The Maiden with Pitchers' },
+    ],
+  },
+  {
+    id: 'clubs',
+    mark: '♣',
+    name: 'Templars',
+    text: 'The Grand Masters of the Order, from its founder Hugues de Payens to the last, Jacques de Molay.',
+    cards: [
+      { src: '/cards/ace-clubs.webp', title: 'The Life and Death of the Grand Master' },
+      { src: '/cards/queen-clubs.webp', title: 'The Templar Hunt' },
+      { src: '/cards/king-clubs.webp', title: 'Keeper of the Skull' },
+      { src: '/cards/2-clubs.webp', title: 'Death in Battle' },
+    ],
+  },
+  {
+    id: 'spades',
+    mark: '♠',
+    name: 'Celebrities',
+    text: 'Einstein, Bach, Shakespeare, Napoleon, Bruce Lee and more, each travelling with a small creature of their own.',
+    cards: [
+      { src: '/cards/ace-spades.webp', title: 'Albert Runs at the Speed of a Turtle' },
+      { src: '/cards/7-spades.webp', title: 'A Little Night Serenade' },
+      { src: '/cards/8-spades.webp', title: 'Shakespeare’s Eighth Sonnet' },
+      { src: '/cards/2-spades.webp', title: 'School of the Mantis' },
+    ],
+  },
+];
+
+const suits = [
+  { id: 'hearts', mark: '♥', name: 'Olympian Gods' },
+  { id: 'diamonds', mark: '♦', name: 'Keepers of Secrets' },
+  { id: 'clubs', mark: '♣', name: 'Templars' },
+  { id: 'spades', mark: '♠', name: 'Celebrities' },
+];
+
+const specs = [
+  ['Cards', '54 (52 + 2 jokers)'],
+  ['Size', '70 × 120 mm'],
+  ['Guide', 'Booklet to every card, in the box'],
+  ['Edition', 'First edition of 500'],
+  ['Delivery', 'EU and US, 10–14 days'],
+  ['Shipping', `EU ${shipEu}, US ${shipUs}. Free from ${freeFrom}.`],
+];
+---
+
+<div class="nl">
+  <header class="nl-bar" id="top">
+    <a class="nl-logo" href="#top" aria-label="Magister">
+      <MagisterLogo width={200} height={92} level />
+    </a>
+    <nav class="nl-nav" aria-label="Page">
+      <a href="#cards">The Cards</a>
+      <a href="#worlds">The Four Worlds</a>
+      <a href="#code">The Code</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <button class="btn btn-accent nl-buy" type="button" data-buy>Get the Art Edition · {artPrice}</button>
+    <button class="nl-burger" type="button" aria-expanded="false" aria-controls="nl-menu">
+      <span class="nl-sr">Menu</span>
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+  <div class="nl-menu" id="nl-menu" hidden>
+    <a href="#cards">The Cards</a>
+    <a href="#worlds">The Four Worlds</a>
+    <a href="#code">The Code</a>
+    <a href="#faq">FAQ</a>
+  </div>
+
+  <main id="main-content">
+    <section class="nl-hero" aria-labelledby="nl-title">
+      <div class="nl-fan" aria-hidden="true">
+        {fan.map((card) => (
+          <img src={card.src} alt="" width="480" height="688" />
+        ))}
+        <img class="is-lead" src={lead.src} alt="" width="480" height="688" />
+      </div>
+      <div class="nl-hero__copy">
+        <p class="nl-kicker">Art playing cards</p>
+        <h1 id="nl-title">Magister</h1>
+        <p class="nl-hero__lead">An art deck of 54 playing cards.</p>
+        <p class="nl-hero__deck">Four worlds. 54 stories. One hidden code.</p>
+        <p class="nl-hero__body">Every card is an original painting. Its suit and rank are hidden in the picture.</p>
+        <div class="nl-hero__actions">
+          <button class="btn btn-accent" type="button" data-buy>Get the Art Edition · {artPrice}</button>
+          <a class="btn nl-btn-ghost" href="#code">See how the code works</a>
+        </div>
+        <p class="nl-hero__meta">54 cards · 70 × 120 mm · guide included · ships to the EU and US</p>
+      </div>
+    </section>
+
+    <section class="nl-section" id="cards" aria-labelledby="nl-glance">
+      <div class="page-shell">
+        <h2 class="nl-sr" id="nl-glance">In a glance</h2>
+        <ul class="nl-glance">
+          <li>
+            <strong>54 paintings.</strong>
+            Each card began as an original painting.
+          </li>
+          <li>
+            <strong>4 worlds.</strong>
+            Olympian gods, keepers of secrets, Templars and celebrities.
+          </li>
+          <li>
+            <strong>1 hidden code.</strong>
+            Suit and rank live in the picture. The guide shows you where.
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="nl-section nl-section--worlds" id="worlds" aria-labelledby="nl-worlds-title">
+      <div class="page-shell">
+        <p class="nl-kicker">The deck</p>
+        <h2 id="nl-worlds-title">Four worlds. One deck.</h2>
+        <p class="nl-lead">Every suit is its own universe, from the myths of Olympus to the founders of the Templar Order.</p>
+        <div class="nl-worlds">
+          {worlds.map((world) => (
+            <article class="nl-world">
+              <div class="nl-world__copy">
+                <h3><span aria-hidden="true">{world.mark}</span> {world.name}</h3>
+                <p>{world.text}</p>
+              </div>
+              <ul class="nl-strip">
+                {world.cards.map((card) => (
+                  <li>
+                    <figure>
+                      <img src={card.src} alt="" width="480" height="688" loading="lazy" decoding="async" />
+                      <figcaption>{card.title}</figcaption>
+                    </figure>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="nl-code" id="code" aria-labelledby="nl-code-title">
+      <div class="page-shell nl-code__grid">
+        <div>
+          <p class="nl-kicker">The code</p>
+          <h2 id="nl-code-title">Can you read a card?</h2>
+          <p class="nl-lead">Every card hides its suit and rank in the picture. Try one.</p>
+          <figure class="nl-code__card">
+            <img
+              src="/cards/7-clubs.webp"
+              alt="A Magister card. Its suit and rank are hidden in the picture."
+              width="480"
+              height="688"
+              data-code-card
+            />
+            <p class="nl-code__badge" data-code-badge hidden>♣ 7</p>
+          </figure>
+        </div>
+        <form class="nl-quiz" data-code-form>
+          <fieldset>
+            <legend>1. Which world does it belong to?</legend>
+            <div class="nl-choices">
+              {suits.map((suit) => (
+                <button type="button" data-world={suit.id} aria-pressed="false">
+                  <span aria-hidden="true">{suit.mark}</span> {suit.name}
+                </button>
+              ))}
+            </div>
+          </fieldset>
+          <fieldset>
+            <legend>2. How many figures can you count?</legend>
+            <div class="nl-counts">
+              {Array.from({ length: 10 }, (_, index) => (
+                <button type="button" data-count={index + 1} aria-pressed="false">{index + 1}</button>
+              ))}
+            </div>
+          </fieldset>
+          <button class="btn btn-accent" type="submit" data-reveal disabled>Reveal the answer</button>
+          <div class="nl-result" data-result hidden tabindex="-1" aria-live="polite"></div>
+          <p class="nl-note">
+            Nothing to memorise. The guide in the box explains every card, and the Players’ Edition puts the index in the corner for you.
+          </p>
+          <a class="nl-textlink" href="/en/#play-learn">Train on the whole deck</a>
+        </form>
+      </div>
+    </section>
+
+    <section class="nl-section" id="editions" aria-labelledby="nl-editions-title">
+      <div class="page-shell">
+        <p class="nl-kicker">The editions</p>
+        <h2 id="nl-editions-title">One set of paintings. Two ways to hold them.</h2>
+        <div class="nl-editions">
+          <article class="nl-edition nl-edition--art">
+            <p class="nl-edition__price">{artPrice}</p>
+            <h3>Art Edition</h3>
+            <p>Suit and rank are hidden in the art. Decode them with the guide.</p>
+            <p class="nl-edition__spec">54 cards without indexes · 70 × 120 mm · guide to every card</p>
+            <p>For collectors, puzzle lovers and anyone who wants the full Magister experience.</p>
+            <p class="nl-edition__honest">
+              The Art Edition has no indexes, so it is not a deck for card night. It is a deck to look at, decode and collect.
+            </p>
+            <button class="btn btn-accent" type="button" data-buy>Get the Art Edition</button>
+            <p class="nl-stock">In stock. Delivery to the EU and US in 10–14 days.</p>
+          </article>
+          <article class="nl-edition" id="players">
+            <p class="nl-edition__price">{playersPrice}</p>
+            <h3>Players’ Edition <span>coming soon</span></h3>
+            <p>The same paintings with suit and rank indexes in the corners. Ready for poker, rummy and solitaire.</p>
+            <p class="nl-edition__spec">For playing at the table.</p>
+            <p>Not printed yet. Your sign-up tells us whether to print it.</p>
+            {joined ? (
+              <p class="nl-ok" role="status">You’re on the list. We’ll write when the Players’ Edition is ready to print.</p>
+            ) : (
+              <form class="nl-wait" action="/api/waitlist" method="post" data-waitlist>
+                <p class="nl-hp" aria-hidden="true">
+                  <label>Company <input name="company" type="text" tabindex="-1" autocomplete="off" /></label>
+                </p>
+                <label class="nl-sr" for="players-email">Email</label>
+                <input id="players-email" name="email" type="email" required autocomplete="email" inputmode="email" placeholder="Email" maxlength="254" />
+                <button class="btn btn-accent" type="submit" data-wait-submit>Notify me</button>
+                <label class="nl-check">
+                  <input name="twoDeck" type="checkbox" value="on" />
+                  I would also want a two-deck set (Art + Players’)
+                </label>
+                <p class="nl-form-err" role="alert" data-wait-err hidden={!waitlistFailed}>
+                  {waitlistFailed
+                    ? waitlistError === 'rate'
+                      ? 'Too many attempts. Wait a moment and try again.'
+                      : waitlistError === 'email'
+                        ? 'Enter a valid email.'
+                        : 'Something went wrong. Try again.'
+                    : ''}
+                </p>
+              </form>
+            )}
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="nl-section nl-section--box" id="box" aria-labelledby="nl-box-title">
+      <div class="page-shell nl-box">
+        <div>
+          <p class="nl-kicker">In the box</p>
+          <h2 id="nl-box-title">What you get</h2>
+          <p class="nl-lead">The Art Edition, as it ships today.</p>
+        </div>
+        <dl>
+          {specs.map(([term, detail]) => (
+            <>
+              <dt>{term}</dt>
+              <dd>{detail}</dd>
+            </>
+          ))}
+        </dl>
+      </div>
+    </section>
+
+    <section class="nl-section" id="people" aria-labelledby="nl-people-title">
+      <div class="page-shell nl-people">
+        <div class="nl-people__pair">
+          <figure>
+            <img
+              src="/media/magister-originals-studio.jpg"
+              alt="Original Magister drawings framed on a studio wall, with printed cards on the table."
+              width="1200"
+              height="900"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>The original drawings, 2018–2019.</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="/cards/ace-hearts.webp"
+              alt="Zeus and Mnemosyne, printed as a playing card."
+              width="480"
+              height="688"
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>The same work, printed as a card.</figcaption>
+          </figure>
+        </div>
+        <div>
+          <p class="nl-kicker">The people behind the deck</p>
+          <h2 id="nl-people-title">Every card is a painting.</h2>
+          <p>
+            Alexander Zhilchik conceived Magister as a world where myth, mystery, history and fame share one deck.
+            Vasily Pochitsky (Dr. Klein, 1967–2024) painted it in 2018–2019.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="nl-section nl-section--explore" id="explore" aria-labelledby="nl-explore-title">
+      <div class="page-shell">
+        <h2 id="nl-explore-title">More ways to explore</h2>
+        <ul class="nl-explore">
+          <li>
+            <a href="/en/#play">
+              <strong>Play.</strong>
+              Magister, our own card game, or classic favourites.
+            </a>
+          </li>
+          <li>
+            <a href="/en/#play-oracle">
+              <strong>Ask the Magister.</strong>
+              Think of a question, draw a card, get a hint.
+            </a>
+          </li>
+          <li>
+            <a href="/en/#play-lore">
+              <strong>Test your knowledge.</strong>
+              A quiz on the myths and history behind the cards.
+            </a>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="nl-section" id="faq" aria-labelledby="nl-faq-title">
+      <div class="page-shell nl-faq">
+        <h2 id="nl-faq-title">FAQ</h2>
+        <div class="nl-faq__list">
+          <details>
+            <summary>Can I really play with it?</summary>
+            <p>With the Art Edition, yes, once you know the system, but most people will prefer the Players’ Edition for games. It is coming soon.</p>
+          </details>
+          <details>
+            <summary>Do I need to memorise the cards?</summary>
+            <p>Not to enjoy the art. The guide decodes every card, and the trainer on this site helps you learn.</p>
+          </details>
+          <details>
+            <summary>What is the difference between the editions?</summary>
+            <p>Same paintings. The Players’ Edition adds suit and rank indexes in the corners. The Art Edition on sale now is the 70 × 120 mm deck.</p>
+          </details>
+          <details>
+            <summary>What is in the box?</summary>
+            <p>54 cards, a guide booklet to every card, and the box. Size 70 × 120 mm. First edition of 500.</p>
+          </details>
+          <details>
+            <summary>Is this a tarot or oracle deck?</summary>
+            <p>No. It is built like a standard playing deck: four suits, thirteen ranks, two jokers. You can also draw a card for a hint on Ask the Magister.</p>
+          </details>
+          <details>
+            <summary>Shipping?</summary>
+            <p>We ship to the EU and the US. Delivery takes 10–14 days. Shipping is {shipEu} in the EU and {shipUs} to the US, free from {freeFrom}.</p>
+          </details>
+          <details>
+            <summary>Who made it?</summary>
+            <p>Conceived by Alexander Zhilchik, painted by Vasily Pochitsky (Dr. Klein, 1967–2024).</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="nl-final" aria-labelledby="nl-final-title">
+      <div class="page-shell">
+        <h2 id="nl-final-title">Four worlds are waiting.</h2>
+        <div class="nl-hero__actions">
+          <button class="btn btn-accent" type="button" data-buy>Get the Art Edition · {artPrice}</button>
+          <a class="btn nl-btn-ghost" href="#players">Join the Players’ Edition waitlist</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="nl-foot">
+    <div class="page-shell">
+      <a class="nl-logo" href="#top" aria-label="Magister">
+        <MagisterLogo width={220} height={102} level />
+      </a>
+      <p>54 cards. 4 worlds. A hidden code.</p>
+      <nav aria-label="Footer">
+        <a href="#cards">The Cards</a>
+        <a href="#worlds">The Four Worlds</a>
+        <a href="#code">The Code</a>
+        <a href={`mailto:${CONTACT_EMAIL}`}>Contact</a>
+        <a href="/en/partners/">Partnerships</a>
+      </nav>
+    </div>
+  </footer>
+</div>
+
+<script>
+  import { addToCart, OPEN_EVENT } from '../lib/cart';
+
+  // Later: Art Edition clicks and purchases, waitlist signups, the two-deck checkbox,
+  // interactive completion, FAQ opens, and scroll depth to #editions.
+
+  const WORLD = 'clubs';
+  const COUNT = 7;
+  const RIGHT = 'You read it. Seven of clubs. The whole deck follows the same system.';
+  const MISS =
+    'Here is what to look for. This card is clubs, the Templars. Count every figure: two skeletons, the figure between them, the small body in the cloth, the horse and two knights. Seven.';
+
+  document.querySelectorAll<HTMLButtonElement>('[data-buy]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const result = addToCart({
+        sku: 'deck_xl',
+        cardId: null,
+        cardTitle: null,
+        image: '/media/pack.webp',
+        color: null,
+        size: null,
+        message: null,
+        lang: 'en',
+        previewId: null,
+      });
+      window.dispatchEvent(
+        new CustomEvent(OPEN_EVENT, { detail: { status: result.ok ? 'added' : 'full' } }),
+      );
+    });
+  });
+
+  const burger = document.querySelector<HTMLButtonElement>('.nl-burger');
+  const menu = document.querySelector<HTMLElement>('#nl-menu');
+  const setMenu = (open: boolean) => {
+    if (!burger || !menu) return;
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menu.hidden = !open;
+  };
+  burger?.addEventListener('click', () => setMenu(burger.getAttribute('aria-expanded') !== 'true'));
+  menu?.addEventListener('click', (event) => {
+    if ((event.target as HTMLElement).closest('a')) setMenu(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setMenu(false);
+  });
+
+  const form = document.querySelector<HTMLFormElement>('[data-code-form]');
+  const revealBtn = form?.querySelector<HTMLButtonElement>('[data-reveal]');
+  const result = form?.querySelector<HTMLElement>('[data-result]');
+  const badge = document.querySelector<HTMLElement>('[data-code-badge]');
+  const cardImg = document.querySelector<HTMLImageElement>('[data-code-card]');
+  let world: string | null = null;
+  let count: number | null = null;
+
+  const paint = (button: HTMLButtonElement, group: string, on: boolean) => {
+    form?.querySelectorAll<HTMLButtonElement>(group).forEach((item) => {
+      item.setAttribute('aria-pressed', item === button && on ? 'true' : 'false');
+    });
+  };
+
+  form?.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-world], button[data-count]');
+    if (!button) return;
+    if (button.dataset.world) {
+      world = button.dataset.world;
+      paint(button, '[data-world]', true);
+    }
+    if (button.dataset.count) {
+      count = Number(button.dataset.count);
+      paint(button, '[data-count]', true);
+    }
+    if (revealBtn) revealBtn.disabled = !(world && count);
+  });
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (!world || !count || !result) return;
+    const ok = world === WORLD && count === COUNT;
+    result.hidden = false;
+    result.classList.toggle('is-right', ok);
+    result.textContent = ok ? RIGHT : MISS;
+    if (badge) badge.hidden = false;
+    if (cardImg) cardImg.alt = 'Return of the Relic, the seven of clubs. Seven figures, Templars.';
+    result.focus();
+  });
+
+  const wait = document.querySelector<HTMLFormElement>('[data-waitlist]');
+  const waitErr = wait?.querySelector<HTMLElement>('[data-wait-err]');
+  const waitBtn = wait?.querySelector<HTMLButtonElement>('[data-wait-submit]');
+  if (waitErr && waitErr.textContent?.trim()) waitErr.hidden = false;
+
+  wait?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!wait || !waitBtn) return;
+    const data = new FormData(wait);
+    if (String(data.get('company') || '').trim()) {
+      wait.replaceWith(doneNote());
+      return;
+    }
+    waitBtn.disabled = true;
+    if (waitErr) waitErr.hidden = true;
+    try {
+      const response = await fetch('/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          email: String(data.get('email') || ''),
+          twoDeck: data.get('twoDeck') === 'on',
+          lang: 'en',
+        }),
+      });
+      const payload = (await response.json()) as { ok?: boolean; error?: string };
+      if (!response.ok || !payload.ok) {
+        showWaitError(payload.error || 'store');
+        waitBtn.disabled = false;
+        return;
+      }
+      wait.replaceWith(doneNote());
+    } catch {
+      showWaitError('store');
+      waitBtn.disabled = false;
+    }
+  });
+
+  function showWaitError(code: string) {
+    if (!waitErr) return;
+    waitErr.hidden = false;
+    waitErr.textContent =
+      code === 'rate'
+        ? 'Too many attempts. Wait a moment and try again.'
+        : code === 'email'
+          ? 'Enter a valid email.'
+          : 'Something went wrong. Try again.';
+  }
+
+  function doneNote(): HTMLParagraphElement {
+    const note = document.createElement('p');
+    note.className = 'nl-ok';
+    note.setAttribute('role', 'status');
+    note.textContent = 'You’re on the list. We’ll write when the Players’ Edition is ready to print.';
+    return note;
+  }
+</script>
+
+<style>
+  .nl {
+    --nl-ink: #14120f;
+    --nl-header: 4.25rem;
+  }
+
+  .nl-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .nl-bar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    min-height: var(--nl-header);
+    padding: 0.55rem var(--page-pad);
+    background: color-mix(in srgb, var(--paper) 92%, transparent);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(14px);
+  }
+
+  .nl-logo {
+    display: flex;
+    margin-right: auto;
+    --nav-mark-height: 2.15rem;
+  }
+
+  .nl-nav {
+    display: flex;
+    gap: 1.35rem;
+  }
+
+  .nl-nav a,
+  .nl-menu a,
+  .nl-foot a {
+    color: var(--ink);
+    font: 600 0.72rem/1 var(--sans);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .nl-nav a:hover,
+  .nl-menu a:hover,
+  .nl-foot a:hover,
+  .nl-textlink:hover {
+    color: var(--accent);
+  }
+
+  .nl-buy {
+    min-height: 42px;
+    padding-inline: 0.9rem;
+  }
+
+  .nl-burger {
+    display: none;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .nl-burger span:not(.nl-sr) {
+    display: block;
+    width: 18px;
+    height: 1.5px;
+    margin: 4px auto;
+    background: var(--ink);
+  }
+
+  .nl-menu {
+    position: sticky;
+    top: var(--nl-header);
+    z-index: 39;
+    display: grid;
+    gap: 0.9rem;
+    padding: 1rem var(--page-pad) 1.15rem;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nl-menu[hidden] {
+    display: none;
+  }
+
+  .nl-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(18rem, 0.95fr);
+    gap: 2rem;
+    align-items: end;
+    min-height: calc(100svh - var(--nl-header));
+    padding: 2.5rem var(--page-pad) 3rem;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 70% 40%, rgba(141, 47, 36, 0.28), transparent 46%),
+      var(--nl-ink);
+    color: #f6f1e7;
+  }
+
+  .nl-fan {
+    position: relative;
+    height: min(74vh, 680px);
+    min-height: 420px;
+  }
+
+  .nl-fan img {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: min(34%, 210px);
+    height: auto;
+    border-radius: var(--card-radius);
+    box-shadow: 0 22px 50px rgba(0, 0, 0, 0.45);
+    transform-origin: 50% 120%;
+  }
+
+  .nl-fan img:nth-child(1) { transform: translateX(-168%) rotate(-16deg); }
+  .nl-fan img:nth-child(2) { transform: translateX(-108%) rotate(-8deg); z-index: 1; }
+  .nl-fan img:nth-child(3) { transform: translateX(-18%) rotate(-2deg); z-index: 2; }
+  .nl-fan img:nth-child(4) { transform: translateX(62%) rotate(8deg); z-index: 1; }
+  .nl-fan img:nth-child(5) { transform: translateX(128%) rotate(15deg); }
+  .nl-fan img.is-lead {
+    width: min(46%, 280px);
+    z-index: 3;
+    transform: translateX(-18%) rotate(-1.5deg);
+  }
+
+  .nl-hero__copy {
+    max-width: 36rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .nl-kicker {
+    color: var(--accent);
+    font: 600 0.72rem/1.2 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .nl-hero .nl-kicker { color: #e4b2a8; }
+
+  .nl-hero h1,
+  .nl-final h2,
+  .nl-section h2,
+  .nl-code h2 {
+    margin-top: 0.45rem;
+    font-family: var(--display);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+  }
+
+  .nl-hero h1 {
+    font-size: clamp(4.4rem, 8vw, 7.2rem);
+  }
+
+  .nl-hero__lead,
+  .nl-section h2,
+  .nl-code h2,
+  .nl-final h2 {
+    font-size: clamp(2rem, 4vw, 3.4rem);
+  }
+
+  .nl-hero__lead {
+    margin-top: 0.8rem;
+    font-family: var(--display);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+
+  .nl-hero__deck {
+    margin-top: 0.85rem;
+    font: 500 1.05rem/1.4 var(--display);
+  }
+
+  .nl-hero__body,
+  .nl-lead,
+  .nl-section p,
+  .nl-code .nl-lead,
+  .nl-edition p,
+  .nl-note,
+  .nl-faq p {
+    margin-top: 0.85rem;
+    max-width: 38rem;
+    color: var(--muted);
+    font-size: 1.02rem;
+  }
+
+  .nl-hero__body,
+  .nl-hero__deck,
+  .nl-hero__meta {
+    color: rgba(246, 241, 231, 0.78);
+  }
+
+  .nl-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .nl-btn-ghost {
+    border-color: rgba(246, 241, 231, 0.45);
+    color: #f6f1e7;
+  }
+
+  .nl-btn-ghost:hover {
+    background: #f6f1e7;
+    color: var(--nl-ink);
+  }
+
+  .nl-final .nl-btn-ghost {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .nl-hero__meta {
+    margin-top: 1.1rem;
+    font: 500 0.78rem/1.5 var(--sans);
+    letter-spacing: 0.04em;
+  }
+
+  .nl-section {
+    padding-block: clamp(4.25rem, 8vw, 6.5rem);
+    border-top: 1px solid var(--line);
+  }
+
+  .nl-glance {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+    list-style: none;
+  }
+
+  .nl-glance li {
+    font-size: 1.15rem;
+    line-height: 1.45;
+  }
+
+  .nl-glance strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-family: var(--display);
+    font-size: 1.7rem;
+    font-weight: 500;
+  }
+
+  .nl-world + .nl-world {
+    margin-top: 2.4rem;
+    padding-top: 2.4rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .nl-world {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.4fr);
+    gap: 1.5rem 2rem;
+    align-items: center;
+  }
+
+  .nl-world h3 {
+    font-family: var(--display);
+    font-size: 1.7rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+
+  .nl-world h3 span {
+    color: var(--accent);
+  }
+
+  .nl-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.7rem;
+    list-style: none;
+  }
+
+  .nl-strip img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--card-radius);
+  }
+
+  .nl-strip figcaption,
+  .nl-people figcaption {
+    margin-top: 0.4rem;
+    color: var(--muted);
+    font: 500 0.72rem/1.35 var(--sans);
+  }
+
+  .nl-code {
+    padding-block: clamp(4.25rem, 8vw, 6.5rem);
+    background: var(--nl-ink);
+    color: #f6f1e7;
+  }
+
+  .nl-code__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.1fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  .nl-code .nl-lead,
+  .nl-note {
+    color: rgba(246, 241, 231, 0.72);
+  }
+
+  .nl-code__card {
+    position: relative;
+    max-width: 320px;
+    margin-top: 1.4rem;
+  }
+
+  .nl-code__card img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--card-radius);
+  }
+
+  .nl-code__badge {
+    position: absolute;
+    right: 0.7rem;
+    bottom: 0.7rem;
+    padding: 0.35rem 0.55rem;
+    background: var(--paper);
+    color: var(--ink);
+    font: 600 0.95rem/1 var(--sans);
+  }
+
+  .nl-quiz fieldset {
+    margin: 0 0 1.2rem;
+    padding: 0;
+    border: 0;
+  }
+
+  .nl-quiz legend {
+    margin-bottom: 0.65rem;
+    font: 600 0.95rem/1.4 var(--sans);
+  }
+
+  .nl-choices,
+  .nl-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .nl-choices button,
+  .nl-counts button {
+    min-height: 44px;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid rgba(246, 241, 231, 0.28);
+    background: transparent;
+    color: #f6f1e7;
+    cursor: pointer;
+    font: 500 0.88rem/1.2 var(--sans);
+  }
+
+  .nl-counts button {
+    width: 44px;
+    padding: 0;
+  }
+
+  .nl-choices button[aria-pressed='true'],
+  .nl-counts button[aria-pressed='true'] {
+    border-color: #f6f1e7;
+    background: #f6f1e7;
+    color: var(--nl-ink);
+  }
+
+  .nl-result {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(246, 241, 231, 0.2);
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+
+  .nl-result.is-right {
+    color: #f0d2cb;
+  }
+
+  .nl-textlink {
+    display: inline-block;
+    margin-top: 0.9rem;
+    color: #f6f1e7;
+    font-weight: 600;
+  }
+
+  .nl-editions {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 1rem;
+    margin-top: 1.8rem;
+  }
+
+  .nl-edition {
+    padding: clamp(1.2rem, 2vw, 1.8rem);
+    background: var(--white);
+    border: 1px solid var(--line);
+  }
+
+  .nl-edition--art {
+    background: var(--nl-ink);
+    color: #f6f1e7;
+    border-color: var(--nl-ink);
+  }
+
+  .nl-edition--art p,
+  .nl-edition--art .nl-edition__spec,
+  .nl-edition--art .nl-stock {
+    color: rgba(246, 241, 231, 0.76);
+  }
+
+  .nl-edition__price {
+    margin: 0;
+    font-family: var(--display);
+    font-size: 2.4rem;
+    color: inherit;
+  }
+
+  .nl-edition h3 {
+    margin-top: 0.2rem;
+    font-family: var(--display);
+    font-size: 2rem;
+    font-weight: 500;
+  }
+
+  .nl-edition h3 span {
+    display: inline-block;
+    margin-left: 0.4rem;
+    color: var(--accent);
+    font: 600 0.72rem/1 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    vertical-align: 0.35rem;
+  }
+
+  .nl-edition__honest {
+    color: #f6f1e7;
+  }
+
+  .nl-edition .btn {
+    margin-top: 1.2rem;
+  }
+
+  .nl-stock {
+    margin-top: 0.75rem;
+    font-size: 0.92rem;
+  }
+
+  .nl-wait {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.6rem;
+    margin-top: 1.1rem;
+  }
+
+  .nl-wait input[type='email'] {
+    min-height: 48px;
+    padding: 0 0.8rem;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .nl-check {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 0.55rem;
+    align-items: flex-start;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+
+  .nl-check input {
+    margin-top: 0.25rem;
+  }
+
+  .nl-hp {
+    position: absolute;
+    left: -9999px;
+    height: 0;
+    overflow: hidden;
+  }
+
+  .nl-form-err {
+    grid-column: 1 / -1;
+    color: var(--accent);
+    font-size: 0.92rem;
+  }
+
+  .nl-ok {
+    margin-top: 1.1rem;
+    font-weight: 600;
+  }
+
+  .nl-box {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: 2rem;
+  }
+
+  .nl-box dl {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 0.85rem 1rem;
+    margin: 0;
+  }
+
+  .nl-box dt {
+    font: 600 0.75rem/1.4 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .nl-box dd {
+    margin: 0;
+  }
+
+  .nl-people {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem);
+    align-items: center;
+  }
+
+  .nl-people__pair {
+    display: grid;
+    grid-template-columns: 1.4fr 0.7fr;
+    gap: 0.8rem;
+    align-items: end;
+  }
+
+  .nl-people img {
+    width: 100%;
+    height: auto;
+  }
+
+  .nl-people__pair img {
+    border-radius: 2px;
+  }
+
+  .nl-explore {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-top: 1.4rem;
+    list-style: none;
+  }
+
+  .nl-explore a {
+    display: block;
+    height: 100%;
+    padding: 1.1rem 1rem 1.2rem;
+    border: 1px solid var(--line);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .nl-explore a:hover {
+    border-color: var(--ink);
+  }
+
+  .nl-explore strong {
+    display: block;
+    margin-bottom: 0.35rem;
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 500;
+  }
+
+  .nl-faq {
+    display: grid;
+    grid-template-columns: minmax(0, 0.55fr) minmax(0, 1.2fr);
+    gap: 2rem;
+  }
+
+  .nl-faq__list {
+    border-top: 1px solid var(--line);
+  }
+
+  .nl-faq details {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .nl-faq summary {
+    padding: 1rem 0;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .nl-faq details p {
+    margin: 0 0 1rem;
+  }
+
+  .nl-final {
+    padding-block: clamp(4.5rem, 9vw, 7rem);
+    background: var(--paper-deep);
+    text-align: left;
+  }
+
+  .nl-foot {
+    padding-block: 2.5rem 3rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .nl-foot p {
+    margin-top: 0.8rem;
+    color: var(--muted);
+  }
+
+  .nl-foot nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem 1.3rem;
+    margin-top: 1rem;
+  }
+
+  .nl :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 980px) {
+    .nl-nav { display: none; }
+    .nl-burger { display: block; }
+    .nl-buy { padding-inline: 0.65rem; font-size: 0.64rem; }
+    .nl-hero,
+    .nl-world,
+    .nl-code__grid,
+    .nl-editions,
+    .nl-box,
+    .nl-people,
+    .nl-faq,
+    .nl-glance,
+    .nl-explore {
+      grid-template-columns: 1fr;
+    }
+    .nl-hero {
+      min-height: 0;
+      padding-top: 1.4rem;
+    }
+    .nl-fan {
+      height: min(42vh, 280px);
+      min-height: 0;
+      order: -1;
+    }
+    .nl-strip {
+      grid-template-columns: repeat(4, minmax(7.5rem, 1fr));
+      overflow-x: auto;
+      padding-bottom: 0.3rem;
+    }
+    .nl-people__pair {
+      grid-template-columns: 1.2fr 0.8fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .nl-buy span,
+    .nl-bar .nl-buy {
+      letter-spacing: 0.04em;
+    }
+    .nl-wait {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

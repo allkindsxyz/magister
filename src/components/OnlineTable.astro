@@ -1,6 +1,7 @@
 ---
 import type { Lang } from '../i18n/utils';
 import { onlineCopy } from '../i18n/onlineCopy';
+import { getSiteUrl } from '../lib/site';
 
 interface Props {
   lang: Lang;
@@ -12,7 +13,7 @@ const { lang, backLabel, initialRoom } = Astro.props;
 const copy = onlineCopy[lang];
 ---
 
-<section class="mag-online" data-online-root data-lang={lang}>
+<section class="mag-online" data-online-root data-lang={lang} data-site-origin={getSiteUrl()}>
   <div class="mag-online-lobby" data-online-lobby data-lobby-mode="create">
     <p class="mag-online-lobby-intro" data-online-lobby-intro>{copy.new_game_hint}</p>
     <label class="mag-online-field">
@@ -113,7 +114,14 @@ const copy = onlineCopy[lang];
 
     <section class="mag-online-table-zone">
       <div class="mag-online-mid mag-online-mid--deck-centered" data-online-mid>
-        <div class="mag-online-discard-shell" aria-label={copy.discard}>
+        <div
+          class="mag-online-discard-shell"
+          data-online-discard-open
+          role="button"
+          tabindex="0"
+          aria-label={copy.discard_zoom_open}
+          aria-expanded="false"
+        >
           <div class="mag-online-discard" data-online-discard></div>
         </div>
         <div class="mag-online-lobby-field" data-online-lobby-field hidden>
@@ -165,6 +173,27 @@ const copy = onlineCopy[lang];
         </div>
       </div>
     </footer>
+
+    <div
+      class="mag-online-discard-zoom"
+      data-online-discard-zoom
+      role="dialog"
+      aria-modal="true"
+      aria-label={copy.discard_zoom_open}
+      hidden
+    >
+      <button class="mag-online-discard-zoom__close" type="button" data-online-discard-zoom-close>
+        {copy.discard_zoom_close}
+      </button>
+      <button
+        class="mag-online-discard-zoom__sheet"
+        type="button"
+        data-online-discard-zoom-sheet
+        aria-label={copy.discard_zoom_close}
+      >
+        <img data-online-discard-zoom-img alt="" decoding="async" />
+      </button>
+    </div>
 
     <div class="mag-online-end" data-online-end hidden>
       <div class="mag-online-end-card">
@@ -402,24 +431,42 @@ const copy = onlineCopy[lang];
 
   @media (min-width: 768px) {
     .mag-app-panel--online .mag-online-table {
-      width: min(100%, 26.5rem);
-      max-width: 26.5rem;
+      width: min(100%, 50rem);
+      max-width: 50rem;
       margin-inline: auto;
-      --online-card-w: 4.05rem;
-      --online-deck-w: 2.9rem;
-      --online-center-w: calc(var(--online-card-w) * 1.55);
-      --online-center-h: calc(var(--online-card-h) * 1.55);
+      --online-card-w: clamp(4.85rem, 5.8vw, 6.15rem);
+      --online-deck-w: clamp(3.45rem, 4.2vw, 4.55rem);
+      --online-center-w: calc(var(--online-card-w) * 1.85);
+      --online-center-h: calc(var(--online-card-h) * 1.85);
     }
 
     .mag-app-panel--online .mag-online-opponents {
-      max-width: 100%;
-      margin-bottom: 0.55rem;
+      max-width: min(100%, 46rem);
+      margin-bottom: 0.65rem;
+    }
+
+    .mag-app-panel--online .mag-online-opponents[data-opp-count='1'] {
+      max-width: 14rem;
+    }
+
+    .mag-app-panel--online .mag-online-opponents[data-opp-count='2'] {
+      max-width: min(100%, 38rem);
+      column-gap: clamp(2.5rem, 12vw, 8rem);
     }
 
     .mag-app-panel--online .mag-online-table-zone {
       flex: 0 1 auto;
-      min-height: 10rem;
-      padding-bottom: 0.35rem;
+      min-height: clamp(12rem, 28vh, 18rem);
+      padding-bottom: 0.45rem;
+    }
+
+    .mag-app-panel--online .mag-online-mid {
+      max-width: min(100%, 44rem);
+    }
+
+    .mag-app-panel--online .mag-online-table-zone::before {
+      width: 88%;
+      height: 82%;
     }
   }
 
@@ -618,6 +665,8 @@ const copy = onlineCopy[lang];
     margin-inline: auto;
     align-items: end;
     justify-items: center;
+    overflow: visible;
+    padding: 0.2rem 0.15rem 0;
   }
 
   .mag-online-opponents[data-opp-count='1'] {
@@ -645,10 +694,11 @@ const copy = onlineCopy[lang];
     align-items: center;
     gap: 0.4rem;
     min-height: 0;
-    padding: 0.15rem 0.25rem 0.1rem;
+    padding: 0.2rem 0.35rem 0.15rem;
     border: 0;
     border-radius: 0;
     background: transparent;
+    overflow: visible;
   }
 
   .mag-online-player.is-acting {
@@ -704,9 +754,18 @@ const copy = onlineCopy[lang];
     border: 0;
     background: transparent;
     border-radius: 0.45rem;
+    overflow: visible;
     transition:
       box-shadow 0.2s ease,
-      filter 0.2s ease;
+      filter 0.2s ease,
+      outline-color 0.2s ease;
+  }
+
+  .mag-online-mini-stack.is-active {
+    outline: 2px solid var(--online-turn-green);
+    outline-offset: 4px;
+    border-radius: 0.5rem;
+    animation: mag-online-opp-stack-glow calc(1.4s * var(--online-motion, 1)) ease-in-out infinite;
   }
 
   .mag-online-opp-hand {
@@ -730,12 +789,9 @@ const copy = onlineCopy[lang];
 
   .mag-online-mini-stack.is-active .mag-online-opp-hand__card:last-child {
     filter: brightness(1.08);
-    animation: mag-online-turn-glow calc(1.4s * var(--online-motion, 1)) ease-in-out infinite;
     box-shadow:
       2px 2px 0 #07101c,
-      4px 4px 0 #283b55,
-      0 0 0 3px var(--online-turn-green),
-      0 0 1rem rgba(111, 184, 111, 0.55);
+      4px 4px 0 #283b55;
   }
 
   .mag-online-player.is-turn-seat .mag-online-seat-name {
@@ -743,21 +799,15 @@ const copy = onlineCopy[lang];
     text-shadow: 0 0 12px rgba(111, 184, 111, 0.45);
   }
 
-  @keyframes mag-online-turn-glow {
+  @keyframes mag-online-opp-stack-glow {
     0%,
     100% {
-      box-shadow:
-        2px 2px 0 #07101c,
-        4px 4px 0 #283b55,
-        0 0 0 2px var(--online-turn-green),
-        0 0 0.65rem rgba(111, 184, 111, 0.35);
+      outline-color: var(--online-turn-green);
+      box-shadow: 0 0 0.55rem rgba(111, 184, 111, 0.35);
     }
     50% {
-      box-shadow:
-        2px 2px 0 #07101c,
-        4px 4px 0 #283b55,
-        0 0 0 3px #8fd48f,
-        0 0 1.1rem rgba(111, 184, 111, 0.65);
+      outline-color: #8fd48f;
+      box-shadow: 0 0 1rem rgba(111, 184, 111, 0.55);
     }
   }
 
@@ -1016,12 +1066,83 @@ const copy = onlineCopy[lang];
     transition: opacity 0.2s ease;
   }
 
+  .mag-online-discard-shell:not(:has(.mag-online-discard:empty)) {
+    cursor: zoom-in;
+  }
+
+  .mag-online-discard-shell:not(:has(.mag-online-discard:empty)):focus-visible {
+    outline: 2px solid #ecd09b;
+    outline-offset: 3px;
+  }
+
   .mag-online-discard-shell:has(.mag-online-discard:empty) {
     padding: 0;
     background: transparent;
     box-shadow: none;
     transform: none;
     pointer-events: none;
+    cursor: default;
+  }
+
+  .mag-online-discard-zoom {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: rgba(8, 13, 24, 0.94);
+    backdrop-filter: blur(6px);
+  }
+
+  .mag-online-discard-zoom[hidden] {
+    display: none !important;
+  }
+
+  .mag-online-discard-zoom__close {
+    position: absolute;
+    top: max(0.75rem, env(safe-area-inset-top));
+    right: max(0.85rem, env(safe-area-inset-right));
+    z-index: 2;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid rgba(201, 169, 108, 0.45);
+    border-radius: 0.35rem;
+    background: rgba(23, 35, 51, 0.92);
+    color: #ecd09b;
+    font: 600 0.68rem/1 var(--sans, Inter, system-ui, sans-serif);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .mag-online-discard-zoom__sheet {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding:
+      max(3.25rem, calc(env(safe-area-inset-top) + 2.5rem))
+      max(1rem, env(safe-area-inset-right))
+      max(1rem, env(safe-area-inset-bottom))
+      max(1rem, env(safe-area-inset-left));
+    border: 0;
+    background: transparent;
+    cursor: zoom-out;
+  }
+
+  .mag-online-discard-zoom__sheet img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: min(94vw, 26rem);
+    max-height: min(78vh, 36rem);
+    border-radius: 0.65rem;
+    box-shadow:
+      0 1.25rem 3rem rgba(0, 0, 0, 0.65),
+      0 0 0 1px rgba(236, 208, 155, 0.35);
+    object-fit: contain;
+  }
+
+  .mag-online-table.is-discard-zoomed .mag-online-fly-layer {
+    visibility: hidden;
   }
 
   .mag-online-discard {

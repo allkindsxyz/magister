@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Magister — макеты карт-ключей</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="suit-key-card-mockup.css" />
+</head>
+<body>
+  <div class="preview">
+    <p class="preview__label">
+      <strong>Макет одной карты-ключа</strong> — poker 63 × 88 mm, масть ♥ (остальные три — та же сетка, другие миниатюры и текст).
+      Слева номиналы 2–10, справа мир масти: туз, текст, «Как узнать», K Q J.
+    </p>
+
+    <figure class="card card--pips" aria-label="Ключ масти, номиналы 2–10">
+      <header class="card-head">
+        <span class="suit" aria-hidden="true">♥</span>
+        <h2>Олимпийские боги</h2>
+      </header>
+
+      <div class="grid-pips">
+        <div class="pip">
+          <div class="pip__frame"><img src="assets/suit-key/2-hearts.webp" alt="" width="280" height="392" /></div>
+          <p class="pip__label"><span class="card-index">2<span class="card-index__suit">♥</span></span><span class="pip__name">Сирены</span></p>
+        </div>
+        <div class="pip">
+          <div class="pip__frame"><img src="assets/suit-key/3-hearts.webp" alt="" /></div>
+          <p class="pip__label"><span class="card-index">3<span class="card-index__suit">♥</span></span><span class="pip__name">Леда и лебедь</span></p>
+        </div>
+        <div class="pip">
+          <div class="pip__frame"><img src="assets/suit-key/4-hearts.webp" alt="" /></div>
+          <p class="pip__label"><span class="card-index">4<span class="card-index__suit">♥</span></span><span class="pip__name">Похищение Европы Зевсом</span></p>
+        </div>
+        <div class="pip">
+          <div class="pip__frame"><img src="assets/suit-key/5-hearts.webp" alt="" /></div>
+          <p class="pip__label"><span class="card-index">5<span class="card-index__suit">♥</span></span><span class="pip__name">Дриады</span></p>
+        </div>
+        <div class="pip">
+          <div class="pip__frame"><img src="assets/suit-key/6-hearts.webp" alt="" /></div>
+          <p class="pip__label"><span class="card-index">6<span class="card-index__suit">♥</span></span><span class="pip__name">Нимфы водной стихии</span></p>
+        </div>
+        <div class="pip">
+          <div class="pip__frame"><img src="assets/suit-key/7-hearts.webp" alt="" /></div>
+          <p class="pip__label"><span class="card-index">7<span class="card-index__suit">♥</span></span><span class="pip__name">Гея и циклопы</span></p>
+        </div>
+        <div class="pip">
+          <div class="pip__frame"><img src="assets/suit-key/8-hearts.webp" alt="" /></div>
+          <p class="pip__label"><span class="card-index">8<span class="card-index__suit">♥</span></span><span class="pip__name">Амфитрита</span></p>
+        </div>
+        <div class="pip">
+          <div class="pip__frame"><img src="assets/suit-key/9-hearts.webp" alt="" /></div>
+          <p class="pip__label"><span class="card-index">9<span class="card-index__suit">♥</span></span><span class="pip__name">Афина и Эрихтоний</span></p>
+        </div>
+        <div class="pip">
+          <div class="pip__frame"><img src="assets/suit-key/10-hearts.webp" alt="" /></div>
+          <p class="pip__label"><span class="card-index">10<span class="card-index__suit">♥</span></span><span class="pip__name">Персефона</span></p>
+        </div>
+      </div>
+    </figure>
+
+    <figure class="card card--world" aria-label="Ключ масти, мир и фигуры">
+      <header class="card-head">
+        <span class="suit" aria-hidden="true">♥</span>
+        <h2>Олимпийские боги</h2>
+      </header>
+
+      <div class="world-body">
+        <div class="world-top">
+          <figure class="world-ace">
+            <div class="world-ace__frame">
+              <img src="assets/suit-key/ace-hearts.webp" alt="Туз червей — Зевс и Мнемозина" />
+            </div>
+            <p class="court__label court__label--center">
+              <span class="card-index">A<span class="card-index__suit">♥</span></span>
+              <span class="court__name">Зевс и Мнемозина</span>
+            </p>
+          </figure>
+          <div class="world-copy">
+            <p class="blurb">
+              Желание, превращения, пророчества и огонь. Червы — античные мифы, в которых смертные спорят с богами о судьбе.
+            </p>
+            <p class="world-tips">
+              <span class="world-tips__lead">Как узнать:</span>
+              античные герои, обнаженные богини, мифические персонажи.
+            </p>
+          </div>
+        </div>
+        <div class="courts courts--rest">
+          <div class="court">
+            <div class="court__frame"><img src="assets/suit-key/king-hearts.webp" alt="" /></div>
+            <p class="court__label court__label--center"><span class="card-index">K<span class="card-index__suit">♥</span></span><span class="court__name">Дионис</span></p>
+          </div>
+          <div class="court">
+            <div class="court__frame"><img src="assets/suit-key/queen-hearts.webp" alt="" /></div>
+            <p class="court__label court__label--center"><span class="card-index">Q<span class="card-index__suit">♥</span></span><span class="court__name">Афродита</span></p>
+          </div>
+          <div class="court">
+            <div class="court__frame"><img src="assets/suit-key/jack-hearts.webp" alt="" /></div>
+            <p class="court__label court__label--center"><span class="card-index">J<span class="card-index__suit">♥</span></span><span class="court__name">Аполлон и Дафна</span></p>
+          </div>
+        </div>
+      </div>
+    </figure>
+
+    <p class="preview__label preview__label--wide">
+      <strong>Ключ всей колоды</strong> — poker 63 × 88 mm, две стороны по 26 карт (без джокеров): червы + бубны, трефы + пики.
+      Подписи из контента колоды. Пересборка: <code>node print/build-deck-key-cards.mjs</code>.
+    </p>
+
+    <div class="preview__row">
+    <!-- deck-key:generated:start -->
+    <figure class="card card--deck-index card--deck-red" aria-label="Ключ колоды · червы и бубны">
+      <header class="card-head card-head--deck">
+        <h2>Ключ колоды · червы и бубны</h2>
+      </header>
+      <div class="deck-body">
+        <section class="deck-suit-block deck-suit-block--hearts">
+          <div class="deck-suit-layout">
+            <div class="deck-cell deck-cell--intro">
+              <div class="deck-cell__frame deck-cell__frame--text">
+                <h3 class="deck-suit-intro__title"><span class="deck-suit-intro__symbol" aria-hidden="true">♥</span> Олимпийские боги</h3>
+                <p class="deck-suit-intro__blurb">Желание, превращения, пророчества и огонь. Червы — античные мифы, в которых смертные спорят с богами о судьбе.</p>
+              </div>
+              <p class="deck-cell__label deck-cell__label--align" aria-hidden="true">
+                <span class="card-index deck-cell__label-ph">&nbsp;</span>
+                <span class="deck-cell__name deck-cell__label-ph">&nbsp;</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/ace-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">A<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Зевс и Мнемозина</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/2-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">2<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Сирены</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/3-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">3<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Леда и лебедь</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/4-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">4<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Похищение Европы Зевсом</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/5-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">5<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Дриады</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/6-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">6<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Нимфы водной стихии</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/7-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">7<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Гея и циклопы</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/8-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">8<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Амфитрита</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/9-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">9<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Афина и Эрихтоний</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/10-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">10<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Персефона</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/jack-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">J<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Аполлон и Дафна</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/queen-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">Q<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Афродита</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/king-hearts.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">K<span class="card-index__suit card-index__suit--hearts">♥</span></span>
+                <span class="deck-cell__name">Дионис</span>
+              </p>
+            </div>
+          </div>
+        </section>
+        <section class="deck-suit-block deck-suit-block--diamonds">
+          <div class="deck-suit-layout">
+            <div class="deck-cell deck-cell--intro">
+              <div class="deck-cell__frame deck-cell__frame--text">
+                <h3 class="deck-suit-intro__title"><span class="deck-suit-intro__symbol" aria-hidden="true">♦</span> Носители тайн</h3>
+                <p class="deck-suit-intro__blurb">Алхимики, гонцы и тайные ордена. Бубны — о тех, кто владеет знанием, которое не произносят вслух.</p>
+              </div>
+              <p class="deck-cell__label deck-cell__label--align" aria-hidden="true">
+                <span class="card-index deck-cell__label-ph">&nbsp;</span>
+                <span class="deck-cell__name deck-cell__label-ph">&nbsp;</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/ace-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">A<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">«Несущий свет»</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/2-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">2<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Двое в лодке</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/3-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">3<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Носильщица бочек</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/4-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">4<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Перенос священных объектов</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/5-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">5<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Погонщики ветра</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/6-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">6<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Священная колесница</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/7-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">7<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Носильщики бочек</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/8-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">8<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Люди, путешествующие на шляпе гиганта</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/9-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">9<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Тайная церемония посвящения</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/10-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">10<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Носильщик бочек</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/jack-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">J<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Всадник в шлеме</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/queen-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">Q<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Девушка с кувшинами</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/king-diamonds.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">K<span class="card-index__suit card-index__suit--diamonds">♦</span></span>
+                <span class="deck-cell__name">Хранитель священного храма</span>
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </figure>
+
+    <figure class="card card--deck-index card--deck-black" aria-label="Ключ колоды · трефы и пики">
+      <header class="card-head card-head--deck">
+        <h2>Ключ колоды · трефы и пики</h2>
+      </header>
+      <div class="deck-body">
+        <section class="deck-suit-block deck-suit-block--clubs">
+          <div class="deck-suit-layout">
+            <div class="deck-cell deck-cell--intro">
+              <div class="deck-cell__frame deck-cell__frame--text">
+                <h3 class="deck-suit-intro__title"><span class="deck-suit-intro__symbol" aria-hidden="true">♣</span> Тамплиеры</h3>
+                <p class="deck-suit-intro__blurb">Сталь крестовых походов, карты сокровищ и долгая тень ордена. Трефы — средневековая интрига от клятвы до легенды.</p>
+              </div>
+              <p class="deck-cell__label deck-cell__label--align" aria-hidden="true">
+                <span class="card-index deck-cell__label-ph">&nbsp;</span>
+                <span class="deck-cell__name deck-cell__label-ph">&nbsp;</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/ace-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">A<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Жизнь и смерть Великого Магистра</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/2-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">2<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Смерть в бою</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/3-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">3<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Обретение черного камня у горы Унтерберг</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/4-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">4<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Охота на белого льва</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/5-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">5<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Тамплиеры, спорящие с вороном</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/6-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">6<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Торжества по поводу взятия Акры</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/7-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">7<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Возвращение святыни</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/8-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">8<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Восьмой день свадьбы Христиана Розенкрейца</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/9-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">9<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Ворон Одина Мунин близ Сидона</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/10-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">10<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Защита крепости</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/jack-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">J<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Чудо о коне</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/queen-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">Q<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Охота Тамплиера</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/king-clubs.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">K<span class="card-index__suit card-index__suit--clubs">♣</span></span>
+                <span class="deck-cell__name">Хранитель черепа</span>
+              </p>
+            </div>
+          </div>
+        </section>
+        <section class="deck-suit-block deck-suit-block--spades">
+          <div class="deck-suit-layout">
+            <div class="deck-cell deck-cell--intro">
+              <div class="deck-cell__frame deck-cell__frame--text">
+                <h3 class="deck-suit-intro__title"><span class="deck-suit-intro__symbol" aria-hidden="true">♠</span> Знаменитости</h3>
+                <p class="deck-suit-intro__blurb">Мифы нашего времени. Знакомые всем лица становятся архетипами — пики о том, что происходит, когда публичная маска прирастает навсегда.</p>
+              </div>
+              <p class="deck-cell__label deck-cell__label--align" aria-hidden="true">
+                <span class="card-index deck-cell__label-ph">&nbsp;</span>
+                <span class="deck-cell__name deck-cell__label-ph">&nbsp;</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/ace-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">A<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Альберт бежит со скоростью черепахи</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/2-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">2<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Школа богомола</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/3-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">3<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Вознесение Юрия</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/4-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">4<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Адольф и Иосиф. Воздушная битва</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/5-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">5<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Выстрел</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/6-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">6<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Че Гевара в окружении скорпионов</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/7-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">7<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Маленькая ночная серенада</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/8-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">8<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Восьмой сонет Шекспира</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/9-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">9<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Винсент на поле</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/10-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">10<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Полёт осы</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/jack-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">J<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Майкл и хамелеон</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/queen-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">Q<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Анна и скарабей</span>
+              </p>
+            </div>
+            <div class="deck-cell">
+              <div class="deck-cell__frame"><img src="assets/deck/king-spades.webp" alt="" width="280" height="392" decoding="async" /></div>
+              <p class="deck-cell__label">
+                <span class="card-index">K<span class="card-index__suit card-index__suit--spades">♠</span></span>
+                <span class="deck-cell__name">Тайная история монголов</span>
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </figure>
+    <!-- deck-key:generated:end -->
+    </div>
+
+    <p class="preview__label preview__label--wide">
+      <strong>Карта-инструкция</strong> — два варианта фона (рубашка / джокеры), по две стороны 63 × 88 mm. Фон: <code>assets/media/</code> и <code>assets/deck/</code> (см. README).
+    </p>
+    <p class="preview__label">Вариант <strong>A</strong> — затемнённая рубашка</p>
+    <div class="preview__row">
+      <figure class="card card--rules card--rules--dark card--rules-bg-back card--rules-about" aria-label="О колоде, фон рубашка">
+        <div class="rules-card__frame">
+          <header class="rules-card__head rules-card__head--ref">
+            <div class="rules-badge">
+              <img
+                class="rules-badge__logo"
+                src="assets/magister-logo.png"
+                alt="Magister"
+                width="112"
+                height="49"
+                decoding="async"
+              />
+            </div>
+            <div class="rules-rule" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+          </header>
+          <div class="rules-card__main rules-card__main--ref-about">
+            <h1 class="rules-hero">Разгадай колоду</h1>
+            <p class="rules-dek">54 авторские карты · четыре мира · скрытые масти и ранги</p>
+            <div class="rules-rule rules-rule--narrow" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+            <ul class="rules-suits-block" role="list">
+              <li><span class="rules-suit-glyph" aria-hidden="true">♥</span><span><strong class="rules-suit-name">Червы</strong> — олимпийские боги</span></li>
+              <li><span class="rules-suit-glyph" aria-hidden="true">♦</span><span><strong class="rules-suit-name">Бубны</strong> — носители тайн</span></li>
+              <li><span class="rules-suit-glyph" aria-hidden="true">♣</span><span><strong class="rules-suit-name">Трефы</strong> — тамплиеры</span></li>
+              <li><span class="rules-suit-glyph" aria-hidden="true">♠</span><span><strong class="rules-suit-name">Пики</strong> — знаменитости</span></li>
+            </ul>
+            <div class="rules-prose">
+              <p class="rules-prose__p">
+                <strong>Масть</strong> — по сюжету: олимп и античность — червы; рыцари и орден тамплиеров — трефы; мистика
+                и персонажи без обуви — бубны; знаменитости и узнаваемые лица — пики.
+              </p>
+              <p class="rules-prose__p rules-prose__p--last">
+                <strong>Ранг</strong> — число персонажей на картине: пересчитай фигуры в композиции.
+              </p>
+            </div>
+          </div>
+          <footer class="rules-card__foot rules-card__foot--ref">
+            <div class="rules-rule" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+            <p class="rules-card__foot-line">
+              Открой четыре мира на <span class="rules-card__url-inline">magister.cards</span> · Играй онлайн
+            </p>
+          </footer>
+        </div>
+      </figure>
+
+      <figure class="card card--rules card--rules--dark card--rules-bg-back card--rules-game" aria-label="Правила игры, фон рубашка">
+        <div class="rules-card__frame">
+          <header class="rules-card__head rules-card__head--ref">
+            <div class="rules-badge">
+              <img
+                class="rules-badge__logo"
+                src="assets/magister-logo.png"
+                alt="Magister"
+                width="112"
+                height="49"
+                decoding="async"
+              />
+            </div>
+            <div class="rules-rule" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+          </header>
+          <div class="rules-card__main rules-card__main--ref-game">
+            <h1 class="rules-hero">Игра Магистр</h1>
+            <p class="rules-dek">Сбрось карты · стань Магистром · <span class="rules-dek-strong">2+ игроков</span></p>
+            <div class="rules-rule rules-rule--narrow" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+            <div class="rules-prose rules-prose--game">
+              <p class="rules-prose__p">
+                Раздайте по <strong>8</strong> карт; в центре откройте одну. По очереди кладите карту той же <strong>масти</strong> или
+                <strong>ранга</strong>. Нет хода — возьмите из колоды; не подошла — <strong>пропуск</strong>.
+                <strong>Джокер</strong> идёт к любой карте; после него назовите масть.
+              </p>
+              <p class="rules-prose__p rules-prose__p--last">
+                Колода пуста — перетасуйте сброс, <strong>верхнюю</strong> оставьте открытой. Первый без карт в руке —
+                <strong>Магистр</strong>.
+              </p>
+            </div>
+          </div>
+          <footer class="rules-card__foot rules-card__foot--ref">
+            <div class="rules-rule" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+            <p class="rules-card__foot-line">Играй онлайн: <span class="rules-card__url-inline">magister.cards</span></p>
+          </footer>
+        </div>
+      </figure>
+    </div>
+
+    <p class="preview__label">Вариант <strong>B</strong> — джокеры (оба на затемнённом фоне)</p>
+    <div class="preview__row">
+      <figure class="card card--rules card--rules--dark card--rules-bg-joker card--rules-about" aria-label="О колоде, фон джокер 1">
+        <div class="rules-card__frame">
+          <header class="rules-card__head rules-card__head--ref">
+            <div class="rules-badge">
+              <img
+                class="rules-badge__logo"
+                src="assets/magister-logo.png"
+                alt="Magister"
+                width="112"
+                height="49"
+                decoding="async"
+              />
+            </div>
+            <div class="rules-rule" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+          </header>
+          <div class="rules-card__main rules-card__main--ref-about">
+            <h1 class="rules-hero">Разгадай колоду</h1>
+            <p class="rules-dek">54 авторские карты · четыре мира · скрытые масти и ранги</p>
+            <div class="rules-rule rules-rule--narrow" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+            <ul class="rules-suits-block" role="list">
+              <li><span class="rules-suit-glyph" aria-hidden="true">♥</span><span><strong class="rules-suit-name">Червы</strong> — олимпийские боги</span></li>
+              <li><span class="rules-suit-glyph" aria-hidden="true">♦</span><span><strong class="rules-suit-name">Бубны</strong> — носители тайн</span></li>
+              <li><span class="rules-suit-glyph" aria-hidden="true">♣</span><span><strong class="rules-suit-name">Трефы</strong> — тамплиеры</span></li>
+              <li><span class="rules-suit-glyph" aria-hidden="true">♠</span><span><strong class="rules-suit-name">Пики</strong> — знаменитости</span></li>
+            </ul>
+            <div class="rules-prose">
+              <p class="rules-prose__p">
+                <strong>Масть</strong> — по сюжету: олимп и античность — червы; рыцари и орден тамплиеров — трефы; мистика
+                и персонажи без обуви — бубны; знаменитости и узнаваемые лица — пики.
+              </p>
+              <p class="rules-prose__p rules-prose__p--last">
+                <strong>Ранг</strong> — число персонажей на картине: пересчитай фигуры в композиции.
+              </p>
+            </div>
+          </div>
+          <footer class="rules-card__foot rules-card__foot--ref">
+            <div class="rules-rule" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+            <p class="rules-card__foot-line">
+              Открой четыре мира на <span class="rules-card__url-inline">magister.cards</span> · Играй онлайн
+            </p>
+          </footer>
+        </div>
+      </figure>
+
+      <figure class="card card--rules card--rules--dark card--rules-bg-joker card--rules-game" aria-label="Правила игры, фон джокер 2">
+        <div class="rules-card__frame">
+          <header class="rules-card__head rules-card__head--ref">
+            <div class="rules-badge">
+              <img
+                class="rules-badge__logo"
+                src="assets/magister-logo.png"
+                alt="Magister"
+                width="112"
+                height="49"
+                decoding="async"
+              />
+            </div>
+            <div class="rules-rule" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+          </header>
+          <div class="rules-card__main rules-card__main--ref-game">
+            <h1 class="rules-hero">Игра Магистр</h1>
+            <p class="rules-dek">Сбрось карты · стань Магистром · <span class="rules-dek-strong">2+ игроков</span></p>
+            <div class="rules-rule rules-rule--narrow" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+            <div class="rules-prose rules-prose--game">
+              <p class="rules-prose__p">
+                Раздайте по <strong>8</strong> карт; в центре откройте одну. По очереди кладите карту той же <strong>масти</strong> или
+                <strong>ранга</strong>. Нет хода — возьмите из колоды; не подошла — <strong>пропуск</strong>.
+                <strong>Джокер</strong> идёт к любой карте; после него назовите масть.
+              </p>
+              <p class="rules-prose__p rules-prose__p--last">
+                Колода пуста — перетасуйте сброс, <strong>верхнюю</strong> оставьте открытой. Первый без карт в руке —
+                <strong>Магистр</strong>.
+              </p>
+            </div>
+          </div>
+          <footer class="rules-card__foot rules-card__foot--ref">
+            <div class="rules-rule" aria-hidden="true"><span class="rules-rule__star">✦</span></div>
+            <p class="rules-card__foot-line">Играй онлайн: <span class="rules-card__url-inline">magister.cards</span></p>
+          </footer>
+        </div>
+      </figure>
+    </div>
+  </div>
+</body>
+</html>

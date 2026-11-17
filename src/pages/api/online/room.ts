@@ -19,6 +19,7 @@ import {
   saveRoom,
   tryJoinRoom,
 } from '../../../lib/onlineRoomStore';
+import { getSiteUrl } from '../../../lib/site';
 
 export const prerender = false;
 
@@ -37,6 +38,11 @@ function json(body: unknown, status = 200): Response {
 function playerToken(body: { playerToken?: unknown }): string | null {
   const t = typeof body.playerToken === 'string' ? body.playerToken.trim() : '';
   return t.length >= 8 && t.length <= 64 ? t : null;
+}
+
+function onlineInviteUrl(lang: string, roomId: string): string {
+  const path = `/${lang}/app?room=${encodeURIComponent(roomId)}`;
+  return new URL(path, getSiteUrl()).href;
 }
 
 export const POST: APIRoute = async ({ request, url }) => {
@@ -61,8 +67,7 @@ export const POST: APIRoute = async ({ request, url }) => {
     const join = tryJoinRoom(room.id, token, name);
     if (!join.ok) return json({ ok: false, error: join.error }, 400);
     saveRoom(room);
-    const invitePath = `/${lang}/app?room=${room.id}`;
-    const inviteUrl = new URL(invitePath, url.origin).href;
+    const inviteUrl = onlineInviteUrl(lang, room.id);
     return json({
       ok: true,
       roomId: room.id,
@@ -87,7 +92,12 @@ export const POST: APIRoute = async ({ request, url }) => {
     runBotTurns(room);
     touchPresence(room, token);
     saveRoom(room);
-    return json({ ok: true, seat: result.seat, room: toClientView(room, token) });
+    return json({
+      ok: true,
+      seat: result.seat,
+      inviteUrl: onlineInviteUrl(room.lang, room.id),
+      room: toClientView(room, token),
+    });
   }
 
   if (action === 'state') {
@@ -95,7 +105,11 @@ export const POST: APIRoute = async ({ request, url }) => {
     runBotTurns(room);
     if (token) touchPresence(room, token);
     saveRoom(room);
-    return json({ ok: true, room: toClientView(room, token) });
+    return json({
+      ok: true,
+      inviteUrl: onlineInviteUrl(room.lang, room.id),
+      room: toClientView(room, token),
+    });
   }
 
   if (action === 'start') {
@@ -210,5 +224,9 @@ export const GET: APIRoute = async ({ url }) => {
   if (!room) return json({ ok: false, error: 'missing' }, 404);
   runBotTurns(room);
   saveRoom(room);
-  return json({ ok: true, room: toClientView(room, token) });
+  return json({
+    ok: true,
+    inviteUrl: onlineInviteUrl(room.lang, room.id),
+    room: toClientView(room, token),
+  });
 };

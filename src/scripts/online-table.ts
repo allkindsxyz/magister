@@ -279,6 +279,11 @@ export function mountOnlineTable(
   const centerEl = root.querySelector<HTMLElement>('[data-online-center]');
   const rightEl = root.querySelector<HTMLElement>('[data-online-right]');
   const discardEl = root.querySelector<HTMLElement>('[data-online-discard]');
+  const discardOpen = root.querySelector<HTMLElement>('[data-online-discard-open]');
+  const discardZoom = root.querySelector<HTMLElement>('[data-online-discard-zoom]');
+  const discardZoomImg = root.querySelector<HTMLImageElement>('[data-online-discard-zoom-img]');
+  const discardZoomClose = root.querySelector<HTMLButtonElement>('[data-online-discard-zoom-close]');
+  const discardZoomSheet = root.querySelector<HTMLButtonElement>('[data-online-discard-zoom-sheet]');
   const turnEl = root.querySelector<HTMLElement>('[data-online-turn]');
   const handShell = root.querySelector<HTMLElement>('[data-online-hand-shell]');
   const handFrame = root.querySelector<HTMLElement>('[data-online-hand-frame]');
@@ -546,6 +551,7 @@ export function mountOnlineTable(
     clearCenterDiscard();
     clearFlyLayer();
     hideTablePrompt();
+    closeDiscardZoom();
     syncHintsModeChrome();
     paintLobbyAtTable();
     paintHandHeader();
@@ -583,6 +589,11 @@ export function mountOnlineTable(
     inviteUrl = '';
     resetSessionState();
     clearRoomFromUrl();
+    roomPaintBusy = false;
+    queuedRoomView = null;
+    paintQueue = Promise.resolve();
+    discardRenderHold = 0;
+    displayedCenterImage = null;
     showLobby(true);
     if (message) setStatus(message);
     else setStatus(opts.copy.need_players);
@@ -639,14 +650,41 @@ export function mountOnlineTable(
     }, 1200);
   }
 
+  function publicSiteOrigin(): string {
+    const raw = root.dataset.siteOrigin?.trim();
+    if (raw) {
+      try {
+        return new URL(raw).origin;
+      } catch {
+        /* use fallback */
+      }
+    }
+    return window.location.origin;
+  }
+
+  function buildInviteUrl(id: string): string {
+    const path = `/${opts.lang}/app?room=${encodeURIComponent(id)}`;
+    return new URL(path, publicSiteOrigin()).href;
+  }
+
+  function rememberInviteUrl(url: string | undefined): void {
+    if (typeof url === 'string' && url.length > 8) inviteUrl = url;
+  }
+
   async function refresh(): Promise<void> {
     if (!roomId) return;
     const res = await api('state');
-    const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
+    const data = (await res.json()) as {
+      ok?: boolean;
+      room?: ClientRoomView;
+      error?: string;
+      inviteUrl?: string;
+    };
     if (!data.ok || !data.room) {
       if (data.error === 'missing') returnToLobby(opts.copy.room_missing);
       return;
     }
+    rememberInviteUrl(data.inviteUrl);
     if (roomPaintBusy) {
       queuedRoomView = data.room;
       return;
@@ -1335,8 +1373,43 @@ export function mountOnlineTable(
   }
 
   function clearCenterDiscard(): void {
+    closeDiscardZoom();
     if (discardEl) discardEl.innerHTML = '';
     displayedCenterImage = null;
+  }
+
+  function topDiscardImageSrc(): string | null {
+    const top = discardEl?.querySelector<HTMLImageElement>('.mag-online-card__face--top');
+    const src = top?.currentSrc || top?.src;
+    if (!src || src.endsWith('#') || src === window.location.href) return null;
+    return src;
+  }
+
+  function closeDiscardZoom(): void {
+    if (!discardZoom) return;
+    discardZoom.hidden = true;
+    if (discardZoomImg) {
+      discardZoomImg.removeAttribute('src');
+      discardZoomImg.alt = '';
+    }
+    table?.classList.remove('is-discard-zoomed');
+    discardOpen?.setAttribute('aria-expanded', 'false');
+  }
+
+  function openDiscardZoom(): void {
+    const src = topDiscardImageSrc();
+    if (!src || !discardZoom || !discardZoomImg) return;
+    discardZoomImg.src = src;
+    discardZoomImg.alt = opts.copy.discard;
+    discardZoom.hidden = false;
+    table?.classList.add('is-discard-zoomed');
+    discardOpen?.setAttribute('aria-expanded', 'true');
+    discardZoomClose?.focus({ preventScroll: true });
+  }
+
+  function toggleDiscardZoom(): void {
+    if (discardZoom && !discardZoom.hidden) closeDiscardZoom();
+    else openDiscardZoom();
   }
 
   function jokerSuitForImage(image: string): Suit | null {
@@ -1947,7 +2020,7 @@ export function mountOnlineTable(
       return;
     }
     roomId = data.roomId;
-    inviteUrl = data.inviteUrl ?? '';
+    rememberInviteUrl(data.inviteUrl ?? buildInviteUrl(roomId));
     if (data.playerToken) {
       playerToken = data.playerToken;
       localStorage.setItem(PLAYER_KEY, playerToken);
@@ -1995,13 +2068,14 @@ export function mountOnlineTable(
     localStorage.setItem(DISPLAY_NAME_KEY, name);
     roomId = id.toUpperCase();
     const res = await api('join');
-    const data = (await res.json()) as { ok?: boolean; error?: string };
+    const data = (await res.json()) as { ok?: boolean; error?: string; inviteUrl?: string };
     if (!data.ok) {
       if (data.error === 'full') setStatus(opts.copy.room_full);
       else if (data.error === 'missing') returnToLobby(opts.copy.room_missing);
       else setStatus(opts.copy.error_generic);
       return;
     }
+    rememberInviteUrl(data.inviteUrl ?? buildInviteUrl(roomId));
     const url = new URL(window.location.href);
     url.searchParams.set('room', roomId);
     window.history.replaceState({}, '', url);
@@ -2029,12 +2103,18 @@ export function mountOnlineTable(
   rematchBtn?.addEventListener('click', () => {
     void (async () => {
       if (!roomId) return;
+      stopPoll();
       if (endPanel) endPanel.hidden = true;
       table?.classList.remove('is-finished');
       const res = await api('rematch');
       const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
       if (!data.ok || !data.room) {
         setStatus(opts.copy.error_generic);
+        if (view?.phase === 'finished') {
+          if (endPanel) endPanel.hidden = false;
+          table?.classList.add('is-finished');
+        }
+        startPoll();
         return;
       }
       snapRoomToLobbyAtTable(data.room);
@@ -2043,21 +2123,16 @@ export function mountOnlineTable(
   });
 
   newGameBtn?.addEventListener('click', () => {
-    void (async () => {
-      stopPoll();
-      roomId = '';
-      clearRoomFromUrl();
-      resetSessionState();
-      await createRoom();
-    })();
+    returnToLobby();
+    showCreateLobbyUi();
+    setStatus('');
+    const saved = localStorage.getItem(DISPLAY_NAME_KEY);
+    if (saved && nameInput && !nameInput.value.trim()) nameInput.value = saved;
+    window.setTimeout(() => nameInput?.focus(), 80);
   });
 
   async function copyInviteToClipboard(): Promise<boolean> {
-    const url =
-      inviteUrl ||
-      (roomId
-        ? new URL(`/${opts.lang}/app?room=${roomId}`, window.location.origin).href
-        : '');
+    const url = inviteUrl || (roomId ? buildInviteUrl(roomId) : '');
     if (!url) return false;
     try {
       await navigator.clipboard.writeText(url);
@@ -2386,6 +2461,27 @@ export function mountOnlineTable(
         paintActiveTurn(view.turnSeat);
       }
     })();
+  });
+
+  discardOpen?.addEventListener('click', (event) => {
+    event.stopPropagation();
+    if (!topDiscardImageSrc()) return;
+    toggleDiscardZoom();
+  });
+
+  discardOpen?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    if (!topDiscardImageSrc()) return;
+    toggleDiscardZoom();
+  });
+
+  discardZoomClose?.addEventListener('click', () => closeDiscardZoom());
+  discardZoomSheet?.addEventListener('click', () => closeDiscardZoom());
+
+  root.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    if (discardZoom && !discardZoom.hidden) closeDiscardZoom();
   });
 
   if (opts.initialRoom) {
