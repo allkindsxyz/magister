@@ -22,7 +22,6 @@ export type InstructionCardCopy =
       kicker: string;
       goalLabel: string;
       goalText: string;
-      howTitle: string;
       steps: string[];
     }
   | {
@@ -30,15 +29,8 @@ export type InstructionCardCopy =
       kicker: string;
       players: string;
       goal: string;
-      deal: string;
-      turnTitle: string;
-      turnBody: string;
-      drawTitle: string;
-      drawBody: string;
-      specialTitle: string;
-      specialItems: string[];
-      winTitle: string;
-      winBody: string;
+      steps: string[];
+      winText: string;
       footnote?: string;
     };
 
@@ -62,13 +54,10 @@ const ru: InstructionCardsCopy = {
       id: '1a',
       kicker: 'МАГИСТР',
       paragraphs: [
-        'Ты видишь карты. Но видишь ли ты то, что в них скрыто?',
-        'В каждой карте скрыта своя загадка. Образы, символы и детали хранят секреты, которые не лежат на поверхности. Здесь нет привычных обозначений мастей и рангов. Их предстоит найти самому.',
-        'Одни увидят лишь картины. Другие — истории и символы. И только тот, кто сумеет разгадать скрытый язык карт, сможет овладеть игрой.',
-        'Карты открывают свои тайны не каждому. Чтобы стать Магистром, их нужно понять.',
-        'Авторская колода Dr. Klein',
+        'Магистр — авторская колода из 54 карт, созданная на основе классической четырёхмастной системы и включающая в себя символизм античной мифологии, средневековья и современной культуры.',
+        'Каждая карта представляет собой образы и сцены, в которых зашифрованы их масть и ранг. Сами же масти и ранги на картах не обозначены, поэтому их нужно сначала разгадать.',
       ],
-      flipHint: 'Переверни карту — ключ к мастям и рангам',
+      flipHint: '',
     },
     {
       id: '1b',
@@ -88,7 +77,6 @@ const ru: InstructionCardsCopy = {
       kicker: 'ИГРА «ИНИЦИАЦИЯ»',
       goalLabel: 'Цель',
       goalText: 'разложить все карты по мастям, затем по номиналу внутри каждой масти.',
-      howTitle: 'КАК ИГРАТЬ',
       steps: [
         'Выложите на стол всю колоду рубашкой вверх. Джокеры отложите в сторону.',
         'Открывайте карты и угадывайте масть по сюжету. Не уверены? Используйте оборот <strong>карты 1</strong> — ключ к мастям.',
@@ -101,18 +89,13 @@ const ru: InstructionCardsCopy = {
       kicker: 'ИГРА «МАГИСТР»',
       players: '2–6 игроков',
       goal: 'Цель — первым сбросить все карты',
-      deal: 'Раздайте каждому по 8 карт. Одну карту из колоды откройте в центре стола.',
-      turnTitle: 'ВАШ ХОД',
-      turnBody: 'Положите на верхнюю карту сброса карту той же масти или ранга.',
-      drawTitle: 'ЕСЛИ НЕТ ПОДХОДЯЩЕЙ КАРТЫ',
-      drawBody: 'Возьмите одну карту из колоды. Если она не подходит — пропустите ход.',
-      specialTitle: 'ОСОБЫЕ ПРАВИЛА',
-      specialItems: [
-        'Джокер подходит к любой карте. Сыграв его, назовите масть.',
-        'Колода закончилась? Перетасуйте сброс, оставив верхнюю карту на столе.',
+      steps: [
+        'Раздайте каждому по 8 карт. Одну карту из колоды откройте в центре стола.',
+        'Игрок сбрасывает карту той же масти или ранга, что и открытая карта (джокер подходит к любой масти и может задать новую масть).',
+        'Если подходящей карты нет — возьмите одну карту из колоды. Ход переходит к следующему игроку.',
+        'Если колода закончилась — перетасуйте сброс, оставив верхнюю карту на столе.',
       ],
-      winTitle: 'ПОБЕДА',
-      winBody: 'Первый игрок, избавившийся от всех карт, становится Магистром!',
+      winText: 'Первый игрок, избавившийся от всех карт, становится Магистром!',
       footnote: 'Колода подходит и для других классических карточных игр.',
     },
   ],
@@ -129,13 +112,10 @@ const en: InstructionCardsCopy = {
       id: '1a',
       kicker: 'MAGISTER',
       paragraphs: [
-        'You see the cards. But do you see what is hidden in them?',
-        'Each card holds its own riddle. Images, symbols and details guard secrets that do not lie on the surface. There are no familiar suit and rank marks — you must find them yourself.',
-        'Some will see only paintings. Others — stories and symbols. Only those who decode the hidden language of the cards can master the game.',
-        'The cards do not reveal their secrets to everyone. To become a Magister, you must understand them.',
-        'Dr. Klein’s author deck',
+        'Magister is an author deck of 54 cards built on the classic four-suit system, drawing on symbolism from classical myth, the Middle Ages, and modern culture.',
+        'Each card is a scene in which suit and rank are hidden in the imagery. Suits and ranks are not marked on the faces — you must decode them first.',
       ],
-      flipHint: 'Flip the card — the key to suits and ranks',
+      flipHint: '',
     },
     {
       id: '1b',
@@ -155,7 +135,6 @@ const en: InstructionCardsCopy = {
       kicker: 'INITIATION',
       goalLabel: 'Goal',
       goalText: 'sort every card by suit, then by rank within each suit.',
-      howTitle: 'HOW TO PLAY',
       steps: [
         'Lay out the full deck face down. Set the jokers aside.',
         'Turn cards up and guess the suit from the scene. Unsure? Use the back of <strong>card 1</strong> — the suit key.',
@@ -168,18 +147,13 @@ const en: InstructionCardsCopy = {
       kicker: 'MAGISTER',
       players: '2–6 players',
       goal: 'Goal — be the first to empty your hand',
-      deal: 'Deal 8 cards to each player. Turn one card from the deck face up in the centre.',
-      turnTitle: 'YOUR TURN',
-      turnBody: 'Play a card of the same suit or rank on top of the discard pile.',
-      drawTitle: 'IF YOU HAVE NO MATCH',
-      drawBody: 'Draw one card from the deck. If it still does not match, skip your turn.',
-      specialTitle: 'SPECIAL RULES',
-      specialItems: [
-        'A joker matches any card. When you play it, name the suit.',
-        'Deck empty? Shuffle the discard pile into a new deck, leaving the top card on the table.',
+      steps: [
+        'Deal 8 cards to each player. Turn one card from the deck face up in the centre.',
+        'A player discards a card of the same suit or rank as the open card (a joker matches any suit and can set a new suit).',
+        'If you have no matching card, draw one from the deck. Play passes to the next player.',
+        'If the deck runs out, reshuffle the discard pile into a new deck, leaving the top card on the table.',
       ],
-      winTitle: 'WIN',
-      winBody: 'The first player to get rid of all cards becomes the Magister!',
+      winText: 'The first player to get rid of all cards becomes the Magister!',
       footnote: 'The deck works for other classic card games too.',
     },
   ],

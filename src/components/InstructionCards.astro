@@ -17,10 +17,10 @@ const card2a = copy.cards.find((c) => c.id === '2a')!;
 const card2b = copy.cards.find((c) => c.id === '2b')!;
 
 const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
-  hearts: '/media/pilgrims.webp',
-  diamonds: '/media/bearer.webp',
-  clubs: '/media/lady.webp',
-  spades: '/media/merchant.webp',
+  hearts: '/cards/ace-hearts.webp',
+  diamonds: '/cards/ace-diamonds.webp',
+  clubs: '/cards/ace-clubs.webp',
+  spades: '/cards/ace-spades.webp',
 };
 ---
 
@@ -58,24 +58,20 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
         <article class="mag-instr-card mag-instr-card--1a is-active" data-instruction-card>
           <span class="mag-instr-card__frame" aria-hidden="true"></span>
           <MagisterLogo class="mag-instr-card__logo" level width={360} height={150} />
-          <div class="mag-instr-ornament"><span class="mag-instr-star">✦</span></div>
-          <header class="mag-instr-intro">
-            <h2 class="mag-instr-kicker">{card1a.kicker}</h2>
-          </header>
           <div class="mag-instr-teaser">
             {
-              card1a.paragraphs.map((paragraph, i) => (
-                <p class:list={['mag-instr-p', i === 0 && 'mag-instr-p--hook', i === card1a.paragraphs.length - 1 && 'mag-instr-p--byline']}>
-                  {paragraph}
-                </p>
+              card1a.paragraphs.map((paragraph) => (
+                <p class="mag-instr-p">{paragraph}</p>
               ))
             }
+          </div>
+          <div class="mag-instr-ornament mag-instr-ornament--foot">
+            <span class="mag-instr-star">✦</span>
           </div>
         </article>
 
         <article class="mag-instr-card mag-instr-card--1b" data-instruction-card>
           <span class="mag-instr-card__frame" aria-hidden="true"></span>
-          <div class="mag-instr-ornament"><span class="mag-instr-star">✦</span></div>
           <header class="mag-instr-intro">
             <h2 class="mag-instr-kicker">{card1b.kicker}</h2>
             <p class="mag-instr-highlight"><strong>{card1b.highlight}</strong></p>
@@ -94,22 +90,26 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
                     loading="lazy"
                     decoding="async"
                   />
-                  <div class="mag-instr-suit__meta">
-                    <span class="mag-instr-suit__sym" aria-hidden="true">{suit.symbol}</span>
-                    <span class="mag-instr-suit__text">
-                      <strong>{suit.title}</strong> — {suit.body}
+                  <p class="mag-instr-suit__text">
+                    <span class="mag-instr-suit__lead">
+                      <span class="mag-instr-suit__sym" aria-hidden="true">{suit.symbol}</span>{' '}
+                      <strong>{suit.title}</strong>
                     </span>
-                  </div>
+                    {' — '}
+                    {suit.body}
+                  </p>
                 </div>
               ))
             }
           </section>
           <p class="mag-instr-copy mag-instr-copy--rank">{card1b.rankHint}</p>
+          <div class="mag-instr-ornament mag-instr-ornament--foot">
+            <span class="mag-instr-star">✦</span>
+          </div>
         </article>
 
         <article class="mag-instr-card mag-instr-card--2a" data-instruction-card>
           <span class="mag-instr-card__frame" aria-hidden="true"></span>
-          <div class="mag-instr-ornament"><span class="mag-instr-star">✦</span></div>
           <header class="mag-instr-intro">
             <h2 class="mag-instr-kicker">{card2a.kicker}</h2>
           </header>
@@ -118,13 +118,15 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
               <strong>{card2a.goalLabel}:</strong> {card2a.goalText}
             </p>
             <section class="mag-instr-section">
-              <h3 class="mag-instr-section__title">{card2a.howTitle}</h3>
               <ol class="mag-instr-steps">
                 {card2a.steps.map((step) => (
                   <li set:html={step} />
                 ))}
               </ol>
             </section>
+          </div>
+          <div class="mag-instr-ornament mag-instr-ornament--foot">
+            <span class="mag-instr-star">✦</span>
           </div>
         </article>
 
@@ -136,28 +138,16 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
           <div class="mag-instr-rules">
             <p class="mag-instr-lede">{card2b.players}</p>
             <p class="mag-instr-lede mag-instr-lede--goal">{card2b.goal}</p>
-            <p class="mag-instr-p">{card2b.deal}</p>
-            <section class="mag-instr-section">
-              <h3 class="mag-instr-section__title">{card2b.turnTitle}</h3>
-              <p class="mag-instr-p">{card2b.turnBody}</p>
-            </section>
-            <section class="mag-instr-section">
-              <h3 class="mag-instr-section__title">{card2b.drawTitle}</h3>
-              <p class="mag-instr-p">{card2b.drawBody}</p>
-            </section>
-            <section class="mag-instr-section">
-              <h3 class="mag-instr-section__title">{card2b.specialTitle}</h3>
-              <ul class="mag-instr-list">
-                {card2b.specialItems.map((item) => (
-                  <li>{item}</li>
-                ))}
-              </ul>
-            </section>
-            <section class="mag-instr-section">
-              <h3 class="mag-instr-section__title">{card2b.winTitle}</h3>
-              <p class="mag-instr-p">{card2b.winBody}</p>
-            </section>
+            <ol class="mag-instr-steps">
+              {card2b.steps.map((step) => (
+                <li set:html={step} />
+              ))}
+            </ol>
+            <p class="mag-instr-p mag-instr-p--win">{card2b.winText}</p>
             {card2b.footnote ? <p class="mag-instr-footnote">{card2b.footnote}</p> : null}
+          </div>
+          <div class="mag-instr-ornament mag-instr-ornament--foot">
+            <span class="mag-instr-star">✦</span>
           </div>
         </article>
       </div>
@@ -208,6 +198,12 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
     --instr-ivory: #f7efd9;
     --instr-display: 'Cormorant Garamond', Georgia, serif;
     --instr-body: 'Manrope', system-ui, sans-serif;
+    /* One body scale for all four faces; sized to fit the fullest card (1b / rules). */
+    --instr-text: clamp(0.84rem, 3.4vw, 1rem);
+    --instr-text-line: 1.44;
+    --instr-kicker-size: clamp(1.15rem, 4.85vw, 1.48rem);
+    --instr-section-size: clamp(0.88rem, 3.5vw, 1.02rem);
+    --instr-footnote-size: clamp(0.76rem, 3.05vw, 0.88rem);
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
@@ -343,8 +339,8 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
     color: var(--instr-ivory);
     text-align: center;
     font-family: var(--instr-body);
-    font-size: clamp(0.72rem, 3.05vw, 0.9rem);
-    line-height: 1.42;
+    font-size: var(--instr-text);
+    line-height: var(--instr-text-line);
     box-shadow:
       0 0.85rem 1.75rem rgba(0, 0, 0, 0.45),
       inset 0 0 0 1px rgba(201, 170, 91, 0.28);
@@ -424,7 +420,14 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
     display: flex;
     align-items: center;
     gap: 0.65rem;
-    margin: 0.2rem 0 0.45rem;
+    margin: 0.35rem 0 0;
+    flex-shrink: 0;
+  }
+
+  .mag-instr-ornament--foot {
+    margin-top: auto;
+    margin-bottom: 0;
+    padding-top: clamp(0.35rem, 1.6vw, 0.65rem);
   }
 
   .mag-instr-ornament::before,
@@ -444,7 +447,7 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
   .mag-instr-kicker {
     margin: 0 0 0.4rem;
     font-family: var(--instr-display);
-    font-size: clamp(1.2rem, 5.1vw, 1.65rem);
+    font-size: var(--instr-kicker-size);
     font-weight: 700;
     letter-spacing: 0.06em;
     line-height: 1.18;
@@ -456,8 +459,8 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
 
   .mag-instr-highlight {
     margin: 0 0 0.4rem;
-    font-size: clamp(0.78rem, 3.2vw, 0.92rem);
-    line-height: 1.32;
+    font-size: var(--instr-text);
+    line-height: var(--instr-text-line);
   }
 
   .mag-instr-highlight strong {
@@ -467,8 +470,8 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
   .mag-instr-copy {
     margin: 0;
     padding: 0 0.1rem;
-    font-size: clamp(0.74rem, 3vw, 0.88rem);
-    line-height: 1.36;
+    font-size: var(--instr-text);
+    line-height: var(--instr-text-line);
   }
 
   .mag-instr-teaser {
@@ -508,8 +511,8 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
     gap: 0.45rem;
     align-items: center;
     margin: 0.3rem 0;
-    line-height: 1.34;
-    font-size: clamp(0.68rem, 2.75vw, 0.82rem);
+    line-height: var(--instr-text-line);
+    font-size: var(--instr-text);
   }
 
   .mag-instr-suit__thumb {
@@ -523,19 +526,20 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
     box-shadow: 0 0.22rem 0.55rem rgba(0, 0, 0, 0.45);
   }
 
-  .mag-instr-suit__meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.12rem;
+  .mag-instr-suit__text {
+    margin: 0;
+    flex: 1;
     min-width: 0;
     text-align: left;
   }
 
+  .mag-instr-suit__lead {
+    white-space: nowrap;
+  }
+
   .mag-instr-suit__sym {
-    flex: none;
     color: var(--instr-gold);
-    font-size: 0.95em;
+    font-size: 1.05em;
     line-height: 1;
   }
 
@@ -554,14 +558,16 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
     overflow-y: auto;
     min-height: 0;
     padding-right: 0.1rem;
-    font-size: clamp(0.72rem, 2.95vw, 0.88rem);
+    font-size: var(--instr-text);
+    line-height: var(--instr-text-line);
   }
 
   .mag-instr-lede {
     margin: 0;
     text-align: center;
     font-weight: 600;
-    font-size: clamp(0.76rem, 3.05vw, 0.92rem);
+    font-size: var(--instr-text);
+    line-height: var(--instr-text-line);
   }
 
   .mag-instr-lede--goal {
@@ -570,8 +576,8 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
 
   .mag-instr-goal {
     margin: 0 0 0.3rem;
-    font-size: clamp(0.72rem, 2.95vw, 0.88rem);
-    line-height: 1.38;
+    font-size: inherit;
+    line-height: inherit;
   }
 
   .mag-instr-section {
@@ -580,8 +586,8 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
 
   .mag-instr-section__title {
     margin: 0 0 0.22rem;
-    font-family: var(--instr-display);
-    font-size: clamp(0.8rem, 3.2vw, 0.96rem);
+    font-family: var(--instr-body);
+    font-size: var(--instr-section-size);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-align: center;
@@ -596,14 +602,81 @@ const suitThumb: Record<'hearts' | 'diamonds' | 'clubs' | 'spades', string> = {
   .mag-instr-steps li,
   .mag-instr-list li {
     margin: 0.24rem 0;
-    line-height: 1.4;
+    line-height: inherit;
   }
 
   .mag-instr-footnote {
     margin: 0.4rem 0 0;
-    font-size: clamp(0.68rem, 2.8vw, 0.82rem);
+    font-size: var(--instr-footnote-size);
+    line-height: var(--instr-text-line);
     text-align: center;
     opacity: 0.92;
+  }
+
+  .mag-instr-card--1a .mag-instr-teaser {
+    justify-content: space-evenly;
+    gap: clamp(0.75rem, 3.6vw, 1.25rem);
+    padding: clamp(0.2rem, 1.2vw, 0.5rem) 0.08rem 0.15rem;
+    min-height: 0;
+    text-align: center;
+  }
+
+  .mag-instr-card--1a .mag-instr-p {
+    text-align: center;
+    line-height: 1.52;
+  }
+
+  .mag-instr-card--2a .mag-instr-rules {
+    justify-content: space-evenly;
+    gap: clamp(0.35rem, 1.8vw, 0.65rem);
+    overflow-y: hidden;
+  }
+
+  .mag-instr-card--2a .mag-instr-goal {
+    font-size: inherit;
+    line-height: inherit;
+    margin: 0;
+  }
+
+  .mag-instr-card--2a .mag-instr-section {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .mag-instr-card--2a .mag-instr-section__title {
+    margin-bottom: clamp(0.28rem, 1.4vw, 0.45rem);
+  }
+
+  .mag-instr-card--2a .mag-instr-steps {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    padding-left: 1.1rem;
+  }
+
+  .mag-instr-card--2a .mag-instr-steps li {
+    margin: 0;
+    line-height: inherit;
+  }
+
+  .mag-instr-card--2b .mag-instr-rules {
+    justify-content: space-evenly;
+    gap: clamp(0.3rem, 1.5vw, 0.55rem);
+  }
+
+  .mag-instr-card--2b .mag-instr-steps li {
+    margin: clamp(0.22rem, 1.1vw, 0.38rem) 0;
+  }
+
+  .mag-instr-p--win {
+    margin: 0;
+    text-align: center;
+    font-weight: 600;
   }
 
   .mag-instr-card--1b {

@@ -12,7 +12,7 @@
     </style>
   </head>
   <body>
-    <main class="card back">
+    <main class="card back back--magister-game">
       <span class="card-frame" aria-hidden="true"></span>
       <header class="intro">
         <h2 class="intro-kicker">ИГРА «МАГИСТР»</h2>
@@ -24,35 +24,22 @@
           <p class="rules-lede rules-lede--goal">Цель — первым сбросить все карты</p>
         </div>
 
-        <p class="rules-p">
-          Раздайте каждому по 8 карт. Одну карту из колоды откройте в центре стола.
+        <ol class="rules-steps">
+          <li>Раздайте каждому по 8 карт. Одну карту из колоды откройте в центре стола.</li>
+          <li>
+            Игрок сбрасывает карту той же масти или ранга, что и открытая карта (джокер подходит к любой масти и
+            может задать новую масть).
+          </li>
+          <li>Если подходящей карты нет — возьмите одну карту из колоды. Ход переходит к следующему игроку.</li>
+          <li>Если колода закончилась — перетасуйте сброс, оставив верхнюю карту на столе.</li>
+        </ol>
+
+        <p class="rules-p rules-p--win">
+          Первый игрок, избавившийся от всех карт, становится Магистром!
         </p>
-
-        <section class="rules-section">
-          <h3 class="rules-section__title">ВАШ ХОД</h3>
-          <p class="rules-p">Положите на верхнюю карту сброса карту той же масти или ранга.</p>
-        </section>
-
-        <section class="rules-section">
-          <h3 class="rules-section__title">ЕСЛИ НЕТ ПОДХОДЯЩЕЙ КАРТЫ</h3>
-          <p class="rules-p">Возьмите одну карту из колоды. Если она не подходит — пропустите ход.</p>
-        </section>
-
-        <section class="rules-section">
-          <h3 class="rules-section__title">ОСОБЫЕ ПРАВИЛА</h3>
-          <ul class="rules-list">
-            <li>Джокер подходит к любой карте. Сыграв его, назовите масть.</li>
-            <li>Колода закончилась? Перетасуйте сброс, оставив верхнюю карту на столе.</li>
-          </ul>
-        </section>
-
-        <section class="rules-section">
-          <h3 class="rules-section__title">ПОБЕДА</h3>
-          <p class="rules-p">Первый игрок, избавившийся от всех карт, становится Магистром!</p>
-        </section>
       </div>
 
-      <div class="back-bottom">
+      <div class="card-foot card-foot--stack">
         <div class="ornament"><span class="star">✦</span></div>
         <footer class="footer footer--back">
           <p class="footer-line footer-line--secondary">Колода подходит и для других классических карточных игр.</p>

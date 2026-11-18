@@ -16,11 +16,14 @@
   --font-body: "Manrope", system-ui, -apple-system, sans-serif;
   /* Instruction faces: display (Cormorant), body (Manrope) */
   --instruction-deck-title: 32px;
-  --instruction-text-lg: 26px;
+  /* Single body size on all four instruction faces (Manrope). */
+  --instruction-text-body: 26px;
+  --instruction-text-line: 1.42;
+  --instruction-text-lg: var(--instruction-text-body);
   --instruction-text-sm: 22px;
-  /* Back face: slightly smaller body, looser lines */
-  --instruction-rules-text: 24px;
-  --instruction-rules-line: 1.48;
+  --instruction-rules-text: var(--instruction-text-body);
+  --instruction-rules-line: var(--instruction-text-line);
+  --instruction-section-title: 24px;
   --card-back-blur: 10px;
   --card-back-dim-opacity: 0.2;
 }
@@ -126,11 +129,6 @@ body {
   padding-bottom: 18px;
 }
 
-.card.front.front--no-logo > .ornament:first-child {
-  margin-top: 0;
-  margin-bottom: 18px;
-}
-
 .card.front.front--no-logo .intro {
   margin-bottom: 14px;
 }
@@ -156,11 +154,17 @@ body {
   padding: 0 6px;
 }
 
-/* Push divider + CTA + QR toward bottom; flex gap above ornament */
-.card.front.front--no-logo > .copy + .ornament {
+.card-foot {
   margin-top: auto;
-  padding-top: 20px;
-  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.card-foot .ornament {
+  margin: 0;
+}
+
+.card-foot--stack .footer {
+  margin-top: 8px;
 }
 
 .card.front.front--no-logo .footer {
@@ -180,10 +184,6 @@ body {
 
 .card.back.back--with-logo .intro {
   margin-bottom: 10px;
-}
-
-.card.back.back--with-logo > .logo + .ornament {
-  margin: 6px 0 12px;
 }
 
 .card.back.back--with-logo .rules-lede {
@@ -253,8 +253,8 @@ h1 {
 
 .front .intro-highlight,
 .face-1a .intro-highlight {
-  font-size: var(--instruction-text-sm);
-  line-height: 1.3;
+  font-size: var(--instruction-text-body);
+  line-height: var(--instruction-text-line);
   margin: 0 0 14px;
 }
 
@@ -266,8 +266,8 @@ h1 {
 }
 
 .front .intro-copy {
-  font-size: var(--instruction-text-sm);
-  line-height: 1.3;
+  font-size: var(--instruction-text-body);
+  line-height: var(--instruction-text-line);
   margin: 0;
   padding: 0 8px;
 }
@@ -281,31 +281,38 @@ h1 {
 .suit {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 16px;
   font-family: var(--font-body);
-  font-size: 27px;
-  line-height: 1.3;
+  font-size: var(--instruction-text-body);
+  line-height: var(--instruction-text-line);
   margin: 8px 0;
 }
 
-/* Description — Manrope Regular */
-.suit > span:last-child {
+.suit__thumb {
+  flex: 0 0 auto;
+  display: block;
+  width: 72px;
+  height: auto;
+  aspect-ratio: 63 / 88;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.suit__text {
+  margin: 0;
   flex: 1;
   min-width: 0;
   font-weight: 400;
 }
 
-/* Pip column — vertical center aligns with multi-line copy */
-.symbol {
-  flex: 0 0 72px;
-  width: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.suit__lead {
+  white-space: nowrap;
+}
+
+.suit__sym {
   color: var(--gold);
-  font-family: var(--font-body);
   font-weight: 400;
-  font-size: 64px;
   line-height: 1;
 }
 
@@ -317,8 +324,8 @@ h1 {
 }
 
 .copy {
-  font-size: 22px;
-  line-height: 1.3;
+  font-size: var(--instruction-text-body);
+  line-height: var(--instruction-text-line);
   margin: 15px 0;
 }
 
@@ -356,24 +363,21 @@ h1 {
   padding-right: 38px;
 }
 
-.card.face-1a .intro--teaser {
-  margin-bottom: 6px;
-}
-
 .card.face-1a .teaser-body {
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-evenly;
   text-align: center;
-  padding: 0 6px 8px;
+  padding: 0 4px 14px;
+  min-height: 0;
 }
 
 .card.face-1a .teaser-p {
-  font-size: 21px;
-  line-height: 1.36;
-  margin: 0 0 14px;
-  font-weight: 400;
+  font-size: var(--instruction-text-body);
+  line-height: 1.52;
+  margin: 0;
+  font-weight: 500;
 }
 
 .card.face-1a .teaser-p--hook {
@@ -395,8 +399,8 @@ h1 {
   font-weight: 600;
 }
 
-.card.face-1a .ornament {
-  margin: 6px 0 12px;
+.card.face-1a .card-foot {
+  padding-top: 14px;
 }
 
 .card.face-1a .footer-line--hint {
@@ -434,21 +438,70 @@ h1 {
   font-size: var(--instruction-text-sm);
 }
 
-/*
- * Divider before footer — front: after rank copy.
- */
-.card.front > .copy + .ornament {
-  margin-top: 2px;
-  margin-bottom: 2px;
+.card.front.front--no-logo > .copy + .card-foot {
+  padding-top: 16px;
 }
 
-.card.back .ornament {
-  margin: 8px 0 12px;
+/* Card 2A — Initiation: larger type, even vertical rhythm */
+.card.back.back--initiation .rules-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
-.card.back .back-bottom .ornament {
-  margin-top: 4px;
-  margin-bottom: 6px;
+
+.card.back.back--initiation .rules-section {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  margin: 0;
+}
+
+.card.back.back--initiation .rules-section__title {
+  font-size: var(--instruction-section-title);
+  margin-bottom: 10px;
+}
+
+.card.back.back--initiation .rules-steps {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.card.back.back--initiation .rules-steps li {
+  margin: 0;
+}
+
+.card.back.back--initiation .rules-p--goal {
+  margin: 0;
+}
+
+.card.back.back--initiation .rules-p--note {
+  margin: 0;
+}
+
+.card.back.back--magister-game .rules-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.card.back.back--magister-game .rules-steps li {
+  margin: 0 0 8px;
+}
+
+.card.back.back--magister-game .rules-steps li:last-child {
+  margin-bottom: 0;
+}
+
+.card.back.back--magister-game .rules-p--win {
+  margin: 0;
+  text-align: center;
+  font-weight: 600;
+  font-size: var(--instruction-text-body);
+  line-height: var(--instruction-text-line);
 }
 
 /* Rules column — left aligned, smaller type + looser leading */
@@ -495,7 +548,7 @@ h1 {
 
 .card.back .rules-section__title {
   font-family: var(--font-body);
-  font-size: var(--instruction-text-sm);
+  font-size: var(--instruction-section-title);
   font-weight: 700;
   letter-spacing: 0.12em;
   line-height: 1.35;
