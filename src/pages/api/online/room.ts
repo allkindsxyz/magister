@@ -119,7 +119,9 @@ export const POST: APIRoute = async ({ request, url }) => {
     const token = playerToken(body);
     if (!token) return json({ ok: false, error: 'no_token' }, 400);
     const result = beginGame(room, token);
-    if (!result.ok) return json({ ok: false, error: result.error }, 400);
+    if (!result.ok) {
+      return json({ ok: false, error: result.error, room: toClientView(room, token) }, 400);
+    }
     touchPresence(room, token);
     saveRoom(room);
     return json({ ok: true, room: toClientView(room, token) });

@@ -319,6 +319,7 @@ export function mountOnlineTable(
   let pendingInviteRoom: string | null = opts.initialRoom?.toUpperCase() ?? null;
   let inviteUrl = '';
   let pollTimer: number | null = null;
+  let pollGeneration = 0;
   let lastVersion = -1;
   let view: ClientRoomView | null = null;
   let lastTurnSeat: number | null = null;
@@ -409,9 +410,10 @@ export function mountOnlineTable(
   }
 
   function applyRoomFromServer(room: ClientRoomView, options?: { force?: boolean }): void {
+    if (!options?.force && room.version < lastVersion) return;
     view = room;
-    if (options?.force || view.version !== lastVersion) {
-      lastVersion = view.version;
+    if (options?.force || room.version > lastVersion) {
+      lastVersion = room.version;
       paint();
     }
   }
@@ -426,6 +428,28 @@ export function mountOnlineTable(
           !(you !== null && e.seat === you && e.kind !== 'reshuffle'),
       )
       .sort((a, b) => a.version - b.version);
+  }
+
+  function pendingOpponentPlayEvents(room: ClientRoomView = view!): RoomActionEvent[] {
+    return pendingOpponentEvents(room).filter((e) => e.kind === 'play' && Boolean(e.image));
+  }
+
+  function centerShowsImage(image: string): boolean {
+    if (!image) return false;
+    if (displayedCenterImage === image) return true;
+    const top = discardEl?.querySelector<HTMLImageElement>('.mag-online-card__face--top');
+    if (!top || top.hidden) return false;
+    const src = top.currentSrc || top.src;
+    return src.length > 0 && src.includes(image);
+  }
+
+  function hideCenterTopForIncomingFly(incomingImage: string): void {
+    if (!incomingImage || !centerShowsImage(incomingImage)) return;
+    const layers = ensureDiscardLayers();
+    if (!layers) return;
+    layers.top.hidden = true;
+    layers.top.removeAttribute('src');
+    displayedCenterImage = null;
   }
 
   function handCountAtReplay(
@@ -791,6 +815,7 @@ export function mountOnlineTable(
       window.clearInterval(pollTimer);
       pollTimer = null;
     }
+    pollGeneration += 1;
   }
 
   function startPoll(): void {
@@ -903,7 +928,9 @@ export function mountOnlineTable(
 
   async function refresh(): Promise<void> {
     if (!roomId) return;
+    const generation = pollGeneration;
     const res = await api('state');
+    if (generation !== pollGeneration) return;
     const data = (await res.json()) as {
       ok?: boolean;
       room?: ClientRoomView;
@@ -1696,6 +1723,7 @@ export function mountOnlineTable(
     flyImg.height = 616;
     flyImg.removeAttribute('draggable');
     oldTop?.remove();
+    flyImg.hidden = false;
     discardEl.appendChild(flyImg);
 
     displayedCenterImage = image;
@@ -1739,6 +1767,7 @@ export function mountOnlineTable(
 
   function renderDiscard(): void {
     if (!view) return;
+    if (discardRenderHold > 0 || pendingOpponentPlayEvents().length > 0) return;
     if (!view.topDiscard) {
       clearCenterDiscard();
       return;
@@ -1800,6 +1829,7 @@ export function mountOnlineTable(
     pile?.classList.add('is-acting');
     discardRenderHold += 1;
     try {
+      hideCenterTopForIncomingFly(ev.image);
       const jokerSuit = jokerSuitForPlayEvent(ev);
       await flyCardOntoCenter(from, toRect, ev.image, jokerSuit, motionMs(460));
       if (ev.image) {
@@ -2033,8 +2063,10 @@ export function mountOnlineTable(
 
       for (let i = 0; i < pending.length; i += 1) {
         const ev = pending[i]!;
-        lastActionVersion = ev.version;
-        if (you !== null && ev.seat === you && ev.kind !== 'reshuffle') continue;
+        if (you !== null && ev.seat === you && ev.kind !== 'reshuffle') {
+          lastActionVersion = ev.version;
+          continue;
+        }
 
         await sleep(BOT_TURN_GAP_MS);
         if (ev.kind === 'play') {
@@ -2044,6 +2076,7 @@ export function mountOnlineTable(
 
         if (ev.kind === 'play') {
           await animateOpponentPlay(ev, pending, i);
+          lastActionVersion = ev.version;
           discardReplayed = true;
           if (view.youSeat !== null) {
             paintAllOpponents(ev.seat, (seatIdx) => handCountAtReplay(seatIdx, pending, i + 1));
@@ -2051,8 +2084,10 @@ export function mountOnlineTable(
         } else if (ev.kind === 'draw') {
           replayOpponentStacks(pending, i);
           await animateOpponentDraw(ev, pending, i);
+          lastActionVersion = ev.version;
         } else if (ev.kind === 'reshuffle') {
           await animateReshuffle(ev);
+          lastActionVersion = ev.version;
           discardReplayed = true;
         }
       }
@@ -2131,6 +2166,7 @@ export function mountOnlineTable(
       !discardReplayed &&
       discardRenderHold === 0 &&
       !dealIntroJustFinished &&
+      pendingOpponentPlayEvents().length === 0 &&
       pendingOpponentEvents().length === 0
     ) {
       renderDiscard();
@@ -2424,9 +2460,11 @@ export function mountOnlineTable(
     void (async () => {
       if (!roomId) return;
       stopPoll();
+      const rematchGeneration = pollGeneration;
       if (endPanel) endPanel.hidden = true;
       table?.classList.remove('is-finished');
       const res = await api('rematch');
+      if (rematchGeneration !== pollGeneration) return;
       const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
       if (!data.ok || !data.room) {
         setStatus(opts.copy.error_generic);
@@ -2663,12 +2701,22 @@ export function mountOnlineTable(
     if (lobbyStartBtn) lobbyStartBtn.disabled = true;
     try {
       const res = await api('start');
-      const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView };
-      if (data.room) {
-        resetDealPlaybackFlags();
-        applyRoomFromServer(data.room, { force: true });
-        await whenPainted();
+      const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
+      if (!data.ok || !data.room) {
+        if (data.room) applyRoomFromServer(data.room, { force: true });
+        if (data.error === 'need_players') setStatus(opts.copy.need_players);
+        else if (data.error === 'waiting_rematch') setStatus(opts.copy.waiting);
+        else setStatus(opts.copy.error_generic);
+        return;
       }
+      if (data.room.phase !== 'playing') {
+        applyRoomFromServer(data.room, { force: true });
+        setStatus(opts.copy.error_generic);
+        return;
+      }
+      resetDealPlaybackFlags();
+      applyRoomFromServer(data.room, { force: true });
+      await whenPainted();
     } finally {
       if (lobbyStartBtn && view?.phase === 'lobby') lobbyStartBtn.disabled = false;
     }

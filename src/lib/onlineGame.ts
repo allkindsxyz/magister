@@ -205,11 +205,32 @@ function seatIsOnline(seat: PlayerSeat, now = Date.now()): boolean {
 }
 
 export function beginGame(room: RoomState, token: string): { ok: boolean; error?: string } {
-  if (room.phase !== 'lobby') return { ok: false, error: 'not_lobby' };
-  if (!lobbyReadyToDeal(room)) return { ok: false, error: 'need_players' };
   const seat = seatForToken(room, token);
   if (seat === null) return { ok: false, error: 'not_in_room' };
-  startGame(room, seat);
+
+  if (room.phase === 'finished') {
+    if (room.rematchGathering && allHumansRematchAcked(room)) {
+      returnRoomToLobby(room);
+    } else {
+      return { ok: false, error: 'not_lobby' };
+    }
+  }
+
+  if (room.phase !== 'lobby') return { ok: false, error: 'not_lobby' };
+
+  if (room.rematchGathering) {
+    if (allHumansRematchAcked(room)) {
+      room.rematchGathering = false;
+      room.rematchAtTable = [];
+    } else {
+      return { ok: false, error: 'waiting_rematch' };
+    }
+  }
+
+  if (!lobbyReadyToDeal(room)) return { ok: false, error: 'need_players' };
+
+  const started = startGame(room, seat);
+  if (!started) return { ok: false, error: 'need_players' };
   return { ok: true };
 }
 
@@ -322,11 +343,11 @@ function pickRandomSuit(): PlaySuit {
   return suits[Math.floor(Math.random() * suits.length)];
 }
 
-export function startGame(room: RoomState, firstTurnSeat?: number): void {
-  if (room.phase !== 'lobby' && room.phase !== 'finished' && room.phase !== 'playing') return;
+export function startGame(room: RoomState, firstTurnSeat?: number): boolean {
+  if (room.phase !== 'lobby' && room.phase !== 'finished' && room.phase !== 'playing') return false;
   clearMidGameJoinState(room);
   const occ = occupiedSeatIndices(room);
-  if (occ.length < MIN_PLAYERS) return;
+  if (occ.length < MIN_PLAYERS) return false;
 
   room.events = [];
   room.winnerSeat = null;
@@ -353,6 +374,7 @@ export function startGame(room: RoomState, firstTurnSeat?: number): void {
   room.winnerSeat = null;
   room.phase = 'playing';
   bump(room);
+  return true;
 }
 
 function humanSeats(room: RoomState): PlayerSeat[] {
@@ -701,7 +723,7 @@ export function toClientView(room: RoomState, token: string | null): ClientRoomV
     yourHand: youSeat !== null ? room.hands[youSeat].map((c) => ({ ...c })) : null,
     isYourTurn: youSeat !== null && room.turnSeat === youSeat && room.phase === 'playing',
     needChooseSuit: youSeat !== null && room.pendingSuitSeat === youSeat,
-    readyToStart: phase === 'lobby' && lobbyReadyToDeal(room),
+    readyToStart: room.phase === 'lobby' && lobbyReadyToDeal(room),
     seatedCount: seatedCount(room),
     maxSeats: SEATS,
     wins:
