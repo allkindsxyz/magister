@@ -1309,6 +1309,8 @@ export function mountOnlineTable(
       btn.classList.remove('mag-online-hand-card--deal', 'is-revealed');
       btn.disabled = true;
       btn.classList.remove('is-playable');
+      btn.style.transition = '';
+      btn.style.transform = '';
       if (front) {
         front.removeAttribute('class');
         btn.replaceChildren(front);
@@ -1485,26 +1487,74 @@ export function mountOnlineTable(
     }
   }
 
-  async function revealDealHand(): Promise<void> {
-    if (!handEl) return;
-    const cards = [...handEl.querySelectorAll<HTMLElement>('.mag-online-hand-card--deal')];
+  async function spreadDealHandFromOrigin(room: ClientRoomView, origin: DOMRect): Promise<void> {
+    if (!handEl || !room.yourHand || room.yourHand.length !== HAND_SIZE) return;
+    const cards = room.yourHand;
+
     if (reducedMotion()) {
-      cards.forEach((btn) => btn.classList.add('is-revealed'));
-      await sleep(motionMs(80));
+      handEl.innerHTML = '';
+      cards.forEach((c) => {
+        handEl.appendChild(createHandCardButton(c));
+      });
+      lastHandKey = cards.map((c) => c.id).join('|');
       return;
     }
+
+    const btns = cards.map((c) => createDealHandCard(c));
+    btns.forEach((btn) => {
+      btn.classList.add('is-flying');
+      handEl.appendChild(btn);
+    });
+
+    await new Promise<void>((resolve) => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => resolve());
+      });
+    });
+
+    const spreadMs = motionMs(380);
+    const spreadEasing = 'cubic-bezier(0.22, 0.92, 0.28, 1)';
+
+    btns.forEach((btn) => {
+      const slot = btn.getBoundingClientRect();
+      const dx = origin.left - slot.left;
+      const dy = origin.top - slot.top;
+      btn.style.transition = 'none';
+      btn.style.transform = `translate(${dx}px, ${dy}px)`;
+    });
+
+    btns.forEach((btn) => btn.classList.remove('is-flying'));
+    await sleep(motionMs(50));
+
     await Promise.all(
-      cards.map(
+      btns.map(
         (btn, i) =>
           new Promise<void>((resolve) => {
             window.setTimeout(() => {
               btn.classList.add('is-revealed');
-              resolve();
-            }, motionMs(40 + i * 38));
+              btn.style.transition = `transform ${spreadMs}ms ${spreadEasing}`;
+              btn.style.transform = '';
+              let settled = false;
+              const finish = (): void => {
+                if (settled) return;
+                settled = true;
+                resolve();
+              };
+              btn.addEventListener(
+                'transitionend',
+                (ev) => {
+                  if (ev.target === btn && ev.propertyName === 'transform') finish();
+                },
+                { once: true },
+              );
+              window.setTimeout(finish, spreadMs + motionMs(90));
+            }, motionMs(55 + i * 42));
           }),
       ),
     );
-    await sleep(motionMs(520));
+
+    await sleep(motionMs(460));
+    settleDealHandInPlace(room);
   }
 
   async function flyDealBurst(
@@ -1847,20 +1897,7 @@ export function mountOnlineTable(
   async function dealHandToYou(room: ClientRoomView): Promise<void> {
     if (!handEl || !room.yourHand || room.yourHand.length !== HAND_SIZE) return;
     handEl.innerHTML = '';
-    const pile = pileRect(handFrame ?? handEl);
-    const targets = Array.from({ length: HAND_SIZE }, () => pile);
-    const cards = room.yourHand;
-    let landed = 0;
-    await flyDealBurst(targets, (landIndex) => {
-      landed = Math.max(landed, landIndex + 1);
-      const card = cards[landIndex];
-      if (card) handEl.appendChild(createDealHandCard(card));
-    });
-    for (let i = landed; i < HAND_SIZE; i += 1) {
-      handEl.appendChild(createDealHandCard(cards[i]!));
-    }
-    await revealDealHand();
-    settleDealHandInPlace(room);
+    await spreadDealHandFromOrigin(room, deckRect());
   }
 
   async function dealHandToOpponent(
