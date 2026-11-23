@@ -1,4 +1,4 @@
-import { createRoomId, joinRoom, newRoom, type RoomState } from './onlineGame';
+import { createRoomId, joinRoom, newRoom, SEATS, type RoomState } from './onlineGame';
 
 const rooms = new Map<string, RoomState>();
 const ROOM_TTL_MS = 6 * 60 * 60 * 1000;
@@ -23,7 +23,15 @@ export function createOnlineRoom(lang: string, hintsEnabled = true): RoomState {
 
 export function getOnlineRoom(id: string): RoomState | undefined {
   const room = rooms.get(id.toUpperCase());
-  if (room && (!room.wins || room.wins.length !== 3)) room.wins = [0, 0, 0];
+  if (room) {
+    if (!room.wins?.length) {
+      room.wins = Array.from({ length: SEATS }, () => 0);
+    } else if (room.wins.length < SEATS) {
+      room.wins = [...room.wins, ...Array(SEATS - room.wins.length).fill(0)];
+    } else if (room.wins.length > SEATS) {
+      room.wins = room.wins.slice(0, SEATS);
+    }
+  }
   if (room && room.hintsEnabled === undefined) room.hintsEnabled = true;
   if (room && !room.pendingMidGameJoins) room.pendingMidGameJoins = [];
   if (room && room.rematchAtTable === undefined) room.rematchAtTable = [];
