@@ -33,6 +33,16 @@ function pickSuit(): PlaySuit {
   return suits[Math.floor(Math.random() * suits.length)]!;
 }
 
+/** After a joker: match the last card’s suit when one card remains (finish on the next turn). */
+function pickSuitForBot(room: RoomState, seat: number): PlaySuit {
+  const hand = room.hands[seat];
+  if (hand?.length === 1) {
+    const last = hand[0]!;
+    if (last.suit !== 'joker') return last.suit;
+  }
+  return pickSuit();
+}
+
 function pickCardToPlay(hand: PlayCard[], top: NonNullable<RoomState['discardTop']>): PlayCard | null {
   const playable = hand.filter((c) => canPlayOnTop(c, top));
   if (playable.length === 0) return null;
@@ -86,7 +96,7 @@ export function runBotTurns(room: RoomState, maxSteps = 64): void {
       const seat = room.pendingSuitSeat;
       const token = room.seats[seat]?.token;
       if (!token || !isBotToken(token)) return;
-      const res = chooseSuit(room, token, pickSuit());
+      const res = chooseSuit(room, token, pickSuitForBot(room, seat));
       if (!res.ok) return;
       continue;
     }
@@ -105,7 +115,7 @@ export function runBotTurns(room: RoomState, maxSteps = 64): void {
       if (!res.ok) {
         drawCard(room, token);
       } else if (room.pendingSuitSeat === turn) {
-        chooseSuit(room, token, pickSuit());
+        chooseSuit(room, token, pickSuitForBot(room, turn));
       }
     } else {
       drawCard(room, token);
