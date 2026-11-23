@@ -82,18 +82,20 @@ const ways = copy.ways.map((way) => ({
                           ))}
                         </ul>
                       </section>
-                      <section class="play-ways__more-section">
-                        <h4>{way.details.bridgesTitle}</h4>
-                        <ul class="play-ways__bridges">
-                          {way.details.bridges.map((item) => (
-                            <li>
-                              <span class="play-ways__bridge-mark">{item.mark}</span>
-                              <span class="play-ways__bridge-name">{item.name}</span>
-                              <span class="play-ways__bridge-suits">{item.suits}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </section>
+                      {way.details.bridges.length > 0 && (
+                        <section class="play-ways__more-section">
+                          <h4>{way.details.bridgesTitle}</h4>
+                          <ul class="play-ways__bridges">
+                            {way.details.bridges.map((item) => (
+                              <li>
+                                <span class="play-ways__bridge-mark">{item.mark}</span>
+                                <span class="play-ways__bridge-name">{item.name}</span>
+                                <span class="play-ways__bridge-suits">{item.suits}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </section>
+                      )}
                     </div>
                   </details>
                 )}
