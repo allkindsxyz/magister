@@ -4,6 +4,7 @@ import {
   beginGame,
   chooseSuit,
   drawCard,
+  isPreGameTable,
   playCard,
   rematchRoom,
   removeBotAtSeat,
@@ -186,6 +187,9 @@ export const POST: APIRoute = async ({ request, url }) => {
     if (!token) return json({ ok: false, error: 'no_token' }, 400);
     if (seatForToken(room, token) === null) {
       return json({ ok: false, error: 'not_in_room' }, 403);
+    }
+    if (!isPreGameTable(room)) {
+      return json({ ok: false, error: 'not_lobby' }, 400);
     }
     const result = addOneBot(room);
     if (!result.ok) return json({ ok: false, error: result.error }, 400);

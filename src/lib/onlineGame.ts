@@ -502,7 +502,7 @@ export function setRoomHints(
   token: string,
   hintsEnabled: boolean,
 ): { ok: boolean; error?: string } {
-  if (room.phase !== 'lobby') return { ok: false, error: 'not_lobby' };
+  if (!isPreGameTable(room)) return { ok: false, error: 'not_lobby' };
   const seat = seatForToken(room, token);
   if (seat === null) return { ok: false, error: 'not_in_room' };
   const self = room.seats[seat];
@@ -512,13 +512,17 @@ export function setRoomHints(
   return { ok: true };
 }
 
-/** Lobby only — clear a single bot seat before the hand starts. */
+export function isPreGameTable(room: RoomState): boolean {
+  return room.phase === 'lobby' || (room.phase === 'finished' && room.rematchGathering === true);
+}
+
+/** Before the deal — clear a single bot seat (lobby or rematch gathering at the table). */
 export function removeBotAtSeat(
   room: RoomState,
   token: string,
   targetSeat: number,
 ): { ok: boolean; error?: string } {
-  if (room.phase !== 'lobby') return { ok: false, error: 'not_lobby' };
+  if (!isPreGameTable(room)) return { ok: false, error: 'not_lobby' };
   if (seatForToken(room, token) === null) return { ok: false, error: 'not_in_room' };
   if (targetSeat < 0 || targetSeat >= SEATS) return { ok: false, error: 'bad_seat' };
   const target = room.seats[targetSeat];

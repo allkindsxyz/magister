@@ -1459,7 +1459,10 @@ export function mountOnlineTable(
 
     lobbyField?.removeAttribute('hidden');
     midEl?.classList.toggle('mag-online-mid--lobby-wait', waitingForPlayers);
-    lobbyStartBtn?.toggleAttribute('hidden', !ready);
+    if (lobbyStartBtn) {
+      lobbyStartBtn.toggleAttribute('hidden', !ready);
+      lobbyStartBtn.disabled = false;
+    }
     if (lobbyAddBotBtn) lobbyAddBotBtn.disabled = filled >= max;
     syncHintsRadiosFromView();
 
@@ -2534,7 +2537,7 @@ export function mountOnlineTable(
     const res = await api('removeBot', { seat: seatIdx });
     const data = (await res.json()) as { ok?: boolean; room?: ClientRoomView; error?: string };
     if (data.room) {
-      applyRoomFromServer(data.room);
+      applyRoomFromServer(data.room, { force: true });
     } else {
       setStatus(opts.copy.error_generic);
     }
@@ -2610,6 +2613,7 @@ export function mountOnlineTable(
   root.querySelector('[data-online-arena]')?.addEventListener('click', (event) => {
     const btn = (event.target as Element).closest<HTMLButtonElement>('[data-seat-remove]');
     if (!btn || btn.hidden) return;
+    if (!view || view.phase !== 'lobby') return;
     event.preventDefault();
     const player = btn.closest<HTMLElement>('[data-online-left], [data-online-center], [data-online-right]');
     const seatRaw = player?.dataset.seatIndex;
@@ -2697,7 +2701,7 @@ export function mountOnlineTable(
   };
 
   const startLobbyGame = async (): Promise<void> => {
-    if (!roomId || !view || view.phase !== 'lobby' || !view.readyToStart) return;
+    if (!roomId || !view || !view.readyToStart) return;
     if (lobbyStartBtn) lobbyStartBtn.disabled = true;
     try {
       const res = await api('start');
@@ -2718,7 +2722,9 @@ export function mountOnlineTable(
       applyRoomFromServer(data.room, { force: true });
       await whenPainted();
     } finally {
-      if (lobbyStartBtn && view?.phase === 'lobby') lobbyStartBtn.disabled = false;
+      if (lobbyStartBtn && !lobbyStartBtn.hasAttribute('hidden')) {
+        lobbyStartBtn.disabled = false;
+      }
     }
   };
 
