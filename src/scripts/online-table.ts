@@ -256,6 +256,8 @@ export function mountOnlineTable(
   opts: { lang: string; copy: OnlineCopy; initialRoom: string | null },
 ): void {
   if (!root) return;
+  if (root.dataset.onlineReady === '1') return;
+  root.dataset.onlineReady = '1';
 
   const lobby = root.querySelector<HTMLElement>('[data-online-lobby]');
   const table = root.querySelector<HTMLElement>('[data-online-table]');
@@ -309,6 +311,7 @@ export function mountOnlineTable(
 
   let playerToken = localStorage.getItem(PLAYER_KEY) ?? '';
   let createBusy = false;
+  let joinBusy = false;
   let endRevealTimer: number | null = null;
   if (!playerToken) {
     playerToken = crypto.randomUUID();
@@ -847,8 +850,13 @@ export function mountOnlineTable(
   }
 
   function roomCodeFromContext(): string | null {
-    const code = roomId || pendingInviteRoom || parseRoomFromLocation();
-    return code ? code.toUpperCase() : null;
+    return inviteRoomCode();
+  }
+
+  function inviteRoomCode(): string | null {
+    const raw = pendingInviteRoom || roomId || parseRoomFromLocation();
+    const code = raw?.trim().toUpperCase();
+    return code || null;
   }
 
   function fillSavedName(): boolean {
@@ -857,10 +865,17 @@ export function mountOnlineTable(
     return Boolean(nameInput?.value?.trim());
   }
 
+  function hidePrejoinLobby(): void {
+    pendingInviteRoom = null;
+    joinBtn?.setAttribute('hidden', '');
+    createBtn?.setAttribute('hidden', '');
+    lobbyCodeRow?.setAttribute('hidden', '');
+  }
+
   async function enterSeatedRoom(room: ClientRoomView, invite?: string): Promise<void> {
     rememberInviteUrl(invite);
-    pendingInviteRoom = null;
-    showCreateLobbyUi();
+    hidePrejoinLobby();
+    showLobby(false);
     applyRoomFromServer(room, { force: true });
     await whenPainted();
     startPoll();
@@ -2406,9 +2421,12 @@ export function mountOnlineTable(
   }
 
   function showInviteJoinUi(code: string): void {
-    pendingInviteRoom = code.toUpperCase();
+    const upper = code.toUpperCase();
+    pendingInviteRoom = upper;
+    roomId = upper;
     createBtn?.setAttribute('hidden', '');
     joinBtn?.removeAttribute('hidden');
+    if (joinBtn) joinBtn.disabled = false;
     root.querySelector<HTMLElement>('[data-online-lobby]')?.setAttribute('data-lobby-mode', 'invite');
     if (lobbyIntro) lobbyIntro.textContent = opts.copy.join_invite_hint;
     lobbyCodeRow?.setAttribute('hidden', '');
@@ -2419,6 +2437,7 @@ export function mountOnlineTable(
   }
 
   async function joinRoom(id: string): Promise<void> {
+    if (joinBusy) return;
     fillSavedName();
     const name = nameInput?.value?.trim() ?? '';
     if (!name) {
@@ -2426,52 +2445,82 @@ export function mountOnlineTable(
       nameInput?.focus();
       return;
     }
-    localStorage.setItem(DISPLAY_NAME_KEY, name);
-    roomId = id.toUpperCase();
-    const res = await api('join');
-    const data = (await res.json()) as {
-      ok?: boolean;
-      error?: string;
-      inviteUrl?: string;
-      room?: ClientRoomView;
-    };
-    if (!data.ok) {
-      if (data.error === 'full') setStatus(opts.copy.room_full);
-      else if (data.error === 'missing') returnToLobby(opts.copy.room_missing);
-      else setStatus(opts.copy.error_generic);
+    const code = id.trim().toUpperCase();
+    if (!code) {
+      setStatus(opts.copy.error_generic);
       return;
     }
-    rememberInviteUrl(data.inviteUrl ?? buildInviteUrl(roomId));
-    const url = new URL(window.location.href);
-    url.searchParams.set('room', roomId);
-    window.history.replaceState({}, '', url);
-    lastVersion = -1;
-    actionsBootstrapped = false;
-    lastActionVersion = -1;
-    if (data.room) {
-      await enterSeatedRoom(data.room, data.inviteUrl);
-      return;
+    joinBusy = true;
+    if (joinBtn) joinBtn.disabled = true;
+    try {
+      localStorage.setItem(DISPLAY_NAME_KEY, name);
+      roomId = code;
+      pendingInviteRoom = code;
+      setStatus('…');
+      const res = await api('join');
+      const data = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+        inviteUrl?: string;
+        room?: ClientRoomView;
+      };
+      if (!data.ok) {
+        if (data.error === 'full') setStatus(opts.copy.room_full);
+        else if (data.error === 'missing') {
+          returnToLobby(opts.copy.room_missing);
+          showInviteJoinUi(code);
+        } else if (data.error === 'no_token') setStatus(opts.copy.error_generic);
+        else setStatus(opts.copy.error_generic);
+        return;
+      }
+      rememberInviteUrl(data.inviteUrl ?? buildInviteUrl(roomId));
+      const url = new URL(window.location.href);
+      url.searchParams.set('room', roomId);
+      window.history.replaceState({}, '', url);
+      lastVersion = -1;
+      actionsBootstrapped = false;
+      lastActionVersion = -1;
+      dealIntroPlayed = false;
+      if (data.room) {
+        await enterSeatedRoom(data.room, data.inviteUrl);
+        return;
+      }
+      hidePrejoinLobby();
+      showLobby(false);
+      await refresh();
+      startPoll();
+      setStatus('');
+    } finally {
+      joinBusy = false;
+      if (joinBtn && !joinBtn.hasAttribute('hidden')) joinBtn.disabled = false;
     }
-    showCreateLobbyUi();
-    await refresh();
-    startPoll();
   }
 
   createBtn?.addEventListener('click', () => void createRoom());
 
   joinBtn?.addEventListener('click', () => {
-    const id = pendingInviteRoom ?? roomId;
-    if (id) {
-      void joinRoom(id);
+    const code = inviteRoomCode();
+    if (!code) {
+      void resumeActiveRoom();
       return;
     }
-    void resumeActiveRoom();
+    roomId = code;
+    void joinRoom(code);
   });
 
   nameInput?.addEventListener('keydown', (event) => {
     if (event.key !== 'Enter') return;
-    if (pendingInviteRoom) void joinRoom(pendingInviteRoom);
-    else if (!roomId) void createRoom();
+    const lobbyMode = root.querySelector<HTMLElement>('[data-online-lobby]')?.dataset.lobbyMode;
+    const code = inviteRoomCode();
+    if (lobbyMode === 'invite' && code) {
+      event.preventDefault();
+      void joinRoom(code);
+      return;
+    }
+    if (!code && lobbyMode === 'create') {
+      event.preventDefault();
+      void createRoom();
+    }
   });
 
   const resolveMidGameJoin = (mode: 'restart' | 'wait_next'): void => {
