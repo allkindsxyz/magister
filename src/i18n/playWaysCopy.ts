@@ -37,10 +37,7 @@ const magisterDetailsRu: PlayWayDetails = {
   toggle: 'Подробнее',
   toggleClose: 'Свернуть',
   headline: 'ИГРА «МАГИСТР» (2–6 игроков)',
-  paragraphs: [
-    'Цель — первым сбросить все карты.',
-    'Колода подходит и для других классических карточных игр.',
-  ],
+  paragraphs: ['Цель — первым сбросить все карты.'],
   conditionsTitle: 'Как играть',
   conditions: [
     'Раздайте каждому по 8 карт. Одну карту из колоды откройте в центре стола.',
@@ -57,10 +54,7 @@ const magisterDetailsEn: PlayWayDetails = {
   toggle: 'Read more',
   toggleClose: 'Show less',
   headline: 'MAGISTER (2–6 players)',
-  paragraphs: [
-    'Goal — be the first to empty your hand.',
-    'The deck works for other classic card games too.',
-  ],
+  paragraphs: ['Goal — be the first to empty your hand.'],
   conditionsTitle: 'How to play',
   conditions: [
     'Deal 8 cards to each player. Turn one card from the deck face up in the centre.',
@@ -77,10 +71,7 @@ const magisterDetailsBe: PlayWayDetails = {
   toggle: 'Падрабязней',
   toggleClose: 'Згарнуць',
   headline: 'ГУЛЯ «МАГІСТР» (2–6 гульцоў)',
-  paragraphs: [
-    'Мэта — першым скінуць усе карты.',
-    'Калода падыходзіць і для іншых класічных картачных гульняў.',
-  ],
+  paragraphs: ['Мэта — першым скінуць усе карты.'],
   conditionsTitle: 'Як гуляць',
   conditions: [
     'Раздайце кожнаму па 8 карт. Адну карту з калоды адкрыйце ў цэнтры стала.',
@@ -97,10 +88,7 @@ const magisterDetailsZh: PlayWayDetails = {
   toggle: '了解详情',
   toggleClose: '收起',
   headline: '「Magister」游戏（2–6 人）',
-  paragraphs: [
-    '目标——率先出完手牌。',
-    '这副牌也可用于其他经典纸牌游戏。',
-  ],
+  paragraphs: ['目标——率先出完手牌。'],
   conditionsTitle: '玩法',
   conditions: [
     '每位玩家发 8 张牌。从牌堆翻开一张放在桌中央。',

@@ -96,7 +96,6 @@ const ru: InstructionCardsCopy = {
         'Если колода закончилась — перетасуйте сброс, оставив верхнюю карту на столе.',
       ],
       winText: 'Первый игрок, избавившийся от всех карт, становится Магистром!',
-      footnote: 'Колода подходит и для других классических карточных игр.',
     },
   ],
 };
@@ -154,7 +153,6 @@ const en: InstructionCardsCopy = {
         'If the deck runs out, reshuffle the discard pile into a new deck, leaving the top card on the table.',
       ],
       winText: 'The first player to get rid of all cards becomes the Magister!',
-      footnote: 'The deck works for other classic card games too.',
     },
   ],
 };
