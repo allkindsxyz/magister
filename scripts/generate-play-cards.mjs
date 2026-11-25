@@ -1,5 +1,5 @@
 /**
- * Builds lightweight card faces for online play (~220px wide). Run after changing public/cards/*.webp.
+ * Builds card faces for online play (~400px wide, retina-safe on table). Run after changing public/cards/*.webp.
  *
  *   npm run cards:play
  */
@@ -13,8 +13,8 @@ const root = path.join(__dirname, '..');
 const cardsDir = path.join(root, 'public/cards');
 const playDir = path.join(cardsDir, 'play');
 
-const PLAY_WIDTH = 220;
-const WEBP_QUALITY = 78;
+const PLAY_WIDTH = 400;
+const WEBP_QUALITY = 90;
 
 async function main() {
   await mkdir(playDir, { recursive: true });
@@ -30,8 +30,9 @@ async function main() {
       .resize(PLAY_WIDTH, Math.round(PLAY_WIDTH * 1.4), {
         fit: 'inside',
         withoutEnlargement: true,
+        kernel: sharp.kernel.lanczos3,
       })
-      .webp({ quality: WEBP_QUALITY, effort: 4 })
+      .webp({ quality: WEBP_QUALITY, effort: 6, smartSubsample: false })
       .toFile(dest);
     wrote += 1;
   }
