@@ -679,7 +679,6 @@ const copy = onlineCopy[lang];
     }
     .mag-online-fly-card,
     .mag-online-fly-draw,
-    .mag-online-mini-stack.is-active,
     .mag-online-deck-hit.is-active,
     .mag-online-hand-card,
     .mag-online-deck-hit {
@@ -793,15 +792,7 @@ const copy = onlineCopy[lang];
     overflow: visible;
     transition:
       box-shadow 0.2s ease,
-      filter 0.2s ease,
-      outline-color 0.2s ease;
-  }
-
-  .mag-online-mini-stack.is-active {
-    outline: 2px solid var(--online-turn-green);
-    outline-offset: 4px;
-    border-radius: 0.5rem;
-    animation: mag-online-opp-stack-glow calc(1.4s * var(--online-motion, 1)) ease-in-out infinite;
+      filter 0.2s ease;
   }
 
   .mag-online-opp-hand {
@@ -816,35 +807,18 @@ const copy = onlineCopy[lang];
     width: var(--online-deck-w);
     height: var(--online-deck-h);
     border-radius: 0.45rem;
-    border: 1px solid #b28f58;
+    border: 0;
     background: url('/media/card-back-600.webp') center / cover no-repeat;
-    box-shadow:
-      2px 2px 0 #07101c,
-      4px 4px 0 #283b55;
+    box-shadow: 0 0.28rem 0.65rem rgba(0, 0, 0, 0.4);
   }
 
   .mag-online-mini-stack.is-active .mag-online-opp-hand__card:last-child {
-    filter: brightness(1.08);
-    box-shadow:
-      2px 2px 0 #07101c,
-      4px 4px 0 #283b55;
+    filter: brightness(1.06);
   }
 
   .mag-online-player.is-turn-seat .mag-online-seat-name {
     color: #b8e8b8;
     text-shadow: 0 0 12px rgba(111, 184, 111, 0.45);
-  }
-
-  @keyframes mag-online-opp-stack-glow {
-    0%,
-    100% {
-      outline-color: var(--online-turn-green);
-      box-shadow: 0 0 0.55rem rgba(111, 184, 111, 0.35);
-    }
-    50% {
-      outline-color: #8fd48f;
-      box-shadow: 0 0 1rem rgba(111, 184, 111, 0.55);
-    }
   }
 
   .mag-online-mini-stack.is-receiving {
