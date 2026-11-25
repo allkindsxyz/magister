@@ -11,6 +11,7 @@
     "start": "node ./dist/server/entry.mjs",
     "preview": "astro preview",
     "optimize:images": "node scripts/optimize-public-images.mjs",
+    "cards:play": "node scripts/generate-play-cards.mjs",
     "import:deck": "node scripts/import-deck.mjs",
     "import:apply-en": "node scripts/patch-card-en.mjs",
     "preorders:list": "node scripts/preorders-list.mjs",

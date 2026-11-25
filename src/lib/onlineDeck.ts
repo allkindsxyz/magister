@@ -6,6 +6,23 @@ export type PlayCard = {
   image: string;
 };
 
+/** Lightweight faces for online table (see scripts/generate-play-cards.mjs). */
+export const ONLINE_CARD_BACK = '/media/card-back-600.webp';
+
+export const ONLINE_PLAY_CARD_DIR = '/cards/play';
+
+export function onlinePlayCardImage(id: string): string {
+  return `${ONLINE_PLAY_CARD_DIR}/${id}.webp`;
+}
+
+/** Full-size asset for rare discard zoom (not preloaded). */
+export function onlineFullCardImage(playImage: string): string {
+  if (playImage.startsWith(`${ONLINE_PLAY_CARD_DIR}/`)) {
+    return playImage.replace(ONLINE_PLAY_CARD_DIR, '/cards');
+  }
+  return playImage;
+}
+
 type CardJson = {
   id?: string;
   suit?: PlaySuit;
@@ -29,7 +46,7 @@ function loadDeck(): PlayCard[] {
         id: raw.id,
         suit: 'joker',
         rank: 'JOKER',
-        image: raw.image ?? `/cards/${raw.id}.webp`,
+        image: onlinePlayCardImage(raw.id),
       });
       continue;
     }
@@ -38,7 +55,7 @@ function loadDeck(): PlayCard[] {
       id: raw.id,
       suit: raw.suit,
       rank: raw.value,
-      image: raw.image ?? `/cards/${raw.id}.webp`,
+      image: onlinePlayCardImage(raw.id),
     });
   }
   if (cards.length !== 54) {

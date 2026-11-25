@@ -320,8 +320,9 @@ export function mountAppShell(): void {
       return;
     }
     if (action === 'cards') showPanel('cards');
-    else if (action === 'online') {
+    else     if (action === 'online') {
       showPanel('online');
+      panels.online?.dispatchEvent(new CustomEvent('magister:online-warm'));
       panels.online?.dispatchEvent(new CustomEvent('magister:online-resume'));
     }
     else if (action === 'buy') {
@@ -355,6 +356,7 @@ export function mountAppShell(): void {
     const roomCode = parseRoomFromLocation();
     if (roomCode) {
       showPanel('online');
+      panels.online?.dispatchEvent(new CustomEvent('magister:online-warm'));
       panels.online?.dispatchEvent(new CustomEvent('magister:online-resume'));
     }
   }

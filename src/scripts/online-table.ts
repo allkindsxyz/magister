@@ -1,5 +1,10 @@
 import type { OnlineCopy } from '../i18n/onlineCopy';
-import type { PlaySuit } from '../lib/onlineDeck';
+import {
+  ONLINE_CARD_BACK,
+  ONLINE_DECK,
+  onlineFullCardImage,
+  type PlaySuit,
+} from '../lib/onlineDeck';
 import { HAND_SIZE, SEATS } from '../lib/onlineConstants';
 import type { ClientRoomView, RoomActionEvent } from '../lib/onlineGame';
 
@@ -100,7 +105,7 @@ function flyCard(
   });
 }
 
-const CARD_BACK_SRC = '/media/card-back.jpg';
+const CARD_BACK_SRC = ONLINE_CARD_BACK;
 
 function flyDrawToHand(
   layer: HTMLElement,
@@ -336,7 +341,34 @@ export function mountOnlineTable(
   let queuedRoomView: ClientRoomView | null = null;
   let displayedCenterImage: string | null = null;
   let handPlayHintsEnabled = false;
-  const CARD_BACK = '/media/card-back.jpg';
+  const CARD_BACK = ONLINE_CARD_BACK;
+
+  let deckImagesWarmed = false;
+
+  function warmOnlineDeckImages(): void {
+    if (deckImagesWarmed) return;
+    deckImagesWarmed = true;
+    const urls = [ONLINE_CARD_BACK, ...ONLINE_DECK.map((c) => c.image)];
+    const run = (): void => {
+      void Promise.all(
+        urls.map(
+          (url) =>
+            new Promise<void>((resolve) => {
+              const img = new Image();
+              img.decoding = 'async';
+              img.onload = () => resolve();
+              img.onerror = () => resolve();
+              img.src = url;
+            }),
+        ),
+      );
+    };
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(run, { timeout: 4000 });
+    } else {
+      window.setTimeout(run, 120);
+    }
+  }
 
   function nextSeatClockwise(seat: number): number {
     return (seat + SEATS - 1) % SEATS;
@@ -1754,7 +1786,7 @@ export function mountOnlineTable(
   function openDiscardZoom(): void {
     const src = topDiscardImageSrc();
     if (!src || !discardZoom || !discardZoomImg) return;
-    discardZoomImg.src = src;
+    discardZoomImg.src = onlineFullCardImage(src);
     discardZoomImg.alt = opts.copy.discard;
     discardZoom.hidden = false;
     table?.classList.add('is-discard-zoomed');
@@ -2980,6 +3012,12 @@ export function mountOnlineTable(
     if (discardZoom && !discardZoom.hidden) closeDiscardZoom();
   });
 
+  warmOnlineDeckImages();
+
+  root.addEventListener('magister:online-warm', () => {
+    warmOnlineDeckImages();
+  });
+
   void (async () => {
     const urlRoom = opts.initialRoom ?? parseRoomFromLocation();
     if (urlRoom) {
@@ -3004,6 +3042,7 @@ export function mountOnlineTable(
   });
 
   root.addEventListener('magister:online-resume', () => {
+    warmOnlineDeckImages();
     if (view?.youSeat !== null && roomId) {
       startPoll();
       void refresh();
