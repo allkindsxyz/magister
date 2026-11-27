@@ -14,10 +14,10 @@ export type Sku = {
 };
 
 export const SKUS = {
-  deck_xl: { kind: 'deck', price: PRICES.xl, image: '/media/pack.webp', needsCard: false, needsFit: false },
-  deck_standard: { kind: 'deck', price: PRICES.standard, image: '/media/pack.webp', needsCard: false, needsFit: false },
-  deck_set: { kind: 'deck', price: PRICES.set, image: '/media/pack.webp', needsCard: false, needsFit: false },
-  deck_two_xl: { kind: 'deck', price: PRICES.two_xl, image: '/media/pack.webp', needsCard: false, needsFit: false },
+  deck_xl: { kind: 'deck', price: PRICES.xl, image: '/media/pack.png', needsCard: false, needsFit: false },
+  deck_standard: { kind: 'deck', price: PRICES.standard, image: '/media/pack-standard.webp', needsCard: false, needsFit: false },
+  deck_set: { kind: 'deck', price: PRICES.set, image: '/media/pack.png', needsCard: false, needsFit: false },
+  deck_two_xl: { kind: 'deck', price: PRICES.two_xl, image: '/media/pack.png', needsCard: false, needsFit: false },
   hoodie: { kind: 'apparel', price: PRICES.hoodie, image: '/media/merch-hoodie-black.jpg?v=2', needsCard: true, needsFit: true },
   tee: { kind: 'apparel', price: PRICES.tee, image: '/media/merch-tee-black.jpg?v=2', needsCard: true, needsFit: true },
   print: { kind: 'prints', price: PRICES.print, image: '/media/prints-detail-hero.jpg', needsCard: true, needsFit: false },

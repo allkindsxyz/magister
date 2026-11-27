@@ -480,8 +480,8 @@ const deck: Record<Lang, MerchCopy> = {
     ],
     message_hint: 'It opens from the QR code on your copy.',
     slides: {
-      closed: { alt: 'Closed Magister collector box', caption: 'The collector’s box, closed.' },
-      open: { alt: 'Open Magister collector box with the deck', caption: 'The box open — deck and key booklet inside.' },
+      xl: { alt: 'Magister deck XL edition packaging', caption: 'Collector’s edition XL — 70 × 120 mm.' },
+      standard: { alt: 'Magister standard deck packaging', caption: 'Standard edition — 63 × 88 mm.' },
     },
   },
   ru: {
@@ -497,8 +497,8 @@ const deck: Record<Lang, MerchCopy> = {
     ],
     message_hint: 'Откроется по QR-коду на вашем экземпляре.',
     slides: {
-      closed: { alt: 'Закрытая коллекционная коробка Magister', caption: 'Коллекционная коробка, закрыта.' },
-      open: { alt: 'Открытая коллекционная коробка Magister с колодой', caption: 'Коробка открыта — внутри колода и буклет-ключ.' },
+      xl: { alt: 'Упаковка колоды Magister XL', caption: 'Коллекционное издание XL — 70 × 120 мм.' },
+      standard: { alt: 'Упаковка стандартной колоды Magister', caption: 'Стандартное издание — 63 × 88 мм.' },
     },
   },
   be: {
@@ -514,8 +514,8 @@ const deck: Record<Lang, MerchCopy> = {
     ],
     message_hint: 'Адкрыецца па QR-кодзе на вашым асобніку.',
     slides: {
-      closed: { alt: 'Закрытая калекцыйная каробка Magister', caption: 'Калекцыйная каробка, закрыта.' },
-      open: { alt: 'Адкрытая калекцыйная каробка Magister з калодай', caption: 'Каробка адкрыта — унутры калода і буклет-ключ.' },
+      xl: { alt: 'Упакоўка калоды Magister XL', caption: 'Калекцыйнае выданне XL — 70 × 120 мм.' },
+      standard: { alt: 'Упакоўка стандартнай калоды Magister', caption: 'Стандартнае выданне — 63 × 88 мм.' },
     },
   },
   zh: {
@@ -531,8 +531,8 @@ const deck: Record<Lang, MerchCopy> = {
     ],
     message_hint: '扫描你这副牌上的二维码即可打开。',
     slides: {
-      closed: { alt: '合上的 Magister 收藏盒', caption: '收藏盒，合上。' },
-      open: { alt: '打开的 Magister 收藏盒与牌组', caption: '盒子打开——内有牌组与解读小册子。' },
+      xl: { alt: 'Magister XL 牌组包装', caption: '收藏版 XL — 70 × 120 mm。' },
+      standard: { alt: 'Magister 标准牌组包装', caption: '标准版 — 63 × 88 mm。' },
     },
   },
 };

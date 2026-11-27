@@ -17,9 +17,9 @@ const shopHref = `${getLocalizedPath('/', lang)}#artifacts`;
 const slides = [
   {
     key: 'xl',
-    image: '/media/deck-lifestyle.jpg',
-    width: 1024,
-    height: 672,
+    image: '/media/pack.png',
+    width: 1536,
+    height: 1024,
     label: t('deck_sku.xl_name'),
     alt: t('deck_sku.image_alt'),
   },
@@ -35,7 +35,7 @@ const slides = [
 
 const productJsonLd = deckProductJsonLd({
   url: localizedAbsoluteUrl(lang, '/artifacts/deck'),
-  image: absoluteUrl('/media/deck-lifestyle.jpg'),
+  image: absoluteUrl('/media/pack.png'),
   description: t('deck_sku.body'),
   xlName: t('deck_sku.price_xl'),
   standardName: t('deck_sku.price_standard'),
