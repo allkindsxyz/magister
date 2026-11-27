@@ -263,7 +263,7 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
           </div>
 
           {
-            slides.length > 1 && (
+            slides.length > 1 && !isDeck && (
               <div class="pdp-gallery__thumbs">
                 {slides.map((slide, index) => (
                   <button
@@ -281,7 +281,7 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
           }
         </div>
 
-        <p class="pdp__caption" data-gallery-caption>{slides[0]?.caption}</p>
+        {!isDeck && <p class="pdp__caption" data-gallery-caption>{slides[0]?.caption}</p>}
 
         {
           buyable && (
@@ -342,6 +342,15 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
                     ))}
                   </div>
                 </fieldset>
+              )}
+
+              {deckAbout && (
+                <div class="pdp-deck-about">
+                  <p class="pdp-field__label">{copy.about_title}</p>
+                  <p class="pdp-deck-about__text" data-deck-about>
+                    {deckAbout.xl}
+                  </p>
+                </div>
               )}
 
               {isApparel && (
@@ -533,26 +542,32 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
           )
         }
 
-        <p class="pdp-ships">
-          <strong>{copy.ships}</strong>
-          {buyable && <span>{shippingLine}</span>}
-        </p>
+        {
+          !isDeck && (
+            <p class="pdp-ships">
+              <strong>{copy.ships}</strong>
+              {buyable && <span>{shippingLine}</span>}
+            </p>
+          )
+        }
 
-        <div class="pdp-details">
-          <details class="pdp-acc">
-            <summary>{copy.about_title}</summary>
-            <div class="pdp-acc__body">
-              {
-                deckAbout ? (
-                  <p data-deck-about>{deckAbout.xl}</p>
-                ) : (
-                  copy.about.map((p) => <p>{p}</p>)
-                )
-              }
+        {
+          !isDeck && (
+            <div class="pdp-details">
+              <details class="pdp-acc">
+                <summary>{copy.about_title}</summary>
+                <div class="pdp-acc__body">
+                  {copy.about.map((p) => (
+                    <p>{p}</p>
+                  ))}
+                </div>
+              </details>
+              <a class="text-link pdp-details__link" href={galleryHref}>
+                {ui.all_cards} →
+              </a>
             </div>
-          </details>
-          <a class="text-link pdp-details__link" href={galleryHref}>{ui.all_cards} →</a>
-        </div>
+          )
+        }
       </section>
     </div>
   </div>
@@ -932,6 +947,19 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
     display: grid;
     grid-template-columns: auto minmax(0, 1fr);
     gap: 1.35rem 1.75rem;
+  }
+
+  .pdp-deck-about {
+    display: grid;
+    gap: 0.45rem;
+    margin: -0.35rem 0 0;
+  }
+
+  .pdp-deck-about__text {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.55;
   }
 
   /* Deck formats */
