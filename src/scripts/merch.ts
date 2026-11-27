@@ -29,6 +29,7 @@ type MerchUi = {
   birth_choose: string;
   birth_joker: string;
   garmentPhotos: Record<string, string>;
+  deckAbout: { xl: string; standard: string } | null;
 };
 
 const reducedMotion = (): boolean => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -225,6 +226,7 @@ export function mountMerch(root: HTMLElement): void {
 
   let syncPriceRef: () => void = () => {};
   let syncScaleRef: () => void = () => {};
+  let syncDeckAboutRef: () => void = () => {};
 
   const gallery = mountGallery(root, {
     onActiveKey(key) {
@@ -235,6 +237,7 @@ export function mountMerch(root: HTMLElement): void {
         input.checked = true;
         syncPriceRef();
         syncScaleRef();
+        syncDeckAboutRef();
       }
     },
   });
@@ -310,6 +313,8 @@ export function mountMerch(root: HTMLElement): void {
     scale.dataset.scalePick = sku === 'deck_standard' ? 'standard' : 'xl';
   };
 
+  const deckAboutEl = root.querySelector<HTMLElement>('[data-deck-about]');
+
   const syncDeckGallery = (): void => {
     if (!isDeck) return;
     syncingDeckSku = true;
@@ -317,8 +322,15 @@ export function mountMerch(root: HTMLElement): void {
     syncingDeckSku = false;
   };
 
+  const syncDeckAbout = (): void => {
+    if (!isDeck || !deckAboutEl || !ui.deckAbout) return;
+    const key = deckSlideForSku(currentSku());
+    deckAboutEl.textContent = key === 'standard' ? ui.deckAbout.standard : ui.deckAbout.xl;
+  };
+
   syncPriceRef = syncPrice;
   syncScaleRef = syncScale;
+  syncDeckAboutRef = syncDeckAbout;
 
   const syncCard = (): void => {
     if (!hasCardPick) return;
@@ -494,6 +506,7 @@ export function mountMerch(root: HTMLElement): void {
     syncGarment();
     syncScale();
     syncDeckGallery();
+    syncDeckAbout();
     syncCard();
     syncMessage();
   };
@@ -504,7 +517,10 @@ export function mountMerch(root: HTMLElement): void {
     if (target.name === 'sku' || target.name === 'color') {
       syncGarment();
       syncScale();
-      if (isDeck && target.name === 'sku') syncDeckGallery();
+      if (isDeck && target.name === 'sku') {
+        syncDeckGallery();
+        syncDeckAbout();
+      }
       else if (isApparel) gallery.goTo('garment');
     }
     if (target.name === 'private') syncMessage();

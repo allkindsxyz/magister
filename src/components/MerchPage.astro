@@ -2,7 +2,7 @@
 import type { Lang } from '../i18n/utils';
 import { useTranslations, pickLocalized, getLocalizedPath } from '../i18n/utils';
 import { getCollection } from 'astro:content';
-import { productCopy, productHasCardPick, deckBoxCopy, pdpUi, type ProductKind } from '../i18n/merchCopy';
+import { productCopy, productHasCardPick, pdpUi, type ProductKind } from '../i18n/merchCopy';
 import Nav from './Nav.astro';
 import BuyerFooter from './BuyerFooter.astro';
 import { deckProductJsonLd, productJsonLd, fillPrices, formatPrice, PRICES } from '../lib/pricing';
@@ -143,12 +143,12 @@ const fill = (template: string, values: Record<string, string | number>): string
 type DeckOption = { sku: SkuId; name: string; spec: string; note: string; badges: string[] };
 const deckOptions: DeckOption[] = isDeck
   ? [
-      { sku: 'deck_xl', name: t('deck_sku.xl_name'), spec: t('deck_sku.xl_spec'), note: t('deck_sku.xl_purpose'), badges: [] },
+      { sku: 'deck_xl', name: t('deck_sku.xl_name'), spec: t('deck_sku.xl_spec'), note: '', badges: [] },
       {
         sku: 'deck_standard',
         name: t('deck_sku.standard_name'),
         spec: t('deck_sku.standard_spec'),
-        note: t('deck_sku.standard_purpose'),
+        note: '',
         badges: [],
       },
     ]
@@ -157,7 +157,7 @@ const deckOptions: DeckOption[] = isDeck
 const defaultSku: SkuId | null = isDeck ? 'deck_xl' : isApparel ? 'hoodie' : isPrints ? 'print' : null;
 const initialPrice = defaultSku ? money(SKUS[defaultSku].price) : ui.coming_soon;
 const shippingLine = fillPrices(ui.shipping, lang);
-const deckBox = isDeck ? deckBoxCopy[lang] : null;
+const deckAbout = isDeck && copy.about_format ? copy.about_format : null;
 
 const pageUrl = localizedAbsoluteUrl(lang, `/artifacts/${kind}`);
 const jsonLdImages = slides.filter((s) => s.type === 'img').map((s) => absoluteUrl(s.src));
@@ -202,6 +202,7 @@ const uiJson = JSON.stringify({
   birth_choose: ui.birth_choose,
   birth_joker: ui.birth_joker,
   garmentPhotos,
+  deckAbout,
 }).replace(/</g, '\\u003c');
 
 const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_standard') };
@@ -450,6 +451,7 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
                 </div>
               )}
 
+              {!isDeck && (
               <div class="pdp-msg">
                 <button
                   class="pdp-msg__toggle"
@@ -508,6 +510,7 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
                   </div>
                 </div>
               </div>
+              )}
 
               <div class="pdp-cta" data-cta>
                 <button class="btn btn-accent pdp-cta__btn" type="submit" data-add>
@@ -539,24 +542,15 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
           <details class="pdp-acc">
             <summary>{copy.about_title}</summary>
             <div class="pdp-acc__body">
-              {copy.about.map((p) => <p>{p}</p>)}
+              {
+                deckAbout ? (
+                  <p data-deck-about>{deckAbout.xl}</p>
+                ) : (
+                  copy.about.map((p) => <p>{p}</p>)
+                )
+              }
             </div>
           </details>
-          {
-            deckBox && (
-              <details class="pdp-acc">
-                <summary>{ui.box_title}</summary>
-                <dl class="pdp-acc__body pdp-box">
-                  {deckBox.map((row) => (
-                    <div>
-                      <dt>{row.label}</dt>
-                      <dd>{row.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </details>
-            )
-          }
           <a class="text-link pdp-details__link" href={galleryHref}>{ui.all_cards} →</a>
         </div>
       </section>

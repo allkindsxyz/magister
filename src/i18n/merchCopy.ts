@@ -24,6 +24,8 @@ export type MerchCopy = {
   ships: string;
   about_title: string;
   about: string[];
+  /** Deck PDP: single paragraph switches with XL / standard format. */
+  about_format?: { xl: string; standard: string };
   /** Where the personal message opens; empty when the product takes no message. */
   message_hint: string;
   slides: Record<string, SlideCopy>;
@@ -475,9 +477,11 @@ const deck: Record<Lang, MerchCopy> = {
     sub: '54 paintings by Dr. Klein. The suit and rank of every card hide inside its scene.',
     ships: 'In stock: the edition is already printed.',
     about_title: 'About the deck',
-    about: [
-      'Hearts are the Olympian Gods, Diamonds the Bearers of Secrets, Clubs the Templars, Spades the Celebrities. The key to the symbols is in the booklet inside the box — and every card is online too.',
-    ],
+    about: [],
+    about_format: {
+      xl: 'Tarot-size cards with detailed printing — great for play and for the collection.',
+      standard: 'Standard poker-size cards — ideal for play.',
+    },
     message_hint: 'It opens from the QR code on your copy.',
     slides: {
       xl: { alt: 'Magister deck XL edition packaging', caption: 'Collector’s edition XL — 70 × 120 mm.' },
@@ -492,9 +496,11 @@ const deck: Record<Lang, MerchCopy> = {
     sub: '54 картины Dr. Klein. Масть и ранг каждой карты спрятаны в сюжете.',
     ships: 'В наличии: тираж уже напечатан.',
     about_title: 'О колоде',
-    about: [
-      'Червы — олимпийские боги, бубны — носители тайн, трефы — тамплиеры, пики — знаменитости. Ключ к символам — в буклете внутри коробки, а все карты можно рассмотреть на сайте.',
-    ],
+    about: [],
+    about_format: {
+      xl: 'Карты формата Таро, детальная печать, отлично подойдут как для игры, так и в коллекцию.',
+      standard: 'Карты стандартного покерного размера, идеально подойдут для игры.',
+    },
     message_hint: 'Откроется по QR-коду на вашем экземпляре.',
     slides: {
       xl: { alt: 'Упаковка колоды Magister XL', caption: 'Коллекционное издание XL — 70 × 120 мм.' },
@@ -509,9 +515,11 @@ const deck: Record<Lang, MerchCopy> = {
     sub: '54 карціны Dr. Klein. Масць і ранг кожнай карты схаваныя ў сюжэце.',
     ships: 'У наяўнасці: наклад ужо надрукаваны.',
     about_title: 'Пра калоду',
-    about: [
-      'Чэрвы — алімпійскія багі, бубны — носьбіты таямніц, трэфы — тампліеры, пікі — знакамітасці. Ключ да сімвалаў — у буклеце ўнутры каробкі, а ўсе карты можна разгледзець на сайце.',
-    ],
+    about: [],
+    about_format: {
+      xl: 'Карты фармату Таро, дэталёвая друк, падыдуць і для гульні, і для калекцыі.',
+      standard: 'Карты стандартнага покернага памеру, ідэальна падыдуць для гульні.',
+    },
     message_hint: 'Адкрыецца па QR-кодзе на вашым асобніку.',
     slides: {
       xl: { alt: 'Упакоўка калоды Magister XL', caption: 'Калекцыйнае выданне XL — 70 × 120 мм.' },
@@ -526,9 +534,11 @@ const deck: Record<Lang, MerchCopy> = {
     sub: 'Dr. Klein 的 54 幅画。每张牌的花色与点数都藏在画面里。',
     ships: '现货：首版已印制完成。',
     about_title: '关于牌组',
-    about: [
-      '红心是奥林匹斯诸神，方块是秘密承载者，梅花是圣殿骑士，黑桃是名流。解读符号的钥匙在盒内的小册子里，所有牌也都能在网站上细看。',
-    ],
+    about: [],
+    about_format: {
+      xl: '塔罗尺寸的牌，印刷精细，既适合游戏，也适合收藏。',
+      standard: '标准扑克尺寸的牌，最适合拿来玩。',
+    },
     message_hint: '扫描你这副牌上的二维码即可打开。',
     slides: {
       xl: { alt: 'Magister XL 牌组包装', caption: '收藏版 XL — 70 × 120 mm。' },
