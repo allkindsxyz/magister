@@ -73,7 +73,7 @@ type Slide = {
   src: string;
   width: number;
   height: number;
-  fit: 'cover' | 'contain';
+  fit: 'cover' | 'contain' | 'intrinsic';
   alt: string;
   caption: string;
   thumb: string;
@@ -112,8 +112,8 @@ const garmentPhotos = {
 
 const slides: Slide[] = isDeck
   ? [
-      img('xl', '/media/pack.png', 1536, 1024, 'contain'),
-      img('standard', '/media/pack-standard.webp', 785, 1024, 'contain'),
+      img('xl', '/media/pack.png', 1536, 1024, 'intrinsic'),
+      img('standard', '/media/pack-standard.webp', 785, 1024, 'intrinsic'),
     ]
   : isApparel
     ? [
@@ -136,7 +136,7 @@ const slides: Slide[] = isDeck
           img('spread', '/media/album-spread.jpg', 1024, 724, 'contain'),
         ];
 
-const galleryRatio = isDeck ? '2 / 3' : isAlbum ? '1 / 1' : isPrints ? '7 / 10' : '3 / 4';
+const galleryRatio = isDeck ? 'auto' : isAlbum ? '1 / 1' : isPrints ? '7 / 10' : '3 / 4';
 const fill = (template: string, values: Record<string, string | number>): string =>
   template.replace(/\{(\w+)\}/g, (match, key: string) => (key in values ? String(values[key]) : match));
 
@@ -214,7 +214,7 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
 
     <div class="pdp__grid">
       <section class="pdp__media" aria-label={ui.gallery_aria}>
-        <div class="pdp-gallery" data-gallery style={`--ratio: ${galleryRatio};`}>
+        <div class:list={['pdp-gallery', { 'pdp-gallery--deck': isDeck }]} data-gallery style={`--ratio: ${galleryRatio};`}>
           <div class="pdp-gallery__track" data-gallery-track tabindex="0" aria-roledescription="carousel">
             {
               slides.map((slide, index) => (
@@ -723,6 +723,28 @@ const scaleLabels = { xl: t('deck_sku.price_xl'), standard: t('deck_sku.price_st
   .pdp-gallery__slide[data-fit='contain'] > img {
     object-fit: contain;
     padding: clamp(0.75rem, 3%, 1.5rem);
+  }
+
+  .pdp-gallery__slide[data-fit='intrinsic'] > img {
+    height: auto;
+    object-fit: contain;
+    padding: 0;
+  }
+
+  .pdp-gallery--deck {
+    width: 100%;
+  }
+
+  .pdp-gallery--deck .pdp-gallery__track {
+    aspect-ratio: unset;
+    height: auto;
+    background: transparent;
+  }
+
+  .pdp-gallery--deck .pdp-gallery__slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .pdp-gallery__thumbs {

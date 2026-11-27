@@ -92,7 +92,11 @@ type Gallery = {
   update: (key: string, patch: { src?: string; alt?: string; caption?: string }) => void;
 };
 
-function mountGallery(root: HTMLElement): Gallery {
+type GalleryOptions = {
+  onActiveKey?: (key: string) => void;
+};
+
+function mountGallery(root: HTMLElement, options: GalleryOptions = {}): Gallery {
   const track = root.querySelector<HTMLElement>('[data-gallery-track]');
   const caption = root.querySelector<HTMLElement>('[data-gallery-caption]');
   const slides = track ? Array.from(track.querySelectorAll<HTMLElement>('[data-slide]')) : [];
@@ -100,13 +104,17 @@ function mountGallery(root: HTMLElement): Gallery {
   let active = 0;
 
   const setActive = (index: number): void => {
-    if (index === active && caption?.textContent === (slides[index]?.dataset.caption ?? '')) return;
+    const slide = slides[index];
+    const nextCaption = slide?.dataset.caption ?? '';
+    if (index === active && caption?.textContent === nextCaption) return;
+    const prev = active;
     active = index;
     thumbs.forEach((thumb, i) => {
       if (i === index) thumb.setAttribute('aria-current', 'true');
       else thumb.removeAttribute('aria-current');
     });
-    if (caption) caption.textContent = slides[index]?.dataset.caption ?? '';
+    if (caption) caption.textContent = nextCaption;
+    if (prev !== index && slide?.dataset.slide) options.onActiveKey?.(slide.dataset.slide);
   };
 
   const slideLeft = (index: number): number => (slides[index]?.offsetLeft ?? 0) - (slides[0]?.offsetLeft ?? 0);
@@ -200,13 +208,36 @@ export function mountMerch(root: HTMLElement): void {
   const cards = readJson<MerchCard[]>(root, '#merch-cards', []);
   const ui = readJson<MerchUi>(root, '#merch-ui', {} as MerchUi);
   const byId = new Map(cards.map((c) => [c.id, c]));
-  const gallery = mountGallery(root);
   const form = root.querySelector<HTMLFormElement>('[data-pdp-form]');
   if (!form) return;
 
   const isApparel = kind === 'apparel';
   const isDeck = kind === 'deck';
   const hasCardPick = kind === 'apparel' || kind === 'prints';
+
+  const deckSkuForSlide = (key: string): SkuId =>
+    key === 'standard' ? 'deck_standard' : 'deck_xl';
+
+  const deckSlideForSku = (sku: SkuId | null): 'xl' | 'standard' =>
+    sku === 'deck_standard' ? 'standard' : 'xl';
+
+  let syncingDeckSku = false;
+
+  let syncPriceRef: () => void = () => {};
+  let syncScaleRef: () => void = () => {};
+
+  const gallery = mountGallery(root, {
+    onActiveKey(key) {
+      if (!isDeck || syncingDeckSku) return;
+      const sku = deckSkuForSlide(key);
+      const input = form.querySelector<HTMLInputElement>(`input[name="sku"][value="${sku}"]`);
+      if (input && !input.checked) {
+        input.checked = true;
+        syncPriceRef();
+        syncScaleRef();
+      }
+    },
+  });
 
   let cardId: string | null = hasCardPick ? (byId.has('ace-hearts') ? 'ace-hearts' : (cards[0]?.id ?? null)) : null;
   let pin = genPin();
@@ -278,6 +309,16 @@ export function mountMerch(root: HTMLElement): void {
     const sku = currentSku();
     scale.dataset.scalePick = sku === 'deck_standard' ? 'standard' : 'xl';
   };
+
+  const syncDeckGallery = (): void => {
+    if (!isDeck) return;
+    syncingDeckSku = true;
+    gallery.goTo(deckSlideForSku(currentSku()));
+    syncingDeckSku = false;
+  };
+
+  syncPriceRef = syncPrice;
+  syncScaleRef = syncScale;
 
   const syncCard = (): void => {
     if (!hasCardPick) return;
@@ -452,6 +493,7 @@ export function mountMerch(root: HTMLElement): void {
     syncPrice();
     syncGarment();
     syncScale();
+    syncDeckGallery();
     syncCard();
     syncMessage();
   };
@@ -462,7 +504,8 @@ export function mountMerch(root: HTMLElement): void {
     if (target.name === 'sku' || target.name === 'color') {
       syncGarment();
       syncScale();
-      if (isApparel) gallery.goTo('garment');
+      if (isDeck && target.name === 'sku') syncDeckGallery();
+      else if (isApparel) gallery.goTo('garment');
     }
     if (target.name === 'private') syncMessage();
     else schedulePreview();
