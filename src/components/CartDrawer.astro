@@ -3,8 +3,6 @@ import { getCollection } from 'astro:content';
 import type { Lang } from '../i18n/utils';
 import { useTranslations, getLocalizedPath, pickLocalized } from '../i18n/utils';
 import { SKUS } from '../lib/catalog';
-import { fillPrices } from '../lib/pricing';
-
 interface Props {
   lang: Lang;
 }
@@ -33,8 +31,6 @@ const uiJson = JSON.stringify({
   message_for: t('cart.message_for'),
   message: t('cart.message'),
   private_pin: t('cart.private_pin'),
-  shipping_left: t('cart.shipping_left'),
-  shipping_free: t('cart.shipping_free'),
   added: t('cart.added'),
   full: t('cart.full'),
   color_black: t('cart.color_black'),
@@ -78,15 +74,10 @@ const uiJson = JSON.stringify({
     </div>
 
     <footer class="cart-drawer__foot" data-cart-foot hidden>
-      <div class="cart-drawer__ship">
-        <p data-cart-ship></p>
-        <div class="cart-drawer__meter" aria-hidden="true"><span data-cart-ship-meter></span></div>
-      </div>
       <div class="cart-drawer__total">
         <span>{t('cart.subtotal')}</span>
         <strong data-cart-subtotal></strong>
       </div>
-      <p class="cart-drawer__note">{fillPrices(t('cart.shipping_note'), lang)}</p>
       <form class="cart-drawer__preorder" data-cart-preorder>
         <p class="cart-drawer__note">{t('cart.preorder_lead')}</p>
         <label class="visually-hidden" for="cart-preorder-email">{t('cart.preorder_email')}</label>
@@ -368,24 +359,6 @@ const uiJson = JSON.stringify({
 
   .cart-drawer__foot[hidden] {
     display: none;
-  }
-
-  .cart-drawer__ship p {
-    margin: 0 0 0.4rem;
-    font-size: 0.88rem;
-  }
-
-  .cart-drawer__meter {
-    height: 3px;
-    background: var(--paper-deep);
-  }
-
-  .cart-drawer__meter span {
-    display: block;
-    height: 100%;
-    width: 0;
-    background: var(--accent);
-    transition: width 240ms ease;
   }
 
   .cart-drawer__total {

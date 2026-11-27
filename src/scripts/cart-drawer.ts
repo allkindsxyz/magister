@@ -11,8 +11,8 @@ import {
   setLineQty,
   type CartLine,
 } from '../lib/cart';
-import { SHIPPING, formatPrice } from '../lib/pricing';
-import { SKUS, freeShippingRemaining } from '../lib/catalog';
+import { formatPrice } from '../lib/pricing';
+import { SKUS } from '../lib/catalog';
 import type { Lang } from '../i18n/utils';
 
 type CartUi = {
@@ -28,8 +28,6 @@ type CartUi = {
   message_for: string;
   message: string;
   private_pin: string;
-  shipping_left: string;
-  shipping_free: string;
   added: string;
   full: string;
   color_black: string;
@@ -69,8 +67,6 @@ export function mountCartDrawer(root: HTMLElement): void {
   const list = root.querySelector<HTMLUListElement>('[data-cart-lines]');
   const empty = root.querySelector<HTMLElement>('[data-cart-empty]');
   const foot = root.querySelector<HTMLElement>('[data-cart-foot]');
-  const ship = root.querySelector<HTMLElement>('[data-cart-ship]');
-  const meter = root.querySelector<HTMLElement>('[data-cart-ship-meter]');
   const subtotalEl = root.querySelector<HTMLElement>('[data-cart-subtotal]');
   const headCount = root.querySelector<HTMLElement>('[data-cart-head-count]');
   const status = root.querySelector<HTMLElement>('[data-cart-status]');
@@ -80,7 +76,7 @@ export function mountCartDrawer(root: HTMLElement): void {
   const preorderSubmit = root.querySelector<HTMLButtonElement>('[data-cart-preorder-submit]');
   const preorderErr = root.querySelector<HTMLElement>('[data-cart-preorder-err]');
   const preorderOk = root.querySelector<HTMLElement>('[data-cart-preorder-ok]');
-  if (!panel || !list || !empty || !foot || !ship || !meter || !subtotalEl || !headCount || !status) return;
+  if (!panel || !list || !empty || !foot || !subtotalEl || !headCount || !status) return;
 
   const money = (amount: number): string => formatPrice(amount, lang);
   let opener: HTMLElement | null = null;
@@ -214,14 +210,12 @@ export function mountCartDrawer(root: HTMLElement): void {
     empty.hidden = hasLines || preorderDone;
     foot.hidden = !hasLines && !preorderDone;
 
-    const shipBlock = root.querySelector<HTMLElement>('.cart-drawer__ship');
     const totalBlock = root.querySelector<HTMLElement>('.cart-drawer__total');
     const notes = root.querySelectorAll<HTMLElement>('.cart-drawer__foot > .cart-drawer__note');
 
     if (!hasLines) {
       if (preorderForm) preorderForm.hidden = true;
       if (preorderOk) preorderOk.hidden = !preorderDone;
-      if (shipBlock) shipBlock.hidden = true;
       if (totalBlock) totalBlock.hidden = true;
       notes.forEach((note) => {
         note.hidden = true;
@@ -229,17 +223,13 @@ export function mountCartDrawer(root: HTMLElement): void {
       return;
     }
 
-    if (shipBlock) shipBlock.hidden = false;
     if (totalBlock) totalBlock.hidden = false;
     notes.forEach((note) => {
       note.hidden = false;
     });
 
     const subtotal = cartSubtotal(lines);
-    const left = freeShippingRemaining(subtotal);
     subtotalEl.textContent = money(subtotal);
-    ship.textContent = left > 0 ? fill(ui.shipping_left, { amount: money(left) }) : ui.shipping_free;
-    meter.style.width = `${Math.min(100, Math.round((subtotal / SHIPPING.free_from) * 100))}%`;
     if (preorderForm) preorderForm.hidden = preorderDone;
     if (preorderOk) preorderOk.hidden = !preorderDone;
   };
