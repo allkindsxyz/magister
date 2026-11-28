@@ -10,16 +10,16 @@ import Shop from '../../components/Shop.astro';
 import AuthorsCompact from '../../components/AuthorsCompact.astro';
 import BuyerFooter from '../../components/BuyerFooter.astro';
 import DestinySheet from '../../components/DestinySheet.astro';
-import { PRICES, formatPrice } from '../../lib/pricing';
+import { productCopy } from '../../i18n/merchCopy';
 
 const lang = 'be';
-const fromPrice = formatPrice(PRICES.standard, lang);
+const deckMeta = productCopy.deck[lang];
 ---
 
 <Layout
   lang={lang}
   title="Magister — арт-калода з 54 карцін Dr. Klein"
-  description={`Гульнявая калода, дзе масць і ранг схаваныя ў карціне. 54 працы, 4 светы, першы наклад — 600 калод. Ад ${fromPrice}, дастаўка ў EU і US за 10–14 дзён.`}
+  description={deckMeta.meta_description}
 >
   <Nav lang={lang} />
   <main id="main-content">

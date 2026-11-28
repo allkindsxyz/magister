@@ -23,7 +23,9 @@ const {
 
 const pathAfterLocale = Astro.url.pathname.replace(new RegExp(`^/${lang}`), '') || '/';
 const canonicalURL = Astro.props.canonicalURL ?? localizedAbsoluteUrl(lang, pathAfterLocale);
-const ogImage = absoluteUrl('/media/merchant.webp');
+const ogImage = absoluteUrl('/media/pack.png');
+const googleVerify = String(import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION || '').trim();
+const yandexVerify = String(import.meta.env.PUBLIC_YANDEX_VERIFICATION || '').trim();
 const htmlLang = lang === 'zh' ? 'zh-Hans' : lang;
 const skipLabel =
   lang === 'ru' ? 'К содержанию' : lang === 'be' ? 'Да зместу' : lang === 'zh' ? '跳到正文' : 'Skip to content';
@@ -38,6 +40,9 @@ const skipLabel =
   {noindex && <meta name="robots" content="noindex, nofollow" />}
   <meta name="theme-color" content="#f3f0e8" />
   <link rel="canonical" href={canonicalURL} />
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+  {googleVerify && <meta name="google-site-verification" content={googleVerify} />}
+  {yandexVerify && <meta name="yandex-verification" content={yandexVerify} />}
   <script is:inline>document.documentElement.classList.add('js');</script>
 
   <!-- Open Graph -->

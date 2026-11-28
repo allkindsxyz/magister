@@ -7,5 +7,5 @@ const redirectTo = wants('zh') ? '/zh/' : wants('be') ? '/be/' : wants('ru') ? '
 const target = new URL(redirectTo, Astro.url);
 target.search = Astro.url.search;
 
-return Astro.redirect(`${target.pathname}${target.search}`, 302);
+return Astro.redirect(`${target.pathname}${target.search}`, 301);
 ---

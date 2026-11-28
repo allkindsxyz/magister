@@ -10,16 +10,16 @@ import Shop from '../../components/Shop.astro';
 import AuthorsCompact from '../../components/AuthorsCompact.astro';
 import BuyerFooter from '../../components/BuyerFooter.astro';
 import DestinySheet from '../../components/DestinySheet.astro';
-import { PRICES, formatPrice } from '../../lib/pricing';
+import { productCopy } from '../../i18n/merchCopy';
 
 const lang = 'zh';
-const fromPrice = formatPrice(PRICES.standard, lang);
+const deckMeta = productCopy.deck[lang];
 ---
 
 <Layout
   lang={lang}
   title="Magister — Dr. Klein 54 幅画作艺术扑克牌"
-  description={`一副花色与点数藏在画里的扑克牌。54 幅原作，4 个世界，首版 600 副。${fromPrice} 起，发货至欧盟与美国，10–14 天送达。`}
+  description={deckMeta.meta_description}
 >
   <Nav lang={lang} />
   <main id="main-content">
